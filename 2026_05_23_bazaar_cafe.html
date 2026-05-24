@@ -49,6 +49,18 @@
   .src_add_row { display: flex; gap: 6px; flex-wrap: wrap; }
   .src_add_row button { flex: 1; min-width: 120px; }
   .src_help { color: var(--muted); font-size: 11px; margin-top: 6px; }
+  .pat_setup { background: var(--panel_2); border-radius: 8px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: var(--muted); }
+  .pat_setup summary { color: var(--fg); font-weight: 600; font-size: 12px; cursor: pointer; }
+  .pat_setup .pat_body { margin-top: 8px; }
+  .pat_setup a { color: var(--accent_2); }
+  .pat_setup p { margin: 0 0 8px; }
+  .pat_setup code { background: var(--panel_3); padding: 1px 4px; border-radius: 3px; color: var(--fg); }
+  .pat_row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pat_row input { flex: 2; min-width: 180px; background: var(--panel_3); border: 1px solid var(--panel_3); color: var(--fg); padding: 6px 8px; border-radius: 6px; font: inherit; font-size: 12px; }
+  .pat_row input:focus { border-color: var(--accent_2); outline: none; }
+  .pat_row button { font-size: 12px; padding: 6px 10px; min-height: 32px; }
+  .pat_ok { color: var(--accent); }
+  .pat_err { color: var(--danger); }
 
   /* player */
   .player_card { background: var(--panel); border-radius: 12px; padding: 14px; margin-bottom: 12px; text-align: center; }
@@ -183,8 +195,24 @@
       <div class="src_help">
         Google Drive: share the file as <i>Anyone with the link → Viewer</i>, then paste any of these forms:
         <code>drive.google.com/file/d/&lt;ID&gt;/view</code> · <code>open?id=&lt;ID&gt;</code> · <code>uc?id=&lt;ID&gt;</code>.
+        After adding, click the 📌 button on the row to pin it to the repo so everyone sees it.
       </div>
     </div>
+
+    <details class="pat_setup">
+      <summary>GitHub access (one-time, to pin sources)</summary>
+      <div class="pat_body">
+        <p>To pin sources so they show up for every visitor, the page commits to <code>sources/<span id="pat_path"></span></code> via GitHub.
+        Paste a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noreferrer">fine-grained PAT</a>
+        with <b>Repository access: mPulseMedia/vampjam</b> and <b>Contents: Read &amp; write</b>. Stored only in this browser.</p>
+        <div class="pat_row">
+          <input type="password" id="pat_in" placeholder="github_pat_… or ghp_…" autocomplete="off">
+          <button id="pat_save" class="primary_2">Save token</button>
+          <button id="pat_clear">Remove</button>
+        </div>
+        <div id="pat_status" class="src_help"></div>
+      </div>
+    </details>
   </div>
 </div>
 
@@ -223,6 +251,7 @@
   <summary>About this page</summary>
   <div style="margin-top:8px">
     <div>• <b>Source list</b> at the top — add Google Drive shares, direct URLs, or filenames next to this page. Tap a row to load. The selected source is remembered per page.</div>
+    <div>• <b>Pin to repo (📌)</b>: after adding a source locally, tap 📌 to commit it into <code>sources/&lt;PAGE_ID&gt;.json</code> via the GitHub API — then every visitor sees it. Pinned rows show 📍; tap to unpin. Requires a one-time PAT setup inside the "Audio source" panel.</div>
     <div>• <b>Player buttons</b>: ▶/⏸ plays; −15s / +15s for fine seeking; −2m / +2m for big jumps. Click the bar to scrub. Spacebar = play/pause; <code>T</code> = tag.</div>
     <div>• <b>Tag row</b>: ≡ drag handle (in Manual sort), time (click to seek), tiny <code>−1s</code>/<code>+1s</code> nudge the tag's saved time, inline label edit, 🔗 copies a direct link, ✕ deletes.</div>
     <div>• <b>Sort toggle</b>: <code>Time</code> auto-sorts by timestamp. <code>Manual</code> respects your drag order. Dragging in Time mode auto-switches to Manual.</div>
@@ -261,6 +290,12 @@
   var STORAGE_SOURCES = PAGE_ID + '_user_sources';
   var STORAGE_PICKED  = PAGE_ID + '_picked_src';
   var STORAGE_SORT    = PAGE_ID + '_sort_mode';
+  var STORAGE_PAT     = 'github_pat';
+
+  // ============ repo settings (for "pin to repo") ============
+  var REPO_OWNER   = 'mPulseMedia';
+  var REPO_NAME    = 'vampjam';
+  var SOURCES_PATH = 'sources/' + PAGE_ID + '.json';
 
   // ============ elements ============
   var $ = function (id) { return document.getElementById(id); };
@@ -287,6 +322,11 @@
   var tagBtn      = $('tag_btn');
   var tagList     = $('tag_list');
   var sortToggle  = $('sort_toggle');
+  var patIn       = $('pat_in');
+  var patSave     = $('pat_save');
+  var patClear    = $('pat_clear');
+  var patStatus   = $('pat_status');
+  var patPath     = $('pat_path');
   var toastEl     = $('toast');
   var exportBtn   = $('export_btn');
   var importBtn   = $('import_btn');
@@ -296,6 +336,9 @@
   // ============ state ============
   var tags         = load_json(STORAGE_TAGS, []);
   var userSources  = load_json(STORAGE_SOURCES, []);
+  var repoSources  = [];               // fetched from sources/<PAGE_ID>.json
+  var repoSourcesSha = null;           // for PUTs (set after GET via GitHub API)
+  var repoSourcesLoaded = false;
   var pickedId     = localStorage.getItem(STORAGE_PICKED) || null;
   var sortMode     = localStorage.getItem(STORAGE_SORT) || 'time';
   var activeTagId  = null;
@@ -316,11 +359,156 @@
 
   // ============ sources ============
   function all_sources() {
-    // default sources, then user-added — dedupe by id, user takes precedence
+    // defaults (in HTML), then repo-pinned (sources/<PAGE_ID>.json), then user-added (localStorage)
     var byId = {};
     DEFAULT_SOURCES.forEach(function (s) { byId[s.id] = Object.assign({}, s, { _default: true }); });
-    userSources.forEach(function (s) { byId[s.id] = s; });
+    repoSources.forEach(function (s)    { byId[s.id] = Object.assign({}, s, { _repo: true }); });
+    userSources.forEach(function (s)    { byId[s.id] = s; });
     return Object.values(byId);
+  }
+
+  // ============ repo sources: read-only fetch via Pages (no auth needed) ============
+  function fetch_repo_sources_public() {
+    // cache-bust so reloads see fresh data after a recent PUT
+    return fetch(SOURCES_PATH + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) return [];
+      return r.json().catch(function () { return []; });
+    }).then(function (arr) {
+      repoSources = Array.isArray(arr) ? arr : [];
+      repoSourcesLoaded = true;
+      render_sources();
+    }).catch(function () {
+      repoSources = [];
+      repoSourcesLoaded = true;
+    });
+  }
+
+  // ============ PAT (github personal access token) ============
+  function get_pat()   { return localStorage.getItem(STORAGE_PAT) || ''; }
+  function set_pat(p)  { if (p) localStorage.setItem(STORAGE_PAT, p); else localStorage.removeItem(STORAGE_PAT); render_pat_status(); }
+  function has_pat()   { return !!get_pat(); }
+  function render_pat_status() {
+    if (has_pat()) {
+      patStatus.innerHTML = '<span class="pat_ok">✓ Token saved. You can pin sources to the repo.</span>';
+      patIn.value = '';
+      patIn.placeholder = '••••• (token saved)';
+    } else {
+      patStatus.textContent = 'No token yet.';
+      patIn.placeholder = 'github_pat_… or ghp_…';
+    }
+  }
+
+  // ============ github contents api ============
+  function gh_url(path) {
+    return 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + path;
+  }
+  function gh_headers() {
+    return {
+      'Authorization': 'Bearer ' + get_pat(),
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+  }
+  function b64_utf8(s) {
+    return btoa(unescape(encodeURIComponent(s)));
+  }
+  function utf8_b64(s) {
+    try { return decodeURIComponent(escape(atob(s.replace(/\s+/g, '')))); } catch (e) { return ''; }
+  }
+
+  function gh_get_file(path) {
+    return fetch(gh_url(path), { headers: gh_headers(), cache: 'no-store' }).then(function (r) {
+      if (r.status === 404) return { _missing: true };
+      if (!r.ok) return r.json().then(function (j) { throw new Error(j.message || 'GitHub GET ' + r.status); });
+      return r.json();
+    });
+  }
+  function gh_put_file(path, content, sha, message) {
+    var body = { message: message, content: b64_utf8(content) };
+    if (sha) body.sha = sha;
+    return fetch(gh_url(path), {
+      method: 'PUT',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, gh_headers()),
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (j) { throw new Error(j.message || 'GitHub PUT ' + r.status); });
+      return r.json();
+    });
+  }
+
+  // ============ pin / unpin a source ============
+  function pin_to_repo(srcId) {
+    var src = userSources.filter(function (s) { return s.id === srcId; })[0];
+    if (!src) { toast('Source not found'); return; }
+    if (!has_pat()) {
+      srcCard.classList.add('open');
+      var det = document.querySelector('.pat_setup');
+      if (det) det.open = true;
+      patIn.focus();
+      toast('Save a GitHub token first.');
+      return;
+    }
+    toast('Pinning to repo…');
+    gh_get_file(SOURCES_PATH).then(function (data) {
+      var current = [];
+      var sha = null;
+      if (data && !data._missing) {
+        sha = data.sha;
+        var txt = utf8_b64(data.content || '');
+        try { current = JSON.parse(txt); } catch (e) {}
+        if (!Array.isArray(current)) current = [];
+      }
+      // avoid duplicate
+      var exists = current.some(function (s) { return s.id === src.id; });
+      if (!exists) {
+        var toAdd = { id: src.id, label: src.label, url: src.url, kind: src.kind };
+        current.push(toAdd);
+      }
+      var newContent = JSON.stringify(current, null, 2) + '\n';
+      return gh_put_file(SOURCES_PATH, newContent, sha, 'pin source ' + src.label);
+    }).then(function () {
+      // remove from userSources, add to repoSources locally for instant display
+      userSources = userSources.filter(function (s) { return s.id !== src.id; });
+      save_sources();
+      var alreadyIn = repoSources.some(function (s) { return s.id === src.id; });
+      if (!alreadyIn) repoSources.push({ id: src.id, label: src.label, url: src.url, kind: src.kind });
+      render_sources();
+      toast('Pinned to repo! Pages rebuild in ~1-2 min.');
+    }).catch(function (err) {
+      toast('Pin failed: ' + err.message);
+    });
+  }
+  function unpin_from_repo(srcId) {
+    if (!has_pat()) {
+      srcCard.classList.add('open');
+      var det = document.querySelector('.pat_setup');
+      if (det) det.open = true;
+      patIn.focus();
+      toast('Save a GitHub token first.');
+      return;
+    }
+    if (!confirm('Unpin this source from the repo? It will stop showing for other visitors.')) return;
+    toast('Unpinning…');
+    gh_get_file(SOURCES_PATH).then(function (data) {
+      var current = [];
+      var sha = null;
+      if (data && !data._missing) {
+        sha = data.sha;
+        var txt = utf8_b64(data.content || '');
+        try { current = JSON.parse(txt); } catch (e) {}
+        if (!Array.isArray(current)) current = [];
+      }
+      current = current.filter(function (s) { return s.id !== srcId; });
+      var newContent = JSON.stringify(current, null, 2) + '\n';
+      return gh_put_file(SOURCES_PATH, newContent, sha, 'unpin source ' + srcId);
+    }).then(function () {
+      repoSources = repoSources.filter(function (s) { return s.id !== srcId; });
+      if (pickedId === srcId) { pickedId = null; save_picked(null); player.removeAttribute('src'); srcNow.textContent = '—'; srcLabelNow.textContent = ''; }
+      render_sources();
+      toast('Unpinned.');
+    }).catch(function (err) {
+      toast('Unpin failed: ' + err.message);
+    });
   }
 
   // Pull a Google Drive file id out of any of the common share-link forms.
@@ -421,7 +609,27 @@
 
       var actions = document.createElement('div');
       actions.className = 'src_actions';
-      if (!s._default) {
+      if (s._default) {
+        var lockBtn = document.createElement('span');
+        lockBtn.className = 'ghost';
+        lockBtn.title = 'Default source — defined in the page';
+        lockBtn.innerHTML = '🔒';
+        lockBtn.style.padding = '6px 8px';
+        lockBtn.style.color = 'var(--muted)';
+        actions.appendChild(lockBtn);
+      } else if (s._repo) {
+        // pinned in the repo — show 📍 and an unpin option
+        var pinned = document.createElement('button');
+        pinned.className = 'ghost';
+        pinned.title = 'Pinned to repo — click to unpin';
+        pinned.innerHTML = '📍';
+        pinned.addEventListener('click', function (e) {
+          e.stopPropagation();
+          unpin_from_repo(s.id);
+        });
+        actions.appendChild(pinned);
+      } else {
+        // user-added (localStorage only) — offer rename, pin-to-repo, delete
         var renameBtn = document.createElement('button');
         renameBtn.className = 'ghost';
         renameBtn.title = 'Rename';
@@ -430,6 +638,14 @@
           e.stopPropagation();
           var nl = prompt('Rename source', s.label);
           if (nl != null && nl.trim()) rename_source(s.id, nl.trim());
+        });
+        var pinBtn = document.createElement('button');
+        pinBtn.className = 'ghost';
+        pinBtn.title = 'Pin to repo (everyone will see it)';
+        pinBtn.innerHTML = '📌';
+        pinBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          pin_to_repo(s.id);
         });
         var delBtn = document.createElement('button');
         delBtn.className = 'ghost';
@@ -440,15 +656,8 @@
           if (confirm('Delete source "' + s.label + '"?')) delete_source(s.id);
         });
         actions.appendChild(renameBtn);
+        actions.appendChild(pinBtn);
         actions.appendChild(delBtn);
-      } else {
-        var lockBtn = document.createElement('span');
-        lockBtn.className = 'ghost';
-        lockBtn.title = 'Default source — defined in the page';
-        lockBtn.innerHTML = '🔒';
-        lockBtn.style.padding = '6px 8px';
-        lockBtn.style.color = 'var(--muted)';
-        actions.appendChild(lockBtn);
       }
 
       row.appendChild(radio);
@@ -830,6 +1039,21 @@
     b.addEventListener('click', function () { set_sort_mode(b.dataset.mode); });
   });
 
+  // pat save/clear
+  if (patPath) patPath.textContent = SOURCES_PATH;
+  patSave.addEventListener('click', function () {
+    var v = (patIn.value || '').trim();
+    if (!v) { toast('Paste a token first'); patIn.focus(); return; }
+    set_pat(v);
+    toast('Token saved.');
+  });
+  patClear.addEventListener('click', function () {
+    if (!has_pat()) { toast('No token to remove'); return; }
+    if (!confirm('Remove the saved GitHub token from this browser?')) return;
+    set_pat('');
+    toast('Token removed.');
+  });
+
   // keyboard
   document.addEventListener('keydown', function (e) {
     var typing = e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA');
@@ -911,16 +1135,24 @@
   render_sources();
   render_sort_toggle();
   render_tags();
-  // pick the previously selected source, or fall back to the first default
-  var picked = pickedId && all_sources().filter(function (x) { return x.id === pickedId; })[0];
-  if (!picked) {
-    var first = all_sources()[0];
-    if (first) set_source(first.id);
-  } else {
-    set_source(picked.id);
+  render_pat_status();
+
+  // fetch repo-pinned sources, then pick the right source to play
+  fetch_repo_sources_public().then(boot_pick_source);
+
+  function boot_pick_source() {
+    var picked = pickedId && all_sources().filter(function (x) { return x.id === pickedId; })[0];
+    if (!picked) {
+      // prefer a repo-pinned source if present (everyone sees the same one), else first default
+      var list = all_sources();
+      var repoFirst = list.filter(function (s) { return s._repo; })[0];
+      var first = repoFirst || list[0];
+      if (first) set_source(first.id);
+    } else {
+      set_source(picked.id);
+    }
+    if (!player.src) srcCard.classList.add('open');
   }
-  // if no source could load, open the picker so the user can add one
-  if (!player.src) srcCard.classList.add('open');
 </script>
 
 </body>
