@@ -22,34 +22,36 @@
   body { font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 14px; padding-bottom: 160px; max-width: 760px; margin: 0 auto; }
   h1 { font-size: 18px; margin: 0 0 4px; font-weight: 600; }
   .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+  code.inline { background: var(--panel_2); padding: 1px 5px; border-radius: 4px; }
 
-  /* sources */
-  .src_card { background: var(--panel); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
-  .src_head { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
-  .src_head h2 { font-size: 14px; margin: 0; color: var(--muted); font-weight: 600; }
-  .src_head .src_now { color: var(--fg); font-weight: 600; font-size: 13px; }
-  .src_body { margin-top: 10px; display: none; }
-  .src_card.open .src_body { display: block; }
-  .src_row { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 8px; }
-  .src_row:hover { background: var(--panel_2); }
-  .src_row.active { background: var(--panel_2); outline: 1px solid var(--accent); }
-  .src_radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--muted); display: inline-block; position: relative; cursor: pointer; flex-shrink: 0; }
-  .src_row.active .src_radio { border-color: var(--accent); }
-  .src_row.active .src_radio::after { content: ''; position: absolute; inset: 3px; background: var(--accent); border-radius: 50%; }
-  .src_label { color: var(--fg); cursor: pointer; }
-  .src_label small { color: var(--muted); display: block; font-size: 11px; word-break: break-all; }
-  .src_actions { display: flex; gap: 2px; }
-  .src_add { margin-top: 8px; padding: 8px 10px; background: var(--panel_2); border-radius: 8px; }
-  .src_add h3 { font-size: 12px; margin: 0 0 6px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-  .src_add input[type=text] {
+  /* ---- audio source card ---- */
+  .audio_card { background: var(--panel); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
+  .audio_label_row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .audio_label_row .audio_icon { font-size: 18px; }
+  .audio_label_row .audio_label {
+    flex: 1; color: var(--fg); font-weight: 600; font-size: 15px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .audio_label_row .audio_label.empty { color: var(--muted); font-weight: 500; font-style: italic; }
+  .audio_label_row .audio_kind { color: var(--muted); font-size: 11px; }
+  .audio_edit_form {
+    margin-top: 10px; padding: 10px 12px;
+    background: var(--panel_2); border-radius: 8px;
+  }
+  .audio_edit_form input[type=text] {
     width: 100%; background: var(--panel_3); border: 1px solid var(--panel_3); color: var(--fg);
     padding: 8px 10px; border-radius: 6px; font: inherit; margin-bottom: 6px;
   }
-  .src_add input[type=text]:focus { border-color: var(--accent_2); outline: none; }
-  .src_add_row { display: flex; gap: 6px; flex-wrap: wrap; }
-  .src_add_row button { flex: 1; min-width: 120px; }
-  .src_help { color: var(--muted); font-size: 11px; margin-top: 6px; }
-  .pat_setup { background: var(--panel_2); border-radius: 8px; padding: 8px 12px; margin-top: 8px; font-size: 12px; color: var(--muted); }
+  .audio_edit_form input[type=text]:focus { border-color: var(--accent_2); outline: none; }
+  .audio_edit_actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .audio_edit_actions button { font-size: 13px; padding: 7px 12px; min-height: 34px; }
+  .audio_edit_help { color: var(--muted); font-size: 11px; margin-top: 8px; }
+  .audio_edit_help a { color: var(--accent_2); }
+
+  /* ---- pat (github access) ---- */
+  .pat_setup { background: var(--panel_2); border-radius: 8px; padding: 8px 12px; margin-top: 10px; font-size: 12px; color: var(--muted); }
   .pat_setup summary { color: var(--fg); font-weight: 600; font-size: 12px; cursor: pointer; }
   .pat_setup .pat_body { margin-top: 8px; }
   .pat_setup a { color: var(--accent_2); }
@@ -62,7 +64,7 @@
   .pat_ok { color: var(--accent); }
   .pat_err { color: var(--danger); }
 
-  /* player */
+  /* ---- player ---- */
   .player_card { background: var(--panel); border-radius: 12px; padding: 14px; margin-bottom: 12px; text-align: center; }
   audio { display: none; }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
@@ -82,13 +84,11 @@
     width: 76px; height: 76px; background: var(--accent); color: #0b0d0f;
     font-size: 28px; box-shadow: 0 4px 14px rgba(106,191,105,0.25);
   }
-  .ctrl_btn.skip_15 { font-size: 13px; }
-  .ctrl_btn.skip_120 { font-size: 13px; }
-  .ctrl_btn .skip_n { font-size: 11px; color: var(--muted); margin-top: 2px; }
   .ctrl_btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .src_label_now { color: var(--muted); font-size: 12px; margin-top: 12px; min-height: 16px; }
+  .player_msg { color: var(--muted); font-size: 12px; margin-top: 12px; min-height: 16px; }
+  .player_msg.err { color: var(--danger); }
 
-  /* generic buttons */
+  /* ---- buttons ---- */
   button {
     appearance: none; -webkit-appearance: none; border: 0; cursor: pointer;
     background: var(--panel_2); color: var(--fg); font: inherit;
@@ -107,9 +107,11 @@
     background: var(--accent); color: #0b0d0f; border-radius: 12px;
     margin: 8px 0 14px; box-shadow: 0 4px 14px rgba(106,191,105,0.18);
   }
+
+  /* ---- tags ---- */
   .tag_header { display: flex; justify-content: space-between; align-items: center; padding: 0 4px 6px; }
   .tag_header h2 { font-size: 13px; margin: 0; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-  .sort_toggle { display: inline-flex; background: var(--panel_2); border-radius: 8px; padding: 2px; gap: 0; }
+  .sort_toggle { display: inline-flex; background: var(--panel_2); border-radius: 8px; padding: 2px; }
   .sort_toggle button {
     background: transparent; color: var(--muted); border: 0; cursor: pointer;
     padding: 4px 10px; border-radius: 6px; font: inherit; font-size: 12px;
@@ -146,6 +148,7 @@
   .tag_actions { display: flex; gap: 2px; }
   .empty { color: var(--muted); padding: 14px; text-align: center; font-size: 13px; }
 
+  /* ---- misc ---- */
   .footer {
     position: fixed; bottom: 0; left: 0; right: 0; padding: 10px 14px;
     background: var(--panel); border-top: 1px solid var(--panel_3);
@@ -158,11 +161,12 @@
     padding: 8px 14px; border-radius: 20px; font-size: 13px;
     opacity: 0; transition: opacity 0.2s; pointer-events: none;
     border: 1px solid var(--panel_3); z-index: 99;
+    max-width: 90%;
   }
   .toast.show { opacity: 1; }
-  details { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
-  details summary { cursor: pointer; color: var(--fg); font-weight: 600; }
-  details code { background: var(--panel_2); padding: 1px 6px; border-radius: 4px; color: var(--fg); }
+  details.about_page { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
+  details.about_page summary { cursor: pointer; color: var(--fg); font-weight: 600; }
+  details.about_page code { background: var(--panel_2); padding: 1px 6px; border-radius: 4px; color: var(--fg); }
 
   @media (max-width: 480px) {
     .ctrl_btn { width: 48px; height: 48px; }
@@ -173,50 +177,48 @@
 <body>
 
 <h1>Bazaar Cafe — 2026-05-23</h1>
-<div class="subtitle">Tap a source, hit play, tag moments on the fly. Direct-link a moment with <code style="background:#222;padding:1px 5px;border-radius:4px;">?t=1h7m32s</code>.</div>
+<div class="subtitle">One audio file per page. Tag moments, drag to reorder, share a moment with <code class="inline">?t=1h7m32s</code>.</div>
 
-<!-- ============== sources ============== -->
-<div class="src_card" id="src_card">
-  <div class="src_head" id="src_head">
-    <h2>Audio source</h2>
-    <div class="src_now" id="src_now">—</div>
+<!-- ===== audio source (single file) ===== -->
+<div class="audio_card" id="audio_card">
+  <div class="audio_label_row">
+    <span class="audio_icon">🎵</span>
+    <span class="audio_label empty" id="audio_label">Loading…</span>
+    <button class="ghost" id="audio_edit_btn" title="Change audio file">✎</button>
   </div>
-  <div class="src_body">
-    <div id="src_list"></div>
-    <div class="src_add">
-      <h3>Add a source</h3>
-      <input type="text" id="src_in_label" placeholder="Label (e.g. Bazaar Cafe Set 1)">
-      <input type="text" id="src_in_url" placeholder="URL — Google Drive share link, direct URL, or filename next to this page">
-      <div class="src_add_row">
-        <button class="primary_2" id="src_add_btn">+ Add source</button>
-        <button id="src_pick_local">Pick local file…</button>
-        <input type="file" id="src_local_in" accept="audio/*" style="display:none">
-      </div>
-      <div class="src_help">
-        Google Drive: share the file as <i>Anyone with the link → Viewer</i>, then paste any of these forms:
-        <code>drive.google.com/file/d/&lt;ID&gt;/view</code> · <code>open?id=&lt;ID&gt;</code> · <code>uc?id=&lt;ID&gt;</code>.
-        After adding, click the 📌 button on the row to pin it to the repo so everyone sees it.
-      </div>
+
+  <div class="audio_edit_form" id="audio_edit_form" style="display:none">
+    <input type="text" id="audio_url_in" placeholder="Paste audio URL (Google Drive share, direct URL, or filename next to this page)">
+    <input type="text" id="audio_label_in" placeholder="Label (optional — auto-derived if blank)">
+    <div class="audio_edit_actions">
+      <button class="primary" id="audio_save_btn">Save to page</button>
+      <button id="audio_cancel_btn">Cancel</button>
+      <button id="audio_pick_local" class="ghost">Pick local file (preview only)</button>
+      <input type="file" id="audio_local_in" accept="audio/*" style="display:none">
     </div>
-
-    <details class="pat_setup">
-      <summary>GitHub access (one-time, to pin sources)</summary>
-      <div class="pat_body">
-        <p>To pin sources so they show up for every visitor, the page commits to <code>sources/<span id="pat_path"></span></code> via GitHub.
-        Paste a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noreferrer">fine-grained PAT</a>
-        with <b>Repository access: mPulseMedia/vampjam</b> and <b>Contents: Read &amp; write</b>. Stored only in this browser.</p>
-        <div class="pat_row">
-          <input type="password" id="pat_in" placeholder="github_pat_… or ghp_…" autocomplete="off">
-          <button id="pat_save" class="primary_2">Save token</button>
-          <button id="pat_clear">Remove</button>
-        </div>
-        <div id="pat_status" class="src_help"></div>
-      </div>
-    </details>
+    <div class="audio_edit_help">
+      Drive: share as <i>Anyone with the link → Viewer</i>, then paste the share URL.
+      Saving writes <code>sources/<span id="audio_path_display"></span></code> to the repo so every visitor sees this audio.
+    </div>
   </div>
+
+  <details class="pat_setup" id="pat_details">
+    <summary>GitHub setup (one-time, needed to save)</summary>
+    <div class="pat_body">
+      <p>To save the audio file binding to the repo, the page commits via the GitHub API. Paste a
+      <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noreferrer">fine-grained PAT</a>
+      with <b>Repository access: mPulseMedia/vampjam</b> and <b>Contents: Read &amp; write</b>. Stored only in this browser.</p>
+      <div class="pat_row">
+        <input type="password" id="pat_in" placeholder="github_pat_… or ghp_…" autocomplete="off">
+        <button id="pat_save" class="primary_2">Save token</button>
+        <button id="pat_clear">Remove</button>
+      </div>
+      <div id="pat_status" style="margin-top:6px"></div>
+    </div>
+  </details>
 </div>
 
-<!-- ============== custom player ============== -->
+<!-- ===== player ===== -->
 <div class="player_card">
   <audio id="player" preload="metadata"></audio>
   <div class="time_row">
@@ -226,13 +228,13 @@
   </div>
   <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div></div>
   <div class="ctrl_row">
-    <button class="ctrl_btn skip_120" id="back_120" title="Back 2 min">−2m</button>
-    <button class="ctrl_btn skip_15" id="back_15" title="Back 15 sec">−15s</button>
+    <button class="ctrl_btn" id="back_120" title="Back 2 min">−2m</button>
+    <button class="ctrl_btn" id="back_15"  title="Back 15 sec">−15s</button>
     <button class="ctrl_btn play_btn" id="play_btn" title="Play / Pause">▶</button>
-    <button class="ctrl_btn skip_15" id="fwd_15" title="Forward 15 sec">+15s</button>
-    <button class="ctrl_btn skip_120" id="fwd_120" title="Forward 2 min">+2m</button>
+    <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec">+15s</button>
+    <button class="ctrl_btn" id="fwd_120" title="Forward 2 min">+2m</button>
   </div>
-  <div class="src_label_now" id="src_label_now"></div>
+  <div class="player_msg" id="player_msg"></div>
 </div>
 
 <button class="tag_btn_big" id="tag_btn">+ Tag this moment</button>
@@ -247,103 +249,90 @@
 
 <div class="tag_list" id="tag_list"></div>
 
-<details>
+<details class="about_page">
   <summary>About this page</summary>
   <div style="margin-top:8px">
-    <div>• <b>Source list</b> at the top — add Google Drive shares, direct URLs, or filenames next to this page. Tap a row to load. The selected source is remembered per page.</div>
-    <div>• <b>Pin to repo (📌)</b>: after adding a source locally, tap 📌 to commit it into <code>sources/&lt;PAGE_ID&gt;.json</code> via the GitHub API — then every visitor sees it. Pinned rows show 📍; tap to unpin. Requires a one-time PAT setup inside the "Audio source" panel.</div>
-    <div>• <b>Player buttons</b>: ▶/⏸ plays; −15s / +15s for fine seeking; −2m / +2m for big jumps. Click the bar to scrub. Spacebar = play/pause; <code>T</code> = tag.</div>
-    <div>• <b>Tag row</b>: ≡ drag handle (in Manual sort), time (click to seek), tiny <code>−1s</code>/<code>+1s</code> nudge the tag's saved time, inline label edit, 🔗 copies a direct link, ✕ deletes.</div>
-    <div>• <b>Sort toggle</b>: <code>Time</code> auto-sorts by timestamp. <code>Manual</code> respects your drag order. Dragging in Time mode auto-switches to Manual.</div>
-    <div>• <b>Direct link</b> formats: <code>?t=1h7m32s</code>, <code>?t=13m22s</code>, <code>?t=802</code>, <code>?t=13:22</code>. Also accepts <code>#t=…</code>.</div>
-    <div>• <b>Tags + sources</b> save in localStorage. Use Export / Import to move between devices.</div>
+    <div>• One audio file per page. Click the ✎ next to the audio label to change which file is bound to this page.</div>
+    <div>• Saving the audio writes <code>sources/&lt;PAGE_ID&gt;.json</code> in the repo — every visitor sees the new file once Pages rebuilds (~1-2 min).</div>
+    <div>• <b>Player</b>: ▶/⏸ plays; −15s / +15s for fine seek; −2m / +2m for big jumps. Click the bar to scrub. Space = play/pause; T = tag; ←/→ = ±15s; shift+←/→ = ±2m.</div>
+    <div>• <b>Tag row</b>: ≡ drag (Manual sort), time (click to seek), <code>−1s</code>/<code>+1s</code> nudges saved time, inline label, 🔗 copies a direct link, ✕ deletes.</div>
+    <div>• <b>Direct link</b>: <code>?t=1h7m32s</code>, <code>?t=13m22s</code>, <code>?t=802</code>, <code>?t=13:22</code>. Also <code>#t=…</code>.</div>
+    <div>• <b>Tags</b> save in localStorage on each device. Use Export / Import in the footer to move between devices.</div>
   </div>
 </details>
 
 <div class="toast" id="toast"></div>
 
 <div class="footer">
-  <button id="export_btn">Export</button>
-  <button id="import_btn">Import</button>
+  <button id="export_btn">Export tags</button>
+  <button id="import_btn">Import tags</button>
   <button id="clear_btn" style="color:var(--danger)">Clear tags</button>
   <input type="file" id="import_file" accept="application/json" style="display:none">
 </div>
 
 <script>
   // ============ per-page identity ============
-  // Each page should set PAGE_ID + DEFAULT_SOURCES below. Other pages copy this file
-  // and edit just these two constants.
-  var PAGE_ID = 'bazaar_cafe_2026_05_23';
+  // Each new page only needs to change PAGE_ID. The audio source lives in sources/<PAGE_ID>.json.
+  var PAGE_ID    = 'bazaar_cafe_2026_05_23';
+  var REPO_OWNER = 'mPulseMedia';
+  var REPO_NAME  = 'vampjam';
 
-  var DEFAULT_SOURCES = [
-    {
-      id: 'default_local_m4a',
-      label: 'Bazaar Cafe 3 — local file (next to this page)',
-      url:  'Bazaar Cafe 3.m4a',
-      kind: 'local'
-    }
-    // Add Google Drive sources here as defaults if you want them shipped with the page:
-    // { id: 'gdrive_full_set', label: 'Bazaar Cafe — full set (Drive)', url: 'https://drive.google.com/file/d/FILE_ID/view', kind: 'drive' }
-  ];
-
-  var STORAGE_TAGS    = PAGE_ID + '_tags';
-  var STORAGE_SOURCES = PAGE_ID + '_user_sources';
-  var STORAGE_PICKED  = PAGE_ID + '_picked_src';
-  var STORAGE_SORT    = PAGE_ID + '_sort_mode';
-  var STORAGE_PAT     = 'github_pat';
-
-  // ============ repo settings (for "pin to repo") ============
-  var REPO_OWNER   = 'mPulseMedia';
-  var REPO_NAME    = 'vampjam';
   var SOURCES_PATH = 'sources/' + PAGE_ID + '.json';
+  var STORAGE_TAGS = PAGE_ID + '_tags';
+  var STORAGE_SORT = PAGE_ID + '_sort_mode';
+  var STORAGE_PAT  = 'github_pat';
 
   // ============ elements ============
   var $ = function (id) { return document.getElementById(id); };
-  var player      = $('player');
-  var srcCard     = $('src_card');
-  var srcHead     = $('src_head');
-  var srcNow      = $('src_now');
-  var srcList     = $('src_list');
-  var srcInLabel  = $('src_in_label');
-  var srcInUrl    = $('src_in_url');
-  var srcAddBtn   = $('src_add_btn');
-  var srcPickLocal= $('src_pick_local');
-  var srcLocalIn  = $('src_local_in');
-  var srcLabelNow = $('src_label_now');
-  var nowTime     = $('now_time');
-  var durTime     = $('dur_time');
-  var seekBar     = $('seek_bar');
-  var seekFill    = $('seek_fill');
-  var playBtn     = $('play_btn');
-  var back15      = $('back_15');
-  var fwd15       = $('fwd_15');
-  var back120     = $('back_120');
-  var fwd120      = $('fwd_120');
-  var tagBtn      = $('tag_btn');
-  var tagList     = $('tag_list');
-  var sortToggle  = $('sort_toggle');
-  var patIn       = $('pat_in');
-  var patSave     = $('pat_save');
-  var patClear    = $('pat_clear');
-  var patStatus   = $('pat_status');
-  var patPath     = $('pat_path');
-  var toastEl     = $('toast');
-  var exportBtn   = $('export_btn');
-  var importBtn   = $('import_btn');
-  var importIn    = $('import_file');
-  var clearBtn    = $('clear_btn');
+  var audioCard     = $('audio_card');
+  var audioLabelEl  = $('audio_label');
+  var audioEditBtn  = $('audio_edit_btn');
+  var audioEditForm = $('audio_edit_form');
+  var audioUrlIn    = $('audio_url_in');
+  var audioLabelIn  = $('audio_label_in');
+  var audioSaveBtn  = $('audio_save_btn');
+  var audioCancelBtn= $('audio_cancel_btn');
+  var audioPickLocal= $('audio_pick_local');
+  var audioLocalIn  = $('audio_local_in');
+  var audioPathDisp = $('audio_path_display');
+  var patDetails    = $('pat_details');
+  var patIn         = $('pat_in');
+  var patSave       = $('pat_save');
+  var patClear      = $('pat_clear');
+  var patStatus     = $('pat_status');
+
+  var player    = $('player');
+  var playerMsg = $('player_msg');
+  var nowTime   = $('now_time');
+  var durTime   = $('dur_time');
+  var seekBar   = $('seek_bar');
+  var seekFill  = $('seek_fill');
+  var playBtn   = $('play_btn');
+  var back15    = $('back_15');
+  var fwd15     = $('fwd_15');
+  var back120   = $('back_120');
+  var fwd120    = $('fwd_120');
+
+  var tagBtn    = $('tag_btn');
+  var tagList   = $('tag_list');
+  var sortToggle= $('sort_toggle');
+  var toastEl   = $('toast');
+  var exportBtn = $('export_btn');
+  var importBtn = $('import_btn');
+  var importIn  = $('import_file');
+  var clearBtn  = $('clear_btn');
 
   // ============ state ============
+  var audio        = null;   // { label, url, kind } | null
+  var audioSha     = null;   // sha of sources/<PAGE_ID>.json from last GitHub GET (for PUTs)
   var tags         = load_json(STORAGE_TAGS, []);
-  var userSources  = load_json(STORAGE_SOURCES, []);
-  var repoSources  = [];               // fetched from sources/<PAGE_ID>.json
-  var repoSourcesSha = null;           // for PUTs (set after GET via GitHub API)
-  var repoSourcesLoaded = false;
-  var pickedId     = localStorage.getItem(STORAGE_PICKED) || null;
   var sortMode     = localStorage.getItem(STORAGE_SORT) || 'time';
   var activeTagId  = null;
   var dragState    = null;
 
+  audioPathDisp.textContent = PAGE_ID + '.json';
+
+  // ============ utils ============
   function load_json(key, fallback) {
     try {
       var raw = localStorage.getItem(key);
@@ -352,348 +341,9 @@
       return v == null ? fallback : v;
     } catch (e) { return fallback; }
   }
-  function save_tags()    { try { localStorage.setItem(STORAGE_TAGS,    JSON.stringify(tags));        } catch (e) {} }
-  function save_sources() { try { localStorage.setItem(STORAGE_SOURCES, JSON.stringify(userSources)); } catch (e) {} }
-  function save_picked(id){ try { if (id) localStorage.setItem(STORAGE_PICKED, id); else localStorage.removeItem(STORAGE_PICKED); } catch (e) {} }
-  function save_sort()    { try { localStorage.setItem(STORAGE_SORT,    sortMode);                    } catch (e) {} }
+  function save_tags() { try { localStorage.setItem(STORAGE_TAGS, JSON.stringify(tags)); } catch (e) {} }
+  function save_sort() { try { localStorage.setItem(STORAGE_SORT, sortMode); } catch (e) {} }
 
-  // ============ sources ============
-  function all_sources() {
-    // defaults (in HTML), then repo-pinned (sources/<PAGE_ID>.json), then user-added (localStorage)
-    var byId = {};
-    DEFAULT_SOURCES.forEach(function (s) { byId[s.id] = Object.assign({}, s, { _default: true }); });
-    repoSources.forEach(function (s)    { byId[s.id] = Object.assign({}, s, { _repo: true }); });
-    userSources.forEach(function (s)    { byId[s.id] = s; });
-    return Object.values(byId);
-  }
-
-  // ============ repo sources: read-only fetch via Pages (no auth needed) ============
-  function fetch_repo_sources_public() {
-    // cache-bust so reloads see fresh data after a recent PUT
-    return fetch(SOURCES_PATH + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) {
-      if (!r.ok) return [];
-      return r.json().catch(function () { return []; });
-    }).then(function (arr) {
-      repoSources = Array.isArray(arr) ? arr : [];
-      repoSourcesLoaded = true;
-      render_sources();
-    }).catch(function () {
-      repoSources = [];
-      repoSourcesLoaded = true;
-    });
-  }
-
-  // ============ PAT (github personal access token) ============
-  function get_pat()   { return localStorage.getItem(STORAGE_PAT) || ''; }
-  function set_pat(p)  { if (p) localStorage.setItem(STORAGE_PAT, p); else localStorage.removeItem(STORAGE_PAT); render_pat_status(); }
-  function has_pat()   { return !!get_pat(); }
-  function render_pat_status() {
-    if (has_pat()) {
-      patStatus.innerHTML = '<span class="pat_ok">✓ Token saved. You can pin sources to the repo.</span>';
-      patIn.value = '';
-      patIn.placeholder = '••••• (token saved)';
-    } else {
-      patStatus.textContent = 'No token yet.';
-      patIn.placeholder = 'github_pat_… or ghp_…';
-    }
-  }
-
-  // ============ github contents api ============
-  function gh_url(path) {
-    return 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + path;
-  }
-  function gh_headers() {
-    return {
-      'Authorization': 'Bearer ' + get_pat(),
-      'Accept': 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28'
-    };
-  }
-  function b64_utf8(s) {
-    return btoa(unescape(encodeURIComponent(s)));
-  }
-  function utf8_b64(s) {
-    try { return decodeURIComponent(escape(atob(s.replace(/\s+/g, '')))); } catch (e) { return ''; }
-  }
-
-  function gh_get_file(path) {
-    return fetch(gh_url(path), { headers: gh_headers(), cache: 'no-store' }).then(function (r) {
-      if (r.status === 404) return { _missing: true };
-      if (!r.ok) return r.json().then(function (j) { throw new Error(j.message || 'GitHub GET ' + r.status); });
-      return r.json();
-    });
-  }
-  function gh_put_file(path, content, sha, message) {
-    var body = { message: message, content: b64_utf8(content) };
-    if (sha) body.sha = sha;
-    return fetch(gh_url(path), {
-      method: 'PUT',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, gh_headers()),
-      body: JSON.stringify(body)
-    }).then(function (r) {
-      if (!r.ok) return r.json().then(function (j) { throw new Error(j.message || 'GitHub PUT ' + r.status); });
-      return r.json();
-    });
-  }
-
-  // ============ pin / unpin a source ============
-  function pin_to_repo(srcId) {
-    var src = userSources.filter(function (s) { return s.id === srcId; })[0];
-    if (!src) { toast('Source not found'); return; }
-    if (!has_pat()) {
-      srcCard.classList.add('open');
-      var det = document.querySelector('.pat_setup');
-      if (det) det.open = true;
-      patIn.focus();
-      toast('Save a GitHub token first.');
-      return;
-    }
-    toast('Pinning to repo…');
-    gh_get_file(SOURCES_PATH).then(function (data) {
-      var current = [];
-      var sha = null;
-      if (data && !data._missing) {
-        sha = data.sha;
-        var txt = utf8_b64(data.content || '');
-        try { current = JSON.parse(txt); } catch (e) {}
-        if (!Array.isArray(current)) current = [];
-      }
-      // avoid duplicate
-      var exists = current.some(function (s) { return s.id === src.id; });
-      if (!exists) {
-        var toAdd = { id: src.id, label: src.label, url: src.url, kind: src.kind };
-        current.push(toAdd);
-      }
-      var newContent = JSON.stringify(current, null, 2) + '\n';
-      return gh_put_file(SOURCES_PATH, newContent, sha, 'pin source ' + src.label);
-    }).then(function () {
-      // remove from userSources, add to repoSources locally for instant display
-      userSources = userSources.filter(function (s) { return s.id !== src.id; });
-      save_sources();
-      var alreadyIn = repoSources.some(function (s) { return s.id === src.id; });
-      if (!alreadyIn) repoSources.push({ id: src.id, label: src.label, url: src.url, kind: src.kind });
-      render_sources();
-      toast('Pinned to repo! Pages rebuild in ~1-2 min.');
-    }).catch(function (err) {
-      toast('Pin failed: ' + err.message);
-    });
-  }
-  function unpin_from_repo(srcId) {
-    if (!has_pat()) {
-      srcCard.classList.add('open');
-      var det = document.querySelector('.pat_setup');
-      if (det) det.open = true;
-      patIn.focus();
-      toast('Save a GitHub token first.');
-      return;
-    }
-    if (!confirm('Unpin this source from the repo? It will stop showing for other visitors.')) return;
-    toast('Unpinning…');
-    gh_get_file(SOURCES_PATH).then(function (data) {
-      var current = [];
-      var sha = null;
-      if (data && !data._missing) {
-        sha = data.sha;
-        var txt = utf8_b64(data.content || '');
-        try { current = JSON.parse(txt); } catch (e) {}
-        if (!Array.isArray(current)) current = [];
-      }
-      current = current.filter(function (s) { return s.id !== srcId; });
-      var newContent = JSON.stringify(current, null, 2) + '\n';
-      return gh_put_file(SOURCES_PATH, newContent, sha, 'unpin source ' + srcId);
-    }).then(function () {
-      repoSources = repoSources.filter(function (s) { return s.id !== srcId; });
-      if (pickedId === srcId) { pickedId = null; save_picked(null); player.removeAttribute('src'); srcNow.textContent = '—'; srcLabelNow.textContent = ''; }
-      render_sources();
-      toast('Unpinned.');
-    }).catch(function (err) {
-      toast('Unpin failed: ' + err.message);
-    });
-  }
-
-  // Pull a Google Drive file id out of any of the common share-link forms.
-  function drive_id(u) {
-    if (!u) return null;
-    try {
-      var m;
-      m = u.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);            if (m) return m[1];
-      m = u.match(/[?&]id=([a-zA-Z0-9_-]+)/);                  if (m) return m[1];
-      m = u.match(/\/document\/d\/([a-zA-Z0-9_-]+)/);          if (m) return m[1];
-      m = u.match(/^([a-zA-Z0-9_-]{20,})$/);                   if (m) return m[1]; // bare id
-    } catch (e) {}
-    return null;
-  }
-  function resolve_url(s) {
-    if (!s) return '';
-    if (s.kind === 'drive') {
-      var id = drive_id(s.url) || drive_id(s._raw || '');
-      if (id) {
-        // usercontent form bypasses the virus-scan interstitial for large files
-        return 'https://drive.usercontent.google.com/download?id=' + id + '&export=download&authuser=0';
-      }
-      return s.url; // last-ditch — let the browser try
-    }
-    return s.url;
-  }
-  function detect_kind(url) {
-    if (!url) return 'url';
-    if (drive_id(url) && /drive\.google\.com/.test(url)) return 'drive';
-    if (/^https?:\/\//i.test(url)) return 'url';
-    return 'local';
-  }
-  function set_source(id) {
-    var s = all_sources().filter(function (x) { return x.id === id; })[0];
-    if (!s) return;
-    pickedId = s.id;
-    save_picked(s.id);
-    var url = resolve_url(s);
-    player.src = url;
-    srcNow.textContent = s.label;
-    srcLabelNow.textContent = s.label + (s.kind === 'drive' ? ' · Google Drive' : '');
-    render_sources();
-    // collapse the picker after a selection
-    srcCard.classList.remove('open');
-  }
-  function add_source(label, rawUrl) {
-    label = (label || '').trim();
-    rawUrl = (rawUrl || '').trim();
-    if (!rawUrl) { toast('URL required'); return null; }
-    if (!label) label = rawUrl.slice(0, 40);
-    var kind = detect_kind(rawUrl);
-    var id = 's_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-    var src = { id: id, label: label, url: rawUrl, kind: kind };
-    if (kind === 'drive') src._raw = rawUrl;
-    userSources.push(src);
-    save_sources();
-    render_sources();
-    return src;
-  }
-  function delete_source(id) {
-    userSources = userSources.filter(function (x) { return x.id !== id; });
-    save_sources();
-    if (pickedId === id) { pickedId = null; save_picked(null); player.removeAttribute('src'); srcNow.textContent = '—'; srcLabelNow.textContent = ''; }
-    render_sources();
-  }
-  function rename_source(id, newLabel) {
-    var s = userSources.filter(function (x) { return x.id === id; })[0];
-    if (s) { s.label = newLabel; save_sources(); render_sources(); }
-    if (pickedId === id) srcNow.textContent = newLabel;
-  }
-  function render_sources() {
-    srcList.innerHTML = '';
-    var list = all_sources();
-    if (!list.length) {
-      var d = document.createElement('div');
-      d.className = 'empty';
-      d.textContent = 'No sources yet — add one below.';
-      srcList.appendChild(d);
-      return;
-    }
-    list.forEach(function (s) {
-      var row = document.createElement('div');
-      row.className = 'src_row' + (s.id === pickedId ? ' active' : '');
-
-      var radio = document.createElement('div');
-      radio.className = 'src_radio';
-      radio.addEventListener('click', function (e) { e.stopPropagation(); set_source(s.id); });
-
-      var label = document.createElement('div');
-      label.className = 'src_label';
-      var name = document.createElement('div');
-      name.textContent = s.label;
-      var sub = document.createElement('small');
-      sub.textContent = (s.kind === 'drive' ? '[Drive] ' : s.kind === 'local' ? '[Local] ' : '[URL] ') + s.url;
-      label.appendChild(name);
-      label.appendChild(sub);
-      label.addEventListener('click', function () { set_source(s.id); });
-
-      var actions = document.createElement('div');
-      actions.className = 'src_actions';
-      if (s._default) {
-        var lockBtn = document.createElement('span');
-        lockBtn.className = 'ghost';
-        lockBtn.title = 'Default source — defined in the page';
-        lockBtn.innerHTML = '🔒';
-        lockBtn.style.padding = '6px 8px';
-        lockBtn.style.color = 'var(--muted)';
-        actions.appendChild(lockBtn);
-      } else if (s._repo) {
-        // pinned in the repo — show 📍 and an unpin option
-        var pinned = document.createElement('button');
-        pinned.className = 'ghost';
-        pinned.title = 'Pinned to repo — click to unpin';
-        pinned.innerHTML = '📍';
-        pinned.addEventListener('click', function (e) {
-          e.stopPropagation();
-          unpin_from_repo(s.id);
-        });
-        actions.appendChild(pinned);
-      } else {
-        // user-added (localStorage only) — offer rename, pin-to-repo, delete
-        var renameBtn = document.createElement('button');
-        renameBtn.className = 'ghost';
-        renameBtn.title = 'Rename';
-        renameBtn.innerHTML = '✎';
-        renameBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          var nl = prompt('Rename source', s.label);
-          if (nl != null && nl.trim()) rename_source(s.id, nl.trim());
-        });
-        var pinBtn = document.createElement('button');
-        pinBtn.className = 'ghost';
-        pinBtn.title = 'Pin to repo (everyone will see it)';
-        pinBtn.innerHTML = '📌';
-        pinBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          pin_to_repo(s.id);
-        });
-        var delBtn = document.createElement('button');
-        delBtn.className = 'ghost';
-        delBtn.title = 'Delete';
-        delBtn.innerHTML = '✕';
-        delBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          if (confirm('Delete source "' + s.label + '"?')) delete_source(s.id);
-        });
-        actions.appendChild(renameBtn);
-        actions.appendChild(pinBtn);
-        actions.appendChild(delBtn);
-      }
-
-      row.appendChild(radio);
-      row.appendChild(label);
-      row.appendChild(actions);
-      srcList.appendChild(row);
-    });
-  }
-
-  srcHead.addEventListener('click', function () { srcCard.classList.toggle('open'); });
-  srcAddBtn.addEventListener('click', function () {
-    var s = add_source(srcInLabel.value, srcInUrl.value);
-    if (s) {
-      srcInLabel.value = '';
-      srcInUrl.value = '';
-      set_source(s.id);
-      toast('Added "' + s.label + '"');
-      srcCard.classList.add('open');
-    }
-  });
-  srcPickLocal.addEventListener('click', function () { srcLocalIn.click(); });
-  srcLocalIn.addEventListener('change', function () {
-    var f = srcLocalIn.files && srcLocalIn.files[0];
-    if (!f) return;
-    var url = URL.createObjectURL(f);
-    // we can't persist a local file across reloads, so put it in player directly and show its label
-    player.src = url;
-    pickedId = null; save_picked(null);
-    srcNow.textContent = f.name + ' (local pick — not saved)';
-    srcLabelNow.textContent = f.name + ' · picked from this device';
-    render_sources();
-    srcCard.classList.remove('open');
-    srcLocalIn.value = '';
-  });
-
-  // ============ time helpers ============
   function fmt_time(sec) {
     sec = Math.max(0, Math.floor(sec || 0));
     var h = Math.floor(sec / 3600);
@@ -729,8 +379,6 @@
     }
     return null;
   }
-
-  // ============ url params ============
   function get_url_time() {
     try {
       var qp = new URLSearchParams(window.location.search);
@@ -757,17 +405,220 @@
     return base + '?t=' + fmt_url(sec);
   }
 
+  // ============ drive url handling ============
+  function drive_id(u) {
+    if (!u) return null;
+    try {
+      var m;
+      m = u.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);            if (m) return m[1];
+      m = u.match(/[?&]id=([a-zA-Z0-9_-]+)/);                  if (m) return m[1];
+      m = u.match(/\/document\/d\/([a-zA-Z0-9_-]+)/);          if (m) return m[1];
+      m = u.match(/^([a-zA-Z0-9_-]{20,})$/);                   if (m) return m[1];
+    } catch (e) {}
+    return null;
+  }
+  function detect_kind(url) {
+    if (!url) return 'url';
+    if (/drive\.google\.com/.test(url) && drive_id(url)) return 'drive';
+    if (/^https?:\/\//i.test(url)) return 'url';
+    return 'local';
+  }
+  function resolve_url(src) {
+    if (!src) return '';
+    if (src.kind === 'drive') {
+      var id = drive_id(src.url);
+      if (id) return 'https://drive.usercontent.google.com/download?id=' + id + '&export=download&authuser=0';
+    }
+    return src.url;
+  }
+  function derive_label(url) {
+    if (!url) return 'Audio';
+    if (/drive\.google\.com/.test(url)) return 'Google Drive audio';
+    try {
+      var u = new URL(url);
+      var last = (u.pathname.split('/').pop() || '').replace(/\.[^.]+$/, '');
+      if (last) return decodeURIComponent(last);
+    } catch (e) {}
+    var bare = url.split('/').pop() || url;
+    return bare.replace(/\.[^.]+$/, '');
+  }
+
+  // ============ pat (github access) ============
+  function get_pat()  { return localStorage.getItem(STORAGE_PAT) || ''; }
+  function set_pat(p) { if (p) localStorage.setItem(STORAGE_PAT, p); else localStorage.removeItem(STORAGE_PAT); render_pat_status(); }
+  function has_pat()  { return !!get_pat(); }
+  function render_pat_status() {
+    if (has_pat()) {
+      patStatus.innerHTML = '<span class="pat_ok">✓ Token saved.</span>';
+      patIn.value = '';
+      patIn.placeholder = '••••• (token saved)';
+    } else {
+      patStatus.innerHTML = '<span class="pat_err">No token yet — needed to save.</span>';
+      patIn.placeholder = 'github_pat_… or ghp_…';
+    }
+  }
+
+  // ============ github contents api ============
+  function gh_url() {
+    return 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + SOURCES_PATH;
+  }
+  function gh_headers() {
+    return {
+      'Authorization': 'Bearer ' + get_pat(),
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+  }
+  function b64_utf8(s) { return btoa(unescape(encodeURIComponent(s))); }
+  function utf8_b64(s) { try { return decodeURIComponent(escape(atob((s||'').replace(/\s+/g, '')))); } catch (e) { return ''; } }
+
+  function gh_get_audio() {
+    return fetch(gh_url(), { headers: gh_headers(), cache: 'no-store' }).then(function (r) {
+      if (r.status === 404) return { _missing: true };
+      if (!r.ok) return r.json().then(function (j) { throw new Error(j.message || 'GitHub GET ' + r.status); });
+      return r.json();
+    });
+  }
+  function gh_put_audio(jsonText, sha, message) {
+    var body = { message: message, content: b64_utf8(jsonText) };
+    if (sha) body.sha = sha;
+    return fetch(gh_url(), {
+      method: 'PUT',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, gh_headers()),
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (j) { throw new Error(j.message || 'GitHub PUT ' + r.status); });
+      return r.json();
+    });
+  }
+
+  // ============ audio source: read / write / play ============
+  function fetch_audio_public() {
+    // public fetch via Pages (no auth needed). Cache-bust to see fresh after a recent PUT.
+    return fetch(SOURCES_PATH + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) return null;
+      return r.json().catch(function () { return null; });
+    }).then(function (data) {
+      if (data && typeof data === 'object' && !Array.isArray(data) && data.url) {
+        audio = { label: data.label || derive_label(data.url), url: data.url, kind: data.kind || detect_kind(data.url) };
+      } else if (Array.isArray(data) && data.length && data[0].url) {
+        // tolerant: old array format. Take the first one.
+        audio = { label: data[0].label || derive_label(data[0].url), url: data[0].url, kind: data[0].kind || detect_kind(data[0].url) };
+      } else {
+        audio = null;
+      }
+      render_audio_label();
+      load_audio_into_player();
+    }).catch(function () { audio = null; render_audio_label(); });
+  }
+  function render_audio_label() {
+    if (audio) {
+      audioLabelEl.textContent = audio.label;
+      audioLabelEl.classList.remove('empty');
+      audioLabelEl.title = audio.url;
+    } else {
+      audioLabelEl.textContent = 'No audio file bound yet — click ✎ to add one';
+      audioLabelEl.classList.add('empty');
+      audioLabelEl.title = '';
+    }
+  }
+  function load_audio_into_player() {
+    if (!audio) {
+      player.removeAttribute('src');
+      playerMsg.textContent = '';
+      return;
+    }
+    var url = resolve_url(audio);
+    if (player.src !== url) player.src = url;
+    playerMsg.textContent = '';
+  }
+
+  function open_edit_form(prefill) {
+    audioEditForm.style.display = 'block';
+    audioUrlIn.value   = (prefill && prefill.url)   || (audio ? audio.url   : '');
+    audioLabelIn.value = (prefill && prefill.label) || (audio ? audio.label : '');
+    setTimeout(function () { audioUrlIn.focus(); }, 0);
+  }
+  function close_edit_form() {
+    audioEditForm.style.display = 'none';
+    audioUrlIn.value = '';
+    audioLabelIn.value = '';
+  }
+  audioEditBtn.addEventListener('click', function () {
+    if (audioEditForm.style.display === 'block') { close_edit_form(); return; }
+    open_edit_form();
+  });
+  audioCancelBtn.addEventListener('click', close_edit_form);
+
+  function save_audio() {
+    var url = (audioUrlIn.value || '').trim();
+    var label = (audioLabelIn.value || '').trim();
+    if (!url) { toast('Paste an audio URL first'); audioUrlIn.focus(); return; }
+    var kind = detect_kind(url);
+    if (!label) label = derive_label(url);
+
+    if (!has_pat()) {
+      toast('GitHub setup needed — paste a token below.');
+      patDetails.open = true;
+      patIn.focus();
+      return;
+    }
+
+    toast('Saving to repo…');
+    var newAudio = { label: label, url: url, kind: kind };
+    gh_get_audio().then(function (data) {
+      var sha = (data && !data._missing) ? data.sha : null;
+      var content = JSON.stringify(newAudio, null, 2) + '\n';
+      return gh_put_audio(content, sha, 'set audio for ' + PAGE_ID);
+    }).then(function () {
+      audio = newAudio;
+      render_audio_label();
+      load_audio_into_player();
+      close_edit_form();
+      toast('Saved. Pages rebuilds in ~1-2 min for new visitors.');
+    }).catch(function (err) {
+      toast('Save failed: ' + err.message);
+    });
+  }
+  audioSaveBtn.addEventListener('click', save_audio);
+
+  audioPickLocal.addEventListener('click', function () { audioLocalIn.click(); });
+  audioLocalIn.addEventListener('change', function () {
+    var f = audioLocalIn.files && audioLocalIn.files[0];
+    if (!f) return;
+    var blobUrl = URL.createObjectURL(f);
+    player.src = blobUrl;
+    audioLabelEl.textContent = f.name + ' (local preview — not saved)';
+    audioLabelEl.classList.remove('empty');
+    audioLocalIn.value = '';
+    close_edit_form();
+  });
+
+  // ============ pat handlers ============
+  patSave.addEventListener('click', function () {
+    var v = (patIn.value || '').trim();
+    if (!v) { toast('Paste a token first'); patIn.focus(); return; }
+    set_pat(v);
+    toast('Token saved.');
+  });
+  patClear.addEventListener('click', function () {
+    if (!has_pat()) { toast('No token to remove'); return; }
+    if (!confirm('Remove the saved GitHub token from this browser?')) return;
+    set_pat('');
+    toast('Token removed.');
+  });
+
   // ============ player controls ============
   function safe_play()  { try { player.play().catch(function(){}); } catch (e) {} }
   function safe_pause() { try { player.pause(); } catch (e) {} }
-  function toggle_play() { if (player.paused) safe_play(); else safe_pause(); }
-  function seek_to(sec) {
+  function toggle_play(){ if (player.paused) safe_play(); else safe_pause(); }
+  function seek_to(sec){
     try {
       var d = isFinite(player.duration) ? player.duration : Infinity;
       player.currentTime = Math.max(0, Math.min(sec, d));
     } catch (e) {}
   }
-  function nudge(deltaSec) { seek_to((player.currentTime || 0) + deltaSec); }
+  function nudge(d) { seek_to((player.currentTime || 0) + d); }
 
   playBtn.addEventListener('click', toggle_play);
   back15 .addEventListener('click', function () { nudge(-15); });
@@ -785,7 +636,6 @@
   player.addEventListener('play',  function () { playBtn.textContent = '⏸'; });
   player.addEventListener('pause', function () { playBtn.textContent = '▶'; });
   player.addEventListener('ended', function () { playBtn.textContent = '▶'; });
-
   player.addEventListener('timeupdate', function () {
     nowTime.textContent = fmt_time(player.currentTime);
     if (isFinite(player.duration) && player.duration > 0) {
@@ -796,48 +646,20 @@
     durTime.textContent = fmt_time(player.duration);
     var t = get_url_time();
     if (t !== null) seek_to(t);
+    playerMsg.textContent = '';
   });
   player.addEventListener('error', function () {
-    srcLabelNow.innerHTML = '<span style="color:var(--danger)">⚠ Could not load this source. ' +
-      'For large Drive files Google may block direct streaming — try a smaller mp3 or a direct CDN URL.</span>';
+    if (!audio) return;
+    playerMsg.className = 'player_msg err';
+    playerMsg.innerHTML = '⚠ Could not load this source. For large Drive files, Google may block direct streaming — try Cloudflare R2, Backblaze B2, or GitHub Releases instead.';
+  });
+  player.addEventListener('loadstart', function () {
+    playerMsg.className = 'player_msg';
+    playerMsg.textContent = audio ? 'Loading audio…' : '';
   });
 
   // ============ tags ============
-  function add_tag() {
-    var t = player.currentTime || 0;
-    // give new tags an order value past the current max so manual mode keeps them at the bottom
-    var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
-    var tag = {
-      id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-      t: t,
-      label: '',
-      order: maxOrder + 10
-    };
-    tags.push(tag);
-    activeTagId = tag.id;
-    save_tags();
-    render_tags();
-    setTimeout(function () {
-      var rows = tagList.querySelectorAll('.tag_row');
-      for (var i = 0; i < rows.length; i++) {
-        if (rows[i].classList.contains('active')) {
-          var inp = rows[i].querySelector('.tag_label');
-          if (inp) inp.focus();
-          break;
-        }
-      }
-    }, 0);
-    toast('Tagged at ' + fmt_time(t));
-  }
-  function nudge_tag(id, delta) {
-    var tag = tags.filter(function (x) { return x.id === id; })[0];
-    if (!tag) return;
-    tag.t = Math.max(0, tag.t + delta);
-    save_tags();
-    render_tags();
-  }
   function ensure_order() {
-    // Assign sequential order values to any tags missing them, based on current time-sorted position.
     var missing = tags.some(function (t) { return t.order == null; });
     if (!missing) return;
     var sorted = tags.slice().sort(function (a, b) { return a.t - b.t; });
@@ -868,6 +690,33 @@
     });
   }
 
+  function add_tag() {
+    var t = player.currentTime || 0;
+    var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
+    var tag = { id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6), t: t, label: '', order: maxOrder + 10 };
+    tags.push(tag);
+    activeTagId = tag.id;
+    save_tags();
+    render_tags();
+    setTimeout(function () {
+      var rows = tagList.querySelectorAll('.tag_row');
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i].classList.contains('active')) {
+          var inp = rows[i].querySelector('.tag_label');
+          if (inp) inp.focus();
+          break;
+        }
+      }
+    }, 0);
+    toast('Tagged at ' + fmt_time(t));
+  }
+  function nudge_tag(id, delta) {
+    var tag = tags.filter(function (x) { return x.id === id; })[0];
+    if (!tag) return;
+    tag.t = Math.max(0, tag.t + delta);
+    save_tags();
+    render_tags();
+  }
   function render_tags() {
     tagList.innerHTML = '';
     if (!tags.length) {
@@ -953,15 +802,13 @@
     });
   }
 
-  // ---------- drag-to-reorder (pointer events: works for mouse + touch) ----------
+  // ---- drag-to-reorder (pointer events) ----
   function attach_drag(handle, row, tag) {
     handle.addEventListener('pointerdown', function (e) {
       e.preventDefault();
-      // auto-switch into manual the moment the user starts dragging
       if (sortMode !== 'manual') {
         set_sort_mode('manual');
         toast('Switched to Manual sort');
-        // render_tags re-created the rows — bail out; the user can drag the new handle.
         return;
       }
       try { handle.setPointerCapture(e.pointerId); } catch (err) {}
@@ -984,17 +831,13 @@
       var rect = r.getBoundingClientRect();
       if (y < rect.top + rect.height / 2) { insertBeforeEl = r; break; }
     }
-    // place/move the drop indicator
     var ind = tagList.querySelector('.drop_indicator');
     if (!ind) {
       ind = document.createElement('div');
       ind.className = 'drop_indicator';
     }
-    if (insertBeforeEl) {
-      tagList.insertBefore(ind, insertBeforeEl);
-    } else {
-      tagList.appendChild(ind);
-    }
+    if (insertBeforeEl) tagList.insertBefore(ind, insertBeforeEl);
+    else tagList.appendChild(ind);
   }
   function on_drag_end(e) {
     if (!dragState) return;
@@ -1004,25 +847,14 @@
     window.removeEventListener('pointerup',   on_drag_end);
     window.removeEventListener('pointercancel', on_drag_end);
     s.row.classList.remove('dragging');
-
     var ind = tagList.querySelector('.drop_indicator');
-    if (!s.moved || !ind) {
-      if (ind) ind.remove();
-      return;
-    }
-
-    // build new id order from DOM, using indicator as the dragged tag's new position
+    if (!s.moved || !ind) { if (ind) ind.remove(); return; }
     var newOrder = [];
     Array.from(tagList.children).forEach(function (el) {
-      if (el === ind) {
-        newOrder.push(s.tag.id);
-      } else if (el === s.row) {
-        // skip — the dragged row's old DOM spot is no longer where it lives
-      } else if (el.dataset && el.dataset.tagId) {
-        newOrder.push(el.dataset.tagId);
-      }
+      if (el === ind) newOrder.push(s.tag.id);
+      else if (el === s.row) { /* skip */ }
+      else if (el.dataset && el.dataset.tagId) newOrder.push(el.dataset.tagId);
     });
-    // assign order values (10-step so future inserts have room)
     newOrder.forEach(function (id, i) {
       var t = tags.filter(function (x) { return x.id === id; })[0];
       if (t) t.order = i * 10;
@@ -1033,28 +865,10 @@
   }
 
   tagBtn.addEventListener('click', add_tag);
-
-  // sort toggle
   Array.from(sortToggle.querySelectorAll('button')).forEach(function (b) {
     b.addEventListener('click', function () { set_sort_mode(b.dataset.mode); });
   });
 
-  // pat save/clear
-  if (patPath) patPath.textContent = SOURCES_PATH;
-  patSave.addEventListener('click', function () {
-    var v = (patIn.value || '').trim();
-    if (!v) { toast('Paste a token first'); patIn.focus(); return; }
-    set_pat(v);
-    toast('Token saved.');
-  });
-  patClear.addEventListener('click', function () {
-    if (!has_pat()) { toast('No token to remove'); return; }
-    if (!confirm('Remove the saved GitHub token from this browser?')) return;
-    set_pat('');
-    toast('Token removed.');
-  });
-
-  // keyboard
   document.addEventListener('keydown', function (e) {
     var typing = e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA');
     if (typing) return;
@@ -1087,11 +901,11 @@
 
   // ============ export / import ============
   exportBtn.addEventListener('click', function () {
-    var payload = { page_id: PAGE_ID, exported_at: new Date().toISOString(), tags: tags, sources: userSources };
+    var payload = { page_id: PAGE_ID, exported_at: new Date().toISOString(), tags: tags };
     var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = PAGE_ID + '_export.json';
+    a.download = PAGE_ID + '_tags.json';
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   });
@@ -1103,22 +917,15 @@
     rd.onload = function () {
       try {
         var raw = JSON.parse(rd.result);
-        var newTags    = Array.isArray(raw) ? raw : (raw.tags    || []);
-        var newSources = Array.isArray(raw) ? []  : (raw.sources || []);
+        var newTags = Array.isArray(raw) ? raw : (raw.tags || []);
         var byTagId = {};
         tags.forEach(function (x) { byTagId[x.id] = x; });
         newTags.forEach(function (x) { if (x && x.id && typeof x.t === 'number') byTagId[x.id] = x; });
         tags = Object.values(byTagId);
-        var bySrcId = {};
-        userSources.forEach(function (x) { bySrcId[x.id] = x; });
-        newSources.forEach(function (x) { if (x && x.id && x.url) bySrcId[x.id] = x; });
-        userSources = Object.values(bySrcId);
-        save_tags(); save_sources();
-        render_tags(); render_sources();
-        toast('Imported ' + newTags.length + ' tag(s), ' + newSources.length + ' source(s)');
-      } catch (e) {
-        toast('Import failed: ' + e.message);
-      }
+        save_tags();
+        render_tags();
+        toast('Imported ' + newTags.length + ' tag(s)');
+      } catch (e) { toast('Import failed: ' + e.message); }
       importIn.value = '';
     };
     rd.readAsText(f);
@@ -1132,27 +939,11 @@
   });
 
   // ============ boot ============
-  render_sources();
   render_sort_toggle();
   render_tags();
   render_pat_status();
-
-  // fetch repo-pinned sources, then pick the right source to play
-  fetch_repo_sources_public().then(boot_pick_source);
-
-  function boot_pick_source() {
-    var picked = pickedId && all_sources().filter(function (x) { return x.id === pickedId; })[0];
-    if (!picked) {
-      // prefer a repo-pinned source if present (everyone sees the same one), else first default
-      var list = all_sources();
-      var repoFirst = list.filter(function (s) { return s._repo; })[0];
-      var first = repoFirst || list[0];
-      if (first) set_source(first.id);
-    } else {
-      set_source(picked.id);
-    }
-    if (!player.src) srcCard.classList.add('open');
-  }
+  render_audio_label();
+  fetch_audio_public();
 </script>
 
 </body>

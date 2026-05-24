@@ -1,8 +1,5 @@
-[
-  {
-    "id": "drive_bazaar_cafe_3_full",
-    "label": "Bazaar Cafe Set — full (Google Drive)",
-    "url": "https://drive.google.com/file/d/1ZmR-r19zNyqeDsND3Zk9-PbhlPj0HSBN/view?usp=sharing",
-    "kind": "drive"
-  }
-]
+{
+  "label": "Bazaar Cafe Set — full",
+  "url": "https://drive.google.com/file/d/1ZmR-r19zNyqeDsND3Zk9-PbhlPj0HSBN/view?usp=sharing",
+  "kind": "drive"
+}
