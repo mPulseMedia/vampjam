@@ -67,11 +67,21 @@
   /* ---- player ---- */
   .player_card { background: var(--panel); border-radius: 12px; padding: 14px; margin-bottom: 12px; text-align: center; }
   audio { display: none; }
+  .ctrl_row { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .seek_bar { width: 100%; height: 6px; background: var(--panel_3); border-radius: 3px; position: relative; cursor: pointer; }
+  .seek_fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; pointer-events: none; }
+  .tag_markers { position: relative; height: 14px; margin-top: 4px; margin-bottom: 4px; }
+  .tag_marker {
+    position: absolute; top: 2px; width: 10px; height: 10px;
+    background: var(--accent); border-radius: 50%;
+    transform: translateX(-50%); cursor: pointer;
+    border: 1.5px solid var(--bg);
+    transition: transform 0.1s;
+  }
+  .tag_marker:hover { transform: translateX(-50%) scale(1.4); }
+  .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
   .time_row #now_time { color: var(--fg); font-weight: 600; }
-  .seek_bar { width: 100%; height: 6px; background: var(--panel_3); border-radius: 3px; position: relative; cursor: pointer; margin-bottom: 14px; }
-  .seek_fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; pointer-events: none; }
-  .ctrl_row { display: flex; justify-content: center; align-items: center; gap: 8px; }
   .ctrl_btn {
     appearance: none; -webkit-appearance: none; border: 0;
     background: var(--panel_2); color: var(--fg); font: inherit; font-weight: 600;
@@ -221,18 +231,19 @@
 <!-- ===== player ===== -->
 <div class="player_card">
   <audio id="player" preload="metadata"></audio>
-  <div class="time_row">
-    <span id="now_time">0:00</span>
-    <span>/</span>
-    <span id="dur_time">--:--</span>
-  </div>
-  <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div></div>
   <div class="ctrl_row">
     <button class="ctrl_btn" id="back_120" title="Back 2 min">−2m</button>
     <button class="ctrl_btn" id="back_15"  title="Back 15 sec">−15s</button>
     <button class="ctrl_btn play_btn" id="play_btn" title="Play / Pause">▶</button>
     <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec">+15s</button>
     <button class="ctrl_btn" id="fwd_120" title="Forward 2 min">+2m</button>
+  </div>
+  <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div></div>
+  <div class="tag_markers" id="tag_markers"></div>
+  <div class="time_row">
+    <span id="now_time">0:00</span>
+    <span>/</span>
+    <span id="dur_time">--:--</span>
   </div>
   <div class="player_msg" id="player_msg"></div>
 </div>
@@ -278,6 +289,7 @@
   var REPO_NAME  = 'vampjam';
 
   var SOURCES_PATH = 'sources/' + PAGE_ID + '.json';
+  var TAGS_PATH    = 'tags/' + PAGE_ID + '.json';
   var STORAGE_TAGS = PAGE_ID + '_tags';
   var STORAGE_SORT = PAGE_ID + '_sort_mode';
   var STORAGE_PAT  = 'github_pat';
@@ -315,6 +327,7 @@
 
   var tagBtn    = $('tag_btn');
   var tagList   = $('tag_list');
+  var tagMarkers= $('tag_markers');
   var sortToggle= $('sort_toggle');
   var toastEl   = $('toast');
   var exportBtn = $('export_btn');
@@ -493,6 +506,60 @@
   }
 
   // ============ audio source: read / write / play ============
+  // ============ repo tags: seed tags from tags/<PAGE_ID>.json ============
+  function fetch_repo_tags() {
+    var url;
+    if (location.protocol === 'file:') {
+      url = 'https://raw.githubusercontent.com/' + REPO_OWNER + '/' + REPO_NAME +
+            '/main/' + TAGS_PATH + '?v=' + Date.now();
+    } else {
+      url = TAGS_PATH + '?v=' + Date.now();
+    }
+    return fetch(url, { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) return [];
+      return r.json().catch(function () { return []; });
+    }).then(function (arr) {
+      if (!Array.isArray(arr)) return;
+      var byId = {};
+      tags.forEach(function (t) { byId[t.id] = true; });
+      var added = 0;
+      var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
+      arr.forEach(function (t) {
+        if (!t || !t.id || typeof t.t !== 'number') return;
+        if (byId[t.id]) return; // already have it locally
+        var cp = { id: t.id, t: t.t, label: t.label || '', order: ++maxOrder * 10 };
+        tags.push(cp);
+        added++;
+      });
+      if (added > 0) {
+        save_tags();
+        render_tags();
+        render_tag_markers();
+      }
+    }).catch(function () {});
+  }
+
+  function render_tag_markers() {
+    if (!tagMarkers) return;
+    tagMarkers.innerHTML = '';
+    if (!isFinite(player.duration) || player.duration <= 0) return;
+    tags.forEach(function (t) {
+      var m = document.createElement('div');
+      m.className = 'tag_marker' + (t.id === activeTagId ? ' active' : '');
+      m.style.left = (t.t / player.duration * 100) + '%';
+      m.title = (t.label || 'tag') + ' @ ' + fmt_time(t.t);
+      m.addEventListener('click', function (e) {
+        e.stopPropagation();
+        seek_to(t.t);
+        safe_play();
+        activeTagId = t.id;
+        render_tags();
+        render_tag_markers();
+      });
+      tagMarkers.appendChild(m);
+    });
+  }
+
   function fetch_audio_public() {
     // public fetch via Pages (no auth needed). Cache-bust to see fresh after a recent PUT.
     // When opened locally (file://) fetch from github raw so the local page sees the same
@@ -656,6 +723,7 @@
     var t = get_url_time();
     if (t !== null) seek_to(t);
     playerMsg.textContent = '';
+    render_tag_markers();
   });
   player.addEventListener('error', function () {
     if (!audio) return;
@@ -725,6 +793,7 @@
     tag.t = Math.max(0, tag.t + delta);
     save_tags();
     render_tags();
+    render_tag_markers();
   }
   function render_tags() {
     tagList.innerHTML = '';
@@ -809,6 +878,7 @@
       row.appendChild(actions);
       tagList.appendChild(row);
     });
+    render_tag_markers();
   }
 
   // ---- drag-to-reorder (pointer events) ----
@@ -953,6 +1023,7 @@
   render_pat_status();
   render_audio_label();
   fetch_audio_public();
+  fetch_repo_tags();
 </script>
 
 </body>
