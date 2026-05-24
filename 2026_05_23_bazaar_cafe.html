@@ -495,7 +495,16 @@
   // ============ audio source: read / write / play ============
   function fetch_audio_public() {
     // public fetch via Pages (no auth needed). Cache-bust to see fresh after a recent PUT.
-    return fetch(SOURCES_PATH + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) {
+    // When opened locally (file://) fetch from github raw so the local page sees the same
+    // binding as the live page (browsers block file:// → file:// fetch in most setups).
+    var srcUrl;
+    if (location.protocol === 'file:') {
+      srcUrl = 'https://raw.githubusercontent.com/' + REPO_OWNER + '/' + REPO_NAME +
+               '/main/' + SOURCES_PATH + '?v=' + Date.now();
+    } else {
+      srcUrl = SOURCES_PATH + '?v=' + Date.now();
+    }
+    return fetch(srcUrl, { cache: 'no-store' }).then(function (r) {
       if (!r.ok) return null;
       return r.json().catch(function () { return null; });
     }).then(function (data) {
