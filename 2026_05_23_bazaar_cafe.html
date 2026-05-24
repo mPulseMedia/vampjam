@@ -143,24 +143,32 @@
   .sort_toggle button.active { background: var(--accent_2); color: #0b0d0f; }
   .tag_list { background: var(--panel); border-radius: 12px; padding: 6px; touch-action: pan-y; }
   .tag_row {
-    display: grid;
-    grid-template-columns: auto auto auto auto auto 1fr auto auto auto auto;
-    align-items: center;
-    gap: 4px; padding: 8px 10px; border-radius: 8px;
-    background: var(--panel);
+    display: flex; align-items: center; gap: 4px;
+    padding: 6px 8px; border-radius: 8px; background: var(--panel);
+    flex-wrap: nowrap;
+  }
+  .tag_row .tag_label {
+    flex: 1 1 60px; min-width: 0;
   }
   .tag_row .tag_end {
     font-variant-numeric: tabular-nums; color: var(--warn);
     cursor: pointer; padding: 4px 6px; border-radius: 6px;
     min-width: 64px; text-align: right; font-weight: 600; font-size: 13px;
+    flex: 0 0 auto;
   }
   .tag_row .tag_end:hover { background: rgba(232,199,148,0.15); }
   .tag_row button.play_tag {
     background: var(--panel_3); color: var(--fg);
     padding: 4px 6px; min-height: 26px; font-size: 11px;
-    border-radius: 6px;
+    border-radius: 6px; flex: 0 0 auto;
   }
   .tag_row button.play_tag:hover { background: var(--accent); color: #0b0d0f; }
+  .tag_row button.add_end {
+    background: var(--panel_3); color: var(--warn);
+    font-size: 10px; padding: 3px 6px; min-height: 22px; border-radius: 6px;
+    flex: 0 0 auto;
+  }
+  .tag_row button.add_end:hover { background: var(--warn); color: #0b0d0f; }
   .tag_row:hover { background: var(--panel_2); }
   .tag_row.active { background: var(--panel_2); outline: 1px solid var(--accent); }
   .tag_row.dragging { opacity: 0.4; }
@@ -215,13 +223,43 @@
 
 <header class="brand">
   <div class="wordmark">vamp jam</div>
-  <div class="tagline">improvise • no covers • all levels</div>
 </header>
 
 <h1>Bazaar Cafe — 2026-05-23</h1>
-<div class="subtitle">Tap play, tag moments, share with <code class="inline">?t=1h7m32s</code>.</div>
 
-<!-- ===== audio source (single file) ===== -->
+<!-- ===== player ===== -->
+<div class="player_card">
+  <audio id="player" preload="metadata"></audio>
+  <div class="ctrl_row">
+    <button class="ctrl_btn" id="back_120" title="Back 2 min">−2m</button>
+    <button class="ctrl_btn" id="back_15"  title="Back 15 sec">−15s</button>
+    <button class="ctrl_btn play_btn" id="play_btn" title="Play / Pause">▶</button>
+    <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec">+15s</button>
+    <button class="ctrl_btn" id="fwd_120" title="Forward 2 min">+2m</button>
+  </div>
+  <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div></div>
+  <div class="tag_markers" id="tag_markers"></div>
+  <div class="time_row">
+    <span id="now_time">0:00</span>
+    <span>/</span>
+    <span id="dur_time">--:--</span>
+  </div>
+  <div class="player_msg" id="player_msg"></div>
+</div>
+
+<button class="tag_btn_big" id="tag_btn">+ Tag this moment</button>
+
+<div class="tag_header">
+  <h2>Tags</h2>
+  <div class="sort_toggle" id="sort_toggle">
+    <button data-mode="time">Time</button>
+    <button data-mode="manual">Manual</button>
+  </div>
+</div>
+
+<div class="tag_list" id="tag_list"></div>
+
+<!-- ===== audio source (single file) — bottom of page ===== -->
 <div class="audio_card" id="audio_card">
   <div class="audio_label_row">
     <span class="audio_icon">🎵</span>
@@ -259,50 +297,6 @@
     </div>
   </details>
 </div>
-
-<!-- ===== player ===== -->
-<div class="player_card">
-  <audio id="player" preload="metadata"></audio>
-  <div class="ctrl_row">
-    <button class="ctrl_btn" id="back_120" title="Back 2 min">−2m</button>
-    <button class="ctrl_btn" id="back_15"  title="Back 15 sec">−15s</button>
-    <button class="ctrl_btn play_btn" id="play_btn" title="Play / Pause">▶</button>
-    <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec">+15s</button>
-    <button class="ctrl_btn" id="fwd_120" title="Forward 2 min">+2m</button>
-  </div>
-  <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div></div>
-  <div class="tag_markers" id="tag_markers"></div>
-  <div class="time_row">
-    <span id="now_time">0:00</span>
-    <span>/</span>
-    <span id="dur_time">--:--</span>
-  </div>
-  <div class="player_msg" id="player_msg"></div>
-</div>
-
-<button class="tag_btn_big" id="tag_btn">+ Tag this moment</button>
-
-<div class="tag_header">
-  <h2>Tags</h2>
-  <div class="sort_toggle" id="sort_toggle">
-    <button data-mode="time">Time</button>
-    <button data-mode="manual">Manual</button>
-  </div>
-</div>
-
-<div class="tag_list" id="tag_list"></div>
-
-<details class="about_page">
-  <summary>About this page</summary>
-  <div style="margin-top:8px">
-    <div>• One audio file per page. Click the ✎ next to the audio label to change which file is bound to this page.</div>
-    <div>• Saving the audio writes <code>sources/&lt;PAGE_ID&gt;.json</code> in the repo — every visitor sees the new file once Pages rebuilds (~1-2 min).</div>
-    <div>• <b>Player</b>: ▶/⏸ plays; −15s / +15s for fine seek; −2m / +2m for big jumps. Click the bar to scrub. Space = play/pause; T = tag; ←/→ = ±15s; shift+←/→ = ±2m.</div>
-    <div>• <b>Tag row</b>: ≡ drag (Manual sort), time (click to seek), <code>−1s</code>/<code>+1s</code> nudges saved time, inline label, 🔗 copies a direct link, ✕ deletes.</div>
-    <div>• <b>Direct link</b>: <code>?t=1h7m32s</code>, <code>?t=13m22s</code>, <code>?t=802</code>, <code>?t=13:22</code>. Also <code>#t=…</code>.</div>
-    <div>• <b>Tags</b> save in localStorage on each device. Use Export / Import in the footer to move between devices.</div>
-  </div>
-</details>
 
 <div class="toast" id="toast"></div>
 
@@ -373,6 +367,7 @@
   var tags         = load_json(STORAGE_TAGS, []);
   var sortMode     = localStorage.getItem(STORAGE_SORT) || 'time';
   var activeTagId  = null;
+  var playingTagId = null;     // tag currently containing currentTime (auto-tracked)
   var dragState    = null;
   var playbackIntent = null;   // { type:'preview_end', endTime, nextTagId }
 
@@ -750,6 +745,7 @@
     if (isFinite(player.duration) && player.duration > 0) {
       seekFill.style.width = ((player.currentTime / player.duration) * 100) + '%';
     }
+    update_playing_tag();
     if (playbackIntent && player.currentTime >= playbackIntent.endTime) {
       var intent = playbackIntent;
       playbackIntent = null;
@@ -851,28 +847,49 @@
     return (i >= 0 && i < sorted.length - 1) ? sorted[i + 1] : null;
   }
   function tag_end(tag) {
-    if (tag.e != null) return tag.e;
-    var nx = next_tag_by_time(tag);
-    if (nx) return nx.t;
-    return isFinite(player.duration) ? player.duration : tag.t + 30;
+    // null when no end has been set — user must explicitly add it
+    return (tag.e != null) ? tag.e : null;
+  }
+  function add_tag_end(id) {
+    var tag = tags.filter(function (x) { return x.id === id; })[0];
+    if (!tag) return;
+    tag.e = Math.max(tag.t + 1, player.currentTime || tag.t + 1);
+    save_tags();
+    render_tags();
+    render_tag_markers();
+    preview_end(tag);
   }
   function nudge_tag_end(id, delta) {
     var tag = tags.filter(function (x) { return x.id === id; })[0];
-    if (!tag) return;
-    var cur = tag_end(tag);
-    tag.e = Math.max(tag.t + 1, cur + delta);
+    if (!tag || tag.e == null) return;
+    tag.e = Math.max(tag.t + 1, tag.e + delta);
     save_tags();
     render_tags();
     render_tag_markers();
     preview_end(tag);
   }
   function preview_end(tag) {
-    var endT = tag_end(tag);
+    if (tag.e == null) return;
+    var endT = tag.e;
     var startT = Math.max(0, endT - 3);
     var nx = next_tag_by_time(tag);
     playbackIntent = { type: 'preview_end', endTime: endT, nextTagId: nx ? nx.id : null };
     seek_to(startT);
     safe_play();
+  }
+  function update_playing_tag() {
+    var ct = player.currentTime;
+    var found = null;
+    var sorted = tags.slice().sort(function (a, b) { return a.t - b.t; });
+    for (var i = 0; i < sorted.length; i++) {
+      var t = sorted[i];
+      var endT = t.e != null ? t.e : (sorted[i + 1] ? sorted[i + 1].t : Infinity);
+      if (ct >= t.t && ct < endT) { found = t.id; break; }
+    }
+    if (found !== playingTagId) {
+      playingTagId = found;
+      render_tags();
+    }
   }
   function play_from_tag(tag) {
     playbackIntent = null;
@@ -912,9 +929,11 @@
       return;
     }
     sorted_tags().forEach(function (tag) {
+      var isPlaying = (tag.id === playingTagId);
       var row = document.createElement('div');
       row.className = 'tag_row';
       if (tag.id === activeTagId) row.classList.add('active');
+      if (isPlaying) row.classList.add('playing');
       if (sortMode !== 'manual') row.classList.add('no_drag');
       row.dataset.tagId = tag.id;
 
@@ -923,30 +942,39 @@
       handle.innerHTML = '≡';
       handle.title = (sortMode === 'manual') ? 'Drag to reorder' : 'Switch to Manual sort to drag';
       attach_drag(handle, row, tag);
+      row.appendChild(handle);
 
       var playBtnRow = document.createElement('button');
       playBtnRow.className = 'play_tag';
       playBtnRow.title = 'Play from this tag';
       playBtnRow.textContent = '▶';
       playBtnRow.addEventListener('click', function () { play_from_tag(tag); });
+      row.appendChild(playBtnRow);
 
-      var minus1 = document.createElement('button');
-      minus1.className = 'tiny';
-      minus1.title = 'Move start −1s';
-      minus1.textContent = '−1s';
-      minus1.addEventListener('click', function () { nudge_tag(tag.id, -1); });
+      if (isPlaying) {
+        var minus1 = document.createElement('button');
+        minus1.className = 'tiny';
+        minus1.title = 'Move start −1s';
+        minus1.textContent = '−1';
+        minus1.addEventListener('click', function () { nudge_tag(tag.id, -1); });
+        row.appendChild(minus1);
+      }
 
       var time = document.createElement('div');
       time.className = 'tag_time';
       time.textContent = fmt_time(tag.t);
       time.title = 'Jump to ' + fmt_time(tag.t);
       time.addEventListener('click', function () { play_from_tag(tag); });
+      row.appendChild(time);
 
-      var plus1 = document.createElement('button');
-      plus1.className = 'tiny';
-      plus1.title = 'Move start +1s';
-      plus1.textContent = '+1s';
-      plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
+      if (isPlaying) {
+        var plus1 = document.createElement('button');
+        plus1.className = 'tiny';
+        plus1.title = 'Move start +1s';
+        plus1.textContent = '+1';
+        plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
+        row.appendChild(plus1);
+      }
 
       var label = document.createElement('input');
       label.className = 'tag_label';
@@ -955,24 +983,40 @@
       label.placeholder = 'untitled moment';
       label.addEventListener('input', function () { tag.label = label.value; save_tags(); });
       label.addEventListener('keydown', function (e) { if (e.key === 'Enter') label.blur(); });
+      row.appendChild(label);
 
-      var endMinus = document.createElement('button');
-      endMinus.className = 'tiny';
-      endMinus.title = 'Move end −1s (and preview)';
-      endMinus.textContent = '−1s';
-      endMinus.addEventListener('click', function () { nudge_tag_end(tag.id, -1); });
+      if (isPlaying) {
+        if (tag.e == null) {
+          // no end yet — show "set end" button
+          var addEnd = document.createElement('button');
+          addEnd.className = 'add_end';
+          addEnd.title = 'Set end to current playback time';
+          addEnd.textContent = '+ end';
+          addEnd.addEventListener('click', function () { add_tag_end(tag.id); });
+          row.appendChild(addEnd);
+        } else {
+          var endMinus = document.createElement('button');
+          endMinus.className = 'tiny';
+          endMinus.title = 'Move end −1s (and preview)';
+          endMinus.textContent = '−1';
+          endMinus.addEventListener('click', function () { nudge_tag_end(tag.id, -1); });
+          row.appendChild(endMinus);
 
-      var endTime = document.createElement('div');
-      endTime.className = 'tag_end';
-      endTime.textContent = fmt_time(tag_end(tag));
-      endTime.title = 'Preview end (last 3s) then jump to next tag';
-      endTime.addEventListener('click', function () { preview_end(tag); });
+          var endTime = document.createElement('div');
+          endTime.className = 'tag_end';
+          endTime.textContent = fmt_time(tag.e);
+          endTime.title = 'Preview end (last 3s) then jump to next tag';
+          endTime.addEventListener('click', function () { preview_end(tag); });
+          row.appendChild(endTime);
 
-      var endPlus = document.createElement('button');
-      endPlus.className = 'tiny';
-      endPlus.title = 'Move end +1s (and preview)';
-      endPlus.textContent = '+1s';
-      endPlus.addEventListener('click', function () { nudge_tag_end(tag.id, 1); });
+          var endPlus = document.createElement('button');
+          endPlus.className = 'tiny';
+          endPlus.title = 'Move end +1s (and preview)';
+          endPlus.textContent = '+1';
+          endPlus.addEventListener('click', function () { nudge_tag_end(tag.id, 1); });
+          row.appendChild(endPlus);
+        }
+      }
 
       var linkBtn = document.createElement('button');
       linkBtn.className = 'ghost';
@@ -983,6 +1027,7 @@
         copy_to_clipboard(url);
         toast('Link copied: ' + url);
       });
+      row.appendChild(linkBtn);
 
       var delBtn = document.createElement('button');
       delBtn.className = 'ghost';
@@ -994,18 +1039,8 @@
         save_tags();
         render_tags();
       });
-
-      row.appendChild(handle);
-      row.appendChild(playBtnRow);
-      row.appendChild(minus1);
-      row.appendChild(time);
-      row.appendChild(plus1);
-      row.appendChild(label);
-      row.appendChild(endMinus);
-      row.appendChild(endTime);
-      row.appendChild(endPlus);
-      row.appendChild(linkBtn);
       row.appendChild(delBtn);
+
       tagList.appendChild(row);
     });
     render_tag_markers();
