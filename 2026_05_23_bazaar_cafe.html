@@ -143,10 +143,24 @@
   .sort_toggle button.active { background: var(--accent_2); color: #0b0d0f; }
   .tag_list { background: var(--panel); border-radius: 12px; padding: 6px; touch-action: pan-y; }
   .tag_row {
-    display: grid; grid-template-columns: auto auto auto auto 1fr auto; align-items: center;
-    gap: 6px; padding: 8px 10px; border-radius: 8px;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto 1fr auto auto auto auto;
+    align-items: center;
+    gap: 4px; padding: 8px 10px; border-radius: 8px;
     background: var(--panel);
   }
+  .tag_row .tag_end {
+    font-variant-numeric: tabular-nums; color: var(--warn);
+    cursor: pointer; padding: 4px 6px; border-radius: 6px;
+    min-width: 64px; text-align: right; font-weight: 600; font-size: 13px;
+  }
+  .tag_row .tag_end:hover { background: rgba(232,199,148,0.15); }
+  .tag_row button.play_tag {
+    background: var(--panel_3); color: var(--fg);
+    padding: 4px 6px; min-height: 26px; font-size: 11px;
+    border-radius: 6px;
+  }
+  .tag_row button.play_tag:hover { background: var(--accent); color: #0b0d0f; }
   .tag_row:hover { background: var(--panel_2); }
   .tag_row.active { background: var(--panel_2); outline: 1px solid var(--accent); }
   .tag_row.dragging { opacity: 0.4; }
@@ -360,6 +374,7 @@
   var sortMode     = localStorage.getItem(STORAGE_SORT) || 'time';
   var activeTagId  = null;
   var dragState    = null;
+  var playbackIntent = null;   // { type:'preview_end', endTime, nextTagId }
 
   audioPathDisp.textContent = PAGE_ID + '.json';
 
@@ -735,11 +750,28 @@
     if (isFinite(player.duration) && player.duration > 0) {
       seekFill.style.width = ((player.currentTime / player.duration) * 100) + '%';
     }
+    if (playbackIntent && player.currentTime >= playbackIntent.endTime) {
+      var intent = playbackIntent;
+      playbackIntent = null;
+      if (intent.type === 'preview_end') {
+        if (intent.nextTagId) {
+          var nt = tags.filter(function (x) { return x.id === intent.nextTagId; })[0];
+          if (nt) {
+            seek_to(nt.t);
+            activeTagId = nt.id;
+            render_tags();
+            render_tag_markers();
+          }
+        } else {
+          safe_pause();
+        }
+      }
+    }
   });
   player.addEventListener('loadedmetadata', function () {
     durTime.textContent = fmt_time(player.duration);
     var t = get_url_time();
-    if (t !== null) seek_to(t);
+    if (t !== null) handle_url_time(t);
     playerMsg.textContent = '';
     render_tag_markers();
   });
@@ -813,6 +845,63 @@
     render_tags();
     render_tag_markers();
   }
+  function next_tag_by_time(tag) {
+    var sorted = tags.slice().sort(function (a, b) { return a.t - b.t; });
+    var i = sorted.findIndex(function (t) { return t.id === tag.id; });
+    return (i >= 0 && i < sorted.length - 1) ? sorted[i + 1] : null;
+  }
+  function tag_end(tag) {
+    if (tag.e != null) return tag.e;
+    var nx = next_tag_by_time(tag);
+    if (nx) return nx.t;
+    return isFinite(player.duration) ? player.duration : tag.t + 30;
+  }
+  function nudge_tag_end(id, delta) {
+    var tag = tags.filter(function (x) { return x.id === id; })[0];
+    if (!tag) return;
+    var cur = tag_end(tag);
+    tag.e = Math.max(tag.t + 1, cur + delta);
+    save_tags();
+    render_tags();
+    render_tag_markers();
+    preview_end(tag);
+  }
+  function preview_end(tag) {
+    var endT = tag_end(tag);
+    var startT = Math.max(0, endT - 3);
+    var nx = next_tag_by_time(tag);
+    playbackIntent = { type: 'preview_end', endTime: endT, nextTagId: nx ? nx.id : null };
+    seek_to(startT);
+    safe_play();
+  }
+  function play_from_tag(tag) {
+    playbackIntent = null;
+    seek_to(tag.t);
+    safe_play();
+    activeTagId = tag.id;
+    render_tags();
+    render_tag_markers();
+  }
+  function handle_url_time(t) {
+    if (t == null) return;
+    seek_to(t);
+    var match = tags.filter(function (x) { return Math.abs(x.t - t) < 2; })[0];
+    if (match) {
+      activeTagId = match.id;
+    } else {
+      var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
+      var tag = {
+        id: 't_url_' + Math.floor(t) + '_' + Math.random().toString(36).slice(2, 5),
+        t: t, label: '', order: maxOrder + 10
+      };
+      tags.push(tag);
+      activeTagId = tag.id;
+      save_tags();
+      toast('Created tag at ' + fmt_time(t));
+    }
+    render_tags();
+    render_tag_markers();
+  }
   function render_tags() {
     tagList.innerHTML = '';
     if (!tags.length) {
@@ -835,9 +924,15 @@
       handle.title = (sortMode === 'manual') ? 'Drag to reorder' : 'Switch to Manual sort to drag';
       attach_drag(handle, row, tag);
 
+      var playBtnRow = document.createElement('button');
+      playBtnRow.className = 'play_tag';
+      playBtnRow.title = 'Play from this tag';
+      playBtnRow.textContent = '▶';
+      playBtnRow.addEventListener('click', function () { play_from_tag(tag); });
+
       var minus1 = document.createElement('button');
       minus1.className = 'tiny';
-      minus1.title = 'Move tag −1s';
+      minus1.title = 'Move start −1s';
       minus1.textContent = '−1s';
       minus1.addEventListener('click', function () { nudge_tag(tag.id, -1); });
 
@@ -845,11 +940,11 @@
       time.className = 'tag_time';
       time.textContent = fmt_time(tag.t);
       time.title = 'Jump to ' + fmt_time(tag.t);
-      time.addEventListener('click', function () { seek_to(tag.t); safe_play(); activeTagId = tag.id; render_tags(); });
+      time.addEventListener('click', function () { play_from_tag(tag); });
 
       var plus1 = document.createElement('button');
       plus1.className = 'tiny';
-      plus1.title = 'Move tag +1s';
+      plus1.title = 'Move start +1s';
       plus1.textContent = '+1s';
       plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
 
@@ -861,8 +956,23 @@
       label.addEventListener('input', function () { tag.label = label.value; save_tags(); });
       label.addEventListener('keydown', function (e) { if (e.key === 'Enter') label.blur(); });
 
-      var actions = document.createElement('div');
-      actions.className = 'tag_actions';
+      var endMinus = document.createElement('button');
+      endMinus.className = 'tiny';
+      endMinus.title = 'Move end −1s (and preview)';
+      endMinus.textContent = '−1s';
+      endMinus.addEventListener('click', function () { nudge_tag_end(tag.id, -1); });
+
+      var endTime = document.createElement('div');
+      endTime.className = 'tag_end';
+      endTime.textContent = fmt_time(tag_end(tag));
+      endTime.title = 'Preview end (last 3s) then jump to next tag';
+      endTime.addEventListener('click', function () { preview_end(tag); });
+
+      var endPlus = document.createElement('button');
+      endPlus.className = 'tiny';
+      endPlus.title = 'Move end +1s (and preview)';
+      endPlus.textContent = '+1s';
+      endPlus.addEventListener('click', function () { nudge_tag_end(tag.id, 1); });
 
       var linkBtn = document.createElement('button');
       linkBtn.className = 'ghost';
@@ -885,15 +995,17 @@
         render_tags();
       });
 
-      actions.appendChild(linkBtn);
-      actions.appendChild(delBtn);
-
       row.appendChild(handle);
+      row.appendChild(playBtnRow);
       row.appendChild(minus1);
       row.appendChild(time);
       row.appendChild(plus1);
       row.appendChild(label);
-      row.appendChild(actions);
+      row.appendChild(endMinus);
+      row.appendChild(endTime);
+      row.appendChild(endPlus);
+      row.appendChild(linkBtn);
+      row.appendChild(delBtn);
       tagList.appendChild(row);
     });
     render_tag_markers();
