@@ -1,0 +1,9 @@
+# audio files are too large for GitHub (100 MB limit) — keep them out of the repo
+# host them via GitHub Pages by another means (LFS, external CDN, or compressed mp3)
+*.m4a
+*.wav
+*.aiff
+*.flac
+
+# OS
+.DS_Store
