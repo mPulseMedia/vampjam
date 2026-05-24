@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bazaar Cafe — 2026-05-23</title>
+<style>
+  :root {
+    --bg: #111418;
+    --panel: #1a1f26;
+    --panel_2: #232a33;
+    --fg: #e6eaf0;
+    --muted: #8a93a0;
+    --accent: #6abf69;
+    --accent_2: #5b9bd5;
+    --danger: #e07b7b;
+    --warn: #d4a95a;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--fg); margin: 0; padding: 0; }
+  body { font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 16px; padding-bottom: 140px; max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 18px; margin: 0 0 4px; font-weight: 600; }
+  .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+  .player_card { background: var(--panel); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+  audio { width: 100%; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  button {
+    appearance: none; -webkit-appearance: none; border: 0; cursor: pointer;
+    background: var(--panel_2); color: var(--fg); font: inherit;
+    padding: 8px 12px; border-radius: 8px; min-height: 36px;
+  }
+  button:active { transform: scale(0.97); }
+  button.primary { background: var(--accent); color: #0b0d0f; font-weight: 600; }
+  button.primary_2 { background: var(--accent_2); color: #0b0d0f; font-weight: 600; }
+  button.ghost { background: transparent; color: var(--muted); padding: 6px 8px; min-height: 32px; }
+  button.ghost:hover { color: var(--fg); }
+  .tag_btn_big {
+    width: 100%; padding: 18px; font-size: 17px; font-weight: 600;
+    background: var(--accent); color: #0b0d0f; border-radius: 12px;
+    margin: 8px 0 14px; box-shadow: 0 4px 14px rgba(106,191,105,0.18);
+  }
+  .tag_list { background: var(--panel); border-radius: 12px; padding: 6px; }
+  .tag_row {
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+    gap: 8px; padding: 8px 10px; border-radius: 8px;
+  }
+  .tag_row:hover { background: var(--panel_2); }
+  .tag_row.active { background: var(--panel_2); outline: 1px solid var(--accent); }
+  .tag_time {
+    font-variant-numeric: tabular-nums; color: var(--accent_2);
+    cursor: pointer; padding: 4px 6px; border-radius: 6px; min-width: 64px; text-align: right;
+    font-weight: 600;
+  }
+  .tag_time:hover { background: rgba(91,155,213,0.12); }
+  .tag_label {
+    background: transparent; border: 0; color: var(--fg); font: inherit;
+    width: 100%; padding: 4px 6px; border-radius: 6px;
+  }
+  .tag_label:focus { outline: 1px solid var(--accent_2); background: rgba(0,0,0,0.2); }
+  .tag_actions { display: flex; gap: 4px; }
+  .empty { color: var(--muted); padding: 14px; text-align: center; }
+  .footer {
+    position: fixed; bottom: 0; left: 0; right: 0; padding: 10px 14px;
+    background: var(--panel); border-top: 1px solid #2a313a;
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: 90px; background: #0b0d0f; color: var(--fg);
+    padding: 8px 14px; border-radius: 20px; font-size: 13px;
+    opacity: 0; transition: opacity 0.2s; pointer-events: none;
+    border: 1px solid #2a313a;
+  }
+  .toast.show { opacity: 1; }
+  .meta_row { display: flex; gap: 12px; color: var(--muted); font-size: 12px; }
+  .meta_row span { font-variant-numeric: tabular-nums; }
+  details { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
+  details summary { cursor: pointer; color: var(--fg); font-weight: 600; }
+  details code { background: var(--panel_2); padding: 1px 6px; border-radius: 4px; color: var(--fg); }
+  .src_pick { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+  .src_pick label { color: var(--muted); font-size: 13px; }
+  .src_pick input[type=file] { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<h1>Bazaar Cafe — 2026-05-23</h1>
+<div class="subtitle">Tag moments while listening. Tags save on this device. Use the per-row link button to share a direct link to that moment.</div>
+
+<div class="player_card">
+  <audio id="player" controls preload="metadata"></audio>
+  <div class="meta_row" style="margin-top:8px">
+    <span id="now_time">0:00</span>
+    <span>/</span>
+    <span id="dur_time">--:--</span>
+  </div>
+  <div class="src_pick">
+    <label>Audio file:</label>
+    <input type="file" id="file_in" accept="audio/*">
+    <button class="ghost" id="src_reset">use Bazaar Cafe 3.m4a</button>
+  </div>
+</div>
+
+<button class="tag_btn_big" id="tag_btn">+ Tag this moment</button>
+
+<div class="tag_list" id="tag_list"></div>
+
+<details>
+  <summary>About this page</summary>
+  <div style="margin-top:8px">
+    <div>• Tap <b>+ Tag this moment</b> while playing to mark the current time.</div>
+    <div>• Click a tag's time to jump there. Click its label to rename. The link icon copies a shareable URL.</div>
+    <div>• Direct link formats: <code>?t=13m22s</code> or <code>#t=13m22s</code>. Plain seconds also work (<code>?t=802</code>).</div>
+    <div>• Tags save in your browser's localStorage on each device. Use Export / Import to move them.</div>
+  </div>
+</details>
+
+<div class="toast" id="toast"></div>
+
+<div class="footer">
+  <button id="export_btn">Export</button>
+  <button id="import_btn">Import</button>
+  <button id="clear_btn" style="color:var(--danger)">Clear all</button>
+  <input type="file" id="import_file" accept="application/json" style="display:none">
+</div>
+
+<script>
+  // ---------- config ----------
+  var STORAGE_KEY = 'bazaar_cafe_2026_05_23_tags';
+  var DEFAULT_SRC = 'Bazaar Cafe 3.m4a';
+
+  // ---------- elements ----------
+  var player    = document.getElementById('player');
+  var tagBtn    = document.getElementById('tag_btn');
+  var tagList   = document.getElementById('tag_list');
+  var nowTime   = document.getElementById('now_time');
+  var durTime   = document.getElementById('dur_time');
+  var toast_el  = document.getElementById('toast');
+  var fileIn    = document.getElementById('file_in');
+  var srcReset  = document.getElementById('src_reset');
+  var exportBtn = document.getElementById('export_btn');
+  var importBtn = document.getElementById('import_btn');
+  var importIn  = document.getElementById('import_file');
+  var clearBtn  = document.getElementById('clear_btn');
+
+  // ---------- state ----------
+  var tags = load_tags();
+  var active_tag_id = null;
+
+  // ---------- audio source ----------
+  player.src = DEFAULT_SRC;
+
+  srcReset.addEventListener('click', function () {
+    player.src = DEFAULT_SRC;
+    toast('Loaded ' + DEFAULT_SRC);
+  });
+  fileIn.addEventListener('change', function () {
+    var f = fileIn.files && fileIn.files[0];
+    if (!f) return;
+    var url = URL.createObjectURL(f);
+    player.src = url;
+    toast('Loaded local file: ' + f.name);
+  });
+
+  // ---------- time formatting ----------
+  function fmt_time(sec) {
+    sec = Math.max(0, Math.floor(sec || 0));
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec % 3600) / 60);
+    var s = sec % 60;
+    if (h > 0) return h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    return m + ':' + String(s).padStart(2,'0');
+  }
+  function fmt_url(sec) {
+    sec = Math.max(0, Math.floor(sec || 0));
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec % 3600) / 60);
+    var s = sec % 60;
+    var out = '';
+    if (h > 0) out += h + 'h';
+    if (m > 0 || h > 0) out += m + 'm';
+    out += s + 's';
+    return out;
+  }
+  // parse "13m22s", "1h13m22s", "802", "13:22"
+  function parse_time(t) {
+    if (t === null || t === undefined) return null;
+    t = String(t).trim().toLowerCase();
+    if (!t) return null;
+    // plain number — seconds
+    if (/^\d+(\.\d+)?$/.test(t)) return parseFloat(t);
+    // mm:ss or hh:mm:ss
+    if (/^\d+:\d+(:\d+)?$/.test(t)) {
+      var parts = t.split(':').map(Number);
+      if (parts.length === 2) return parts[0]*60 + parts[1];
+      if (parts.length === 3) return parts[0]*3600 + parts[1]*60 + parts[2];
+    }
+    // 1h13m22s
+    var m = t.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
+    if (m && (m[1] || m[2] || m[3])) {
+      return (parseInt(m[1]||0)*3600) + (parseInt(m[2]||0)*60) + parseInt(m[3]||0);
+    }
+    return null;
+  }
+
+  // ---------- url params ----------
+  function get_url_time() {
+    // check ?t= and #t=
+    try {
+      var qp = new URLSearchParams(window.location.search);
+      if (qp.has('t')) {
+        var v = parse_time(qp.get('t'));
+        if (v !== null) return v;
+      }
+    } catch (e) {}
+    var h = window.location.hash || '';
+    if (h.startsWith('#')) h = h.slice(1);
+    var hp = new URLSearchParams(h);
+    if (hp.has('t')) {
+      var v2 = parse_time(hp.get('t'));
+      if (v2 !== null) return v2;
+    }
+    // also accept #13m22s directly
+    var direct = parse_time(h);
+    if (direct !== null) return direct;
+    return null;
+  }
+  function build_share_url(sec) {
+    var base = window.location.origin + window.location.pathname;
+    return base + '?t=' + fmt_url(sec);
+  }
+
+  // ---------- storage ----------
+  function load_tags() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      var arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [];
+      return arr;
+    } catch (e) { return []; }
+  }
+  function save_tags() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tags)); } catch (e) {}
+  }
+
+  // ---------- rendering ----------
+  function render() {
+    tagList.innerHTML = '';
+    if (!tags.length) {
+      var d = document.createElement('div');
+      d.className = 'empty';
+      d.textContent = 'No tags yet — start playing and tap "+ Tag this moment".';
+      tagList.appendChild(d);
+      return;
+    }
+    // sort ascending by time
+    tags.sort(function (a, b) { return a.t - b.t; });
+    tags.forEach(function (tag) {
+      var row = document.createElement('div');
+      row.className = 'tag_row';
+      if (tag.id === active_tag_id) row.classList.add('active');
+
+      var time = document.createElement('div');
+      time.className = 'tag_time';
+      time.textContent = fmt_time(tag.t);
+      time.title = 'Jump to ' + fmt_time(tag.t);
+      time.addEventListener('click', function () { seek_to(tag.t); active_tag_id = tag.id; render(); });
+
+      var label = document.createElement('input');
+      label.className = 'tag_label';
+      label.type = 'text';
+      label.value = tag.label || '';
+      label.placeholder = 'untitled moment';
+      label.addEventListener('input', function () { tag.label = label.value; save_tags(); });
+      label.addEventListener('keydown', function (e) { if (e.key === 'Enter') label.blur(); });
+
+      var actions = document.createElement('div');
+      actions.className = 'tag_actions';
+
+      var linkBtn = document.createElement('button');
+      linkBtn.className = 'ghost';
+      linkBtn.title = 'Copy direct link';
+      linkBtn.innerHTML = '🔗';
+      linkBtn.addEventListener('click', function () {
+        var url = build_share_url(tag.t);
+        copy_to_clipboard(url);
+        toast('Link copied: ' + url);
+      });
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'ghost';
+      delBtn.title = 'Delete tag';
+      delBtn.innerHTML = '✕';
+      delBtn.addEventListener('click', function () {
+        if (!confirm('Delete this tag?')) return;
+        tags = tags.filter(function (x) { return x.id !== tag.id; });
+        save_tags();
+        render();
+      });
+
+      actions.appendChild(linkBtn);
+      actions.appendChild(delBtn);
+
+      row.appendChild(time);
+      row.appendChild(label);
+      row.appendChild(actions);
+      tagList.appendChild(row);
+    });
+  }
+
+  // ---------- actions ----------
+  function add_tag() {
+    var t = player.currentTime || 0;
+    var tag = {
+      id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+      t: t,
+      label: ''
+    };
+    tags.push(tag);
+    active_tag_id = tag.id;
+    save_tags();
+    render();
+    // focus the new tag's label for naming
+    setTimeout(function () {
+      var rows = tagList.querySelectorAll('.tag_row');
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i].classList.contains('active')) {
+          var inp = rows[i].querySelector('.tag_label');
+          if (inp) inp.focus();
+          break;
+        }
+      }
+    }, 0);
+    toast('Tagged at ' + fmt_time(t));
+  }
+  function seek_to(sec) {
+    try { player.currentTime = sec; player.play().catch(function(){}); } catch (e) {}
+  }
+  function copy_to_clipboard(s) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(s).catch(fallback);
+    } else {
+      fallback();
+    }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = s;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+  }
+  function toast(msg) {
+    toast_el.textContent = msg;
+    toast_el.classList.add('show');
+    clearTimeout(toast._tid);
+    toast._tid = setTimeout(function () { toast_el.classList.remove('show'); }, 1800);
+  }
+
+  // ---------- events ----------
+  tagBtn.addEventListener('click', add_tag);
+
+  // spacebar to play/pause anywhere (except when typing in an input)
+  document.addEventListener('keydown', function (e) {
+    if (e.key === ' ' && !(e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA'))) {
+      e.preventDefault();
+      if (player.paused) player.play(); else player.pause();
+    }
+    // T to tag
+    if ((e.key === 't' || e.key === 'T') && !(e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA'))) {
+      e.preventDefault();
+      add_tag();
+    }
+  });
+
+  player.addEventListener('timeupdate', function () {
+    nowTime.textContent = fmt_time(player.currentTime);
+  });
+  player.addEventListener('loadedmetadata', function () {
+    durTime.textContent = fmt_time(player.duration);
+    // apply url time once metadata is in
+    var t = get_url_time();
+    if (t !== null) seek_to(t);
+  });
+
+  // ---------- export / import ----------
+  exportBtn.addEventListener('click', function () {
+    var blob = new Blob([JSON.stringify(tags, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'bazaar_cafe_2026_05_23_tags.json';
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  });
+  importBtn.addEventListener('click', function () { importIn.click(); });
+  importIn.addEventListener('change', function () {
+    var f = importIn.files && importIn.files[0];
+    if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () {
+      try {
+        var arr = JSON.parse(rd.result);
+        if (!Array.isArray(arr)) throw new Error('not an array');
+        // merge by id
+        var byId = {};
+        tags.forEach(function (x) { byId[x.id] = x; });
+        arr.forEach(function (x) { if (x && x.id && typeof x.t === 'number') byId[x.id] = x; });
+        tags = Object.values(byId);
+        save_tags();
+        render();
+        toast('Imported ' + arr.length + ' tag(s)');
+      } catch (e) {
+        toast('Import failed: ' + e.message);
+      }
+      importIn.value = '';
+    };
+    rd.readAsText(f);
+  });
+  clearBtn.addEventListener('click', function () {
+    if (!tags.length) { toast('No tags to clear'); return; }
+    if (!confirm('Clear all ' + tags.length + ' tags on this device?')) return;
+    tags = [];
+    save_tags();
+    render();
+  });
+
+  // ---------- boot ----------
+  render();
+</script>
+
+</body>
+</html>
