@@ -95,13 +95,31 @@
     background: var(--accent); color: #0b0d0f; border-radius: 12px;
     margin: 8px 0 14px; box-shadow: 0 4px 14px rgba(106,191,105,0.18);
   }
-  .tag_list { background: var(--panel); border-radius: 12px; padding: 6px; }
+  .tag_header { display: flex; justify-content: space-between; align-items: center; padding: 0 4px 6px; }
+  .tag_header h2 { font-size: 13px; margin: 0; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .sort_toggle { display: inline-flex; background: var(--panel_2); border-radius: 8px; padding: 2px; gap: 0; }
+  .sort_toggle button {
+    background: transparent; color: var(--muted); border: 0; cursor: pointer;
+    padding: 4px 10px; border-radius: 6px; font: inherit; font-size: 12px;
+    min-height: 28px; font-weight: 600;
+  }
+  .sort_toggle button.active { background: var(--accent_2); color: #0b0d0f; }
+  .tag_list { background: var(--panel); border-radius: 12px; padding: 6px; touch-action: pan-y; }
   .tag_row {
-    display: grid; grid-template-columns: auto auto auto 1fr auto; align-items: center;
+    display: grid; grid-template-columns: auto auto auto auto 1fr auto; align-items: center;
     gap: 6px; padding: 8px 10px; border-radius: 8px;
+    background: var(--panel);
   }
   .tag_row:hover { background: var(--panel_2); }
   .tag_row.active { background: var(--panel_2); outline: 1px solid var(--accent); }
+  .tag_row.dragging { opacity: 0.4; }
+  .drag_handle {
+    cursor: grab; color: var(--muted); padding: 4px 6px; user-select: none;
+    font-size: 16px; line-height: 1; touch-action: none;
+  }
+  .drag_handle:active { cursor: grabbing; }
+  .tag_row.no_drag .drag_handle { color: var(--panel_3); cursor: default; }
+  .drop_indicator { height: 2px; background: var(--accent); margin: 2px 8px; border-radius: 1px; pointer-events: none; }
   .tag_time {
     font-variant-numeric: tabular-nums; color: var(--accent_2);
     cursor: pointer; padding: 4px 6px; border-radius: 6px; min-width: 68px; text-align: right;
@@ -191,6 +209,14 @@
 
 <button class="tag_btn_big" id="tag_btn">+ Tag this moment</button>
 
+<div class="tag_header">
+  <h2>Tags</h2>
+  <div class="sort_toggle" id="sort_toggle">
+    <button data-mode="time">Time</button>
+    <button data-mode="manual">Manual</button>
+  </div>
+</div>
+
 <div class="tag_list" id="tag_list"></div>
 
 <details>
@@ -198,7 +224,8 @@
   <div style="margin-top:8px">
     <div>• <b>Source list</b> at the top — add Google Drive shares, direct URLs, or filenames next to this page. Tap a row to load. The selected source is remembered per page.</div>
     <div>• <b>Player buttons</b>: ▶/⏸ plays; −15s / +15s for fine seeking; −2m / +2m for big jumps. Click the bar to scrub. Spacebar = play/pause; <code>T</code> = tag.</div>
-    <div>• <b>Tag row</b>: time (click to seek), inline label edit, tiny <code>−1s</code>/<code>+1s</code> nudge the tag's saved time, 🔗 copies a direct link, ✕ deletes.</div>
+    <div>• <b>Tag row</b>: ≡ drag handle (in Manual sort), time (click to seek), tiny <code>−1s</code>/<code>+1s</code> nudge the tag's saved time, inline label edit, 🔗 copies a direct link, ✕ deletes.</div>
+    <div>• <b>Sort toggle</b>: <code>Time</code> auto-sorts by timestamp. <code>Manual</code> respects your drag order. Dragging in Time mode auto-switches to Manual.</div>
     <div>• <b>Direct link</b> formats: <code>?t=1h7m32s</code>, <code>?t=13m22s</code>, <code>?t=802</code>, <code>?t=13:22</code>. Also accepts <code>#t=…</code>.</div>
     <div>• <b>Tags + sources</b> save in localStorage. Use Export / Import to move between devices.</div>
   </div>
@@ -233,6 +260,7 @@
   var STORAGE_TAGS    = PAGE_ID + '_tags';
   var STORAGE_SOURCES = PAGE_ID + '_user_sources';
   var STORAGE_PICKED  = PAGE_ID + '_picked_src';
+  var STORAGE_SORT    = PAGE_ID + '_sort_mode';
 
   // ============ elements ============
   var $ = function (id) { return document.getElementById(id); };
@@ -258,6 +286,7 @@
   var fwd120      = $('fwd_120');
   var tagBtn      = $('tag_btn');
   var tagList     = $('tag_list');
+  var sortToggle  = $('sort_toggle');
   var toastEl     = $('toast');
   var exportBtn   = $('export_btn');
   var importBtn   = $('import_btn');
@@ -268,7 +297,9 @@
   var tags         = load_json(STORAGE_TAGS, []);
   var userSources  = load_json(STORAGE_SOURCES, []);
   var pickedId     = localStorage.getItem(STORAGE_PICKED) || null;
+  var sortMode     = localStorage.getItem(STORAGE_SORT) || 'time';
   var activeTagId  = null;
+  var dragState    = null;
 
   function load_json(key, fallback) {
     try {
@@ -281,6 +312,7 @@
   function save_tags()    { try { localStorage.setItem(STORAGE_TAGS,    JSON.stringify(tags));        } catch (e) {} }
   function save_sources() { try { localStorage.setItem(STORAGE_SOURCES, JSON.stringify(userSources)); } catch (e) {} }
   function save_picked(id){ try { if (id) localStorage.setItem(STORAGE_PICKED, id); else localStorage.removeItem(STORAGE_PICKED); } catch (e) {} }
+  function save_sort()    { try { localStorage.setItem(STORAGE_SORT,    sortMode);                    } catch (e) {} }
 
   // ============ sources ============
   function all_sources() {
@@ -564,10 +596,13 @@
   // ============ tags ============
   function add_tag() {
     var t = player.currentTime || 0;
+    // give new tags an order value past the current max so manual mode keeps them at the bottom
+    var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
     var tag = {
       id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
       t: t,
-      label: ''
+      label: '',
+      order: maxOrder + 10
     };
     tags.push(tag);
     activeTagId = tag.id;
@@ -592,6 +627,38 @@
     save_tags();
     render_tags();
   }
+  function ensure_order() {
+    // Assign sequential order values to any tags missing them, based on current time-sorted position.
+    var missing = tags.some(function (t) { return t.order == null; });
+    if (!missing) return;
+    var sorted = tags.slice().sort(function (a, b) { return a.t - b.t; });
+    sorted.forEach(function (t, i) { if (t.order == null) t.order = i * 10; });
+  }
+  function sorted_tags() {
+    var arr = tags.slice();
+    if (sortMode === 'manual') {
+      ensure_order();
+      arr.sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+    } else {
+      arr.sort(function (a, b) { return a.t - b.t; });
+    }
+    return arr;
+  }
+  function set_sort_mode(mode) {
+    if (mode !== 'time' && mode !== 'manual') return;
+    if (mode === 'manual') ensure_order();
+    sortMode = mode;
+    save_sort();
+    render_sort_toggle();
+    render_tags();
+  }
+  function render_sort_toggle() {
+    Array.from(sortToggle.querySelectorAll('button')).forEach(function (b) {
+      if (b.dataset.mode === sortMode) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+  }
+
   function render_tags() {
     tagList.innerHTML = '';
     if (!tags.length) {
@@ -601,11 +668,18 @@
       tagList.appendChild(d);
       return;
     }
-    tags.sort(function (a, b) { return a.t - b.t; });
-    tags.forEach(function (tag) {
+    sorted_tags().forEach(function (tag) {
       var row = document.createElement('div');
       row.className = 'tag_row';
       if (tag.id === activeTagId) row.classList.add('active');
+      if (sortMode !== 'manual') row.classList.add('no_drag');
+      row.dataset.tagId = tag.id;
+
+      var handle = document.createElement('div');
+      handle.className = 'drag_handle';
+      handle.innerHTML = '≡';
+      handle.title = (sortMode === 'manual') ? 'Drag to reorder' : 'Switch to Manual sort to drag';
+      attach_drag(handle, row, tag);
 
       var minus1 = document.createElement('button');
       minus1.className = 'tiny';
@@ -660,6 +734,7 @@
       actions.appendChild(linkBtn);
       actions.appendChild(delBtn);
 
+      row.appendChild(handle);
       row.appendChild(minus1);
       row.appendChild(time);
       row.appendChild(plus1);
@@ -669,7 +744,91 @@
     });
   }
 
+  // ---------- drag-to-reorder (pointer events: works for mouse + touch) ----------
+  function attach_drag(handle, row, tag) {
+    handle.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      // auto-switch into manual the moment the user starts dragging
+      if (sortMode !== 'manual') {
+        set_sort_mode('manual');
+        toast('Switched to Manual sort');
+        // render_tags re-created the rows — bail out; the user can drag the new handle.
+        return;
+      }
+      try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+      dragState = { tag: tag, row: row, pointerId: e.pointerId, moved: false };
+      row.classList.add('dragging');
+      window.addEventListener('pointermove', on_drag_move);
+      window.addEventListener('pointerup',   on_drag_end);
+      window.addEventListener('pointercancel', on_drag_end);
+    });
+  }
+  function on_drag_move(e) {
+    if (!dragState) return;
+    dragState.moved = true;
+    var rows = Array.from(tagList.querySelectorAll('.tag_row'));
+    var y = e.clientY;
+    var insertBeforeEl = null;
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      if (r === dragState.row) continue;
+      var rect = r.getBoundingClientRect();
+      if (y < rect.top + rect.height / 2) { insertBeforeEl = r; break; }
+    }
+    // place/move the drop indicator
+    var ind = tagList.querySelector('.drop_indicator');
+    if (!ind) {
+      ind = document.createElement('div');
+      ind.className = 'drop_indicator';
+    }
+    if (insertBeforeEl) {
+      tagList.insertBefore(ind, insertBeforeEl);
+    } else {
+      tagList.appendChild(ind);
+    }
+  }
+  function on_drag_end(e) {
+    if (!dragState) return;
+    var s = dragState;
+    dragState = null;
+    window.removeEventListener('pointermove', on_drag_move);
+    window.removeEventListener('pointerup',   on_drag_end);
+    window.removeEventListener('pointercancel', on_drag_end);
+    s.row.classList.remove('dragging');
+
+    var ind = tagList.querySelector('.drop_indicator');
+    if (!s.moved || !ind) {
+      if (ind) ind.remove();
+      return;
+    }
+
+    // build new id order from DOM, using indicator as the dragged tag's new position
+    var newOrder = [];
+    Array.from(tagList.children).forEach(function (el) {
+      if (el === ind) {
+        newOrder.push(s.tag.id);
+      } else if (el === s.row) {
+        // skip — the dragged row's old DOM spot is no longer where it lives
+      } else if (el.dataset && el.dataset.tagId) {
+        newOrder.push(el.dataset.tagId);
+      }
+    });
+    // assign order values (10-step so future inserts have room)
+    newOrder.forEach(function (id, i) {
+      var t = tags.filter(function (x) { return x.id === id; })[0];
+      if (t) t.order = i * 10;
+    });
+    save_tags();
+    ind.remove();
+    render_tags();
+  }
+
   tagBtn.addEventListener('click', add_tag);
+
+  // sort toggle
+  Array.from(sortToggle.querySelectorAll('button')).forEach(function (b) {
+    b.addEventListener('click', function () { set_sort_mode(b.dataset.mode); });
+  });
 
   // keyboard
   document.addEventListener('keydown', function (e) {
@@ -750,6 +909,7 @@
 
   // ============ boot ============
   render_sources();
+  render_sort_toggle();
   render_tags();
   // pick the previously selected source, or fall back to the first default
   var picked = pickedId && all_sources().filter(function (x) { return x.id === pickedId; })[0];
