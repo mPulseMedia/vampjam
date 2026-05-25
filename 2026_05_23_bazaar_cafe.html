@@ -290,7 +290,7 @@
     </div>
     <div class="audio_edit_help">
       Drive: share as <i>Anyone with the link → Viewer</i>, then paste the share URL.
-      Saving writes <code>sources/<span id="audio_path_display"></span></code> to the repo so every visitor sees this audio.
+      Saving writes <code id="audio_path_display"></code> to the repo so every visitor sees this audio.
     </div>
   </div>
 
@@ -326,11 +326,19 @@
   var REPO_OWNER = 'mPulseMedia';
   var REPO_NAME  = 'vampjam';
 
-  var SOURCES_PATH = 'sources/' + PAGE_ID + '.json';
-  var TAGS_PATH    = 'tags/' + PAGE_ID + '.json';
-  var STORAGE_TAGS = PAGE_ID + '_tags';
-  var STORAGE_SORT = PAGE_ID + '_sort_mode';
-  var STORAGE_PAT  = 'github_pat';
+  // Single per-page JSON colocated with this HTML (e.g. 2026_05_23_bazaar_cafe.json).
+  var DATA_PATH = (function () {
+    var pn = location.pathname || '';
+    var base = pn.substring(pn.lastIndexOf('/') + 1).replace(/\.html?$/i, '');
+    return base ? base + '.json' : (PAGE_ID + '.json');
+  })();
+  // legacy paths (no longer used; kept here so we don't accidentally try to read them)
+  var SOURCES_PATH    = DATA_PATH;
+  var TAGS_PATH       = DATA_PATH;
+  var STORAGE_TAGS    = PAGE_ID + '_tags';
+  var STORAGE_SORT    = PAGE_ID + '_sort_mode';
+  var STORAGE_TOMBS   = PAGE_ID + '_deleted_tag_ids';
+  var STORAGE_PAT     = 'github_pat';
 
   // ============ elements ============
   var $ = function (id) { return document.getElementById(id); };
@@ -386,7 +394,7 @@
   var dragState    = null;
   var playbackIntent = null;   // { type:'preview_end', endTime, nextTagId }
 
-  audioPathDisp.textContent = PAGE_ID + '.json';
+  audioPathDisp.textContent = DATA_PATH;
 
   // ============ utils ============
   function load_json(key, fallback) {
@@ -399,6 +407,12 @@
   }
   function save_tags() { try { localStorage.setItem(STORAGE_TAGS, JSON.stringify(tags)); } catch (e) {} }
   function save_sort() { try { localStorage.setItem(STORAGE_SORT, sortMode); } catch (e) {} }
+  function get_tombs() { return load_json(STORAGE_TOMBS, []); }
+  function add_tombstone(id) {
+    var t = get_tombs();
+    if (t.indexOf(id) === -1) t.push(id);
+    try { localStorage.setItem(STORAGE_TOMBS, JSON.stringify(t)); } catch (e) {}
+  }
 
   function fmt_time(sec) {
     sec = Math.max(0, Math.floor(sec || 0));
@@ -549,37 +563,25 @@
   }
 
   // ============ audio source: read / write / play ============
-  // ============ repo tags: seed tags from tags/<PAGE_ID>.json ============
-  function fetch_repo_tags() {
-    var url;
-    if (location.protocol === 'file:') {
-      url = 'https://raw.githubusercontent.com/' + REPO_OWNER + '/' + REPO_NAME +
-            '/main/' + TAGS_PATH + '?v=' + Date.now();
-    } else {
-      url = TAGS_PATH + '?v=' + Date.now();
-    }
-    return fetch(url, { cache: 'no-store' }).then(function (r) {
-      if (!r.ok) return [];
-      return r.json().catch(function () { return []; });
-    }).then(function (arr) {
-      if (!Array.isArray(arr)) return;
-      var byId = {};
-      tags.forEach(function (t) { byId[t.id] = true; });
-      var added = 0;
-      var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
-      arr.forEach(function (t) {
-        if (!t || !t.id || typeof t.t !== 'number') return;
-        if (byId[t.id]) return; // already have it locally
-        var cp = { id: t.id, t: t.t, label: t.label || '', order: ++maxOrder * 10 };
-        tags.push(cp);
-        added++;
-      });
-      if (added > 0) {
-        save_tags();
-        render_tags();
-        render_tag_markers();
-      }
-    }).catch(function () {});
+  // tags are now seeded by fetch_repo_data (combined file). keep a stub for back-compat.
+  function fetch_repo_tags() { return Promise.resolve(); }
+
+  // write the combined per-page data ({audio, tags}) to the repo as a single commit.
+  function save_data_to_repo(message) {
+    if (!has_pat()) return Promise.reject(new Error('no token'));
+    return gh_get_audio().then(function (data) {
+      var sha = (data && !data._missing) ? data.sha : null;
+      var payload = {
+        audio: audio || null,
+        tags: tags.slice().sort(function (a, b) { return a.t - b.t; }).map(function (t) {
+          var o = { id: t.id, t: t.t, label: t.label || '' };
+          if (t.e != null) o.e = t.e;
+          return o;
+        })
+      };
+      var content = JSON.stringify(payload, null, 2) + '\n';
+      return gh_put_audio(content, sha, message);
+    });
   }
 
   function render_tag_markers() {
@@ -603,33 +605,58 @@
     });
   }
 
-  function fetch_audio_public() {
-    // public fetch via Pages (no auth needed). Cache-bust to see fresh after a recent PUT.
-    // When opened locally (file://) fetch from github raw so the local page sees the same
-    // binding as the live page (browsers block file:// → file:// fetch in most setups).
+  function fetch_repo_data() {
+    // Single per-page JSON: { audio: {...}, tags: [...] } colocated with this HTML.
+    // file:// can't fetch the local sibling JSON in most browsers, so use raw.githubusercontent.com.
     var srcUrl;
     if (location.protocol === 'file:') {
       srcUrl = 'https://raw.githubusercontent.com/' + REPO_OWNER + '/' + REPO_NAME +
-               '/main/' + SOURCES_PATH + '?v=' + Date.now();
+               '/main/' + DATA_PATH + '?v=' + Date.now();
     } else {
-      srcUrl = SOURCES_PATH + '?v=' + Date.now();
+      srcUrl = DATA_PATH + '?v=' + Date.now();
     }
     return fetch(srcUrl, { cache: 'no-store' }).then(function (r) {
       if (!r.ok) return null;
       return r.json().catch(function () { return null; });
     }).then(function (data) {
-      if (data && typeof data === 'object' && !Array.isArray(data) && data.url) {
+      if (!data) { audio = null; render_audio_label(); return; }
+      var a = data.audio;
+      if (a && typeof a === 'object' && a.url) {
+        audio = { label: a.label || derive_label(a.url), url: a.url, kind: a.kind || detect_kind(a.url) };
+      } else if (data.url && !data.tags) {
+        // legacy: top-level audio object (old sources/<page>.json)
         audio = { label: data.label || derive_label(data.url), url: data.url, kind: data.kind || detect_kind(data.url) };
-      } else if (Array.isArray(data) && data.length && data[0].url) {
-        // tolerant: old array format. Take the first one.
-        audio = { label: data[0].label || derive_label(data[0].url), url: data[0].url, kind: data[0].kind || detect_kind(data[0].url) };
       } else {
         audio = null;
       }
       render_audio_label();
       load_audio_into_player();
+
+      var arr = Array.isArray(data.tags) ? data.tags : null;
+      if (arr) {
+        var tombs = get_tombs();
+        var byId = {}; tags.forEach(function (t) { byId[t.id] = true; });
+        var added = 0;
+        var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
+        arr.forEach(function (t) {
+          if (!t || !t.id || typeof t.t !== 'number') return;
+          if (byId[t.id]) return;
+          if (tombs.indexOf(t.id) !== -1) return;
+          var cp = { id: t.id, t: t.t, label: t.label || '', order: ++maxOrder * 10 };
+          if (t.e != null) cp.e = t.e;
+          tags.push(cp);
+          added++;
+        });
+        if (added > 0) {
+          save_tags();
+          render_tags();
+          render_tag_markers();
+        }
+      }
     }).catch(function () { audio = null; render_audio_label(); });
   }
+  // back-compat alias used elsewhere
+  function fetch_audio_public() { return fetch_repo_data(); }
   function render_audio_label() {
     if (audio) {
       audioLabelEl.textContent = audio.label;
@@ -684,13 +711,8 @@
     }
 
     toast('Saving to repo…');
-    var newAudio = { label: label, url: url, kind: kind };
-    gh_get_audio().then(function (data) {
-      var sha = (data && !data._missing) ? data.sha : null;
-      var content = JSON.stringify(newAudio, null, 2) + '\n';
-      return gh_put_audio(content, sha, 'set audio for ' + PAGE_ID);
-    }).then(function () {
-      audio = newAudio;
+    audio = { label: label, url: url, kind: kind };
+    save_data_to_repo('set audio for ' + PAGE_ID).then(function () {
       render_audio_label();
       load_audio_into_player();
       close_edit_form();
@@ -1076,8 +1098,15 @@
       delBtn.addEventListener('click', function () {
         if (!confirm('Delete this tag?')) return;
         tags = tags.filter(function (x) { return x.id !== tag.id; });
+        add_tombstone(tag.id);
         save_tags();
         render_tags();
+        render_tag_markers();
+        if (has_pat()) {
+          save_data_to_repo('delete tag ' + (tag.label || tag.id))
+            .then(function () { toast('Deleted (saved to repo).'); })
+            .catch(function (err) { toast('Repo save failed: ' + err.message); });
+        }
       });
       row.appendChild(delBtn);
 
@@ -1227,8 +1256,7 @@
   render_tags();
   render_pat_status();
   render_audio_label();
-  fetch_audio_public();
-  fetch_repo_tags();
+  fetch_repo_data();
 </script>
 
 </body>
