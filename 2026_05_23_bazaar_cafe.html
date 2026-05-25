@@ -107,6 +107,7 @@
     width: 76px; height: 76px; background: var(--accent); color: #0b0d0f;
     font-size: 28px; box-shadow: 0 4px 14px rgba(106,191,105,0.25);
   }
+  .ctrl_btn.small { width: 40px; height: 40px; font-size: 11px; }
   .ctrl_btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .player_msg { color: var(--muted); font-size: 12px; margin-top: 12px; min-height: 16px; }
   .player_msg.err { color: var(--danger); }
@@ -223,6 +224,7 @@
 
   @media (max-width: 480px) {
     .ctrl_btn { width: 48px; height: 48px; }
+    .ctrl_btn.small { width: 34px; height: 34px; font-size: 10px; }
     .ctrl_btn.play_btn { width: 68px; height: 68px; font-size: 24px; }
   }
 </style>
@@ -241,7 +243,9 @@
   <div class="ctrl_row">
     <button class="ctrl_btn" id="back_120" title="Back 2 min">−2m</button>
     <button class="ctrl_btn" id="back_15"  title="Back 15 sec">−15s</button>
+    <button class="ctrl_btn small" id="back_5" title="Back 5 sec">−5s</button>
     <button class="ctrl_btn play_btn" id="play_btn" title="Play / Pause">▶</button>
+    <button class="ctrl_btn small" id="fwd_5"  title="Forward 5 sec">+5s</button>
     <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec">+15s</button>
     <button class="ctrl_btn" id="fwd_120" title="Forward 2 min">+2m</button>
   </div>
@@ -354,6 +358,8 @@
   var seekBar   = $('seek_bar');
   var seekFill  = $('seek_fill');
   var playBtn   = $('play_btn');
+  var back5     = $('back_5');
+  var fwd5      = $('fwd_5');
   var back15    = $('back_15');
   var fwd15     = $('fwd_15');
   var back120   = $('back_120');
@@ -734,6 +740,8 @@
   function nudge(d) { seek_to((player.currentTime || 0) + d); }
 
   playBtn.addEventListener('click', toggle_play);
+  back5  .addEventListener('click', function () { nudge(-5); });
+  fwd5   .addEventListener('click', function () { nudge( 5); });
   back15 .addEventListener('click', function () { nudge(-15); });
   fwd15  .addEventListener('click', function () { nudge( 15); });
   back120.addEventListener('click', function () { nudge(-120); });
