@@ -321,27 +321,6 @@
     </div>
   </div>
 
-  <details class="pat_setup" id="pat_details">
-    <summary>GitHub setup (one-time, needed to save)</summary>
-    <div class="pat_body">
-      <p>To save the audio file binding to the repo, the page commits via the GitHub API. Paste a
-      <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noreferrer">fine-grained PAT</a>
-      with <b>Repository access: mPulseMedia/vampjam</b> and <b>Contents: Read &amp; write</b>. Stored only in this browser.</p>
-      <div class="pat_row">
-        <input type="password" id="pat_in" placeholder="github_pat_… or ghp_…" autocomplete="off">
-        <button id="pat_save" class="primary_2">Save token</button>
-        <button id="pat_clear">Remove</button>
-      </div>
-      <div id="pat_status" style="margin-top:6px"></div>
-      <div style="margin-top:10px">
-        <label style="display:block;color:var(--muted);font-size:11px;margin-bottom:4px">Your name (your tags show brighter):</label>
-        <div class="pat_row">
-          <input type="text" id="identity_in" placeholder="e.g. Paul" autocomplete="off">
-          <button id="identity_save" class="primary_2">Save name</button>
-        </div>
-      </div>
-    </div>
-  </details>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -359,6 +338,7 @@
   var PAGE_ID    = 'sound_union_2026_05_30';
   var REPO_OWNER = 'mPulseMedia';
   var REPO_NAME  = 'vampjam';
+  var WORKER_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
 
   // Single per-page JSON colocated with this HTML (e.g. 2026_05_23_bazaar_cafe.json).
   var DATA_PATH = (function () {
@@ -560,6 +540,7 @@
     else localStorage.removeItem(STORAGE_IDENTITY);
   }
   function render_pat_status() {
+    if (!patStatus || !patIn) return;
     if (has_pat()) {
       patStatus.innerHTML = '<span class="pat_ok">✓ Token saved.</span>';
       patIn.value = '';
@@ -612,7 +593,7 @@
   var saveDebounceTimer = null;
   var saveDebounceMsg   = null;
   function queue_save_data_to_repo(msg) {
-    if (!has_pat()) return;
+    if (!WORKER_URL) return;
     if (msg) saveDebounceMsg = msg;
     if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
     saveDebounceTimer = setTimeout(function () {
@@ -628,21 +609,26 @@
     }, 3000);
   }
 
-  // write the combined per-page data ({audio, tags}) to the repo as a single commit.
+  // POST the combined per-page data ({audio, tags}) to the Cloudflare Worker proxy.
+  // The Worker holds the PAT as a secret and commits to the repo.
   function save_data_to_repo(message) {
-    if (!has_pat()) return Promise.reject(new Error('no token'));
-    return gh_get_audio().then(function (data) {
-      var sha = (data && !data._missing) ? data.sha : null;
-      var payload = {
-        audio: audio || null,
-        tags: tags.slice().sort(function (a, b) { return a.t - b.t; }).map(function (t) {
-          var o = { id: t.id, t: t.t, label: t.label || '' };
-          if (t.e != null) o.e = t.e;
-          return o;
-        })
-      };
-      var content = JSON.stringify(payload, null, 2) + '\n';
-      return gh_put_audio(content, sha, message);
+    if (!WORKER_URL) return Promise.reject(new Error('worker not configured'));
+    var payload = {
+      audio: audio || null,
+      tags: tags.slice().sort(function (a, b) { return a.t - b.t; }).map(function (t) {
+        var o = { id: t.id, t: t.t, label: t.label || '' };
+        if (t.e != null) o.e = t.e;
+        return o;
+      })
+    };
+    var content = JSON.stringify(payload, null, 2) + '\n';
+    return fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: DATA_PATH, content: content, message: message })
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error('Worker ' + r.status + ': ' + t); });
+      return r.json();
     });
   }
 
@@ -765,13 +751,6 @@
     var kind = detect_kind(url);
     if (!label) label = derive_label(url);
 
-    if (!has_pat()) {
-      toast('GitHub setup needed — paste a token below.');
-      patDetails.open = true;
-      patIn.focus();
-      return;
-    }
-
     toast('Saving to repo…');
     audio = { label: label, url: url, kind: kind };
     save_data_to_repo('set audio for ' + PAGE_ID).then(function () {
@@ -797,28 +776,9 @@
     close_edit_form();
   });
 
-  // ============ pat handlers ============
-  patSave.addEventListener('click', function () {
-    var v = (patIn.value || '').trim();
-    if (!v) { toast('Paste a token first'); patIn.focus(); return; }
-    set_pat(v);
-    toast('Token saved.');
-  });
-  patClear.addEventListener('click', function () {
-    if (!has_pat()) { toast('No token to remove'); return; }
-    if (!confirm('Remove the saved GitHub token from this browser?')) return;
-    set_pat('');
-    toast('Token removed.');
-  });
-  if (identityIn) { identityIn.value = get_identity(); }
-  if (identitySave) {
-    identitySave.addEventListener('click', function () {
-      var v = (identityIn.value || '').trim();
-      set_identity(v);
-      toast(v ? 'Name saved: ' + v : 'Name cleared.');
-      render_tags();
-    });
-  }
+  // pat / identity handlers — removed; sync now goes through the Cloudflare Worker proxy.
+  if (patSave)  patSave.addEventListener('click', function () {});
+  if (patClear) patClear.addEventListener('click', function () {});
 
   // ============ player controls ============
   function safe_play()  { try { player.play().catch(function(){}); } catch (e) {} }
@@ -1187,11 +1147,9 @@
         save_tags();
         render_tags();
         render_tag_markers();
-        if (has_pat()) {
-          save_data_to_repo('delete tag ' + (tag.label || tag.id))
-            .then(function () { toast('Deleted (saved to repo).'); })
-            .catch(function (err) { toast('Repo save failed: ' + err.message); });
-        }
+        save_data_to_repo('delete tag ' + (tag.label || tag.id))
+          .then(function () { toast('Deleted (saved to repo).'); })
+          .catch(function (err) { toast('Delete sync failed: ' + err.message); });
       });
       row.appendChild(delBtn);
 
