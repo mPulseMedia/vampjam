@@ -281,7 +281,7 @@
     <button class="ctrl_btn" id="back_120" title="Back 2 min">−2m</button>
     <button class="ctrl_btn" id="back_15"  title="Back 15 sec">−15s</button>
     <button class="ctrl_btn small" id="back_5" title="Back 5 sec">−5s</button>
-    <button class="ctrl_btn play_btn" id="play_btn" title="Play / Pause">▶</button>
+    <button class="ctrl_btn play_btn" id="play_btn" title="Play / Pause"></button>
     <button class="ctrl_btn small" id="fwd_5"  title="Forward 5 sec">+5s</button>
     <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec">+15s</button>
     <button class="ctrl_btn" id="fwd_120" title="Forward 2 min">+2m</button>
@@ -349,6 +349,10 @@
   var REPO_OWNER = 'mPulseMedia';
   var REPO_NAME  = 'vampjam';
   var WORKER_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
+
+  // SVG icons scale with font-size; renders crisp on every device.
+  var ICON_PLAY  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
+  var ICON_PAUSE = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4.2" height="16" rx="1"/><rect x="13.8" y="4" width="4.2" height="16" rx="1"/></svg>';
 
   // Single per-page JSON colocated with this HTML (e.g. 2026_05_23_bazaar_cafe.json).
   var DATA_PATH = (function () {
@@ -842,16 +846,16 @@
   });
 
   player.addEventListener('play',  function () {
-    playBtn.textContent = '⏸';
+    playBtn.innerHTML = ICON_PAUSE;
     autoplayBlocked = false;
     render_tags();
   });
   player.addEventListener('pause', function () {
-    playBtn.textContent = '▶';
+    playBtn.innerHTML = ICON_PLAY;
     render_tags();
   });
   player.addEventListener('ended', function () {
-    playBtn.textContent = '▶';
+    playBtn.innerHTML = ICON_PLAY;
     render_tags();
   });
   player.addEventListener('timeupdate', function () {
@@ -1083,7 +1087,7 @@
       var playBtnRow = document.createElement('button');
       playBtnRow.className = 'play_tag' + (blockedHere ? ' autoplay_blocked' : '');
       playBtnRow.title = amPlayingThis ? 'Pause' : 'Play from this tag';
-      playBtnRow.textContent = amPlayingThis ? '⏸' : '▶';
+      playBtnRow.innerHTML = amPlayingThis ? ICON_PAUSE : ICON_PLAY;
       playBtnRow.addEventListener('click', function () {
         if (amPlayingThis) { safe_pause(); }
         else { autoplayBlocked = false; play_from_tag(tag); }
@@ -1331,6 +1335,7 @@
   });
 
   // ============ boot ============
+  playBtn.innerHTML = ICON_PLAY;
   render_sort_toggle();
   render_tags();
   render_pat_status();
