@@ -163,7 +163,7 @@
     min-height: 28px; font-weight: 600;
   }
   .sort_toggle button.active { background: var(--accent_2); color: #0b0d0f; }
-  .tag_list { background: transparent; padding: 0; touch-action: pan-y; }
+  .tag_list { background: transparent; padding: 0 0 28px; touch-action: pan-y; }
   .tag_row {
     display: flex; align-items: center; gap: 4px;
     padding: 4px 4px; border-radius: 8px; background: transparent;
@@ -219,8 +219,8 @@
   .drop_indicator { height: 2px; background: var(--accent); margin: 2px 8px; border-radius: 1px; pointer-events: none; }
   .playhead_line {
     height: 3px; margin: 2px 12px; border-radius: 2px;
-    background: #4dd0e1;
-    box-shadow: 0 0 8px rgba(77,208,225,0.7);
+    background: #ffd84a;
+    box-shadow: 0 0 10px rgba(255,216,74,0.7);
     pointer-events: none;
   }
   .tag_time {
@@ -265,26 +265,6 @@
 </style>
 </head>
 <body>
-
-<!-- ── jam nav ── -->
-<nav style="
-  display:flex; align-items:center; justify-content:space-between;
-  padding:10px 14px; background:#3a2010; border-bottom:1px solid #5c3717;
-  position:sticky; top:0; z-index:90;
-">
-  <a href="index.html" style="
-    display:inline-flex; align-items:center; gap:6px;
-    color:#c9a87e; text-decoration:none; font-size:13px; font-weight:600;
-    padding:8px 14px; background:#4a2a0e; border-radius:10px;
-    min-height:40px;
-  ">&#9776; All Jams</a>
-  <a href="2026_05_30_sound_union.html" style="
-    display:inline-flex; align-items:center; gap:6px;
-    color:#e8b454; text-decoration:none; font-size:13px; font-weight:600;
-    padding:8px 14px; background:rgba(232,180,84,0.12); border:1px solid rgba(232,180,84,0.3);
-    border-radius:10px; min-height:40px;
-  ">Sound Union &#8250;</a>
-</nav>
 
 <header class="brand">
   <div class="wordmark">vamp jam</div>
@@ -350,6 +330,25 @@
   </div>
 
 </div>
+
+<!-- ── jam nav (moved to bottom) ── -->
+<nav style="
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 0 24px; gap:8px;
+">
+  <a href="index.html" style="
+    display:inline-flex; align-items:center; gap:6px;
+    color:#c9a87e; text-decoration:none; font-size:13px; font-weight:600;
+    padding:8px 14px; background:#4a2a0e; border-radius:10px;
+    min-height:40px;
+  ">&#9776; All Jams</a>
+  <a href="2026_05_30_sound_union.html" style="
+    display:inline-flex; align-items:center; gap:6px;
+    color:#e8b454; text-decoration:none; font-size:13px; font-weight:600;
+    padding:8px 14px; background:rgba(232,180,84,0.12); border:1px solid rgba(232,180,84,0.3);
+    border-radius:10px; min-height:40px;
+  ">Sound Union &#8250;</a>
+</nav>
 
 <div class="toast" id="toast"></div>
 
