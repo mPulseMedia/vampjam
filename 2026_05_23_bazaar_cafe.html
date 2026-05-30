@@ -181,6 +181,13 @@
   .tag_row:hover { background: var(--panel_2); }
   .tag_row.active { background: var(--panel_2); outline: 1px solid var(--accent); }
   .tag_row.dragging { opacity: 0.4; }
+  .tag_row.mine {
+    background: rgba(232,180,84,0.10);
+    border-left: 3px solid var(--accent);
+  }
+  .tag_row.mine .tag_label { font-weight: 600; color: var(--fg); }
+  .tag_row:not(.mine):not(.playing) .tag_label { opacity: 0.75; }
+  .tag_row.mine .tag_time { color: var(--accent); }
   .drag_handle {
     cursor: grab; color: var(--muted); padding: 4px 6px; user-select: none;
     font-size: 16px; line-height: 1; touch-action: none;
@@ -326,6 +333,13 @@
         <button id="pat_clear">Remove</button>
       </div>
       <div id="pat_status" style="margin-top:6px"></div>
+      <div style="margin-top:10px">
+        <label style="display:block;color:var(--muted);font-size:11px;margin-bottom:4px">Your name (your tags show brighter):</label>
+        <div class="pat_row">
+          <input type="text" id="identity_in" placeholder="e.g. Paul" autocomplete="off">
+          <button id="identity_save" class="primary_2">Save name</button>
+        </div>
+      </div>
     </div>
   </details>
 </div>
@@ -359,6 +373,7 @@
   var STORAGE_SORT    = PAGE_ID + '_sort_mode';
   var STORAGE_TOMBS   = PAGE_ID + '_deleted_tag_ids';
   var STORAGE_PAT     = 'github_pat';
+  var STORAGE_IDENTITY= 'user_identity';
 
   // ============ elements ============
   var $ = function (id) { return document.getElementById(id); };
@@ -378,6 +393,8 @@
   var patSave       = $('pat_save');
   var patClear      = $('pat_clear');
   var patStatus     = $('pat_status');
+  var identityIn    = $('identity_in');
+  var identitySave  = $('identity_save');
 
   var player    = $('player');
   var playerMsg = $('player_msg');
@@ -537,6 +554,11 @@
   function get_pat()  { return localStorage.getItem(STORAGE_PAT) || ''; }
   function set_pat(p) { if (p) localStorage.setItem(STORAGE_PAT, p); else localStorage.removeItem(STORAGE_PAT); render_pat_status(); }
   function has_pat()  { return !!get_pat(); }
+  function get_identity() { return localStorage.getItem(STORAGE_IDENTITY) || ''; }
+  function set_identity(v) {
+    if (v) localStorage.setItem(STORAGE_IDENTITY, v);
+    else localStorage.removeItem(STORAGE_IDENTITY);
+  }
   function render_pat_status() {
     if (has_pat()) {
       patStatus.innerHTML = '<span class="pat_ok">✓ Token saved.</span>';
@@ -585,6 +607,23 @@
   // ============ audio source: read / write / play ============
   // tags are now seeded by fetch_repo_data (combined file). keep a stub for back-compat.
   function fetch_repo_tags() { return Promise.resolve(); }
+
+  // debounced auto-sync: collapses rapid edits into one commit
+  var saveDebounceTimer = null;
+  var saveDebounceMsg   = null;
+  function queue_save_data_to_repo(msg) {
+    if (!has_pat()) return;
+    if (msg) saveDebounceMsg = msg;
+    if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
+    saveDebounceTimer = setTimeout(function () {
+      saveDebounceTimer = null;
+      var m = saveDebounceMsg || 'sync tags';
+      saveDebounceMsg = null;
+      save_data_to_repo(m).catch(function (err) {
+        toast('Sync failed: ' + err.message);
+      });
+    }, 3000);
+  }
 
   // write the combined per-page data ({audio, tags}) to the repo as a single commit.
   function save_data_to_repo(message) {
@@ -768,6 +807,15 @@
     set_pat('');
     toast('Token removed.');
   });
+  if (identityIn) { identityIn.value = get_identity(); }
+  if (identitySave) {
+    identitySave.addEventListener('click', function () {
+      var v = (identityIn.value || '').trim();
+      set_identity(v);
+      toast(v ? 'Name saved: ' + v : 'Name cleared.');
+      render_tags();
+    });
+  }
 
   // ============ player controls ============
   function safe_play()  { try { player.play().catch(function(){}); } catch (e) {} }
@@ -885,10 +933,15 @@
   function add_tag() {
     var t = player.currentTime || 0;
     var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
-    var tag = { id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6), t: t, label: '', order: maxOrder + 10 };
+    var tag = {
+      id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+      t: t, label: '', order: maxOrder + 10,
+      owner: get_identity() || 'anonymous'
+    };
     tags.push(tag);
     activeTagId = tag.id;
     save_tags();
+    queue_save_data_to_repo('add tag at ' + fmt_time(t));
     render_tags();
     setTimeout(function () {
       var rows = tagList.querySelectorAll('.tag_row');
@@ -907,6 +960,7 @@
     if (!tag) return;
     tag.t = Math.max(0, tag.t + delta);
     save_tags();
+    queue_save_data_to_repo('nudge tag start');
     render_tags();
     render_tag_markers();
   }
@@ -924,6 +978,7 @@
     if (!tag) return;
     tag.e = Math.max(tag.t + 1, player.currentTime || tag.t + 1);
     save_tags();
+    queue_save_data_to_repo('set tag end');
     render_tags();
     render_tag_markers();
     preview_end(tag);
@@ -933,6 +988,7 @@
     if (!tag || tag.e == null) return;
     tag.e = Math.max(tag.t + 1, tag.e + delta);
     save_tags();
+    queue_save_data_to_repo('nudge tag end');
     render_tags();
     render_tag_markers();
     preview_end(tag);
@@ -1012,6 +1068,8 @@
       if (tag.id === activeTagId) row.classList.add('active');
       if (isPlaying) row.classList.add('playing');
       if (sortMode !== 'manual') row.classList.add('no_drag');
+      var myId = get_identity();
+      if (myId && tag.owner && tag.owner === myId) row.classList.add('mine');
       row.dataset.tagId = tag.id;
 
       var handle = document.createElement('div');
@@ -1063,7 +1121,11 @@
       label.type = 'text';
       label.value = tag.label || '';
       label.placeholder = 'untitled moment';
-      label.addEventListener('input', function () { tag.label = label.value; save_tags(); });
+      label.addEventListener('input', function () {
+        tag.label = label.value;
+        save_tags();
+        queue_save_data_to_repo('rename tag');
+      });
       label.addEventListener('keydown', function (e) { if (e.key === 'Enter') label.blur(); });
       row.appendChild(label);
 
