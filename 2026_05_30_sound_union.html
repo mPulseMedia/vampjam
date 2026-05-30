@@ -41,7 +41,7 @@
   code.inline { background: var(--panel_2); padding: 1px 5px; border-radius: 4px; }
 
   /* ---- audio source card ---- */
-  .audio_card { background: var(--panel); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
+  .audio_card { background: transparent; padding: 6px 0; margin-bottom: 8px; }
   .audio_label_row {
     display: flex; align-items: center; gap: 8px;
   }
@@ -81,7 +81,7 @@
   .pat_err { color: var(--danger); }
 
   /* ---- player ---- */
-  .player_card { background: var(--panel); border-radius: 12px; padding: 14px; margin-bottom: 12px; text-align: center; }
+  .player_card { background: transparent; padding: 4px 0 10px; margin-bottom: 4px; text-align: center; }
   audio { display: none; }
   .ctrl_row { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 14px; }
   .seek_bar { width: 100%; height: 6px; background: var(--panel_3); border-radius: 3px; position: relative; cursor: pointer; }
@@ -104,12 +104,16 @@
     border-radius: 50%; width: 52px; height: 52px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     font-size: 12px; line-height: 1; padding: 0;
+    transition: background-color 0.12s, transform 0.06s;
   }
-  .ctrl_btn:active { transform: scale(0.95); }
+  .ctrl_btn:hover  { background: var(--panel_3); }
+  .ctrl_btn:active { background: var(--accent_2); color: #0b0d0f; transform: scale(0.95); }
   .ctrl_btn.play_btn {
     width: 84px; height: 84px; background: var(--accent); color: #0b0d0f;
     font-size: 44px; box-shadow: 0 4px 14px rgba(106,191,105,0.25);
   }
+  .ctrl_btn.play_btn:hover  { background: #f0c97a; }
+  .ctrl_btn.play_btn:active { background: #c89943; transform: scale(0.95); }
   .ctrl_btn.small { width: 40px; height: 40px; font-size: 11px; }
   .ctrl_btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .player_msg { color: var(--muted); font-size: 12px; margin-top: 12px; min-height: 16px; }
@@ -120,14 +124,28 @@
     appearance: none; -webkit-appearance: none; border: 0; cursor: pointer;
     background: var(--panel_2); color: var(--fg); font: inherit;
     padding: 8px 12px; border-radius: 8px; min-height: 36px;
+    transition: background-color 0.12s, transform 0.06s;
   }
-  button:active { transform: scale(0.97); }
-  button.primary { background: var(--accent); color: #0b0d0f; font-weight: 600; }
-  button.primary_2 { background: var(--accent_2); color: #0b0d0f; font-weight: 600; }
-  button.ghost { background: transparent; color: var(--muted); padding: 6px 8px; min-height: 32px; }
-  button.ghost:hover { color: var(--fg); }
-  button.tiny { padding: 4px 6px; min-height: 26px; font-size: 11px; background: var(--panel_3); }
-  button.tiny:hover { background: var(--accent_2); color: #0b0d0f; }
+  button:hover  { background: var(--panel_3); }
+  button:active { background: var(--accent_2); color: #0b0d0f; transform: scale(0.97); }
+  button.primary           { background: var(--accent);   color: #0b0d0f; font-weight: 600; }
+  button.primary:hover     { background: #f0c97a; }
+  button.primary:active    { background: #c89943; }
+  button.primary_2         { background: var(--accent_2); color: #0b0d0f; font-weight: 600; }
+  button.primary_2:hover   { background: #e0bb6e; }
+  button.primary_2:active  { background: #b88e3d; }
+  button.ghost {
+    background: var(--panel_2); color: var(--muted);
+    padding: 6px 8px; min-height: 32px;
+  }
+  button.ghost:hover  { background: var(--panel_3); color: var(--fg); }
+  button.ghost:active { background: var(--accent_2); color: #0b0d0f; }
+  button.tiny {
+    padding: 4px 6px; min-height: 26px; font-size: 11px;
+    background: var(--panel_3);
+  }
+  button.tiny:hover  { background: var(--accent_2); color: #0b0d0f; }
+  button.tiny:active { background: var(--accent);   color: #0b0d0f; }
 
   .tag_btn_big {
     width: 100%; padding: 16px; font-size: 17px; font-weight: 600;
@@ -145,10 +163,10 @@
     min-height: 28px; font-weight: 600;
   }
   .sort_toggle button.active { background: var(--accent_2); color: #0b0d0f; }
-  .tag_list { background: var(--panel); border-radius: 12px; padding: 6px; touch-action: pan-y; }
+  .tag_list { background: transparent; padding: 0; touch-action: pan-y; }
   .tag_row {
     display: flex; align-items: center; gap: 4px;
-    padding: 6px 8px; border-radius: 8px; background: var(--panel);
+    padding: 4px 4px; border-radius: 8px; background: transparent;
     flex-wrap: nowrap;
   }
   .tag_row .tag_label {
