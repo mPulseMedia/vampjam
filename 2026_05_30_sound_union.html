@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>vamp jam — Bazaar Cafe — 2026-05-23</title>
+<title>vamp jam — Sound Union — 2026-05-30</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
@@ -243,19 +243,19 @@
     padding:8px 14px; background:#4a2a0e; border-radius:10px;
     min-height:40px;
   ">&#9776; All Jams</a>
-  <a href="2026_05_30_sound_union.html" style="
+  <a href="2026_05_23_bazaar_cafe.html" style="
     display:inline-flex; align-items:center; gap:6px;
     color:#e8b454; text-decoration:none; font-size:13px; font-weight:600;
     padding:8px 14px; background:rgba(232,180,84,0.12); border:1px solid rgba(232,180,84,0.3);
     border-radius:10px; min-height:40px;
-  ">Sound Union &#8250;</a>
+  ">&#9668; Bazaar Cafe</a>
 </nav>
 
 <header class="brand">
   <div class="wordmark">vamp jam</div>
 </header>
 
-<h1>Bazaar Cafe — 2026-05-23</h1>
+<h1>Sound Union — 2026-05-30</h1>
 
 <!-- ===== player ===== -->
 <div class="player_card">
@@ -342,7 +342,7 @@
 <script>
   // ============ per-page identity ============
   // Each new page only needs to change PAGE_ID. The audio source lives in sources/<PAGE_ID>.json.
-  var PAGE_ID    = 'bazaar_cafe_2026_05_23';
+  var PAGE_ID    = 'sound_union_2026_05_30';
   var REPO_OWNER = 'mPulseMedia';
   var REPO_NAME  = 'vampjam';
 
@@ -402,6 +402,13 @@
   var importBtn = $('import_btn');
   var importIn  = $('import_file');
   var clearBtn  = $('clear_btn');
+
+  // ============ default audio (fallback when JSON not yet in repo) ============
+  var DEFAULT_AUDIO = {
+    label: 'Sound Union — 2026-05-30',
+    url: 'https://github.com/mPulseMedia/vampjam/releases/download/soundunion_2026-05-30_2/Sound.Union.23.m4a',
+    kind: 'url'
+  };
 
   // ============ state ============
   var audio        = null;   // { label, url, kind } | null
@@ -639,7 +646,7 @@
       if (!r.ok) return null;
       return r.json().catch(function () { return null; });
     }).then(function (data) {
-      if (!data) { audio = null; render_audio_label(); return; }
+      if (!data) { audio = DEFAULT_AUDIO; render_audio_label(); load_audio_into_player(); return; }
       var a = data.audio;
       if (a && typeof a === 'object' && a.url) {
         audio = { label: a.label || derive_label(a.url), url: a.url, kind: a.kind || detect_kind(a.url) };
@@ -673,7 +680,7 @@
           render_tag_markers();
         }
       }
-    }).catch(function () { audio = null; render_audio_label(); });
+    }).catch(function () { audio = DEFAULT_AUDIO; render_audio_label(); load_audio_into_player(); });
   }
   // back-compat alias used elsewhere
   function fetch_audio_public() { return fetch_repo_data(); }

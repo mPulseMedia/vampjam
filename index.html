@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vamp jam — sessions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1008;
+    --panel: #2a1c10;
+    --panel-2: #3a2818;
+    --fg: #f5e5c5;
+    --muted: #c9a87e;
+    --accent: #e8b454;
+    --purple: #AF52DE;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--fg);
+    min-height: 100vh; padding: 0;
+  }
+
+  .brand {
+    text-align: center; padding: 40px 20px 24px;
+  }
+  .brand .wordmark {
+    font-family: 'Sacramento', cursive;
+    font-size: 80px; line-height: 1; color: var(--fg);
+  }
+  .brand .tagline {
+    color: var(--muted); font-size: 14px; margin-top: 4px;
+    letter-spacing: 0.03em;
+  }
+
+  .sessions {
+    max-width: 600px; margin: 0 auto; padding: 0 20px 60px;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--muted); margin-bottom: 12px;
+  }
+
+  /* ── Session Card ── */
+  .session-card {
+    display: block; text-decoration: none; color: inherit;
+    background: var(--panel); border: 1px solid var(--panel-2);
+    border-radius: 16px; padding: 20px; margin-bottom: 12px;
+    transition: all 0.15s;
+  }
+  .session-card:hover {
+    border-color: var(--accent); transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(232, 180, 84, 0.15);
+  }
+  .session-card:active { transform: scale(0.98); }
+  .session-card .card-top {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+  }
+  .session-card .card-icon {
+    width: 52px; height: 52px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+  .session-card .card-icon.cafe { background: linear-gradient(135deg, #5c3717, #7a4f2a); }
+  .session-card .card-icon.player { background: linear-gradient(135deg, #8944AB, #AF52DE); }
+  .session-card .card-title {
+    font-size: 18px; font-weight: 700; margin-bottom: 2px;
+  }
+  .session-card .card-sub {
+    font-size: 13px; color: var(--muted);
+  }
+  .session-card .card-desc {
+    font-size: 13px; color: var(--muted); line-height: 1.4;
+  }
+  .session-card .card-arrow {
+    float: right; font-size: 20px; color: var(--accent); margin-top: -2px;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px; background: var(--panel-2); margin: 24px 0;
+  }
+
+  /* ── Tool Card (lighter) ── */
+  .session-card.tool {
+    border-style: dashed; background: transparent;
+  }
+  .session-card.tool:hover {
+    border-color: var(--purple);
+    box-shadow: 0 4px 20px rgba(175, 82, 222, 0.15);
+  }
+
+  @media (max-width: 500px) {
+    .brand .wordmark { font-size: 56px; }
+    .sessions { padding: 0 14px 40px; }
+    .session-card { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="brand">
+  <div class="wordmark">vamp jam</div>
+  <div class="tagline">tag the moments that matter</div>
+</header>
+
+<div class="sessions">
+
+  <div class="section-label">Jam Sessions</div>
+
+  <a class="session-card" href="2026_05_30_sound_union.html">
+    <div class="card-top">
+      <div class="card-icon cafe">&#127925;</div>
+      <div>
+        <div class="card-title">Sound Union <span class="card-arrow">&#8250;</span></div>
+        <div class="card-sub">May 30, 2026 — latest</div>
+      </div>
+    </div>
+    <div class="card-desc">
+      Fresh session. GitHub-backed shared tagging.
+    </div>
+  </a>
+
+  <a class="session-card" href="2026_05_23_bazaar_cafe.html">
+    <div class="card-top">
+      <div class="card-icon cafe">&#9749;</div>
+      <div>
+        <div class="card-title">Bazaar Cafe <span class="card-arrow">&#8250;</span></div>
+        <div class="card-sub">May 23, 2026</div>
+      </div>
+    </div>
+    <div class="card-desc">
+      Full session recording with 33 photo-synced tags.
+    </div>
+  </a>
+
+  <div class="divider"></div>
+  <div class="section-label">Tools</div>
+
+  <a class="session-card tool" href="vampjam_player.html">
+    <div class="card-top">
+      <div class="card-icon player">&#127928;</div>
+      <div>
+        <div class="card-title">Open Player <span class="card-arrow">&#8250;</span></div>
+        <div class="card-sub">Load any audio file</div>
+      </div>
+    </div>
+    <div class="card-desc">
+      General-purpose player with shared rooms, waveform,
+      tagging, and highlight sharing.
+    </div>
+  </a>
+
+</div>
+</body>
+</html>
