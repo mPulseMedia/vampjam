@@ -182,12 +182,13 @@
   .tag_row.active { background: var(--panel_2); outline: 1px solid var(--accent); }
   .tag_row.dragging { opacity: 0.4; }
   .tag_row.mine {
-    background: rgba(232,180,84,0.10);
-    border-left: 3px solid var(--accent);
+    background: rgba(91,155,213,0.14);
+    border-left: 3px solid #5b9bd5;
   }
-  .tag_row.mine .tag_label { font-weight: 600; color: var(--fg); }
-  .tag_row:not(.mine):not(.playing) .tag_label { opacity: 0.75; }
-  .tag_row.mine .tag_time { color: var(--accent); }
+  .tag_row.mine .tag_label { font-weight: 600; color: #b3d3f0; }
+  .tag_row.mine .tag_time  { color: #5b9bd5; }
+  .tag_row:not(.mine):not(.playing) .tag_label { opacity: 0.70; }
+  .tag_row:not(.mine) .tag_time { color: var(--warn); }
   .drag_handle {
     cursor: grab; color: var(--muted); padding: 4px 6px; user-select: none;
     font-size: 16px; line-height: 1; touch-action: none;
@@ -354,6 +355,7 @@
   var STORAGE_TOMBS   = PAGE_ID + '_deleted_tag_ids';
   var STORAGE_PAT     = 'github_pat';
   var STORAGE_IDENTITY= 'user_identity';
+  var STORAGE_DEVICE  = 'vampjam_device_id';
 
   // ============ elements ============
   var $ = function (id) { return document.getElementById(id); };
@@ -534,6 +536,14 @@
   function get_pat()  { return localStorage.getItem(STORAGE_PAT) || ''; }
   function set_pat(p) { if (p) localStorage.setItem(STORAGE_PAT, p); else localStorage.removeItem(STORAGE_PAT); render_pat_status(); }
   function has_pat()  { return !!get_pat(); }
+  function get_device_id() {
+    var id = localStorage.getItem(STORAGE_DEVICE);
+    if (!id) {
+      id = 'dev_' + Math.random().toString(36).slice(2, 10);
+      try { localStorage.setItem(STORAGE_DEVICE, id); } catch (e) {}
+    }
+    return id;
+  }
   function get_identity() { return localStorage.getItem(STORAGE_IDENTITY) || ''; }
   function set_identity(v) {
     if (v) localStorage.setItem(STORAGE_IDENTITY, v);
@@ -654,15 +664,9 @@
   }
 
   function fetch_repo_data() {
-    // Single per-page JSON: { audio: {...}, tags: [...] } colocated with this HTML.
-    // file:// can't fetch the local sibling JSON in most browsers, so use raw.githubusercontent.com.
-    var srcUrl;
-    if (location.protocol === 'file:') {
-      srcUrl = 'https://raw.githubusercontent.com/' + REPO_OWNER + '/' + REPO_NAME +
-               '/main/' + DATA_PATH + '?v=' + Date.now();
-    } else {
-      srcUrl = DATA_PATH + '?v=' + Date.now();
-    }
+    // ALWAYS fetch from github raw — Pages CDN can lag 1-2 min behind the latest push.
+    var srcUrl = 'https://raw.githubusercontent.com/' + REPO_OWNER + '/' + REPO_NAME +
+                 '/main/' + DATA_PATH + '?v=' + Date.now();
     return fetch(srcUrl, { cache: 'no-store' }).then(function (r) {
       if (!r.ok) return null;
       return r.json().catch(function () { return null; });
@@ -672,7 +676,6 @@
       if (a && typeof a === 'object' && a.url) {
         audio = { label: a.label || derive_label(a.url), url: a.url, kind: a.kind || detect_kind(a.url) };
       } else if (data.url && !data.tags) {
-        // legacy: top-level audio object (old sources/<page>.json)
         audio = { label: data.label || derive_label(data.url), url: data.url, kind: data.kind || detect_kind(data.url) };
       } else {
         audio = null;
@@ -682,24 +685,20 @@
 
       var arr = Array.isArray(data.tags) ? data.tags : null;
       if (arr) {
+        // REPLACE local tags with repo's view (minus tombstones). Worker auto-sync keeps
+        // local edits flowing to the repo so this is the right source of truth.
         var tombs = get_tombs();
-        var byId = {}; tags.forEach(function (t) { byId[t.id] = true; });
-        var added = 0;
-        var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
-        arr.forEach(function (t) {
-          if (!t || !t.id || typeof t.t !== 'number') return;
-          if (byId[t.id]) return;
-          if (tombs.indexOf(t.id) !== -1) return;
-          var cp = { id: t.id, t: t.t, label: t.label || '', order: ++maxOrder * 10 };
-          if (t.e != null) cp.e = t.e;
-          tags.push(cp);
-          added++;
-        });
-        if (added > 0) {
-          save_tags();
-          render_tags();
-          render_tag_markers();
-        }
+        tags = arr
+          .filter(function (t) { return t && t.id && typeof t.t === 'number' && tombs.indexOf(t.id) === -1; })
+          .map(function (t, i) {
+            var cp = { id: t.id, t: t.t, label: t.label || '', order: i * 10 };
+            if (t.e != null) cp.e = t.e;
+            if (t.owner)   cp.owner = t.owner;
+            return cp;
+          });
+        save_tags();
+        render_tags();
+        render_tag_markers();
       }
     }).catch(function () { audio = null; render_audio_label(); });
   }
@@ -899,7 +898,7 @@
     var tag = {
       id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
       t: t, label: '', order: maxOrder + 10,
-      owner: get_identity() || 'anonymous'
+      owner: get_device_id()
     };
     tags.push(tag);
     activeTagId = tag.id;
@@ -1031,8 +1030,8 @@
       if (tag.id === activeTagId) row.classList.add('active');
       if (isPlaying) row.classList.add('playing');
       if (sortMode !== 'manual') row.classList.add('no_drag');
-      var myId = get_identity();
-      if (myId && tag.owner && tag.owner === myId) row.classList.add('mine');
+      var myDev = get_device_id();
+      if (tag.owner && tag.owner === myDev) row.classList.add('mine');
       row.dataset.tagId = tag.id;
 
       var handle = document.createElement('div');
