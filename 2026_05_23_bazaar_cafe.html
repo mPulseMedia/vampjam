@@ -619,7 +619,10 @@
       saveDebounceTimer = null;
       var m = saveDebounceMsg || 'sync tags';
       saveDebounceMsg = null;
-      save_data_to_repo(m).catch(function (err) {
+      toast('Syncing…');
+      save_data_to_repo(m).then(function () {
+        toast('Synced.');
+      }).catch(function (err) {
         toast('Sync failed: ' + err.message);
       });
     }, 3000);
