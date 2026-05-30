@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>vamp jam — Bazaar Cafe — 2026-05-23</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -196,6 +199,12 @@
   .drag_handle:active { cursor: grabbing; }
   .tag_row.no_drag .drag_handle { color: var(--panel_3); cursor: default; }
   .drop_indicator { height: 2px; background: var(--accent); margin: 2px 8px; border-radius: 1px; pointer-events: none; }
+  .playhead_line {
+    height: 3px; margin: 2px 12px; border-radius: 2px;
+    background: #4dd0e1;
+    box-shadow: 0 0 8px rgba(77,208,225,0.7);
+    pointer-events: none;
+  }
   .tag_time {
     font-variant-numeric: tabular-nums; color: var(--accent_2);
     cursor: pointer; padding: 4px 6px; border-radius: 6px; min-width: 68px; text-align: right;
@@ -642,6 +651,32 @@
     });
   }
 
+  function render_playhead_line() {
+    // remove any existing
+    var existing = tagList.querySelector('.playhead_line');
+    if (existing) existing.remove();
+    if (sortMode !== 'time') return;          // only meaningful in time-sorted view
+    if (!isFinite(player.duration)) return;
+    if (!tags.length) return;
+    var ct = player.currentTime || 0;
+    var sorted = tags.slice().sort(function (a, b) { return a.t - b.t; });
+    var nextIdx = sorted.findIndex(function (t) { return t.t > ct; });
+    var line = document.createElement('div');
+    line.className = 'playhead_line';
+    var rows = Array.from(tagList.querySelectorAll('.tag_row'));
+    if (nextIdx === -1) {
+      // playhead is past the last tag — append at end
+      tagList.appendChild(line);
+    } else if (nextIdx === 0) {
+      // playhead is before the first tag — insert at top
+      if (rows[0]) tagList.insertBefore(line, rows[0]);
+    } else {
+      var targetId = sorted[nextIdx].id;
+      var target = tagList.querySelector('.tag_row[data-tag-id="' + targetId + '"]');
+      if (target) tagList.insertBefore(line, target);
+    }
+  }
+
   function render_tag_markers() {
     if (!tagMarkers) return;
     tagMarkers.innerHTML = '';
@@ -825,6 +860,7 @@
       seekFill.style.width = ((player.currentTime / player.duration) * 100) + '%';
     }
     update_playing_tag();
+    render_playhead_line();
     if (playbackIntent && player.currentTime >= playbackIntent.endTime) {
       var intent = playbackIntent;
       playbackIntent = null;
@@ -849,6 +885,7 @@
     if (t !== null) handle_url_time(t);
     playerMsg.textContent = '';
     render_tag_markers();
+    render_playhead_line();
   });
   player.addEventListener('error', function () {
     if (!audio) return;
