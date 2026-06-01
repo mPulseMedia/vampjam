@@ -276,6 +276,25 @@
 
 <h1 style="display:flex;align-items:center;gap:6px;">Sound Union — 2026-05-30 <button class="ghost" id="audio_edit_btn" title="Change audio file" style="font-size:14px;padding:4px 8px;min-height:auto;">✎</button></h1>
 
+<!-- audio edit form (hidden, toggled by pencil) -->
+<div class="audio_card" id="audio_card" style="display:none;">
+  <span class="audio_label empty" id="audio_label" style="display:none;">Loading…</span>
+  <div class="audio_edit_form" id="audio_edit_form" style="display:none">
+    <input type="text" id="audio_url_in" placeholder="Paste audio URL (Google Drive share, direct URL, or filename next to this page)">
+    <input type="text" id="audio_label_in" placeholder="Label (optional — auto-derived if blank)">
+    <div class="audio_edit_actions">
+      <button class="primary" id="audio_save_btn">Save to page</button>
+      <button id="audio_cancel_btn">Cancel</button>
+      <button id="audio_pick_local" class="ghost">Pick local file (preview only)</button>
+      <input type="file" id="audio_local_in" accept="audio/*" style="display:none">
+    </div>
+    <div class="audio_edit_help">
+      Drive: share as <i>Anyone with the link → Viewer</i>, then paste the share URL.
+      Saving writes <code id="audio_path_display"></code> to the repo so every visitor sees this audio.
+    </div>
+  </div>
+</div>
+
 <!-- ===== player ===== -->
 <div class="sticky_player">
 <div class="player_card">
@@ -310,25 +329,6 @@
 </div><!-- /sticky_player -->
 
 <div class="tag_list" id="tag_list"></div>
-
-<!-- audio edit form (hidden, toggled by pencil) -->
-<div class="audio_card" id="audio_card" style="display:none;">
-  <span class="audio_label empty" id="audio_label" style="display:none;">Loading…</span>
-  <div class="audio_edit_form" id="audio_edit_form" style="display:none">
-    <input type="text" id="audio_url_in" placeholder="Paste audio URL (Google Drive share, direct URL, or filename next to this page)">
-    <input type="text" id="audio_label_in" placeholder="Label (optional — auto-derived if blank)">
-    <div class="audio_edit_actions">
-      <button class="primary" id="audio_save_btn">Save to page</button>
-      <button id="audio_cancel_btn">Cancel</button>
-      <button id="audio_pick_local" class="ghost">Pick local file (preview only)</button>
-      <input type="file" id="audio_local_in" accept="audio/*" style="display:none">
-    </div>
-    <div class="audio_edit_help">
-      Drive: share as <i>Anyone with the link → Viewer</i>, then paste the share URL.
-      Saving writes <code id="audio_path_display"></code> to the repo so every visitor sees this audio.
-    </div>
-  </div>
-</div>
 
 <div class="toast" id="toast"></div>
 
