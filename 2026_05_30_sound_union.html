@@ -207,14 +207,9 @@
   .tag_row.active button.ghost { background: var(--panel_3); }
   .tag_row button.ghost { padding: 5px 7px; min-height: 32px; font-size: 17px; border-radius: 7px; }
   .tag_row.dragging { opacity: 0.4; }
-  .tag_row.mine {
-    background: rgba(91,155,213,0.14);
-    border-left: 3px solid #5b9bd5;
-  }
-  .tag_row.mine .tag_label { font-weight: 600; color: #b3d3f0; }
-  .tag_row.mine .tag_time  { color: #5b9bd5; }
+  .tag_row.mine { background: transparent; }
+  .tag_row.mine .tag_label { font-weight: 600; }
   .tag_row:not(.mine):not(.playing) .tag_label { opacity: 0.70; }
-  .tag_row:not(.mine) .tag_time { color: var(--warn); }
   .drag_handle {
     cursor: grab; color: var(--muted); padding: 5px 7px; user-select: none;
     font-size: 18px; line-height: 1; touch-action: none;
@@ -234,10 +229,11 @@
   }
   .tag_time:hover { background: rgba(91,155,213,0.12); }
   .tag_label {
-    background: transparent; border: 0; color: var(--accent); font: inherit;
+    background: transparent; border: 0; color: var(--fg); font: inherit;
     width: 100%; padding: 5px 7px; border-radius: 7px;
+    flex: 1 1 40px; min-width: 0;
   }
-  .tag_label:focus { outline: 1px solid var(--accent_2); background: rgba(0,0,0,0.2); }
+  .tag_label:focus { outline: none; background: rgba(0,0,0,0.15); }
   .tag_actions { display: flex; gap: 2px; }
   .empty { color: var(--muted); padding: 14px; text-align: center; font-size: 13px; }
 
