@@ -320,7 +320,7 @@
 
 <div class="tag_toolbar">
   <div class="tag_toolbar_spacer"><div class="sort_toggle"><button>Time</button><button>Manual</button></div></div>
-  <button class="tag_btn_big" id="tag_btn">Tag this moment</button>
+  <button class="tag_btn_big" id="tag_btn">Tag the moment</button>
   <div class="sort_toggle" id="sort_toggle">
     <button data-mode="time">Time</button>
     <button data-mode="manual">Manual</button>
@@ -1293,6 +1293,15 @@
   }
 
   // ============ export / import (removed) ============
+
+  // ============ scroll shadow ============
+  var stickyEl = document.querySelector('.sticky_player');
+  if (stickyEl) {
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 40) stickyEl.classList.add('scrolled');
+      else stickyEl.classList.remove('scrolled');
+    }, { passive: true });
+  }
 
   // ============ boot ============
   playBtn.innerHTML = ICON_PLAY;
