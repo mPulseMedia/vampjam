@@ -786,10 +786,11 @@
     audioLabelIn.value = '';
   }
   audioEditBtn.addEventListener('click', function () {
-    if (audioEditForm.style.display === 'block') { close_edit_form(); return; }
+    if (audioEditForm.style.display === 'block') { close_edit_form(); audioCard.style.display = 'none'; return; }
+    audioCard.style.display = 'block';
     open_edit_form();
   });
-  audioCancelBtn.addEventListener('click', close_edit_form);
+  audioCancelBtn.addEventListener('click', function () { close_edit_form(); audioCard.style.display = 'none'; });
 
   function save_audio() {
     var url = (audioUrlIn.value || '').trim();
@@ -1108,7 +1109,7 @@
       label.setAttribute('inputmode', 'text');
       label.setAttribute('autocapitalize', 'sentences');
       label.value = tag.label || '';
-      label.placeholder = 'untitled moment';
+      label.placeholder = 'tag';
       label.addEventListener('input', function () {
         tag.label = label.value;
         save_tags();
@@ -1117,14 +1118,12 @@
       label.addEventListener('keydown', function (e) { if (e.key === 'Enter') label.blur(); });
       row.appendChild(label);
 
-      if (isPlaying) {
-        var minus1 = document.createElement('button');
-        minus1.className = 'ghost';
-        minus1.title = 'Move start −1s';
-        minus1.innerHTML = ICON_CHEV_L;
-        minus1.addEventListener('click', function () { nudge_tag(tag.id, -1); });
-        row.appendChild(minus1);
-      }
+      var minus1 = document.createElement('button');
+      minus1.className = 'ghost';
+      minus1.title = 'Move start −1s';
+      minus1.innerHTML = ICON_CHEV_L;
+      minus1.addEventListener('click', function () { nudge_tag(tag.id, -1); });
+      row.appendChild(minus1);
 
       var time = document.createElement('div');
       time.className = 'tag_time';
@@ -1133,14 +1132,12 @@
       time.addEventListener('click', function () { play_from_tag(tag); });
       row.appendChild(time);
 
-      if (isPlaying) {
-        var plus1 = document.createElement('button');
-        plus1.className = 'ghost';
-        plus1.title = 'Move start +1s';
-        plus1.innerHTML = ICON_CHEV_R;
-        plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
-        row.appendChild(plus1);
-      }
+      var plus1 = document.createElement('button');
+      plus1.className = 'ghost';
+      plus1.title = 'Move start +1s';
+      plus1.innerHTML = ICON_CHEV_R;
+      plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
+      row.appendChild(plus1);
 
       if (isPlaying && SHOW_END_UI) {
         if (tag.e == null) {
