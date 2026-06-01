@@ -25,7 +25,7 @@
   }
   * { box-sizing: border-box; }
   html, body { background: var(--bg); color: var(--fg); margin: 0; padding: 0; }
-  body { font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 14px; padding-bottom: 24px; max-width: 760px; margin: 0 auto; }
+  body { font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 3px; padding-bottom: 24px; max-width: 760px; margin: 0 auto; }
   .brand { text-align: center; margin: 8px 0 6px; }
   .brand .wordmark {
     font-family: 'Sacramento', cursive;
@@ -155,10 +155,10 @@
   .tag_btn_big {
     flex: 1; padding: 12px 16px;
     font-size: 16px; font-weight: 600;
-    background: var(--panel_2); color: var(--accent); border-radius: 10px;
+    background: var(--accent); color: var(--bg); border-radius: 10px;
   }
-  .tag_btn_big:hover { background: var(--panel_3); }
-  .tag_btn_big:active { background: var(--accent); color: #0b0d0f; }
+  .tag_btn_big:hover { background: #f0c97a; }
+  .tag_btn_big:active { background: #c89943; transform: scale(0.97); }
   .tag_toolbar_spacer {
     flex: 0 0 auto; visibility: hidden;
   }
@@ -1118,12 +1118,14 @@
       label.addEventListener('keydown', function (e) { if (e.key === 'Enter') label.blur(); });
       row.appendChild(label);
 
-      var minus1 = document.createElement('button');
-      minus1.className = 'ghost';
-      minus1.title = 'Move start −1s';
-      minus1.innerHTML = ICON_CHEV_L;
-      minus1.addEventListener('click', function () { nudge_tag(tag.id, -1); });
-      row.appendChild(minus1);
+      if (isPlaying) {
+        var minus1 = document.createElement('button');
+        minus1.className = 'ghost';
+        minus1.title = 'Move start −1s';
+        minus1.innerHTML = ICON_CHEV_L;
+        minus1.addEventListener('click', function () { nudge_tag(tag.id, -1); });
+        row.appendChild(minus1);
+      }
 
       var time = document.createElement('div');
       time.className = 'tag_time';
@@ -1132,12 +1134,14 @@
       time.addEventListener('click', function () { play_from_tag(tag); });
       row.appendChild(time);
 
-      var plus1 = document.createElement('button');
-      plus1.className = 'ghost';
-      plus1.title = 'Move start +1s';
-      plus1.innerHTML = ICON_CHEV_R;
-      plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
-      row.appendChild(plus1);
+      if (isPlaying) {
+        var plus1 = document.createElement('button');
+        plus1.className = 'ghost';
+        plus1.title = 'Move start +1s';
+        plus1.innerHTML = ICON_CHEV_R;
+        plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
+        row.appendChild(plus1);
+      }
 
       if (isPlaying && SHOW_END_UI) {
         if (tag.e == null) {
