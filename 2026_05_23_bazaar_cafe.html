@@ -134,10 +134,10 @@
   button.primary_2:hover   { background: #e0bb6e; }
   button.primary_2:active  { background: #b88e3d; }
   button.ghost {
-    background: var(--panel_2); color: var(--muted);
+    background: var(--panel_2); color: var(--accent);
     padding: 4px 6px; min-height: 28px;
   }
-  button.ghost:hover  { background: var(--panel_3); color: var(--fg); }
+  button.ghost:hover  { background: var(--panel_3); }
   button.ghost:active { background: var(--accent_2); color: #0b0d0f; }
   button.tiny {
     padding: 4px 6px; min-height: 26px; font-size: 11px;
@@ -325,7 +325,7 @@
 
 <div class="tag_toolbar">
   <div class="tag_toolbar_spacer"><div class="sort_toggle"><button>Time</button><button>Manual</button></div></div>
-  <button class="tag_btn_big" id="tag_btn">Tag this moment</button>
+  <button class="tag_btn_big" id="tag_btn">Tag the moment</button>
   <div class="sort_toggle" id="sort_toggle">
     <button data-mode="time">Time</button>
     <button data-mode="manual">Manual</button>
@@ -1066,7 +1066,7 @@
     if (!tags.length) {
       var d = document.createElement('div');
       d.className = 'empty';
-      d.textContent = 'No tags yet — hit play and tap "Tag this moment".';
+      d.textContent = 'No tags yet — hit play and tap "Tag the moment".';
       tagList.appendChild(d);
       return;
     }
@@ -1341,6 +1341,15 @@
     save_tags();
     render_tags();
   });
+
+  // ============ scroll shadow ============
+  var stickyEl = document.querySelector('.sticky_player');
+  if (stickyEl) {
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 40) stickyEl.classList.add('scrolled');
+      else stickyEl.classList.remove('scrolled');
+    }, { passive: true });
+  }
 
   // ============ boot ============
   playBtn.innerHTML = ICON_PLAY;
