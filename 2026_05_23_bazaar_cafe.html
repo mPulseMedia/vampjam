@@ -979,16 +979,19 @@
     save_tags();
     queue_save_data_to_repo('add tag at ' + fmt_time(t));
     render_tags();
-    // sync focus (no setTimeout) — keeps mobile gesture chain so keyboard pops up
-    var rows = tagList.querySelectorAll('.tag_row');
-    for (var i = 0; i < rows.length; i++) {
-      if (rows[i].classList.contains('active')) {
-        var inp = rows[i].querySelector('.tag_label');
-        if (inp) { inp.focus(); inp.click(); }
-        break;
+    setTimeout(function () {
+      var rows = tagList.querySelectorAll('.tag_row');
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i].dataset.tagId === tag.id) {
+          var inp = rows[i].querySelector('.tag_label');
+          if (inp) {
+            inp.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            inp.focus();
+          }
+          break;
+        }
       }
-    }
-    // tagged silently
+    }, 50);
   }
   function nudge_tag(id, delta) {
     var tag = tags.filter(function (x) { return x.id === id; })[0];
