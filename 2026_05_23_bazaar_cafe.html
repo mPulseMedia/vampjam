@@ -1380,6 +1380,11 @@
     }, { passive: true });
   }
 
+  // ============ poll for sync ============
+  setInterval(function () {
+    fetch_repo_data();
+  }, 15000);
+
   // ============ boot ============
   playBtn.innerHTML = ICON_PLAY;
   render_sort_toggle();
