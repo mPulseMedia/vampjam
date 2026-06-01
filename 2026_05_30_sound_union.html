@@ -775,10 +775,11 @@
     audioLabelIn.value = '';
   }
   audioEditBtn.addEventListener('click', function () {
-    if (audioEditForm.style.display === 'block') { close_edit_form(); return; }
+    if (audioEditForm.style.display === 'block') { close_edit_form(); audioCard.style.display = 'none'; return; }
+    audioCard.style.display = 'block';
     open_edit_form();
   });
-  audioCancelBtn.addEventListener('click', close_edit_form);
+  audioCancelBtn.addEventListener('click', function () { close_edit_form(); audioCard.style.display = 'none'; });
 
   function save_audio() {
     var url = (audioUrlIn.value || '').trim();
