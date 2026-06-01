@@ -632,11 +632,8 @@
       saveDebounceTimer = null;
       var m = saveDebounceMsg || 'sync tags';
       saveDebounceMsg = null;
-      toast('Syncing…');
       save_data_to_repo(m).then(function () {
-        toast('Synced.');
       }).catch(function (err) {
-        toast('Sync failed: ' + err.message);
       });
     }, 3000);
   }
@@ -965,7 +962,7 @@
         break;
       }
     }
-    toast('Tagged at ' + fmt_time(t));
+    // tagged silently
   }
   function nudge_tag(id, delta) {
     var tag = tags.filter(function (x) { return x.id === id; })[0];
@@ -1051,7 +1048,7 @@
       tags.push(tag);
       activeTagId = tag.id;
       save_tags();
-      toast('Created tag at ' + fmt_time(t));
+      // created tag silently
     }
     render_tags();
     render_tag_markers();
@@ -1199,8 +1196,8 @@
         render_tags();
         render_tag_markers();
         save_data_to_repo('delete tag ' + (tag.label || tag.id))
-          .then(function () { toast('Deleted (saved to repo).'); })
-          .catch(function (err) { toast('Delete sync failed: ' + err.message); });
+          .then(function () {})
+          .catch(function (err) {});
       });
       row.appendChild(delBtn);
 
