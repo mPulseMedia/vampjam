@@ -166,10 +166,10 @@
   }
   .sort_toggle button:hover { opacity: 1; }
   .sort_toggle button.active { background: var(--accent_2); color: #0b0d0f; }
-  .tag_list { background: transparent; padding: 0 0 28px; touch-action: pan-y; }
+  .tag_list { background: transparent; padding: 0 0 28px; touch-action: pan-y; font-size: 17px; }
   .tag_row {
-    display: flex; align-items: center; gap: 4px;
-    padding: 4px 4px; border-radius: 8px; background: transparent;
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 5px; border-radius: 9px; background: transparent;
     flex-wrap: nowrap;
   }
   .tag_row .tag_label {
@@ -177,20 +177,20 @@
   }
   .tag_row .tag_end {
     font-variant-numeric: tabular-nums; color: var(--warn);
-    cursor: pointer; padding: 4px 6px; border-radius: 6px;
-    min-width: 64px; text-align: right; font-weight: 600; font-size: 13px;
+    cursor: pointer; padding: 5px 7px; border-radius: 7px;
+    min-width: 72px; text-align: right; font-weight: 600; font-size: 15px;
     flex: 0 0 auto;
   }
   .tag_row .tag_end:hover { background: rgba(232,199,148,0.15); }
   .tag_row button.play_tag {
     background: var(--panel_3); color: var(--accent);
-    padding: 4px 8px; min-height: 30px; font-size: 15px;
-    border-radius: 6px; flex: 0 0 auto;
+    padding: 5px 10px; min-height: 35px; font-size: 17px;
+    border-radius: 7px; flex: 0 0 auto;
   }
   .tag_row button.play_tag:hover { background: var(--accent); color: #0b0d0f; }
   .tag_row button.add_end {
     background: var(--panel_3); color: var(--warn);
-    font-size: 10px; padding: 3px 6px; min-height: 22px; border-radius: 6px;
+    font-size: 12px; padding: 4px 7px; min-height: 25px; border-radius: 7px;
     flex: 0 0 auto;
   }
   .tag_row button.add_end:hover { background: var(--warn); color: #0b0d0f; }
@@ -205,6 +205,7 @@
   .tag_row:hover { background: var(--panel_2); }
   .tag_row.active { background: var(--panel_2); }
   .tag_row.active button.ghost { background: var(--panel_3); }
+  .tag_row button.ghost { padding: 5px 7px; min-height: 32px; font-size: 17px; border-radius: 7px; }
   .tag_row.dragging { opacity: 0.4; }
   .tag_row.mine {
     background: rgba(91,155,213,0.14);
@@ -215,8 +216,8 @@
   .tag_row:not(.mine):not(.playing) .tag_label { opacity: 0.70; }
   .tag_row:not(.mine) .tag_time { color: var(--warn); }
   .drag_handle {
-    cursor: grab; color: var(--muted); padding: 4px 6px; user-select: none;
-    font-size: 16px; line-height: 1; touch-action: none;
+    cursor: grab; color: var(--muted); padding: 5px 7px; user-select: none;
+    font-size: 18px; line-height: 1; touch-action: none;
   }
   .drag_handle:active { cursor: grabbing; }
   .tag_row.no_drag .drag_handle { color: var(--panel_3); cursor: default; }
@@ -229,12 +230,12 @@
   }
   .tag_time {
     color: var(--accent); font: inherit;
-    cursor: pointer; padding: 4px 6px; border-radius: 6px; min-width: 0; text-align: right;
+    cursor: pointer; padding: 5px 7px; border-radius: 7px; min-width: 0; text-align: right;
   }
   .tag_time:hover { background: rgba(91,155,213,0.12); }
   .tag_label {
     background: transparent; border: 0; color: var(--accent); font: inherit;
-    width: 100%; padding: 4px 6px; border-radius: 6px;
+    width: 100%; padding: 5px 7px; border-radius: 7px;
   }
   .tag_label:focus { outline: 1px solid var(--accent_2); background: rgba(0,0,0,0.2); }
   .tag_actions { display: flex; gap: 2px; }
