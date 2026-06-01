@@ -144,9 +144,10 @@
 
   /* ── Player Card ── */
   .player-card {
-    margin: 24px; background: var(--bg-secondary);
-    border-radius: 20px; padding: 24px;
+    margin: 0 24px; background: var(--bg-secondary);
+    border-radius: 0 0 20px 20px; padding: 24px;
     border: 1px solid var(--bg-tertiary);
+    position: sticky; top: 0; z-index: 50;
   }
   .track-info { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
   .track-art {
@@ -386,7 +387,7 @@
 
   /* ── Responsive ── */
   @media (max-width: 600px) {
-    .player-card { margin: 12px; padding: 16px; }
+    .player-card { margin: 0 12px; padding: 16px; }
     .highlights-section { margin: 0 12px 12px; }
     .controls { gap: 16px; }
     .header { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
@@ -401,7 +402,6 @@
 <nav style="
   display:flex; align-items:center; justify-content:space-between;
   padding:10px 14px; background:#1C1C1E; border-bottom:1px solid #2C2C2E;
-  position:sticky; top:0; z-index:90;
 ">
   <a href="index.html" style="
     display:inline-flex; align-items:center; gap:6px;
