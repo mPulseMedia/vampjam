@@ -155,8 +155,12 @@
   .tag_btn_big {
     flex: 1; padding: 12px 16px;
     font-size: 16px; font-weight: 600;
-    background: var(--accent); color: #0b0d0f; border-radius: 10px;
-    box-shadow: 0 4px 14px rgba(106,191,105,0.18);
+    background: var(--panel_2); color: var(--accent); border-radius: 10px;
+  }
+  .tag_btn_big:hover { background: var(--panel_3); }
+  .tag_btn_big:active { background: var(--accent); color: #0b0d0f; }
+  .tag_toolbar_spacer {
+    flex: 0 0 auto; visibility: hidden;
   }
   .sort_toggle { display: inline-flex; background: var(--panel_2); border-radius: 6px; padding: 2px; flex-shrink: 0; }
   .sort_toggle button {
@@ -265,11 +269,12 @@
 </head>
 <body>
 
-<header class="brand">
+<header class="brand" style="position:relative;">
+  <a href="index.html" style="position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--muted);text-decoration:none;font-size:22px;padding:8px 12px;">&#9776;</a>
   <div class="wordmark">vamp jam</div>
 </header>
 
-<h1>Sound Union — 2026-05-30</h1>
+<h1 style="display:flex;align-items:center;gap:6px;">Sound Union — 2026-05-30 <button class="ghost" id="audio_edit_btn" title="Change audio file" style="font-size:14px;padding:4px 8px;min-height:auto;">✎</button></h1>
 
 <!-- ===== player ===== -->
 <div class="sticky_player">
@@ -295,6 +300,7 @@
 </div>
 
 <div class="tag_toolbar">
+  <div class="tag_toolbar_spacer"><div class="sort_toggle"><button>Time</button><button>Manual</button></div></div>
   <button class="tag_btn_big" id="tag_btn">Tag this moment</button>
   <div class="sort_toggle" id="sort_toggle">
     <button data-mode="time">Time</button>
@@ -305,14 +311,9 @@
 
 <div class="tag_list" id="tag_list"></div>
 
-<!-- ===== audio source (single file) — bottom of page ===== -->
-<div class="audio_card" id="audio_card">
-  <div class="audio_label_row">
-    <span class="audio_icon">🎵</span>
-    <span class="audio_label empty" id="audio_label">Loading…</span>
-    <button class="ghost" id="audio_edit_btn" title="Change audio file">✎</button>
-  </div>
-
+<!-- audio edit form (hidden, toggled by pencil) -->
+<div class="audio_card" id="audio_card" style="display:none;">
+  <span class="audio_label empty" id="audio_label" style="display:none;">Loading…</span>
   <div class="audio_edit_form" id="audio_edit_form" style="display:none">
     <input type="text" id="audio_url_in" placeholder="Paste audio URL (Google Drive share, direct URL, or filename next to this page)">
     <input type="text" id="audio_label_in" placeholder="Label (optional — auto-derived if blank)">
@@ -327,27 +328,7 @@
       Saving writes <code id="audio_path_display"></code> to the repo so every visitor sees this audio.
     </div>
   </div>
-
 </div>
-
-<!-- ── jam nav (moved to bottom) ── -->
-<nav style="
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 0 24px; gap:8px;
-">
-  <a href="index.html" style="
-    display:inline-flex; align-items:center; gap:6px;
-    color:#c9a87e; text-decoration:none; font-size:13px; font-weight:600;
-    padding:8px 14px; background:#4a2a0e; border-radius:10px;
-    min-height:40px;
-  ">&#9776; All Jams</a>
-  <a href="2026_05_23_bazaar_cafe.html" style="
-    display:inline-flex; align-items:center; gap:6px;
-    color:#e8b454; text-decoration:none; font-size:13px; font-weight:600;
-    padding:8px 14px; background:rgba(232,180,84,0.12); border:1px solid rgba(232,180,84,0.3);
-    border-radius:10px; min-height:40px;
-  ">Bazaar Cafe 5/23 >Sound Union &#8250;<#8250;</a>
-</nav>
 
 <div class="toast" id="toast"></div>
 
@@ -1116,7 +1097,7 @@
       label.setAttribute('inputmode', 'text');
       label.setAttribute('autocapitalize', 'sentences');
       label.value = tag.label || '';
-      label.placeholder = 'untitled moment';
+      label.placeholder = 'tag';
       label.addEventListener('input', function () {
         tag.label = label.value;
         save_tags();
@@ -1125,14 +1106,12 @@
       label.addEventListener('keydown', function (e) { if (e.key === 'Enter') label.blur(); });
       row.appendChild(label);
 
-      if (isPlaying) {
-        var minus1 = document.createElement('button');
-        minus1.className = 'ghost';
-        minus1.title = 'Move start −1s';
-        minus1.innerHTML = ICON_CHEV_L;
-        minus1.addEventListener('click', function () { nudge_tag(tag.id, -1); });
-        row.appendChild(minus1);
-      }
+      var minus1 = document.createElement('button');
+      minus1.className = 'ghost';
+      minus1.title = 'Move start −1s';
+      minus1.innerHTML = ICON_CHEV_L;
+      minus1.addEventListener('click', function () { nudge_tag(tag.id, -1); });
+      row.appendChild(minus1);
 
       var time = document.createElement('div');
       time.className = 'tag_time';
@@ -1141,14 +1120,12 @@
       time.addEventListener('click', function () { play_from_tag(tag); });
       row.appendChild(time);
 
-      if (isPlaying) {
-        var plus1 = document.createElement('button');
-        plus1.className = 'ghost';
-        plus1.title = 'Move start +1s';
-        plus1.innerHTML = ICON_CHEV_R;
-        plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
-        row.appendChild(plus1);
-      }
+      var plus1 = document.createElement('button');
+      plus1.className = 'ghost';
+      plus1.title = 'Move start +1s';
+      plus1.innerHTML = ICON_CHEV_R;
+      plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
+      row.appendChild(plus1);
 
       if (isPlaying && SHOW_END_UI) {
         if (tag.e == null) {
