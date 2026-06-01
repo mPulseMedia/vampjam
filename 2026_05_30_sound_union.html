@@ -746,17 +746,18 @@
 
       var arr = Array.isArray(data.tags) ? data.tags : null;
       if (arr) {
-        // REPLACE local tags with repo's view (minus tombstones). Worker auto-sync keeps
-        // local edits flowing to the repo so this is the right source of truth.
-        var tombs = get_tombs();
+        // REPLACE local tags with repo — repo is the single source of truth.
+        // No tombstone filtering: if it's in the repo, show it.
         tags = arr
-          .filter(function (t) { return t && t.id && typeof t.t === 'number' && tombs.indexOf(t.id) === -1; })
+          .filter(function (t) { return t && t.id && typeof t.t === 'number'; })
           .map(function (t, i) {
             var cp = { id: t.id, t: t.t, label: t.label || '', order: i * 10 };
             if (t.e != null) cp.e = t.e;
             if (t.owner)   cp.owner = t.owner;
             return cp;
           });
+        // Clear stale tombstones since repo is authoritative
+        try { localStorage.removeItem(STORAGE_TOMBS); } catch (e) {}
         save_tags();
         render_tags();
         render_tag_markers();
