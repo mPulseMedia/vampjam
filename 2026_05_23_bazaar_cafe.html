@@ -379,8 +379,22 @@
   var REPO_NAME  = 'vampjam';
   var WORKER_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
 
-  // feature flags
-  var SHOW_END_UI = false;   // hide end-time + add-end + end ±1s buttons until needed
+  // advanced mode (persists). when off: hide ±15s ctrl buttons + end-nudge shelf.
+  function get_advanced() { return localStorage.getItem(STORAGE_ADV) === '1'; }
+  function set_advanced(v) {
+    try { localStorage.setItem(STORAGE_ADV, v ? '1' : '0'); } catch (e) {}
+    apply_advanced_class();
+    render_tags();
+    render_advanced_button();
+  }
+  function apply_advanced_class() {
+    if (get_advanced()) document.body.classList.add('advanced');
+    else                document.body.classList.remove('advanced');
+  }
+  function render_advanced_button() {
+    var b = document.getElementById('advanced_toggle');
+    if (b) b.textContent = 'Advanced mode: ' + (get_advanced() ? 'on' : 'off');
+  }
 
   // SVG icons scale with font-size; renders crisp on every device.
   var ICON_PLAY  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
