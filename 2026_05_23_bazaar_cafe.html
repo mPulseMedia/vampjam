@@ -174,7 +174,29 @@
     display: flex; align-items: center; gap: 5px;
     padding: 5px 5px; border-radius: 9px; background: transparent;
     flex-wrap: nowrap;
+    position: relative;            /* anchor for the end-nudge shelf */
   }
+
+  /* ±15s ctrl buttons: hidden unless advanced */
+  body:not(.advanced) #back_15,
+  body:not(.advanced) #fwd_15 { display: none; }
+
+  /* end-nudge shelf — extends below active row over the next row */
+  .end_shelf {
+    position: absolute;
+    top: 100%;
+    right: 72px;
+    display: none;
+    gap: 4px; padding: 4px 6px;
+    background: var(--panel_2);
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+    z-index: 8;
+    align-items: center;
+  }
+  body.advanced .tag_row.playing .end_shelf { display: inline-flex; }
+  .advanced_bar { text-align: center; padding: 24px 0 14px; }
+  .advanced_bar button { font-size: 12px; padding: 6px 12px; min-height: 30px; }
   .tag_row .tag_label {
     flex: 1 1 60px; min-width: 0;
   }
