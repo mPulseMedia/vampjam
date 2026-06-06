@@ -174,29 +174,7 @@
     display: flex; align-items: center; gap: 5px;
     padding: 5px 5px; border-radius: 9px; background: transparent;
     flex-wrap: nowrap;
-    position: relative;            /* anchor for the end-nudge shelf */
   }
-
-  /* ±15s ctrl buttons: hidden unless advanced */
-  body:not(.advanced) #back_15,
-  body:not(.advanced) #fwd_15 { display: none; }
-
-  /* end-nudge shelf — extends below active row over the next row */
-  .end_shelf {
-    position: absolute;
-    top: 100%;
-    right: 72px;
-    display: none;
-    gap: 4px; padding: 4px 6px;
-    background: var(--panel_2);
-    border-radius: 0 0 10px 10px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.5);
-    z-index: 8;
-    align-items: center;
-  }
-  body.advanced .tag_row.playing .end_shelf { display: inline-flex; }
-  .advanced_bar { text-align: center; padding: 24px 0 14px; }
-  .advanced_bar button { font-size: 12px; padding: 6px 12px; min-height: 30px; }
   .tag_row .tag_label {
     flex: 1 1 60px; min-width: 0;
   }
@@ -260,11 +238,6 @@
   .empty { color: var(--muted); padding: 14px; text-align: center; font-size: 13px; }
 
   /* ---- misc ---- */
-  .footer {
-    padding: 14px 0; margin-top: 14px;
-    border-top: 1px solid var(--panel_3);
-    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
-  }
   .toast {
     position: fixed; left: 50%; transform: translateX(-50%);
     bottom: 24px; background: #0b0d0f; color: var(--fg);
@@ -323,12 +296,12 @@
 
 <div class="jam_menu_overlay" id="jamMenu" onclick="this.classList.remove('open')">
   <div class="jam_menu" onclick="event.stopPropagation()">
-    <a href="2026_05_23_bazaar_cafe.html">Sound Union<span class="menu_sub">May 30, 2026</span></a>
-    <a href="2026_05_23_bazaar_cafe.html" class="current">Bazaar Cafe<span class="menu_sub">May 23, 2026</span></a>
+    <a href="2026_05_30_sound_union.html" class="current">Sound Union<span class="menu_sub">May 30, 2026</span></a>
+    <a href="2026_05_23_bazaar_cafe.html">Bazaar Cafe<span class="menu_sub">May 23, 2026</span></a>
   </div>
 </div>
 
-<h1 style="display:flex;align-items:center;gap:6px;">Bazaar Cafe — 2026-05-23 <button class="ghost" id="audio_edit_btn" title="Change audio file" style="font-size:17px;padding:5px 7px;min-height:32px;">&#x270E;</button></h1>
+<h1 style="display:flex;align-items:center;gap:6px;">Sound Union — 2026-05-30 <button class="ghost" id="audio_edit_btn" title="Change audio file" style="font-size:17px;padding:5px 7px;min-height:32px;">✎</button></h1>
 
 <!-- audio edit form (hidden, toggled by pencil) -->
 <div class="audio_card" id="audio_card" style="display:none;">
@@ -384,18 +357,8 @@
 
 <div class="tag_list" id="tag_list"></div>
 
-<div class="advanced_bar">
-  <button id="advanced_toggle">Advanced mode: off</button>
-</div>
-
 <div class="toast" id="toast"></div>
 
-<div class="footer">
-  <button id="export_btn">Export tags</button>
-  <button id="import_btn">Import tags</button>
-  <button id="clear_btn" style="color:var(--danger)">Clear tags</button>
-  <input type="file" id="import_file" accept="application/json" style="display:none">
-</div>
 
 <script>
   // ============ per-page identity ============
@@ -405,22 +368,8 @@
   var REPO_NAME  = 'vampjam';
   var WORKER_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
 
-  // advanced mode (persists). when off: hide ±15s ctrl buttons + end-nudge shelf.
-  function get_advanced() { return localStorage.getItem(STORAGE_ADV) === '1'; }
-  function set_advanced(v) {
-    try { localStorage.setItem(STORAGE_ADV, v ? '1' : '0'); } catch (e) {}
-    apply_advanced_class();
-    render_tags();
-    render_advanced_button();
-  }
-  function apply_advanced_class() {
-    if (get_advanced()) document.body.classList.add('advanced');
-    else                document.body.classList.remove('advanced');
-  }
-  function render_advanced_button() {
-    var b = document.getElementById('advanced_toggle');
-    if (b) b.textContent = 'Advanced mode: ' + (get_advanced() ? 'on' : 'off');
-  }
+  // feature flags
+  var SHOW_END_UI = false;   // hide end-time + add-end + end ±1s buttons until needed
 
   // SVG icons scale with font-size; renders crisp on every device.
   var ICON_PLAY  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
@@ -445,7 +394,6 @@
   var STORAGE_PAT     = 'github_pat';
   var STORAGE_IDENTITY= 'user_identity';
   var STORAGE_DEVICE  = 'vampjam_device_id';
-  var STORAGE_ADV     = 'vampjam_advanced_mode';
 
   // ============ elements ============
   var $ = function (id) { return document.getElementById(id); };
@@ -487,10 +435,10 @@
   var tagMarkers= $('tag_markers');
   var sortToggle= $('sort_toggle');
   var toastEl   = $('toast');
-  var exportBtn = $('export_btn');
-  var importBtn = $('import_btn');
-  var importIn  = $('import_file');
-  var clearBtn  = $('clear_btn');
+  var exportBtn = null;
+  var importBtn = null;
+  var importIn  = null;
+  var clearBtn  = null;
 
   // ============ state ============
   var audio        = null;   // { label, url, kind } | null
@@ -799,6 +747,7 @@
       var arr = Array.isArray(data.tags) ? data.tags : null;
       if (arr) {
         // REPLACE local tags with repo — repo is the single source of truth.
+        // No tombstone filtering: if it's in the repo, show it.
         tags = arr
           .filter(function (t) { return t && t.id && typeof t.t === 'number'; })
           .map(function (t, i) {
@@ -807,6 +756,7 @@
             if (t.owner)   cp.owner = t.owner;
             return cp;
           });
+        // Clear stale tombstones since repo is authoritative
         try { localStorage.removeItem(STORAGE_TOMBS); } catch (e) {}
         save_tags();
         render_tags();
@@ -1020,6 +970,8 @@
     save_tags();
     queue_save_data_to_repo('add tag at ' + fmt_time(t));
     render_tags();
+    // Focus the new tag's label — use setTimeout(0) to let DOM settle,
+    // and scrollIntoView so it's visible on mobile
     setTimeout(function () {
       var rows = tagList.querySelectorAll('.tag_row');
       for (var i = 0; i < rows.length; i++) {
@@ -1136,7 +1088,7 @@
     if (!tags.length) {
       var d = document.createElement('div');
       d.className = 'empty';
-      d.textContent = 'No tags yet — hit play and tap "Tag the moment".';
+      d.textContent = 'No tags yet — hit play and tap "Tag this moment".';
       tagList.appendChild(d);
       return;
     }
@@ -1271,38 +1223,6 @@
       });
       row.appendChild(delBtn);
 
-      // end-nudge shelf — visible only when this row is playing AND advanced mode
-      if (isPlaying) {
-        var shelf = document.createElement('div');
-        shelf.className = 'end_shelf';
-        if (tag.e == null) {
-          var ae = document.createElement('button');
-          ae.className = 'tiny';
-          ae.textContent = '+ end';
-          ae.title = 'Set end to current playback time';
-          ae.addEventListener('click', function () { add_tag_end(tag.id); });
-          shelf.appendChild(ae);
-        } else {
-          var em = document.createElement('button');
-          em.className = 'tiny';
-          em.textContent = '−1';
-          em.title = 'Move end −1s (and preview)';
-          em.addEventListener('click', function () { nudge_tag_end(tag.id, -1); });
-          var et = document.createElement('div');
-          et.className = 'tag_end';
-          et.textContent = fmt_time(tag.e);
-          et.title = 'Preview end (last 3s)';
-          et.addEventListener('click', function () { preview_end(tag); });
-          var ep = document.createElement('button');
-          ep.className = 'tiny';
-          ep.textContent = '+1';
-          ep.title = 'Move end +1s (and preview)';
-          ep.addEventListener('click', function () { nudge_tag_end(tag.id, 1); });
-          shelf.appendChild(em); shelf.appendChild(et); shelf.appendChild(ep);
-        }
-        row.appendChild(shelf);
-      }
-
       tagList.appendChild(row);
     });
     render_tag_markers();
@@ -1405,44 +1325,7 @@
     toast._tid = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
   }
 
-  // ============ export / import ============
-  exportBtn.addEventListener('click', function () {
-    var payload = { page_id: PAGE_ID, exported_at: new Date().toISOString(), tags: tags };
-    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = PAGE_ID + '_tags.json';
-    a.click();
-    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-  });
-  importBtn.addEventListener('click', function () { importIn.click(); });
-  importIn.addEventListener('change', function () {
-    var f = importIn.files && importIn.files[0];
-    if (!f) return;
-    var rd = new FileReader();
-    rd.onload = function () {
-      try {
-        var raw = JSON.parse(rd.result);
-        var newTags = Array.isArray(raw) ? raw : (raw.tags || []);
-        var byTagId = {};
-        tags.forEach(function (x) { byTagId[x.id] = x; });
-        newTags.forEach(function (x) { if (x && x.id && typeof x.t === 'number') byTagId[x.id] = x; });
-        tags = Object.values(byTagId);
-        save_tags();
-        render_tags();
-        toast('Imported ' + newTags.length + ' tag(s)');
-      } catch (e) { toast('Import failed: ' + e.message); }
-      importIn.value = '';
-    };
-    rd.readAsText(f);
-  });
-  clearBtn.addEventListener('click', function () {
-    if (!tags.length) { toast('No tags to clear'); return; }
-    if (!confirm('Clear all ' + tags.length + ' tags on this device?')) return;
-    tags = [];
-    save_tags();
-    render_tags();
-  });
+  // ============ export / import (removed) ============
 
   // ============ scroll shadow ============
   var stickyEl = document.querySelector('.sticky_player');
@@ -1454,18 +1337,13 @@
   }
 
   // ============ poll for sync ============
+  // Re-fetch repo data every 15s so other devices' changes appear quickly
   setInterval(function () {
     fetch_repo_data();
   }, 15000);
 
   // ============ boot ============
   playBtn.innerHTML = ICON_PLAY;
-  apply_advanced_class();
-  var advBtn = document.getElementById('advanced_toggle');
-  if (advBtn) {
-    render_advanced_button();
-    advBtn.addEventListener('click', function () { set_advanced(!get_advanced()); });
-  }
   render_sort_toggle();
   render_tags();
   render_pat_status();

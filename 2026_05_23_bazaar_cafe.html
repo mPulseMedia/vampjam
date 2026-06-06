@@ -174,39 +174,6 @@
     display: flex; align-items: center; gap: 5px;
     padding: 5px 5px; border-radius: 9px; background: transparent;
     flex-wrap: nowrap;
-    position: relative;            /* anchor for the end-nudge shelf */
-  }
-
-  /* ±15s ctrl buttons: hidden unless advanced */
-  body:not(.advanced) #back_15,
-  body:not(.advanced) #fwd_15 { display: none; }
-
-  /* end-nudge shelf — spans the row width; buttons right-aligned under start nudges */
-  .end_shelf {
-    position: absolute;
-    top: 100%; left: 0; right: 0;
-    display: none;
-    gap: 4px; padding: 5px 8px 6px;
-    background: var(--panel_2);
-    border-radius: 0 0 10px 10px;
-    box-shadow: 0 8px 14px rgba(0,0,0,0.55);
-    z-index: 8;
-    justify-content: flex-end;
-    align-items: center;
-    margin-right: 70px;  /* nudge shelf left so it aligns under start ±1 area */
-  }
-  body.advanced .tag_row.playing .end_shelf { display: flex; }
-
-  .advanced_bar { text-align: center; padding: 24px 0 14px; }
-  .advanced_bar button {
-    font-size: 12px; padding: 6px 14px; min-height: 32px;
-    background: var(--panel_2); color: var(--muted);
-    border: 1px solid var(--panel_3);
-  }
-  .advanced_bar button.on {
-    background: var(--accent); color: #0b0d0f;
-    border-color: var(--accent);
-    font-weight: 700;
   }
   .tag_row .tag_label {
     flex: 1 1 60px; min-width: 0;
@@ -395,10 +362,6 @@
 
 <div class="tag_list" id="tag_list"></div>
 
-<div class="advanced_bar">
-  <button id="advanced_toggle">Advanced mode: off</button>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <div class="footer">
@@ -416,22 +379,8 @@
   var REPO_NAME  = 'vampjam';
   var WORKER_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
 
-  // advanced mode (persists). when off: hide ±15s ctrl buttons + end-nudge shelf.
-  function get_advanced() { return localStorage.getItem(STORAGE_ADV) === '1'; }
-  function set_advanced(v) {
-    try { localStorage.setItem(STORAGE_ADV, v ? '1' : '0'); } catch (e) {}
-    apply_advanced_class();
-    render_tags();
-    render_advanced_button();
-  }
-  function apply_advanced_class() {
-    if (get_advanced()) document.body.classList.add('advanced');
-    else                document.body.classList.remove('advanced');
-  }
-  function render_advanced_button() {
-    var b = document.getElementById('advanced_toggle');
-    if (b) b.textContent = 'Advanced mode: ' + (get_advanced() ? 'on' : 'off');
-  }
+  // feature flags
+  var SHOW_END_UI = false;   // hide end-time + add-end + end ±1s buttons until needed
 
   // SVG icons scale with font-size; renders crisp on every device.
   var ICON_PLAY  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
@@ -1282,38 +1231,6 @@
       });
       row.appendChild(delBtn);
 
-      // end-nudge shelf — visible only when this row is playing AND advanced mode
-      if (isPlaying) {
-        var shelf = document.createElement('div');
-        shelf.className = 'end_shelf';
-        if (tag.e == null) {
-          var ae = document.createElement('button');
-          ae.className = 'tiny';
-          ae.textContent = '+ end';
-          ae.title = 'Set end to current playback time';
-          ae.addEventListener('click', function () { add_tag_end(tag.id); });
-          shelf.appendChild(ae);
-        } else {
-          var em = document.createElement('button');
-          em.className = 'tiny';
-          em.textContent = '−1';
-          em.title = 'Move end −1s (and preview)';
-          em.addEventListener('click', function () { nudge_tag_end(tag.id, -1); });
-          var et = document.createElement('div');
-          et.className = 'tag_end';
-          et.textContent = fmt_time(tag.e);
-          et.title = 'Preview end (last 3s)';
-          et.addEventListener('click', function () { preview_end(tag); });
-          var ep = document.createElement('button');
-          ep.className = 'tiny';
-          ep.textContent = '+1';
-          ep.title = 'Move end +1s (and preview)';
-          ep.addEventListener('click', function () { nudge_tag_end(tag.id, 1); });
-          shelf.appendChild(em); shelf.appendChild(et); shelf.appendChild(ep);
-        }
-        row.appendChild(shelf);
-      }
-
       tagList.appendChild(row);
     });
     render_tag_markers();
@@ -1471,12 +1388,6 @@
 
   // ============ boot ============
   playBtn.innerHTML = ICON_PLAY;
-  apply_advanced_class();
-  var advBtn = document.getElementById('advanced_toggle');
-  if (advBtn) {
-    render_advanced_button();
-    advBtn.addEventListener('click', function () { set_advanced(!get_advanced()); });
-  }
   render_sort_toggle();
   render_tags();
   render_pat_status();
