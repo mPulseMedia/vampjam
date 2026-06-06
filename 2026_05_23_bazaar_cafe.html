@@ -384,6 +384,10 @@
 
 <div class="tag_list" id="tag_list"></div>
 
+<div class="advanced_bar">
+  <button id="advanced_toggle">Advanced mode: off</button>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <div class="footer">
@@ -1266,6 +1270,38 @@
           .catch(function (err) {});
       });
       row.appendChild(delBtn);
+
+      // end-nudge shelf — visible only when this row is playing AND advanced mode
+      if (isPlaying) {
+        var shelf = document.createElement('div');
+        shelf.className = 'end_shelf';
+        if (tag.e == null) {
+          var ae = document.createElement('button');
+          ae.className = 'tiny';
+          ae.textContent = '+ end';
+          ae.title = 'Set end to current playback time';
+          ae.addEventListener('click', function () { add_tag_end(tag.id); });
+          shelf.appendChild(ae);
+        } else {
+          var em = document.createElement('button');
+          em.className = 'tiny';
+          em.textContent = '−1';
+          em.title = 'Move end −1s (and preview)';
+          em.addEventListener('click', function () { nudge_tag_end(tag.id, -1); });
+          var et = document.createElement('div');
+          et.className = 'tag_end';
+          et.textContent = fmt_time(tag.e);
+          et.title = 'Preview end (last 3s)';
+          et.addEventListener('click', function () { preview_end(tag); });
+          var ep = document.createElement('button');
+          ep.className = 'tiny';
+          ep.textContent = '+1';
+          ep.title = 'Move end +1s (and preview)';
+          ep.addEventListener('click', function () { nudge_tag_end(tag.id, 1); });
+          shelf.appendChild(em); shelf.appendChild(et); shelf.appendChild(ep);
+        }
+        row.appendChild(shelf);
+      }
 
       tagList.appendChild(row);
     });
