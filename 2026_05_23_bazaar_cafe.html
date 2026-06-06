@@ -1460,6 +1460,12 @@
 
   // ============ boot ============
   playBtn.innerHTML = ICON_PLAY;
+  apply_advanced_class();
+  var advBtn = document.getElementById('advanced_toggle');
+  if (advBtn) {
+    render_advanced_button();
+    advBtn.addEventListener('click', function () { set_advanced(!get_advanced()); });
+  }
   render_sort_toggle();
   render_tags();
   render_pat_status();
