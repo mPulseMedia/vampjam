@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "01 study_up",
+        id: "02 render_block",
         expanded: true,
+        nodes: [
+          { text: "02 render_block", children: [
+            { text: "prompt_restate", children: [
+              { text: "Outline response was not in a code block, so indents didn't show." },
+              { text: "Asked what to do to make outline always render with indents." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK. you didn't put your outline response within a codeblock so I dont see how the indents. What MUST I DO TO MAKE YOU ALWAYS DO IT -- except for the rare exceptions when there is a portion that is decidedly NOT in the outline format?" }
+            ]},
+            { text: "result_answer", children: [
+              { text: "Add a render_block rule to claude_cowork_instruction_global (proposed as 3J)." },
+              { text: "Cause: no existing rule said to fence; markdown collapses leading spaces." },
+              { text: "Cannot persist edits to global CLAUDE.md from here (read-only cache); user pastes it in." }
+            ]},
+            { text: "result_decision", children: [
+              { text: "Mixed response: fence each outline portion as makes sense; use outline whenever appropriate; prose/code stay unfenced." },
+              { text: "Prompt log shown in chat: not fenced — prompt_log.html already renders indents." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "render_block, fence_outline" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "01 study_up",
+        expanded: false,
         nodes: [
           { text: "01 study_up", children: [
             { text: "prompt_restate", children: [
