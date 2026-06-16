@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vamp jam — prompt log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1008; --panel: #2a1c10; --panel-2: #3a2818;
+    --fg: #f5e5c5; --muted: #c9a87e; --accent: #e8b454; --purple: #AF52DE;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--fg); min-height: 100vh; padding: 0;
+  }
+  .brand { text-align: center; padding: 32px 20px 16px; }
+  .brand .wordmark { font-family: 'Sacramento', cursive; font-size: 64px; line-height: 1; color: var(--fg); }
+  .brand .tagline { color: var(--muted); font-size: 13px; margin-top: 2px; letter-spacing: 0.03em; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 60px; }
+  .bar { display: flex; gap: 10px; margin-bottom: 18px; }
+  .bar button {
+    background: var(--panel); color: var(--muted); border: 1px solid var(--panel-2);
+    border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer;
+  }
+  .bar button:hover { border-color: var(--accent); color: var(--fg); }
+
+  ul.tree { list-style: none; }
+  ul.tree ul { list-style: none; margin-left: 22px; }
+  .node { display: flex; align-items: flex-start; gap: 6px; padding: 1px 0; }
+  .tog {
+    width: 16px; flex-shrink: 0; text-align: center; cursor: pointer;
+    color: var(--accent); user-select: none; font-size: 11px; line-height: 1.6;
+  }
+  .tog.leaf { color: var(--panel-2); cursor: default; }
+  .txt { flex: 1; }
+  .node.thread > .txt { font-weight: 700; color: var(--accent); font-size: 16px; }
+  .node.entry > .txt { font-weight: 700; color: var(--fg); }
+  li.collapsed > ul { display: none; }
+  .thread-block { background: var(--panel); border: 1px solid var(--panel-2); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+<header class="brand">
+  <div class="wordmark">vamp jam</div>
+  <div class="tagline">prompt log</div>
+</header>
+<div class="wrap">
+  <div class="bar">
+    <button onclick="setAll(false)">collapse all</button>
+    <button onclick="setAll(true)">expand all</button>
+  </div>
+  <div id="root"></div>
+</div>
+
+<script src="prompt_log_lab_data.js"></script>
+<script>
+  function el(tag, cls) { var e = document.createElement(tag); if (cls) e.className = cls; return e; }
+
+  function renderNode(node, collapsed) {
+    var li = el('li');
+    if (collapsed) li.classList.add('collapsed');
+    var row = el('div', 'node');
+    var kids = node.children || [];
+    var tog = el('span', 'tog' + (kids.length ? '' : ' leaf'));
+    tog.textContent = kids.length ? '▸' : '·';
+    if (kids.length) {
+      function sync() { tog.textContent = li.classList.contains('collapsed') ? '▸' : '▾'; }
+      sync();
+      tog.onclick = function () { li.classList.toggle('collapsed'); sync(); };
+    }
+    var txt = el('span', 'txt'); txt.textContent = node.text;
+    row.appendChild(tog); row.appendChild(txt); li.appendChild(row);
+    if (kids.length) {
+      var ul = el('ul');
+      kids.forEach(function (c) { ul.appendChild(renderNode(c, false)); });
+      li.appendChild(ul);
+    }
+    return li;
+  }
+
+  function render() {
+    var root = document.getElementById('root');
+    root.innerHTML = '';
+    (window.prompt_log_data || []).forEach(function (thread) {
+      var block = el('div', 'thread-block');
+      var ul = el('ul', 'tree');
+      var tli = el('li'); if (!thread.expanded) tli.classList.add('collapsed');
+      var trow = el('div', 'node thread');
+      var ttog = el('span', 'tog');
+      function tsync() { ttog.textContent = tli.classList.contains('collapsed') ? '▸' : '▾'; }
+      tsync(); ttog.onclick = function () { tli.classList.toggle('collapsed'); tsync(); };
+      var ttxt = el('span', 'txt'); ttxt.textContent = thread.thread;
+      trow.appendChild(ttog); trow.appendChild(ttxt); tli.appendChild(trow);
+      var eul = el('ul');
+      (thread.entries || []).forEach(function (entry) {
+        var eli = el('li'); if (!entry.expanded) eli.classList.add('collapsed');
+        var erow = el('div', 'node entry');
+        var etog = el('span', 'tog');
+        function esync() { etog.textContent = eli.classList.contains('collapsed') ? '▸' : '▾'; }
+        esync(); etog.onclick = function () { eli.classList.toggle('collapsed'); esync(); };
+        var etxt = el('span', 'txt'); etxt.textContent = entry.id;
+        erow.appendChild(etog); erow.appendChild(etxt); eli.appendChild(erow);
+        var nul = el('ul');
+        (entry.nodes || []).forEach(function (n) {
+          // skip duplicate top node equal to entry id; render its children
+          var top = (n.text === entry.id && n.children) ? n.children : [n];
+          top.forEach(function (c) { nul.appendChild(renderNode(c, false)); });
+        });
+        eli.appendChild(nul); eul.appendChild(eli);
+      });
+      tli.appendChild(eul); ul.appendChild(tli); block.appendChild(ul);
+      root.appendChild(block);
+    });
+  }
+
+  function setAll(expand) {
+    document.querySelectorAll('#root li').forEach(function (li) {
+      if (li.querySelector('ul')) li.classList.toggle('collapsed', !expand);
+    });
+    document.querySelectorAll('#root .tog').forEach(function (t) {
+      if (!t.classList.contains('leaf')) {
+        var li = t.closest('li');
+        t.textContent = li.classList.contains('collapsed') ? '▸' : '▾';
+      }
+    });
+  }
+
+  render();
+</script>
+</body>
+</html>
