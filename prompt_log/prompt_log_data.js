@@ -9,8 +9,50 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "02 render_block",
+        id: "03 architecture_summary",
         expanded: true,
+        nodes: [
+          { text: "03 architecture_summary", children: [
+            { text: "prompt_restate", children: [
+              { text: "Summarize the vampjam architecture (and show fenced format)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "show me how you respond: summarize rthe architechture." }
+            ]},
+            { text: "result_architecture", children: [
+              { text: "layer_page", children: [
+                { text: "index.html — landing; sessions + tools." },
+                { text: "session_page — self-contained player per session." },
+                { text: "vampjam_player.html — general player." }
+              ]},
+              { text: "layer_data", children: [
+                { text: "{session}.json = {audio,tags}." },
+                { text: "tag = {id, t(seconds), label}." },
+                { text: "sources/ + tags/ hold per-session json." }
+              ]},
+              { text: "layer_audio", children: [
+                { text: "GitHub release assets; m4a gitignored." }
+              ]},
+              { text: "layer_sync", children: [
+                { text: "session_page → Cloudflare Worker → GitHub." },
+                { text: "vampjam_player.html → jsonblob rooms or local." }
+              ]},
+              { text: "layer_automation", children: [
+                { text: "auto_push_vampjam.sh + launchd plist every 60s." }
+              ]},
+              { text: "flow_end_to_end", children: [
+                { text: "Tag → Worker writes json → Pages serves → devices read." }
+              ]}
+            ]},
+            { text: "codename_list", children: [
+              { text: "layer_page, layer_data, layer_audio, layer_sync, layer_automation, flow_end_to_end" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "02 render_block",
+        expanded: false,
         nodes: [
           { text: "02 render_block", children: [
             { text: "prompt_restate", children: [
