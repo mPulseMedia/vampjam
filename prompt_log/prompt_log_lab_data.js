@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "03 architecture_summary",
+        id: "04 study_up_continue",
         expanded: true,
+        nodes: [
+          { text: "04 study_up_continue", children: [
+            { text: "prompt_restate", children: [
+              { text: "Continue the vampjam session." },
+              { text: "Re-study current state before new work." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "let's continue here, so study up." }
+            ]},
+            { text: "result_state_confirm", children: [
+              { text: "Read mount: index, two session_page, vampjam_player, worker, auto_push, prompt_log." },
+              { text: "Architecture matches prior log entries 01 and 03; no drift found." }
+            ]},
+            { text: "result_repo_state", children: [
+              { text: "git head 72a633f auto_commit; recent history is auto_commit + tag edits." }
+            ]},
+            { text: "result_ready", children: [
+              { text: "Caught up and ready." },
+              { text: "codename_list: study_up_continue, result_state_confirm" }
+            ]},
+            { text: "open_question", children: [
+              { text: "What do you want to work on next?" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "03 architecture_summary",
+        expanded: false,
         nodes: [
           { text: "03 architecture_summary", children: [
             { text: "prompt_restate", children: [
