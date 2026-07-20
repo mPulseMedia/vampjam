@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "11 mp3_format_question",
+        id: "12 aif_wrong_direction",
         expanded: true,
+        nodes: [
+          { text: "12 aif_wrong_direction", children: [
+            { text: "prompt_restate", children: [
+              { text: "Try the _3 release, an aif file." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "try this one https://github.com/mPulseMedia/vampjam/releases/download/2026-07-17_vampjam_su_3/2026-07-17_vampjam_su_3.aif" }
+            ]},
+            { text: "result_asset", children: [
+              { text: "Genuinely new file — digest 502d9f39, not a rename." },
+              { text: "content_type audio/aiff, size 1,723,286,046 — 1.72 GB." },
+              { text: "5.5x the mp3; uncompressed pcm." }
+            ]},
+            { text: "result_verdict", children: [
+              { text: "Wrong direction — worst option so far." },
+              { text: "If 312 MB stalled the phone, 1.72 GB cannot succeed." },
+              { text: "Near GitHub 2 GB asset cap; hopeless on cellular." },
+              { text: "Did not wire it up." }
+            ]},
+            { text: "result_duration_math", children: [
+              { text: "1.72 GB pcm at 44.1k stereo 16-bit = about 2h43m." },
+              { text: "Matches mp3 at 256 kbps for the same length." }
+            ]},
+            { text: "result_hypothesis_sharpen", children: [
+              { text: "Working sound_union m4a is 239 MB at same 2h43m." },
+              { text: "239 MB m4a plays; 312 MB mp3 does not." },
+              { text: "Gap is too small to be size alone — container is the lever." },
+              { text: "Target m4a AAC; bitrate is not critical." }
+            ]},
+            { text: "result_ask", children: [
+              { text: "Convert to m4a AAC at any sane bitrate, or drop source in folder." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "aif_wrong_direction, result_hypothesis_sharpen, result_duration_math" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "11 mp3_format_question",
+        expanded: false,
         nodes: [
           { text: "11 mp3_format_question", children: [
             { text: "prompt_restate", children: [
