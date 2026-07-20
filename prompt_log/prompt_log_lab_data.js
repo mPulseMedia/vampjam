@@ -9,8 +9,52 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "07 push_live_fix",
+        id: "08 push_live_execute",
         expanded: true,
+        nodes: [
+          { text: "08 push_live_execute", children: [
+            { text: "prompt_restate", children: [
+              { text: "Push via computer control." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "use computer to push" }
+            ]},
+            { text: "result_route", children: [
+              { text: "Terminal is click-tier — typing blocked." },
+              { text: "GitHub Desktop is full-tier and holds the credential." }
+            ]},
+            { text: "result_catch", children: [
+              { text: "App opened on repo lab, not vampjam." },
+              { text: "lab had 166 unpushed commits — pushing there would have been wrong." },
+              { text: "Switched to mPulseMedia/vampjam first." }
+            ]},
+            { text: "result_patch_worked", children: [
+              { text: "auto_push patch from 07 already merged origin on its own tick." },
+              { text: "Merge commit present; 11 ahead, 0 behind at push time." }
+            ]},
+            { text: "result_push", children: [
+              { text: "Push origin clicked; counter cleared; local equals origin." }
+            ]},
+            { text: "result_verify_origin", children: [
+              { text: "2026_07_17_sound_union.html and .json present on origin." },
+              { text: "index.html on origin links the new page." },
+              { text: "05_30 json shows 11 tags — phone tag survived the merge." },
+              { text: "origin head 252ff72 merge commit." }
+            ]},
+            { text: "result_open", children: [
+              { text: "Pages propagation ~1 min." },
+              { text: "Audio playback still unconfirmed." },
+              { text: "lab repo 166 unpushed — likely same stalled-push pattern." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "push_live_execute, result_catch, result_verify_origin" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "07 push_live_fix",
+        expanded: false,
         nodes: [
           { text: "07 push_live_fix", children: [
             { text: "prompt_restate", children: [
