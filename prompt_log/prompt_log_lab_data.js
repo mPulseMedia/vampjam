@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "09 mobile_play_fail",
+        id: "10 asset_digest_match",
         expanded: true,
+        nodes: [
+          { text: "10 asset_digest_match", children: [
+            { text: "prompt_restate", children: [
+              { text: "Point the page at release _2 and commit via computer." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "fix with https://github.com/mPulseMedia/vampjam/releases/download/2026-07-17_vampjam_su_2/2026-07-17_vampjam_su_2.mp3 -- and do the com[puter for the commit" }
+            ]},
+            { text: "result_blocker", children: [
+              { text: "New asset sha256 equals old asset sha256." },
+              { text: "95b405abc95a65e2d7383ec9b3c6d57b1f8a0051a768a3f1ae64f57a096c7e08" },
+              { text: "Size identical: 312,010,638 bytes." },
+              { text: "Same file renamed and re-uploaded — not a re-encode." }
+            ]},
+            { text: "result_action", children: [
+              { text: "Did not edit json; did not commit." },
+              { text: "Swapping to an identical file cannot change mobile behavior." },
+              { text: "A commit would have looked like a fix and misled." }
+            ]},
+            { text: "result_real_fix", children: [
+              { text: "Container must change: mp3 to m4a AAC." },
+              { text: "Drop source into vampjam folder; ffmpeg is in sandbox." },
+              { text: "Claude cannot download the asset — fetch restriction." }
+            ]},
+            { text: "result_uncertainty", children: [
+              { text: "Hypothesis still unconfirmed on device." },
+              { text: "Raw-url Safari test still not run — cheap and decisive." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "asset_digest_match, result_blocker, result_real_fix" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "09 mobile_play_fail",
+        expanded: false,
         nodes: [
           { text: "09 mobile_play_fail", children: [
             { text: "prompt_restate", children: [
