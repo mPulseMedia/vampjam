@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "05 audio_upload_release",
+        id: "06 session_page_create",
         expanded: true,
+        nodes: [
+          { text: "06 session_page_create", children: [
+            { text: "prompt_restate", children: [
+              { text: "Release asset URL supplied for 2026-07-17 Sound Union." },
+              { text: "Build the new session_page." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "https://github.com/mPulseMedia/vampjam/releases/download/2026-07-17_vampjam_su/SoundUnion.Vamp.Jam.2026-07-17.mp3" }
+            ]},
+            { text: "decision_tag_empty", children: [
+              { text: "Paul chose empty tag list; tag live in player." }
+            ]},
+            { text: "result_file_new", children: [
+              { text: "2026_07_17_sound_union.json — audio + tags:[]." },
+              { text: "2026_07_17_sound_union.html — clone of 05_30 page." },
+              { text: "PAGE_ID = sound_union_2026_07_17." }
+            ]},
+            { text: "result_file_edit", children: [
+              { text: "index.html — new card on top; 05_30 loses 'latest'." },
+              { text: "Both prior session_page get nav link." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "json parses; tags 0." },
+              { text: "No stale 05_30 identity in new page." },
+              { text: "No hardcoded audio url — page reads json." },
+              { text: "auto_push already committed (head 81e3288)." }
+            ]},
+            { text: "result_open", children: [
+              { text: "Release title says m4a_upload but asset is mp3 — cosmetic." },
+              { text: "Local branch diverged 8 vs 14 from origin; Mac reconciles." },
+              { text: "Audio playback unverified until Paul opens the page." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "session_page_create, sound_union_2026_07_17, decision_tag_empty" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "05 audio_upload_release",
+        expanded: false,
         nodes: [
           { text: "05 audio_upload_release", children: [
             { text: "prompt_restate", children: [
