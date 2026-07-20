@@ -9,8 +9,57 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "08 push_live_execute",
+        id: "09 mobile_play_fail",
         expanded: true,
+        nodes: [
+          { text: "09 mobile_play_fail", children: [
+            { text: "prompt_restate", children: [
+              { text: "Page loads on both devices." },
+              { text: "Play works on desktop, fails on iPhone." },
+              { text: "Other recordings play fine on iPhone." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "i see page on iphone and desktop. hitting play works on desktop but not mobile." },
+              { text: "hitting play on mobile for other uploaded recordings works" }
+            ]},
+            { text: "result_scope", children: [
+              { text: "Other sessions play on mobile — page code and release hosting are not at fault." },
+              { text: "Fault is specific to this asset." }
+            ]},
+            { text: "result_ruled_out", children: [
+              { text: "content_type is audio/mpeg — correct, not octet-stream." }
+            ]},
+            { text: "result_asset_compare", children: [
+              { text: "new: mp3, audio/mpeg, 312 MB — fails." },
+              { text: "sound_union: m4a, audio/x-m4a, 239 MB — works." },
+              { text: "bazaar_cafe: m4a, audio/x-m4a, 163 MB — works." }
+            ]},
+            { text: "result_hypothesis", children: [
+              { text: "Format plus size, not mime type." },
+              { text: "m4a carries a moov sample index; iOS seeks precisely." },
+              { text: "mp3 has no index — iOS must scan to get duration." },
+              { text: "At 312 MB the iOS media loader gives up; desktop just buffers harder." },
+              { text: "Not yet confirmed on device." }
+            ]},
+            { text: "result_fix_plan", children: [
+              { text: "Re-encode to m4a AAC, matching the two working files." },
+              { text: "96k stereo lands near 235 MB; 64k near 155 MB." },
+              { text: "movflags +faststart puts moov first for instant streaming." },
+              { text: "ffmpeg present in sandbox; source mp3 is not in the folder." }
+            ]},
+            { text: "result_isolate_test", children: [
+              { text: "Open the raw asset URL in mobile Safari." },
+              { text: "Fails there too — file or host; plays — page code." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "mobile_play_fail, result_asset_compare, result_fix_plan, faststart" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "08 push_live_execute",
+        expanded: false,
         nodes: [
           { text: "08 push_live_execute", children: [
             { text: "prompt_restate", children: [
