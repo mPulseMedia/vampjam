@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "04 study_up_continue",
+        id: "05 audio_upload_release",
         expanded: true,
+        nodes: [
+          { text: "05 audio_upload_release", children: [
+            { text: "prompt_restate", children: [
+              { text: "New recording exists." },
+              { text: "How to get audio onto GitHub so a new session_page can be built." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I have a new recording. How do I get it to github so you cna make a new page?" }
+            ]},
+            { text: "result_why_release", children: [
+              { text: "m4a is gitignored; repo limit 100 MB." },
+              { text: "release_asset limit 2 GB — the established path." },
+              { text: "Both existing sessions use releases/download/{tag}/{file}." }
+            ]},
+            { text: "result_route_gh_cli", children: [
+              { text: "gh release create {tag} {file} on the Mac." },
+              { text: "One command; recommended." }
+            ]},
+            { text: "result_route_web", children: [
+              { text: "github.com/mPulseMedia/vampjam/releases/new." },
+              { text: "Set tag, drag file, publish." }
+            ]},
+            { text: "result_naming", children: [
+              { text: "Rename file to snake_case first." },
+              { text: "GitHub converts spaces to dots in asset URL." },
+              { text: "release_tag pattern: {venue}_{yyyy_mm_dd}." }
+            ]},
+            { text: "result_limit", children: [
+              { text: "Claude cannot upload: no GitHub credential in sandbox." },
+              { text: "Paul runs the upload; Claude builds page from URL." }
+            ]},
+            { text: "result_need_next", children: [
+              { text: "venue, date, release asset URL, tag or setlist source." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "audio_upload_release, release_asset, release_tag, route_gh_cli, route_web" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "04 study_up_continue",
+        expanded: false,
         nodes: [
           { text: "04 study_up_continue", children: [
             { text: "prompt_restate", children: [
