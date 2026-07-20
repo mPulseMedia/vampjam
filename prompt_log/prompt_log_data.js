@@ -9,8 +9,48 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "10 asset_digest_match",
+        id: "11 mp3_format_question",
         expanded: true,
+        nodes: [
+          { text: "11 mp3_format_question", children: [
+            { text: "prompt_restate", children: [
+              { text: "Converted the file to mp3 himself." },
+              { text: "Asks whether mp3 will work from the app." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I converted it myself to mp3 . won't this work from the app?" }
+            ]},
+            { text: "result_answer", children: [
+              { text: "mp3 is not rejected by the app — desktop plays it now." },
+              { text: "Format alone is not the suspected fault." }
+            ]},
+            { text: "result_recheck", children: [
+              { text: "Re-read release list — no new upload since last check." },
+              { text: "_2 asset still 312,010,638 bytes, digest still 95b405ab." },
+              { text: "The converted file never reached GitHub." }
+            ]},
+            { text: "result_why_m4a", children: [
+              { text: "Both phone-working files are m4a; the failing one is mp3." },
+              { text: "m4a moov index gives iOS duration and offsets up front." },
+              { text: "mp3-to-mp3 keeps the missing index and usually keeps the size." }
+            ]},
+            { text: "result_size_check", children: [
+              { text: "If his converted file is still near 312 MB, bitrate never dropped." },
+              { text: "Real re-encode should change both size and digest." }
+            ]},
+            { text: "result_offer", children: [
+              { text: "Drop source in folder — sandbox ffmpeg converts to m4a." },
+              { text: "Or confirm cause first via iPhone Mirroring on the raw url." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "mp3_format_question, result_why_m4a, result_size_check" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "10 asset_digest_match",
+        expanded: false,
         nodes: [
           { text: "10 asset_digest_match", children: [
             { text: "prompt_restate", children: [
