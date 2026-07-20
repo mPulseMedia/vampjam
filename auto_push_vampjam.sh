@@ -38,6 +38,22 @@ if [[ -n "$STATUS" ]]; then
   fi
 fi
 
+# Reconcile with origin before pushing.
+# Tags edited from a phone are written straight to GitHub by the Worker, so
+# origin moves on its own. Without this step a plain push is rejected as
+# non-fast-forward and the repo silently stops publishing.
+git fetch origin main >> "$LOG" 2>&1
+BEHIND=$(git rev-list --count HEAD..origin/main 2>/dev/null)
+if [[ -n "$BEHIND" && "$BEHIND" -gt 0 ]]; then
+  if git merge --no-edit origin/main >> "$LOG" 2>&1; then
+    echo "$(date): merged origin/main ($BEHIND commits)" >> "$LOG"
+  else
+    git merge --abort 2>/dev/null
+    echo "$(date): merge FAILED — conflict needs manual fix" >> "$LOG"
+    exit 1
+  fi
+fi
+
 # Push anything unpushed
 UNPUSHED=$(git log origin/main..HEAD --oneline 2>/dev/null)
 if [[ -n "$UNPUSHED" ]]; then
