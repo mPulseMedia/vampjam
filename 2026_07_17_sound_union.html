@@ -747,9 +747,8 @@
 
       var arr = Array.isArray(data.tags) ? data.tags : null;
       if (arr) {
-        // REPLACE local tags with repo — repo is the single source of truth.
-        // No tombstone filtering: if it's in the repo, show it.
-        tags = arr
+        // Start from the repo (shared source of truth)...
+        var merged = arr
           .filter(function (t) { return t && t.id && typeof t.t === 'number'; })
           .map(function (t, i) {
             var cp = { id: t.id, t: t.t, label: t.label || '', order: i * 10 };
@@ -757,13 +756,26 @@
             if (t.owner)   cp.owner = t.owner;
             return cp;
           });
+        // ...but never drop a locally-added tag that hasn't reached the repo
+        // yet. A stale CDN read must not wipe a pending tag.
+        var repoIds = {};
+        merged.forEach(function (t) { repoIds[t.id] = true; });
+        var maxOrder = merged.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
+        tags.forEach(function (local) {
+          if (local && local.id && !repoIds[local.id]) {
+            maxOrder += 10;
+            local.order = maxOrder;
+            merged.push(local);
+          }
+        });
+        tags = merged;
         // Clear stale tombstones since repo is authoritative
         try { localStorage.removeItem(STORAGE_TOMBS); } catch (e) {}
         save_tags();
         render_tags();
         render_tag_markers();
       }
-    }).catch(function () { audio = null; render_audio_label(); });
+    }).catch(function () { /* keep current state on a failed/stale fetch */ });
   }
   // back-compat alias used elsewhere
   function fetch_audio_public() { return fetch_repo_data(); }
@@ -1338,10 +1350,13 @@
   }
 
   // ============ poll for sync ============
-  // Re-fetch repo data every 15s so other devices' changes appear quickly
-  setInterval(function () {
-    fetch_repo_data();
-  }, 15000);
+  // Auto-poll disabled for this page: the 15s re-fetch was interrupting
+  // playback and overwriting freshly-added tags with stale CDN reads.
+  // Tags still save to the repo on add; reload manually to pull others' changes.
+  // (Re-enable by uncommenting if multi-device live sync is needed.)
+  // setInterval(function () {
+  //   fetch_repo_data();
+  // }, 15000);
 
   // ============ boot ============
   playBtn.innerHTML = ICON_PLAY;
