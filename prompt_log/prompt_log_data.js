@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "12 aif_wrong_direction",
+        id: "13 m4a_repoint_push",
         expanded: true,
+        nodes: [
+          { text: "13 m4a_repoint_push", children: [
+            { text: "prompt_restate", children: [
+              { text: "Check the _m4a release; wire it in if good." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "can this one work? https://github.com/mPulseMedia/vampjam/releases/tag/2026-07-17_vampjam_su_m4a" }
+            ]},
+            { text: "result_asset_good", children: [
+              { text: "Sound.Union.24.v2.m4a — audio/x-m4a, 234 MB." },
+              { text: "New digest 9a438b07; genuine re-encode." },
+              { text: "Matches the two phone-working files' container." }
+            ]},
+            { text: "result_repoint", children: [
+              { text: "2026_07_17_sound_union.json audio.url set to the m4a asset." },
+              { text: "tags still empty." }
+            ]},
+            { text: "result_push", children: [
+              { text: "auto_push had already committed the edit." },
+              { text: "GitHub Desktop: switched off repo lab to vampjam, pushed." },
+              { text: "origin json now carries the m4a url; local 0/0 with origin." }
+            ]},
+            { text: "result_open", children: [
+              { text: "iPhone playback still to be confirmed by Paul." },
+              { text: "Old mp3 releases (_su, _2, _3 aif) left in place, unused." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "m4a_repoint_push, result_asset_good, result_repoint" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "12 aif_wrong_direction",
+        expanded: false,
         nodes: [
           { text: "12 aif_wrong_direction", children: [
             { text: "prompt_restate", children: [
