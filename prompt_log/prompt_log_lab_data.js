@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "13 m4a_repoint_push",
+        id: "14 tag_reload_vanish",
         expanded: true,
+        nodes: [
+          { text: "14 tag_reload_vanish", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tag added on the page vanished after reload." },
+              { text: "Paul: not a timing race; long gap before reload." },
+              { text: "Then: it appeared." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I add a tag on the mpulse page and it dissapears if I reload" },
+              { text: "timing race = no. been long time scinse added tag. nothing there after reload" },
+              { text: "its there now!" }
+            ]},
+            { text: "result_write_ok", children: [
+              { text: "origin HEAD json has song 1 the whole time." },
+              { text: "History = adds and renames; no revert war." },
+              { text: "Worker write path works." }
+            ]},
+            { text: "result_root_cause", children: [
+              { text: "raw.githubusercontent CDN served a stale empty copy." },
+              { text: "Page reads raw main with ?v cache-bust, but the CDN edge still lagged minutes." },
+              { text: "Audio loaded from same json, so fetch itself succeeded." },
+              { text: "Self-resolved when the edge caught up." }
+            ]},
+            { text: "result_not_a_bug", children: [
+              { text: "No data loss; no page code changed." },
+              { text: "First guess was the 3s-debounce vs 15s-poll replace race — wrong here." }
+            ]},
+            { text: "result_optional_hardening", children: [
+              { text: "fetch_repo_data does a hard replace of local tags." },
+              { text: "Could merge-preserve unsynced local tags, so a poll or reload mid-sync never wipes a pending tag." },
+              { text: "Not applied — awaiting Paul." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "tag_reload_vanish, result_root_cause, cdn_lag, optional_hardening" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "13 m4a_repoint_push",
+        expanded: false,
         nodes: [
           { text: "13 m4a_repoint_push", children: [
             { text: "prompt_restate", children: [
