@@ -9,8 +9,53 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "14 tag_reload_vanish",
+        id: "15 poll_wipe_fix",
         expanded: true,
+        nodes: [
+          { text: "15 poll_wipe_fix", children: [
+            { text: "prompt_restate", children: [
+              { text: "Page self-reloads; shouldn't for this one now." },
+              { text: "Tags still sometimes lost; reappear after a delay." },
+              { text: "Why the delay — fix it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "ah, the page is reloading itself, but that shouldn't happen for this one for now. and still seems to sometimes loose tags" },
+              { text: "I added this tag. it's there. then it dissapears. not there a minute later" },
+              { text: "then there again -- why that delay? can you fix that?" }
+            ]},
+            { text: "result_root_cause", children: [
+              { text: "15s setInterval poll ran fetch_repo_data." },
+              { text: "That re-loaded audio and hard-replaced tags from raw CDN." },
+              { text: "Stale CDN read wiped a just-added tag; next poll restored it." },
+              { text: "The come-and-go delay = GitHub raw CDN propagation, 1-2 min." },
+              { text: "No write-war: origin kept song 1 + asdf throughout." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "Disabled the 15s auto-poll on this page." },
+              { text: "fetch_repo_data now merges: never drops a local tag missing from repo." },
+              { text: "Failed/stale fetch keeps current state instead of nulling audio." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "node --check on inline JS: OK." },
+              { text: "Pushed via GitHub Desktop; origin has both fixes; 0/0." }
+            ]},
+            { text: "result_limit", children: [
+              { text: "Cannot speed GitHub CDN; fix removes dependence on it." },
+              { text: "Change is this page only; other pages still poll." },
+              { text: "Tradeoff: other devices' tags need a manual reload now." }
+            ]},
+            { text: "result_next", children: [
+              { text: "Hard-reload the page once to load the fixed version." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "poll_wipe_fix, result_root_cause, merge_preserve, auto_poll_off" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "14 tag_reload_vanish",
+        expanded: false,
         nodes: [
           { text: "14 tag_reload_vanish", children: [
             { text: "prompt_restate", children: [
