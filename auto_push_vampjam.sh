@@ -26,13 +26,27 @@ if [[ -n "$STATUS1" ]]; then
     exit 0
   fi
 
-  COMMIT_MSG="auto_commit"
+  COMMIT_MSG=""
   if [[ -f "$COMMIT_MSG_FILE" ]]; then
     MSG=$(head -1 "$COMMIT_MSG_FILE" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-    [[ -n "$MSG" ]] && COMMIT_MSG="$MSG"
+    [[ -n "$MSG" && "$MSG" != "auto_commit" ]] && COMMIT_MSG="$MSG"
   fi
 
   git add -A 2>> "$LOG"
+
+  if [[ -z "$COMMIT_MSG" ]]; then
+    FILES=$(git diff --cached --name-only 2>/dev/null)
+    COUNT=$(echo "$FILES" | grep -c .)
+    if [[ $COUNT -eq 1 ]]; then
+      COMMIT_MSG=$(basename "$FILES" | sed 's/\.[^.]*$//' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g;s/__*/_/g;s/^_//;s/_$//')
+    elif [[ $COUNT -le 3 ]]; then
+      COMMIT_MSG=$(echo "$FILES" | while read f; do basename "$f" | sed 's/\.[^.]*$//'; done | tr '\n' '_' | sed 's/_$//')
+    else
+      DIR=$(echo "$FILES" | head -1 | cut -d'/' -f1)
+      COMMIT_MSG="${DIR}_${COUNT}f"
+    fi
+  fi
+
   if git commit -m "$COMMIT_MSG" >> "$LOG" 2>&1; then
     echo "$(date): committed — $COMMIT_MSG" >> "$LOG"
     echo "auto_commit" > "$COMMIT_MSG_FILE"
