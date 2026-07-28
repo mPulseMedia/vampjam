@@ -10,10 +10,12 @@
     <string>/bin/bash</string>
     <string>/Users/pauldsmith/claude_cowork/vampjam/auto_push_vampjam.sh</string>
   </array>
-  <key>StartInterval</key>
-  <integer>60</integer>
-  <key>RunAtLoad</key>
-  <true/>
+  <key>WatchPaths</key>
+  <array>
+    <string>/Users/pauldsmith/claude_cowork/vampjam</string>
+  </array>
+  <key>ThrottleInterval</key>
+  <integer>5</integer>
   <key>StandardOutPath</key>
   <string>/tmp/autopush_vampjam.log</string>
   <key>StandardErrorPath</key>
