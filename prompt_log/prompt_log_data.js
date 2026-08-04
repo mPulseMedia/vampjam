@@ -9,8 +9,85 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "15 poll_wipe_fix",
+        id: "17 add_two_sessions",
         expanded: true,
+        nodes: [
+          { text: "17 add_two_sessions", children: [
+            { text: "prompt_restate", children: [
+              { text: "Add the two most recent releases' audio to the site." },
+              { text: "Build it as if the audio works; Paul will test." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Add the audio files form the two most recent releaes to the page. https://github.com/mPulseMedia/vampjam/releases" },
+              { text: "build as if it works and I'll tsest" }
+            ]},
+            { text: "result_build", children: [
+              { text: "Two new session_page cloned from fixed 07-17." },
+              { text: "2026_07_31_sound_union — Sound.Union.2026-07-31.m4a." },
+              { text: "2026_07_24_sound_union — Sound.Union.2026-07-24.m4a." },
+              { text: "Each gets matching json, tags empty." }
+            ]},
+            { text: "result_wire", children: [
+              { text: "Nav rebuilt on all 5 pages, newest first." },
+              { text: "index.html: two new cards on top; 07-31 = latest." },
+              { text: "Inherit cache-control metas + poll-off + merge-preserve." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "node --check both pages: OK; json valid." },
+              { text: "Pushed; origin has both pages, json, and index refs." }
+            ]},
+            { text: "result_caveat", children: [
+              { text: "Both m4a assets still return 503 (see entry 16)." },
+              { text: "Pages will show notes but silent audio until re-upload serves." },
+              { text: "Built per Paul's request to stage as if working." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "add_two_sessions, sound_union_2026_07_24, sound_union_2026_07_31" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "16 mobile_audio_503",
+        expanded: false,
+        nodes: [
+          { text: "16 mobile_audio_503", children: [
+            { text: "prompt_restate", children: [
+              { text: "Play button dead on iPhone; notes visible; desktop ok." },
+              { text: "Debug via Chrome, console, network; fix and push." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "The VampJam audio player is broken on mobile — the play button doesn't work at all... Fix whatever is broken... Check the console for errors... Fix it and push." }
+            ]},
+            { text: "result_method", children: [
+              { text: "Chrome DevTools mobile emulation cannot reproduce iOS media engine — noted." },
+              { text: "Used Chrome MCP: console, network, audio element state." }
+            ]},
+            { text: "result_finding", children: [
+              { text: "player.src correct; audio element stuck readyState 0, networkState LOADING." },
+              { text: "Release asset returns HTTP 503 from release-assets.githubusercontent.com." },
+              { text: "Fails on desktop too — not iOS-specific, not a code bug." },
+              { text: "Notes load from raw.githubusercontent (separate infra) — why tags show." }
+            ]},
+            { text: "result_compare", children: [
+              { text: "05-30 Sound.Union.23.m4a and the mp3 serve 200." },
+              { text: "07-17 Sound.Union.24.v2.m4a serves 503 (persistent)." },
+              { text: "Specific blobs broken on GitHub storage." }
+            ]},
+            { text: "result_no_code_fix", children: [
+              { text: "Page code is correct; no edit would help." },
+              { text: "Real fix = re-upload the asset (fresh blob), ideally via web UI." },
+              { text: "Claude cannot upload from here." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "mobile_audio_503, release_asset_503, raw_vs_release_infra" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "15 poll_wipe_fix",
+        expanded: false,
         nodes: [
           { text: "15 poll_wipe_fix", children: [
             { text: "prompt_restate", children: [
