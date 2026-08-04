@@ -9,8 +9,44 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "17 add_two_sessions",
+        id: "18 admin_page_add",
         expanded: true,
+        nodes: [
+          { text: "18 admin_page_add", children: [
+            { text: "prompt_restate", children: [
+              { text: "Add an Admin link at the bottom of the hamburger menu." },
+              { text: "Admin page: link to the new-release page + upload steps." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "At the bottom of the hamburger menu, put a link to a Admin page and on the Admin page put a link to my releases new release page and put the steps of how I convert the files... drag it from voice notes to the desktop and then in QuickTime to export as audio only... upload it as a release... then Tell claude to add it to the app" }
+            ]},
+            { text: "result_admin_page", children: [
+              { text: "admin.html created, vamp jam theme, back link home." },
+              { text: "CTA button to github releases/new." },
+              { text: "Four steps: Voice Memos to Desktop; QuickTime Export As Audio Only (.m4a AAC); upload as release; tell Claude." },
+              { text: "Note on the 503 fresh-asset gotcha and re-upload fix." }
+            ]},
+            { text: "result_format_note", children: [
+              { text: "QuickTime Audio Only export = .m4a AAC — the working format." },
+              { text: "Named the fuzzy 'for A' format explicitly for Paul." }
+            ]},
+            { text: "result_menu", children: [
+              { text: "Admin link appended to jam_menu on all 5 session pages." },
+              { text: "Hairline separator via inline style; no CSS edits needed." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "JS still valid; admin.html renders live on Pages." },
+              { text: "Pushed: origin has admin.html + link on all 5 + releases/new." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "admin_page_add, admin_html, menu_admin_link, quicktime_m4a" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "17 add_two_sessions",
+        expanded: false,
         nodes: [
           { text: "17 add_two_sessions", children: [
             { text: "prompt_restate", children: [
