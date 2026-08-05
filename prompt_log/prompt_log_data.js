@@ -9,8 +9,44 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "19 ui_de_emphasis",
+        id: "20 tag_title_click_edit",
         expanded: true,
+        nodes: [
+          { text: "20 tag_title_click_edit", children: [
+            { text: "prompt_restate", children: [
+              { text: "Single click tag title = play from that tag." },
+              { text: "Double click tag title = edit the title." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make it so if I click the highlight title, it treats it as a play, but if i double-click, it lets me edit the title." }
+            ]},
+            { text: "result_change", children: [
+              { text: "tag_label input now starts readOnly." },
+              { text: "Click-timing detects single vs double (300ms), robust on mobile touch." },
+              { text: "Single → play_from_tag; double → readOnly off, focus, select." },
+              { text: "Blur re-locks to readOnly; Enter blurs; input still saves live." },
+              { text: "CSS: readonly label shows pointer cursor." }
+            ]},
+            { text: "result_scope", children: [
+              { text: "Applied to all 5 session pages; JS valid." }
+            ]},
+            { text: "result_verify_live", children: [
+              { text: "On 05-30 (audio serves): single tap seeked to 193s." },
+              { text: "Double tap → editable + focused." },
+              { text: "Blur → readOnly true again." }
+            ]},
+            { text: "result_push", children: [
+              { text: "Pushed; change live on origin for all 5." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "tag_title_click_edit, tag_label, click_timing" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "19 ui_de_emphasis",
+        expanded: false,
         nodes: [
           { text: "19 ui_de_emphasis", children: [
             { text: "prompt_restate", children: [
