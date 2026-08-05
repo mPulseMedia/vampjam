@@ -285,6 +285,19 @@
     .ctrl_btn.small { width: 34px; height: 34px; font-size: 10px; }
     .ctrl_btn.play_btn { width: 76px; height: 76px; font-size: 38px; }
   }
+
+  /* ---- de-emphasis: make selected chrome less prominent ---- */
+  .time_row #dur_time, .time_row span:not(#now_time) { color: var(--muted); opacity: 0.4; font-weight: 400; }
+  .tag_time { color: var(--muted); opacity: 0.5; font-weight: 400; }
+  .tag_time:hover { opacity: 0.9; }
+  button.ghost.tag_del { color: var(--muted); background: transparent; opacity: 0.3; }
+  button.ghost.tag_del:hover { opacity: 0.95; color: var(--danger, #c75450); background: var(--panel_2); }
+  #audio_edit_btn { color: var(--muted); background: transparent; opacity: 0.4; }
+  #audio_edit_btn:hover { opacity: 0.9; }
+  .sort_toggle { background: transparent; opacity: 0.5; }
+  .sort_toggle:hover { opacity: 0.95; }
+  .sort_toggle button.active { background: var(--panel_3); color: var(--muted); font-weight: 500; }
+
 </style>
 </head>
 <body>
@@ -1211,7 +1224,7 @@
       row.appendChild(linkBtn);
 
       var delBtn = document.createElement('button');
-      delBtn.className = 'ghost';
+      delBtn.className = 'ghost tag_del';
       delBtn.title = 'Delete tag';
       delBtn.innerHTML = ICON_X;
       delBtn.addEventListener('click', function () {
