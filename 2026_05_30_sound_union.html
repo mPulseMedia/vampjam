@@ -988,21 +988,23 @@
     save_tags();
     queue_save_data_to_repo('add tag at ' + fmt_time(t));
     render_tags();
-    // Focus the new tag's label — use setTimeout(0) to let DOM settle,
-    // and scrollIntoView so it's visible on mobile
-    setTimeout(function () {
-      var rows = tagList.querySelectorAll('.tag_row');
-      for (var i = 0; i < rows.length; i++) {
-        if (rows[i].dataset.tagId === tag.id) {
-          var inp = rows[i].querySelector('.tag_label');
-          if (inp) {
-            inp.scrollIntoView({ block: 'center', behavior: 'smooth' });
-            inp.focus();
-          }
-          break;
+    // New tag: drop the cursor straight into its title, ready to type.
+    // Focus synchronously (still inside the tap gesture) so iOS opens the keyboard.
+    var newRows = tagList.querySelectorAll('.tag_row');
+    for (var ni = 0; ni < newRows.length; ni++) {
+      if (newRows[ni].dataset.tagId === tag.id) {
+        var newInp = newRows[ni].querySelector('.tag_label');
+        if (newInp) {
+          newInp.readOnly = false;            // make the new title editable
+          newInp.focus();
+          try { newInp.setSelectionRange(0, 0); } catch (e) {}
+          (function (el) {
+            setTimeout(function () { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 0);
+          })(newInp);
         }
+        break;
       }
-    }, 50);
+    }
   }
   function nudge_tag(id, delta) {
     var tag = tags.filter(function (x) { return x.id === id; })[0];
