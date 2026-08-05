@@ -9,8 +9,48 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "18 admin_page_add",
+        id: "19 ui_de_emphasis",
         expanded: true,
+        nodes: [
+          { text: "19 ui_de_emphasis", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make listed chrome less prominent via color + transparency." },
+              { text: "Mobile is the priority UI." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "in the UI, use color changes and semi-transparency to make the following less prominent: total time of recording, time stamp of each highlight, delete button, edit title button, time/manual switch and current selection." },
+              { text: "mobile is the more important UI to optimize for" }
+            ]},
+            { text: "result_targets", children: [
+              { text: "dur_time + slash → muted, opacity 0.4; now_time stays accent." },
+              { text: "tag_time → muted, opacity 0.5; brightens on hover." },
+              { text: "delete btn → new class tag_del, opacity 0.3; danger on hover." },
+              { text: "audio_edit_btn pencil → muted, opacity 0.4." },
+              { text: "sort_toggle → opacity 0.5; active no longer accent chip." }
+            ]},
+            { text: "result_impl", children: [
+              { text: "One override CSS block appended before </style> on all 5 pages." },
+              { text: "delBtn className ghost → ghost tag_del in JS." },
+              { text: "No existing rules edited; idempotent marker guard." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "JS valid; --danger present on all pages." },
+              { text: "Pushed; override live on all 5 on origin." },
+              { text: "Checked at 390px mobile viewport — reads as intended." }
+            ]},
+            { text: "result_note", children: [
+              { text: "Copy-link buttons left prominent (not requested)." },
+              { text: "Active toggle now subtle; can dial back if too faint." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "ui_de_emphasis, tag_del, de_emphasis_override" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "18 admin_page_add",
+        expanded: false,
         nodes: [
           { text: "18 admin_page_add", children: [
             { text: "prompt_restate", children: [
