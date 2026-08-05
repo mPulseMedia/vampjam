@@ -9,8 +9,47 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "20 tag_title_click_edit",
+        id: "21 new_tag_focus_title",
         expanded: true,
+        nodes: [
+          { text: "21 new_tag_focus_title", children: [
+            { text: "prompt_restate", children: [
+              { text: "On new tag: cursor in title, ready to type." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "when I create a new tag, put the cursor in the title and be ready to have me type in a title" }
+            ]},
+            { text: "result_cause", children: [
+              { text: "Entry 20 made labels readOnly by default." },
+              { text: "So the existing focus-new-tag no longer allowed typing." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "add_tag now sets the new label readOnly=false, focuses it, caret at 0." },
+              { text: "Focus is synchronous within the tap gesture so iOS opens the keyboard." },
+              { text: "scrollIntoView deferred so the row is centered on mobile." },
+              { text: "Blur re-locks (from entry 20), so later single-tap plays." }
+            ]},
+            { text: "result_scope", children: [
+              { text: "All 5 pages; bazaar block had no comment line — patched separately." },
+              { text: "JS valid on all." }
+            ]},
+            { text: "result_verify_live", children: [
+              { text: "05-30: add_tag → active element is the new tag_label." },
+              { text: "readOnly false, value empty — ready to type." },
+              { text: "Test tag removed and repo-save stubbed; no data written." }
+            ]},
+            { text: "result_push", children: [
+              { text: "Pushed; live on origin for all 5." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "new_tag_focus_title, add_tag, ios_keyboard_gesture" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "20 tag_title_click_edit",
+        expanded: false,
         nodes: [
           { text: "20 tag_title_click_edit", children: [
             { text: "prompt_restate", children: [
