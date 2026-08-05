@@ -234,6 +234,7 @@
     flex: 1 1 40px; min-width: 0;
   }
   .tag_label:focus { outline: none; background: rgba(0,0,0,0.15); }
+  .tag_label[readonly] { cursor: pointer; }
   .tag_actions { display: flex; gap: 2px; }
   .empty { color: var(--muted); padding: 14px; text-align: center; font-size: 13px; }
 
@@ -1142,15 +1143,39 @@
       var label = document.createElement('input');
       label.className = 'tag_label';
       label.type = 'text';
+      label.readOnly = true;                 // single tap = play; double tap = edit
       label.setAttribute('inputmode', 'text');
       label.setAttribute('autocapitalize', 'sentences');
       label.value = tag.label || '';
       label.placeholder = 'tag';
+      // Distinguish single vs double click/tap using click timing (robust on mobile).
+      var labelClickTimer = null;
+      var labelLastClick  = 0;
+      label.addEventListener('click', function () {
+        if (!label.readOnly) return;         // already editing — let the cursor place
+        var now = Date.now();
+        if (now - labelLastClick < 300) {    // second tap → edit
+          labelLastClick = 0;
+          if (labelClickTimer) { clearTimeout(labelClickTimer); labelClickTimer = null; }
+          label.readOnly = false;
+          label.focus();
+          try { label.select(); } catch (e) {}
+          return;
+        }
+        labelLastClick = now;                // first tap → play after the double-tap window
+        if (labelClickTimer) clearTimeout(labelClickTimer);
+        labelClickTimer = setTimeout(function () {
+          labelClickTimer = null;
+          autoplayBlocked = false;
+          play_from_tag(tag);
+        }, 300);
+      });
       label.addEventListener('input', function () {
         tag.label = label.value;
         save_tags();
         queue_save_data_to_repo('rename tag');
       });
+      label.addEventListener('blur', function () { label.readOnly = true; });
       label.addEventListener('keydown', function (e) { if (e.key === 'Enter') label.blur(); });
       row.appendChild(label);
 
