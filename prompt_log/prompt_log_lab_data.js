@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "22 highlight_equals_tag",
+        id: "23 playhead_no_bump",
         expanded: true,
+        nodes: [
+          { text: "23 playhead_no_bump", children: [
+            { text: "prompt_restate", children: [
+              { text: "Yellow playhead line between highlights must not shift rows up/down." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "when you show the yellow line between highlights, make it so the position of the highlight rows do not bump up or down" }
+            ]},
+            { text: "result_cause", children: [
+              { text: "playhead_line was a real block: height 3px + margin 2px = 7px footprint." },
+              { text: "As it moved between tags it pushed rows by 7px." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "Line now height 0, margin 0 — zero layout footprint." },
+              { text: "Visible 3px yellow bar drawn by ::before overlay at top -1.5px." },
+              { text: "Same look (color, glow); no push." },
+              { text: "CSS only; tag_list is block so zero-height adds nothing." }
+            ]},
+            { text: "result_verify_live", children: [
+              { text: "Row Y = 448 with line above, below, or absent — holds." },
+              { text: "line box height 0; ::before 2.98px, bg rgb(255,216,74)." }
+            ]},
+            { text: "result_scope_push", children: [
+              { text: "All 5 pages; pushed; live on origin." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "playhead_no_bump, playhead_line, zero_footprint_overlay" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "22 highlight_equals_tag",
+        expanded: false,
         nodes: [
           { text: "22 highlight_equals_tag", children: [
             { text: "prompt_restate", children: [
