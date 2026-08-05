@@ -9,8 +9,34 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "21 new_tag_focus_title",
+        id: "22 highlight_equals_tag",
         expanded: true,
+        nodes: [
+          { text: "22 highlight_equals_tag", children: [
+            { text: "prompt_restate", children: [
+              { text: "Clarify: 'new tag' meant 'new highlight'." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "by a new tag, I meant a new highlight" }
+            ]},
+            { text: "result_same_thing", children: [
+              { text: "In vamp jam highlight = tag (code term)." },
+              { text: "Created by the 'Tag the moment' button → add_tag()." }
+            ]},
+            { text: "result_no_change", children: [
+              { text: "Entry 21 already hooks add_tag." },
+              { text: "New highlight's title focuses and is ready to type." },
+              { text: "No code change; already correct." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "highlight_equals_tag, add_tag" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "21 new_tag_focus_title",
+        expanded: false,
         nodes: [
           { text: "21 new_tag_focus_title", children: [
             { text: "prompt_restate", children: [
