@@ -4,5 +4,21 @@
     "url": "https://github.com/mPulseMedia/vampjam/releases/download/2026-07-24_vampjam_su/Sound.Union.2026-07-24.m4a",
     "kind": "url"
   },
-  "tags": []
+  "tags": [
+    {
+      "id": "t_1785955411493_jjh9",
+      "t": 3.425455,
+      "label": "Song 1"
+    },
+    {
+      "id": "t_1785955513193_2uqj",
+      "t": 881.420081,
+      "label": "Song 2 - slower"
+    },
+    {
+      "id": "t_1785955755010_pvss",
+      "t": 8936.0198,
+      "label": "Song n - even slower but strong beat"
+    }
+  ]
 }
