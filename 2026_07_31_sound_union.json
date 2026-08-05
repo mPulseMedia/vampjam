@@ -4,5 +4,11 @@
     "url": "https://github.com/mPulseMedia/vampjam/releases/download/2026-07-31_vampjam_su/Sound.Union.2026-07-31.m4a",
     "kind": "url"
   },
-  "tags": []
+  "tags": [
+    {
+      "id": "t_1785956055745_u1t8",
+      "t": 210.063563,
+      "label": "Song 01 - instrumental"
+    }
+  ]
 }
