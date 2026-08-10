@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "27 ios_fail_diagnose",
+        id: "28 r2_host_setup",
         expanded: true,
+        nodes: [
+          { text: "28 r2_host_setup", children: [
+            { text: "prompt_restate", children: [
+              { text: "Go with option B: Cloudflare R2 hosting." },
+              { text: "Offered account + password." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "do b. account is Cloudflare@pauldsmith.com. I can give you pw." }
+            ]},
+            { text: "result_credential_decline", children: [
+              { text: "Declined the password — Claude does not take credentials or sign in." },
+              { text: "Paul stays logged in and clicks; Claude writes code + steps." }
+            ]},
+            { text: "result_runbook", children: [
+              { text: "Built r2_setup.html in the vampjam folder (lab repo not mounted)." },
+              { text: "Steps: R2 → create bucket vampjam-audio → upload v2 m4a → public r2.dev → paste URL." },
+              { text: "Flagged: R2 needs a card on file even on free tier." }
+            ]},
+            { text: "result_plan", children: [
+              { text: "On URL: point 08-07 json at R2, push, retest on iPhone." },
+              { text: "Future recordings use same bucket; drop GitHub release assets for audio." }
+            ]},
+            { text: "result_why_reliable", children: [
+              { text: "R2 serves range requests properly; <audio> needs no CORS." },
+              { text: "Encoding already ruled out — hosting was the cause." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "r2_host_setup, vampjam_audio_bucket, r2_setup_page" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "27 ios_fail_diagnose",
+        expanded: false,
         nodes: [
           { text: "27 ios_fail_diagnose", children: [
             { text: "prompt_restate", children: [
