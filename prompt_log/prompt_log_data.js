@@ -9,8 +9,46 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "26 build_0807_test",
+        id: "27 ios_fail_diagnose",
         expanded: true,
+        nodes: [
+          { text: "27 ios_fail_diagnose", children: [
+            { text: "prompt_restate", children: [
+              { text: "The 08-07 page still does not play on iOS." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "it does not play (ignore first typo)" }
+            ]},
+            { text: "result_faststart_debunked", children: [
+              { text: "May bazaar plays on iOS but is moov-at-end (not faststart)." },
+              { text: "So faststart is NOT the iOS blocker." }
+            ]},
+            { text: "result_tooling_caveat", children: [
+              { text: "In-browser <audio> probes unreliable here: even known-good May assets hang." },
+              { text: "Discarded those; leaning on ffprobe + Paul's real iPhone." }
+            ]},
+            { text: "result_real_diff", children: [
+              { text: "Working iOS files (bazaar, v2) = 44.1 kHz." },
+              { text: "Failing main file = 48 kHz — the outlier." },
+              { text: "All AAC-LC stereo; encoding otherwise identical." }
+            ]},
+            { text: "result_action", children: [
+              { text: "Repointed 08-07 json to Sound.Union.2026-08-07.v2.m4a (44.1 kHz)." },
+              { text: "Pushed; live on origin." }
+            ]},
+            { text: "result_next", children: [
+              { text: "Paul hard-reloads 08-07 on iPhone and taps play." },
+              { text: "If still silent → GitHub asset hosting; move audio to Cloudflare R2 via Worker." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "ios_fail_diagnose, sample_rate_44100, r2_fallback" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "26 build_0807_test",
+        expanded: false,
         nodes: [
           { text: "26 build_0807_test", children: [
             { text: "prompt_restate", children: [
