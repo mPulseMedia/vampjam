@@ -9,8 +9,76 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "31 r2_activation_screen",
+        id: "33 r2_upload_confirmed",
         expanded: true,
+        nodes: [
+          { text: "33 r2_upload_confirmed", children: [
+            { text: "prompt_restate", children: [
+              { text: "File dropped into the bucket." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "dropped" }
+            ]},
+            { text: "result_verify", children: [
+              { text: "First MCP tab stale/empty; reloaded the bucket." },
+              { text: "Object present: Sound.Union.2026-08-07.v2.m4a." },
+              { text: "Type audio/x-m4a (iOS-friendly), 142.78 MB." },
+              { text: "Public Access Enabled; key matches wired URL exactly." }
+            ]},
+            { text: "result_state", children: [
+              { text: "App already points at pub-…r2.dev/Sound.Union.2026-08-07.v2.m4a." },
+              { text: "Nothing left to wire." }
+            ]},
+            { text: "result_next", children: [
+              { text: "Hard-reload 08-07 on iPhone, tap play." },
+              { text: "R2 serves range requests properly — expected to stream on iOS." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "r2_upload_confirmed, audio_x_m4a, range_serving" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "32 r2_public_wired",
+        expanded: false,
+        nodes: [
+          { text: "32 r2_public_wired", children: [
+            { text: "prompt_restate", children: [
+              { text: "Bucket made; you do the rest." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "ok. I set up bucket. you do the rest." }
+            ]},
+            { text: "result_did_via_browser", children: [
+              { text: "Drove Paul's logged-in Chrome (he authorized)." },
+              { text: "Bucket vampjam-audio existed, empty (0 B)." },
+              { text: "Enabled Public Development URL: typed allow, confirmed." },
+              { text: "Read exact URL from DOM: pub-33cfd8558d314eb58642c8550608850b.r2.dev" }
+            ]},
+            { text: "result_wired", children: [
+              { text: "08-07 json audio.url set to R2 URL + /Sound.Union.2026-08-07.v2.m4a." },
+              { text: "Pushed; live on origin." }
+            ]},
+            { text: "result_cannot_do", children: [
+              { text: "Browser file_upload caps at 10 MB; file is 137 MB." },
+              { text: "Upload must be Paul's drag-drop (or S3 API creds, declined)." },
+              { text: "Left his screen on the bucket Objects drop zone." }
+            ]},
+            { text: "result_next", children: [
+              { text: "Paul drags Sound.Union.2026-08-07.v2.m4a onto the drop zone." },
+              { text: "Then hard-reload 08-07 on iPhone and play." },
+              { text: "URL 404s until the file lands; then it should stream on iOS." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "r2_public_wired, pub_r2_dev_url, upload_handoff" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "31 r2_activation_screen",
+        expanded: false,
         nodes: [
           { text: "31 r2_activation_screen", children: [
             { text: "prompt_restate", children: [
