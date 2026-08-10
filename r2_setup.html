@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>vamp jam — move audio to R2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#4a2a0e; --panel:#5c3717; --panel_2:#6b4423; --panel_3:#7a4f2a;
+    --fg:#f5e5c5; --muted:#c9a87e; --accent:#e8b454; --accent_2:#d4a95a; --warn:#e8c794;
+  }
+  *{box-sizing:border-box;}
+  html,body{background:var(--bg);color:var(--fg);margin:0;padding:0;}
+  body{font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:4px 16px 48px;max-width:640px;margin:0 auto;}
+  .brand{text-align:center;margin:12px 0 4px;}
+  .brand .wordmark{font-family:'Sacramento',cursive;font-size:60px;line-height:1;color:var(--fg);}
+  .brand .tagline{color:var(--muted);font-size:13px;letter-spacing:0.04em;}
+  .back{display:inline-block;color:var(--accent_2);text-decoration:none;font-size:13px;margin:8px 0 4px;}
+  h1{font-size:20px;margin:16px 0 4px;}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:16px;}
+  .why{background:var(--panel_2);border-radius:10px;padding:12px 14px;color:var(--muted);font-size:12.5px;line-height:1.5;margin-bottom:20px;}
+  .why b{color:var(--fg);}
+  .section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:6px 0 12px;}
+  ol.steps{list-style:none;counter-reset:step;padding:0;margin:0;}
+  ol.steps>li{counter-increment:step;position:relative;background:var(--panel);border:1px solid var(--panel_3);border-radius:12px;padding:14px 16px 14px 54px;margin-bottom:11px;}
+  ol.steps>li::before{content:counter(step);position:absolute;left:14px;top:14px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#2a1808;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;}
+  .step_title{font-weight:600;font-size:15px;margin-bottom:3px;}
+  .step_body{color:var(--muted);font-size:13.5px;line-height:1.5;}
+  .step_body code{background:var(--panel_3);color:var(--fg);padding:1px 6px;border-radius:4px;font-size:12.5px;}
+  ol.steps a{color:var(--accent_2);}
+  .flag{color:var(--warn);}
+  .note{background:var(--panel_2);border-radius:10px;padding:12px 14px;color:var(--muted);font-size:12.5px;line-height:1.5;margin-top:18px;}
+  .note b{color:var(--fg);}
+  .handoff{border:1px dashed var(--accent_2);border-radius:10px;padding:12px 14px;margin-top:18px;font-size:13.5px;color:var(--fg);}
+</style>
+</head>
+<body>
+
+<header class="brand">
+  <div class="wordmark">vamp jam</div>
+  <div class="tagline">move audio to Cloudflare R2</div>
+</header>
+
+<a class="back" href="admin.html">&#8249; back to admin</a>
+
+<h1>Host the audio on R2</h1>
+<div class="sub">GitHub release assets keep failing to serve new uploads. R2 is reliable, streams on iPhone, and full quality.</div>
+
+<div class="why">
+  <b>You do the dashboard clicks; Claude does the code.</b> Claude can't take
+  your password or sign in for you. Stay logged into Cloudflare and follow the
+  steps &mdash; when you reach a URL, paste it into the chat and Claude wires it
+  into the app.
+</div>
+
+<div class="section-label">Steps</div>
+
+<ol class="steps">
+  <li>
+    <div class="step_title">Open R2 in Cloudflare</div>
+    <div class="step_body">
+      <a href="https://dash.cloudflare.com/?to=/:account/r2" target="_blank" rel="noopener">dash.cloudflare.com &rarr; R2</a>
+      (left sidebar). <span class="flag">First time: R2 asks for a card on file
+      even though the free tier is plenty</span> &mdash; 10&nbsp;GB storage and
+      generous free egress.
+    </div>
+  </li>
+  <li>
+    <div class="step_title">Create a bucket</div>
+    <div class="step_body">
+      Click <b>Create bucket</b>. Name it <code>vampjam-audio</code>, leave
+      location Automatic, Create.
+    </div>
+  </li>
+  <li>
+    <div class="step_title">Upload the recording</div>
+    <div class="step_body">
+      Open the bucket &rarr; <b>Upload</b> &rarr; drag in
+      <code>Sound.Union.2026-08-07.v2.m4a</code> (it's in your vampjam folder).
+      Wait for it to finish &mdash; ~137&nbsp;MB.
+    </div>
+  </li>
+  <li>
+    <div class="step_title">Turn on public access</div>
+    <div class="step_body">
+      Bucket &rarr; <b>Settings</b> &rarr; <b>Public access</b> &rarr;
+      <b>R2.dev subdomain</b> &rarr; Allow Access (type <code>allow</code> to
+      confirm). Cloudflare shows a public URL like
+      <code>https://pub-xxxxxxxx.r2.dev</code>.
+    </div>
+  </li>
+  <li>
+    <div class="step_title">Send Claude the link</div>
+    <div class="step_body">
+      Your file's URL is that public URL + the filename, e.g.
+      <code>https://pub-xxxxxxxx.r2.dev/Sound.Union.2026-08-07.v2.m4a</code>.
+      Paste it into the chat.
+    </div>
+  </li>
+</ol>
+
+<div class="handoff">
+  Then Claude points the Aug 7 page at the R2 URL, pushes, and you retest on your
+  iPhone. From then on, new recordings go to this same bucket &mdash; no more
+  GitHub release-asset roulette.
+</div>
+
+<div class="note">
+  <b>Notes.</b> The <code>r2.dev</code> URL is rate-limited by Cloudflare and
+  fine for a personal app; if it ever gets heavy we can put it behind a custom
+  domain or your existing Worker later. Playback needs no CORS setup &mdash; the
+  player loads audio directly.
+</div>
+
+</body>
+</html>
