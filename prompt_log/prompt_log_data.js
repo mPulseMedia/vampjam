@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "29 r2_steps_detail",
+        id: "30 find_r2_sidebar",
         expanded: true,
+        nodes: [
+          { text: "30 find_r2_sidebar", children: [
+            { text: "prompt_restate", children: [
+              { text: "Screenshot of CF dashboard home; R2 not obvious." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "huh? (screenshot: Cloudflare account home, new sidebar)" }
+            ]},
+            { text: "result_read_photo", children: [
+              { text: "New dashboard groups R2 under Build → Storage & databases." },
+              { text: "No top-level R2 item in sidebar." },
+              { text: "vampjam-sync Worker visible — sync still live." }
+            ]},
+            { text: "result_answer", children: [
+              { text: "Sidebar → Storage & databases → R2 Object Storage." },
+              { text: "Direct-link fallback still offered." }
+            ]},
+            { text: "result_page", children: [
+              { text: "Runbook step 1 rewritten to the real nav path." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "find_r2_sidebar, storage_and_databases" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "29 r2_steps_detail",
+        expanded: false,
         nodes: [
           { text: "29 r2_steps_detail", children: [
             { text: "prompt_restate", children: [
