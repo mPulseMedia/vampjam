@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "34 highlights_from_shots",
+        id: "35 dbltap_keyboard",
         expanded: true,
+        nodes: [
+          { text: "35 dbltap_keyboard", children: [
+            { text: "prompt_restate", children: [
+              { text: "Double-tap on mobile should raise the keyboard." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "when I double click on mobile, it should bring up the keyboard" }
+            ]},
+            { text: "result_cause", children: [
+              { text: "Edit fired on synthesized click; iOS ignores that for keyboard." },
+              { text: "iOS opens the keyboard only if focus() runs inside the touch gesture." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "Added touchend handler; double-tap detected there enters edit + focus + preventDefault (blocks zoom)." },
+              { text: "click handler still covers desktop double-click; touch guard stops double-firing." },
+              { text: "readOnly removed before focus; blur re-locks." }
+            ]},
+            { text: "result_scope", children: [
+              { text: "All 6 session pages; JS valid; pushed to origin." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Desktop double-click enters edit; single-click seeks — confirmed live." },
+              { text: "Tap-detection logic unit-tested: double→edit+focus, single→play." },
+              { text: "Live-page touch test was against Pages stale cache; real iOS test is Paul's." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "dbltap_keyboard, touchend_edit, ios_focus_gesture" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "34 highlights_from_shots",
+        expanded: false,
         nodes: [
           { text: "34 highlights_from_shots", children: [
             { text: "prompt_restate", children: [
