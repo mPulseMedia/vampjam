@@ -9,8 +9,39 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "25 faststart_remux",
+        id: "26 build_0807_test",
         expanded: true,
+        nodes: [
+          { text: "26 build_0807_test", children: [
+            { text: "prompt_restate", children: [
+              { text: "How to run the option-1 iOS test." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "how do I do the 1 test" }
+            ]},
+            { text: "result_approach", children: [
+              { text: "Best test is in the app — so built the 08-07 session page." },
+              { text: "Pointed at existing fast-start Sound.Union.2026-08-07.m4a." }
+            ]},
+            { text: "result_build", children: [
+              { text: "2026_08_07_sound_union.html + json (tags empty)." },
+              { text: "Nav rebuilt on all 6 pages; admin link kept; index card (08-07 latest)." },
+              { text: "Cloned from 07-31 so all fixes carried." },
+              { text: "JS valid; pushed; live on origin." }
+            ]},
+            { text: "result_test_step", children: [
+              { text: "Open on iPhone: mpulsemedia.github.io/vampjam/2026_08_07_sound_union.html" },
+              { text: "Tap play. Plays = done; silent = switch to faststart upload." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "build_0807_test, sound_union_2026_08_07" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "25 faststart_remux",
+        expanded: false,
         nodes: [
           { text: "25 faststart_remux", children: [
             { text: "prompt_restate", children: [
