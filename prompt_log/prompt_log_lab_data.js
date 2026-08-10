@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "30 find_r2_sidebar",
+        id: "31 r2_activation_screen",
         expanded: true,
+        nodes: [
+          { text: "31 r2_activation_screen", children: [
+            { text: "prompt_restate", children: [
+              { text: "Sees 'Get started with R2' free-usage screen, not Create bucket." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "i see this, not create bucket. (screenshot: Add R2 subscription screen, $0.00)" }
+            ]},
+            { text: "result_answer", children: [
+              { text: "That is the one-time activation screen." },
+              { text: "Click blue 'Add R2 subscription to my account' — Total Due Now $0.00." },
+              { text: "Free tier 10 GB; billed only past limits." },
+              { text: "Then Overview with Create bucket appears." }
+            ]},
+            { text: "result_boundary", children: [
+              { text: "Paul clicks the billing button himself; Claude does not press it." }
+            ]},
+            { text: "result_page", children: [
+              { text: "Runbook step 1 updated with this exact screen + button." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "r2_activation_screen, add_r2_subscription" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "30 find_r2_sidebar",
+        expanded: false,
         nodes: [
           { text: "30 find_r2_sidebar", children: [
             { text: "prompt_restate", children: [
