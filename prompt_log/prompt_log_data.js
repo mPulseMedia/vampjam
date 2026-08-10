@@ -9,8 +9,39 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "33 r2_upload_confirmed",
+        id: "34 highlights_from_shots",
         expanded: true,
+        nodes: [
+          { text: "34 highlights_from_shots", children: [
+            { text: "prompt_restate", children: [
+              { text: "Read playback timestamps from the iPhone screenshots." },
+              { text: "Create numbered highlights at those times." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "look at the timestamps of the same recording from these screen shots and create highlights there. you can just number them." }
+            ]},
+            { text: "result_match", children: [
+              { text: "All shots = Voice Memos playing 'Sound Union 29'." },
+              { text: "Total 2:26:16 = the Aug 7 v2 file — same recording." }
+            ]},
+            { text: "result_marks", children: [
+              { text: "14 highlights: 5:17,6:44,8:39,11:29,12:07,14:31,15:58,16:38,27:29,28:44,30:39,31:45,38:38,41:46." },
+              { text: "Labels 1-14 in time order." },
+              { text: "Merged the 12:07 / 12:15 pair (8s apart, same moment)." }
+            ]},
+            { text: "result_write", children: [
+              { text: "2026_08_07_sound_union.json tags set; pushed; origin has 14." },
+              { text: "Audio still the R2 URL." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "highlights_from_shots, sound_union_29, numbered_tags" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "33 r2_upload_confirmed",
+        expanded: false,
         nodes: [
           { text: "33 r2_upload_confirmed", children: [
             { text: "prompt_restate", children: [
