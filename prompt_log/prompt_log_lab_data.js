@@ -9,8 +9,39 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "28 r2_host_setup",
+        id: "29 r2_steps_detail",
         expanded: true,
+        nodes: [
+          { text: "29 r2_steps_detail", children: [
+            { text: "prompt_restate", children: [
+              { text: "Where do I go to start R2? Give the detail for all steps." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "where do I go to start R2? and given this question, provide the detail I need for eh other steps." }
+            ]},
+            { text: "result_verified_ui", children: [
+              { text: "Fetched Cloudflare R2 docs for exact current wording." },
+              { text: "Public access = 'Public Development URL' → Enable → type allow." },
+              { text: "Bucket name rules: lowercase, digits, hyphen, 3-63." }
+            ]},
+            { text: "result_find_r2", children: [
+              { text: "dash.cloudflare.com → enter account → left sidebar 'R2 Object Storage'." },
+              { text: "Fallback direct link /:account/r2/overview." },
+              { text: "First time: Purchase R2 wants a card; free tier $0." }
+            ]},
+            { text: "result_delivered", children: [
+              { text: "Full 6-step detail in chat (outline) + page step 1 made granular." },
+              { text: "Offered screenshot help if a screen differs." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "r2_steps_detail, find_r2, public_development_url" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "28 r2_host_setup",
+        expanded: false,
         nodes: [
           { text: "28 r2_host_setup", children: [
             { text: "prompt_restate", children: [
