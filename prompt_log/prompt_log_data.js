@@ -9,8 +9,66 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "23 playhead_no_bump",
+        id: "25 faststart_remux",
         expanded: true,
+        nodes: [
+          { text: "25 faststart_remux", children: [
+            { text: "prompt_restate", children: [
+              { text: "Dropped the byhand m4a in the vampjam folder to fix." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "dropped it in vj forder" }
+            ]},
+            { text: "result_diagnosis", children: [
+              { text: "ffprobe: AAC-LC, 48k, stereo, 187k — codec fine." },
+              { text: "moov at offset ~205MB, mdat at 32 → NOT fast-start." },
+              { text: "That is exactly why iOS stays silent; desktop tolerates it." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "ffmpeg -c copy -movflags +faststart (lossless remux)." },
+              { text: "Output Sound.Union.2026-08-07.faststart.m4a." },
+              { text: "moov now at offset 32 (front) → iOS ready; codec unchanged." }
+            ]},
+            { text: "result_other_two", children: [
+              { text: "Sound.Union.2026-08-07.m4a → already fast-start (iOS ready)." },
+              { text: "Sound.Union.2026-08-07.v2.m4a → already fast-start (iOS ready)." },
+              { text: "Only byhand was broken." }
+            ]},
+            { text: "result_paths", children: [
+              { text: "Simplest: point an 08-07 page at existing Sound.Union.2026-08-07.m4a." },
+              { text: "Or upload the fixed faststart file if he prefers byhand." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "faststart_remux, moov_atom, ios_ready" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "24 ios_only_playback",
+        expanded: false,
+        nodes: [
+          { text: "24 ios_only_playback", children: [
+            { text: "prompt_restate", children: [
+              { text: "Does the byhand link work? Plays on laptop, not iOS." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "does this link for the newest recording? it does not play on ios, but yes on laptop. (byhand.m4a link)" }
+            ]},
+            { text: "result", children: [
+              { text: "Link valid; file serves as m4a; not the 503 issue." },
+              { text: "iOS-only failure = file encoding, likely moov-at-end." },
+              { text: "Asked Paul to drop the file to fix definitively." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "ios_only_playback, faststart" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "23 playhead_no_bump",
+        expanded: false,
         nodes: [
           { text: "23 playhead_no_bump", children: [
             { text: "prompt_restate", children: [
