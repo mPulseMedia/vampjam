@@ -1169,27 +1169,38 @@
       label.setAttribute('autocapitalize', 'sentences');
       label.value = tag.label || '';
       label.placeholder = 'tag';
-      // Distinguish single vs double click/tap using click timing (robust on mobile).
-      var labelClickTimer = null;
-      var labelLastClick  = 0;
-      label.addEventListener('click', function () {
+      // Distinguish single vs double tap. On mobile the keyboard only opens if
+      // focus() runs inside the touch gesture, so the edit path lives in touchend.
+      var labelTapTimer = null;
+      var labelLastTap  = 0;
+      var labelTouched  = false;
+      function labelEnterEdit() {
+        label.readOnly = false;
+        label.focus();
+        try { label.select(); } catch (e) {}
+      }
+      function labelHandleTap(e, isTouch) {
         if (!label.readOnly) return;         // already editing — let the cursor place
         var now = Date.now();
-        if (now - labelLastClick < 300) {    // second tap → edit
-          labelLastClick = 0;
-          if (labelClickTimer) { clearTimeout(labelClickTimer); labelClickTimer = null; }
-          label.readOnly = false;
-          label.focus();
-          try { label.select(); } catch (e) {}
+        if (now - labelLastTap < 300) {      // second tap/click -> edit
+          labelLastTap = 0;
+          if (labelTapTimer) { clearTimeout(labelTapTimer); labelTapTimer = null; }
+          if (isTouch && e && e.cancelable) e.preventDefault();  // keep the gesture; block zoom
+          labelEnterEdit();
           return;
         }
-        labelLastClick = now;                // first tap → play after the double-tap window
-        if (labelClickTimer) clearTimeout(labelClickTimer);
-        labelClickTimer = setTimeout(function () {
-          labelClickTimer = null;
+        labelLastTap = now;                  // first tap -> play after the double-tap window
+        if (labelTapTimer) clearTimeout(labelTapTimer);
+        labelTapTimer = setTimeout(function () {
+          labelTapTimer = null;
           autoplayBlocked = false;
           play_from_tag(tag);
         }, 300);
+      }
+      label.addEventListener('touchend', function (e) { labelTouched = true; labelHandleTap(e, true); });
+      label.addEventListener('click', function (e) {
+        if (labelTouched) { labelTouched = false; return; }  // touch already handled this
+        labelHandleTap(e, false);
       });
       label.addEventListener('input', function () {
         tag.label = label.value;
