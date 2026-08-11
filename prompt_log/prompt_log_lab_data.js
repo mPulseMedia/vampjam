@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "35 dbltap_keyboard",
+        id: "36 new_flow_r2",
         expanded: true,
+        nodes: [
+          { text: "36 new_flow_r2", children: [
+            { text: "prompt_restate", children: [
+              { text: "Double-tap keyboard worked." },
+              { text: "What are the recurring steps now?" },
+              { text: "iCloud Voice Memos sync timing to Mac?" },
+              { text: "Can Claude do all the steps?" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "That worked! OK, so next time what wil the steps be. I record using voice notes on my iphone. How long until it appears on voice note app on laptop. Can you do all of the steps from there?" }
+            ]},
+            { text: "result_sync", children: [
+              { text: "Voice Memos to Mac: ~1-2 min over iCloud if same account, Voice Memos iCloud on, both online." },
+              { text: "Open Voice Memos on Mac to nudge." }
+            ]},
+            { text: "result_flow", children: [
+              { text: "record → sync → drag memo into vampjam-audio bucket → tell Claude name+date+shots → Claude builds page, URL, highlights, push." },
+              { text: "No conversion (Voice Memos m4a is fine); no GitHub releases; bucket already public." }
+            ]},
+            { text: "result_can_do", children: [
+              { text: "Claude does all but the upload drag." },
+              { text: "~140 MB exceeds 10 MB upload tool; won't use R2 keys — so upload stays Paul's one action." }
+            ]},
+            { text: "result_admin_page", children: [
+              { text: "admin.html rewritten to the R2 flow; CTA now opens the bucket." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "new_flow_r2, voice_memos_sync, upload_handoff" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "35 dbltap_keyboard",
+        expanded: false,
         nodes: [
           { text: "35 dbltap_keyboard", children: [
             { text: "prompt_restate", children: [
