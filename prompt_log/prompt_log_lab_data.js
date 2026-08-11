@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "38 dbltap_keyboard_reliable",
+        id: "39 preunlock_keyboard",
         expanded: true,
+        nodes: [
+          { text: "39 preunlock_keyboard", children: [
+            { text: "prompt_restate", children: [
+              { text: "Still no keyboard on double-tap." },
+              { text: "Cursor (I-beam) shows in the field but keyboard stays down." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "not working. does not bring up keyboard. I beam is flashing in the text field. keyboard is not brought up." }
+            ]},
+            { text: "result_diagnosis", children: [
+              { text: "I-beam without keyboard = iOS granted focus but withheld keyboard." },
+              { text: "iOS never shows the keyboard for focus() on a just-un-readonly'd input." },
+              { text: "Only a real tap on an already-editable field raises it." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "Pre-unlock: first tap sets readOnly=false (no focus)." },
+              { text: "Second tap then lands on an editable field -> native keyboard." },
+              { text: "iOS decides keyboard by element state at tap start, so first tap stays silent; lone tap plays and the re-render re-locks." }
+            ]},
+            { text: "result_scope", children: [
+              { text: "All 6 pages; JS valid; pushed." }
+            ]},
+            { text: "result_fallback", children: [
+              { text: "If still flaky: switch to single-tap = edit (native keyboard, 100% reliable); play stays on the play button + timestamp." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "preunlock_keyboard, ios_focus_vs_keyboard, single_tap_edit_fallback" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "38 dbltap_keyboard_reliable",
+        expanded: false,
         nodes: [
           { text: "38 dbltap_keyboard_reliable", children: [
             { text: "prompt_restate", children: [
