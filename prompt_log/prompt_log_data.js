@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "36 new_flow_r2",
+        id: "37 tag_btn_keyboard",
         expanded: true,
+        nodes: [
+          { text: "37 tag_btn_keyboard", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tag button should create the highlight AND enter typing mode." },
+              { text: "Keyboard ready on both mobile and laptop." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I click 'Tag' create the highlight but also get me in typing mode ready to enter a title for both mobile and laptopm" }
+            ]},
+            { text: "result_cause", children: [
+              { text: "Tag button fired on click only." },
+              { text: "add_tag already focuses the new title, but iOS needs focus() inside a touch gesture." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "Tag button now also handled on touchend (mobile), preventDefault to keep the gesture and avoid double-fire." },
+              { text: "click still covers laptop; touch guard prevents double add_tag." },
+              { text: "add_tag's synchronous focus now lands in the touch gesture -> iOS keyboard." }
+            ]},
+            { text: "result_scope", children: [
+              { text: "All 6 session pages; JS valid; pushed to origin." }
+            ]},
+            { text: "result_live_use", children: [
+              { text: "Paul already adding + renaming highlights live on the R2 audio." },
+              { text: "Full loop working: play, tag, edit, sync." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "tag_btn_keyboard, touchend_tag, ios_focus_gesture" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "36 new_flow_r2",
+        expanded: false,
         nodes: [
           { text: "36 new_flow_r2", children: [
             { text: "prompt_restate", children: [
