@@ -90,50 +90,53 @@
 <h1>Add a new session</h1>
 <div class="sub">From a Voice Memos recording to a live, taggable session page.</div>
 
-<a class="cta" href="https://github.com/mPulseMedia/vampjam/releases/new" target="_blank" rel="noopener">
-  + New release on GitHub
-  <span class="cta_sub">opens the release page where you upload the audio</span>
+<a class="cta" href="https://dash.cloudflare.com/?to=/:account/r2/default/buckets/vampjam-audio" target="_blank" rel="noopener">
+  Open the vampjam-audio bucket
+  <span class="cta_sub">Cloudflare R2 &rarr; where the audio lives now</span>
 </a>
 
 <div class="section-label">Steps</div>
 
 <ol class="steps">
   <li>
-    <div class="step_title">Get it out of Voice Memos</div>
+    <div class="step_title">Record on your iPhone</div>
     <div class="step_body">
-      Open <b>Voice Memos</b> on the Mac and drag the recording onto your <b>Desktop</b>.
+      Use <b>Voice Memos</b>. It already records iOS-friendly <code>.m4a</code> &mdash;
+      no conversion needed anymore.
     </div>
   </li>
   <li>
-    <div class="step_title">Convert in QuickTime</div>
+    <div class="step_title">Let it sync to the Mac</div>
     <div class="step_body">
-      Open that file in <b>QuickTime Player</b>, then
-      <code>File &rarr; Export As &rarr; Audio Only</code>.
-      That saves an <code>.m4a</code> (AAC audio) &mdash; the format vamp jam
-      plays everywhere, including iPhone.
+      It appears in <b>Voice Memos on the Mac</b> in a minute or two over iCloud.
+      Open Voice Memos on the Mac to nudge it if it's slow.
     </div>
   </li>
   <li>
-    <div class="step_title">Upload it as a release</div>
+    <div class="step_title">Drag it into the R2 bucket</div>
     <div class="step_body">
-      Use the <a href="https://github.com/mPulseMedia/vampjam/releases/new" target="_blank" rel="noopener">New release</a>
-      button above. Give it a tag like <code>2026-08-07_vampjam_su</code>,
-      drag the <code>.m4a</code> into the assets box, and <b>Publish release</b>.
+      In Voice Memos on the Mac, drag the recording into the
+      <b>vampjam-audio</b> bucket's drop zone (open it with the button above &rarr;
+      <b>Objects</b>). Give it a simple no-spaces name like
+      <code>sound_union_2026_08_14.m4a</code> if you can. The bucket is already
+      public, so nothing else to configure.
     </div>
   </li>
   <li>
-    <div class="step_title">Tell Claude to add it</div>
+    <div class="step_title">Tell Claude</div>
     <div class="step_body">
-      Message Claude: <b>&ldquo;add the newest release to the app.&rdquo;</b>
-      Claude builds the session page and wires it into the menu.
+      Message Claude the <b>file name + session date</b>, and send screenshots of
+      any timestamps you want as numbered highlights. Claude builds the session
+      page, points it at the R2 URL, adds the highlights, and publishes.
     </div>
   </li>
 </ol>
 
 <div class="note">
-  <b>If audio is silent after upload:</b> that's usually a GitHub 503 on a fresh
-  asset &mdash; delete the asset and drag the <code>.m4a</code> back in through the
-  release's edit page, then it serves cleanly.
+  <b>Why this is the whole flow now:</b> R2 serves reliably to iPhone (unlike the
+  old GitHub releases), and Voice Memos already exports the right format &mdash;
+  so no QuickTime conversion and no re-upload roulette. The only step that's yours
+  is the one drag into the bucket; Claude does everything after that.
 </div>
 
 </body>
