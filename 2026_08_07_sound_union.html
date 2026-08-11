@@ -1364,7 +1364,18 @@
     render_tags();
   }
 
-  tagBtn.addEventListener('click', add_tag);
+  // Tag button: on mobile fire on touchend so the new title's focus() lands
+  // inside the touch gesture and iOS opens the keyboard (same trick as edit).
+  var tagBtnTouched = false;
+  tagBtn.addEventListener('touchend', function (e) {
+    tagBtnTouched = true;
+    if (e && e.cancelable) e.preventDefault();
+    add_tag();
+  });
+  tagBtn.addEventListener('click', function () {
+    if (tagBtnTouched) { tagBtnTouched = false; return; }
+    add_tag();
+  });
   Array.from(sortToggle.querySelectorAll('button')).forEach(function (b) {
     b.addEventListener('click', function () { set_sort_mode(b.dataset.mode); });
   });
