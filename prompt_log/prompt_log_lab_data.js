@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "37 tag_btn_keyboard",
+        id: "38 dbltap_keyboard_reliable",
         expanded: true,
+        nodes: [
+          { text: "38 dbltap_keyboard_reliable", children: [
+            { text: "prompt_restate", children: [
+              { text: "Mobile: tapping an existing highlight title doesn't raise the keyboard." },
+              { text: "Chosen: keep single=play/double=edit; make double-tap keyboard reliable." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "on moboile when I click the titel of an existing highight, it does no bring pu the keyboard" },
+              { text: "(picked: Keep double-tap to edit)" }
+            ]},
+            { text: "result_cause", children: [
+              { text: "preventDefault on the double-tap touchend blocked zoom but can suppress the iOS keyboard." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "Removed preventDefault from the label double-tap path." },
+              { text: "Added CSS touch-action: manipulation on .tag_label to block double-tap zoom instead." },
+              { text: "focus() still runs in the touchend gesture -> keyboard, now unobstructed." }
+            ]},
+            { text: "result_scope", children: [
+              { text: "All 6 pages; JS valid; pushed to origin." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "dbltap_keyboard_reliable, touch_action_manipulation" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "37 tag_btn_keyboard",
+        expanded: false,
         nodes: [
           { text: "37 tag_btn_keyboard", children: [
             { text: "prompt_restate", children: [
