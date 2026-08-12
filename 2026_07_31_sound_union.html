@@ -95,6 +95,7 @@
     transition: transform 0.1s;
   }
   .tag_marker:hover { transform: translateX(-50%) scale(1.4); }
+  .tag_marker::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; }
   .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
   .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: rgba(255,255,255,0.09); pointer-events: none; z-index: 0; }
   .fish_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
