@@ -96,6 +96,13 @@
   }
   .tag_marker:hover { transform: translateX(-50%) scale(1.4); }
   .tag_marker::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; }
+  .jam_confirm_overlay { position: fixed; inset: 0; z-index: 120; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; }
+  .jam_confirm_card { background: var(--panel); color: var(--fg); border-radius: 14px; padding: 20px 22px; max-width: 320px; width: 84%; box-shadow: 0 12px 40px rgba(0,0,0,0.45); }
+  .jam_confirm_msg { margin-bottom: 16px; font-size: 16px; }
+  .jam_confirm_row { display: flex; gap: 10px; justify-content: flex-end; }
+  .jam_confirm_row button { border: none; border-radius: 10px; padding: 10px 16px; font-size: 15px; cursor: pointer; }
+  .jam_confirm_cancel { background: var(--panel_3); color: var(--fg); }
+  .jam_confirm_yes { background: var(--danger); color: #fff; }
   .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
   .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: rgba(255,255,255,0.09); pointer-events: none; z-index: 0; }
   .fish_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
@@ -737,6 +744,33 @@
     }
   }
 
+  // jam_confirm — themed replacement for the native confirm() dialog
+  function jam_confirm(msg, yesLabel, onYes) {
+    var ov = document.createElement('div');
+    ov.className = 'jam_confirm_overlay';
+    var card = document.createElement('div');
+    card.className = 'jam_confirm_card';
+    var m = document.createElement('div');
+    m.className = 'jam_confirm_msg';
+    m.textContent = msg;
+    var btnRow = document.createElement('div');
+    btnRow.className = 'jam_confirm_row';
+    var noBtn = document.createElement('button');
+    noBtn.className = 'jam_confirm_cancel';
+    noBtn.textContent = 'Cancel';
+    var yesBtn = document.createElement('button');
+    yesBtn.className = 'jam_confirm_yes';
+    yesBtn.textContent = yesLabel || 'OK';
+    function close() { ov.remove(); }
+    noBtn.addEventListener('click', close);
+    yesBtn.addEventListener('click', function () { close(); onYes(); });
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    btnRow.appendChild(noBtn); btnRow.appendChild(yesBtn);
+    card.appendChild(m); card.appendChild(btnRow);
+    ov.appendChild(card);
+    document.body.appendChild(ov);
+  }
+
   // timeline_fisheye — the bar is split into FISH_TICK_N equal time regions.
   // The region holding the playhead is expanded to FISH_E of the width; the
   // rest share the remainder evenly. Placement inside a region is linear, so
@@ -1373,15 +1407,16 @@
       delBtn.title = 'Delete tag';
       delBtn.innerHTML = ICON_X;
       delBtn.addEventListener('click', function () {
-        if (!confirm('Delete this tag?')) return;
-        tags = tags.filter(function (x) { return x.id !== tag.id; });
-        add_tombstone(tag.id);
-        save_tags();
-        render_tags();
-        render_tag_markers();
-        save_data_to_repo('delete tag ' + (tag.label || tag.id))
-          .then(function () {})
-          .catch(function (err) {});
+        jam_confirm('Delete this highlight?', 'Delete', function () {
+          tags = tags.filter(function (x) { return x.id !== tag.id; });
+          add_tombstone(tag.id);
+          save_tags();
+          render_tags();
+          render_tag_markers();
+          save_data_to_repo('delete tag ' + (tag.label || tag.id))
+            .then(function () {})
+            .catch(function (err) {});
+        });
       });
       row.appendChild(delBtn);
 
