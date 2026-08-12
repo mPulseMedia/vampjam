@@ -972,6 +972,21 @@
     var rect = seekBar.getBoundingClientRect();
     var p = (e.clientX - rect.left) / rect.width;
     var d = isFinite(player.duration) ? player.duration : 0;
+    // tag_tap_priority — a tap near a highlight's dot means the highlight,
+    // not the un-tagged bar
+    var best = null, bestPx = 1e9;
+    if (d > 0) tags.forEach(function (t) {
+      var px = Math.abs(fish_x(t.t) - p) * rect.width;
+      if (px < bestPx) { bestPx = px; best = t; }
+    });
+    if (best && bestPx <= 16) {
+      seek_to(best.t);
+      safe_play();
+      activeTagId = best.id;
+      render_tags();
+      render_tag_markers();
+      return;
+    }
     seek_to(p * d);
   });
 
