@@ -88,7 +88,7 @@
   .seek_fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; pointer-events: none; }
   .tag_markers { position: relative; height: 14px; margin-top: 4px; margin-bottom: 4px; width: 90%; margin-left: auto; margin-right: auto; }
   .tag_marker {
-    position: absolute; top: 2px; width: 10px; height: 10px;
+    position: absolute; top: 2px; width: 10px; height: 10px; z-index: 2;
     background: var(--accent); border-radius: 50%;
     transform: translateX(-50%); cursor: pointer;
     border: 1.5px solid var(--bg);
@@ -96,7 +96,8 @@
   }
   .tag_marker:hover { transform: translateX(-50%) scale(1.4); }
   .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
-  .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: rgba(255,255,255,0.09); pointer-events: none; }
+  .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: rgba(255,255,255,0.09); pointer-events: none; z-index: 0; }
+  .fish_tick { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.16); pointer-events: none; z-index: 1; }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
   .time_row #now_time { color: var(--accent); font-weight: 600; }
   .ctrl_btn {
@@ -770,9 +771,31 @@
     band.style.left  = (x0 * 100) + '%';
     band.style.width = ((x1 - x0) * 100) + '%';
   }
+  var FISH_T = 120;   // one time grid line every N seconds
+  function render_fish_ticks() {
+    if (!tagMarkers) return;
+    var ticks = Array.from(tagMarkers.querySelectorAll('.fish_tick'));
+    if (!fish_active()) { ticks.forEach(function (t) { t.remove(); }); return; }
+    var n = Math.floor(player.duration / FISH_T);
+    if (ticks.length !== n) {
+      ticks.forEach(function (t) { t.remove(); });
+      ticks = [];
+      for (var k = 1; k <= n; k++) {
+        var tk = document.createElement('div');
+        tk.className = 'fish_tick';
+        tk.dataset.t = k * FISH_T;
+        tagMarkers.appendChild(tk);
+        ticks.push(tk);
+      }
+    }
+    ticks.forEach(function (tk) {
+      tk.style.left = (fish_x(parseFloat(tk.dataset.t)) * 100) + '%';
+    });
+  }
   function update_fisheye() {
     if (!tagMarkers) return;
     render_zoom_band();
+    render_fish_ticks();
     Array.from(tagMarkers.querySelectorAll('.tag_marker')).forEach(function (m) {
       m.style.left = (fish_x(parseFloat(m.dataset.t)) * 100) + '%';
     });
@@ -799,6 +822,7 @@
       tagMarkers.appendChild(m);
     });
     render_zoom_band();
+    render_fish_ticks();
   }
 
   function fetch_repo_data() {
