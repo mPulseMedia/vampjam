@@ -88,7 +88,7 @@
   .seek_fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; pointer-events: none; }
   .tag_markers { position: relative; height: 14px; margin-top: 4px; margin-bottom: 4px; width: 90%; margin-left: auto; margin-right: auto; }
   .tag_marker {
-    position: absolute; top: 2px; width: 10px; height: 10px;
+    position: absolute; top: 2px; width: 10px; height: 10px; z-index: 2;
     background: var(--accent); border-radius: 50%;
     transform: translateX(-50%); cursor: pointer;
     border: 1.5px solid var(--bg);
@@ -96,6 +96,8 @@
   }
   .tag_marker:hover { transform: translateX(-50%) scale(1.4); }
   .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
+  .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: rgba(255,255,255,0.09); pointer-events: none; z-index: 0; }
+  .fish_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
   .time_row #now_time { color: var(--accent); font-weight: 600; }
   .ctrl_btn {
@@ -734,6 +736,75 @@
     }
   }
 
+  // timeline_fisheye — the bar is split into FISH_TICK_N equal time regions.
+  // The region holding the playhead is expanded to FISH_E of the width; the
+  // rest share the remainder evenly. Placement inside a region is linear, so
+  // tags keep the same relative position whether the region is expanded or
+  // collapsed; layout only changes when the playhead crosses into a new region.
+  var FISH_TICK_N = 5;    // number of equal time regions
+  var FISH_E = 0.50;      // width fraction given to the expanded region
+  function fish_active() {
+    return isFinite(player.duration) && player.duration > 300;
+  }
+  function fish_seg() {
+    var n = FISH_TICK_N;
+    return Math.min(n - 1, Math.floor((player.currentTime || 0) / (player.duration / n)));
+  }
+  function fish_x(t) {
+    var d = player.duration;
+    if (!fish_active()) return t / d;
+    var n = FISH_TICK_N;
+    var a = fish_seg();
+    var wSmall = (1 - FISH_E) / (n - 1);
+    var seg = Math.min(n - 1, Math.floor(t / (d / n)));
+    var f = (t - seg * (d / n)) / (d / n);
+    var before = seg * wSmall + (seg > a ? (FISH_E - wSmall) : 0);
+    var w = (seg === a) ? FISH_E : wSmall;
+    return before + f * w;
+  }
+  function render_zoom_band() {
+    if (!tagMarkers) return;
+    var band = tagMarkers.querySelector('.zoom_band');
+    if (!fish_active()) { if (band) band.remove(); return; }
+    if (!band) {
+      band = document.createElement('div');
+      band.className = 'zoom_band';
+      tagMarkers.insertBefore(band, tagMarkers.firstChild);
+    }
+    var a = fish_seg();
+    band.style.left  = (fish_x(a * (player.duration / FISH_TICK_N)) * 100) + '%';
+    band.style.width = (FISH_E * 100) + '%';
+  }
+
+  function render_fish_ticks() {
+    if (!seekBar) return;
+    var ticks = Array.from(seekBar.querySelectorAll('.fish_tick'));
+    if (!fish_active()) { ticks.forEach(function (t) { t.remove(); }); return; }
+    var n = FISH_TICK_N - 1;
+    if (ticks.length !== n) {
+      ticks.forEach(function (t) { t.remove(); });
+      ticks = [];
+      for (var k = 1; k <= n; k++) {
+        var tk = document.createElement('div');
+        tk.className = 'fish_tick';
+        tk.dataset.f = k / FISH_TICK_N;
+        seekBar.appendChild(tk);
+        ticks.push(tk);
+      }
+    }
+    ticks.forEach(function (tk) {
+      tk.style.left = (fish_x(parseFloat(tk.dataset.f) * player.duration) * 100) + '%';
+    });
+  }
+  function update_fisheye() {
+    if (!tagMarkers) return;
+    render_zoom_band();
+    render_fish_ticks();
+    Array.from(tagMarkers.querySelectorAll('.tag_marker')).forEach(function (m) {
+      m.style.left = (fish_x(parseFloat(m.dataset.t)) * 100) + '%';
+    });
+  }
+
   function render_tag_markers() {
     if (!tagMarkers) return;
     tagMarkers.innerHTML = '';
@@ -741,7 +812,8 @@
     tags.forEach(function (t) {
       var m = document.createElement('div');
       m.className = 'tag_marker' + (t.id === activeTagId ? ' active' : '');
-      m.style.left = (t.t / player.duration * 100) + '%';
+      m.dataset.t = t.t;
+      m.style.left = (fish_x(t.t) * 100) + '%';
       m.title = (t.label || 'tag') + ' @ ' + fmt_time(t.t);
       m.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -753,6 +825,8 @@
       });
       tagMarkers.appendChild(m);
     });
+    render_zoom_band();
+    render_fish_ticks();
   }
 
   function fetch_repo_data() {
@@ -920,6 +994,7 @@
     }
     update_playing_tag();
     render_playhead_line();
+    update_fisheye();
     if (playbackIntent && player.currentTime >= playbackIntent.endTime) {
       var intent = playbackIntent;
       playbackIntent = null;
