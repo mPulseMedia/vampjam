@@ -798,17 +798,36 @@
     var n = FISH_TICK_N;
     return Math.min(n - 1, Math.floor((player.currentTime || 0) / (player.duration / n)));
   }
+  var FISH_MIN = 0.045;   // no segment narrower than this fraction of the bar
   function fish_widths() {
-    var n = FISH_TICK_N, a = fish_seg();
-    var ws = new Array(n), sum = 0, i;
+    var n = FISH_TICK_N, a = fish_seg(), i;
+    var raw = new Array(n);
     for (i = 0; i < n; i++) {
-      if (i === a) continue;
-      ws[i] = Math.pow(FISH_FALL, Math.abs(i - a) - 1);
-      sum += ws[i];
+      if (i !== a) raw[i] = Math.pow(FISH_FALL, Math.abs(i - a) - 1);
     }
-    for (i = 0; i < n; i++) {
-      ws[i] = (i === a) ? FISH_E : (1 - FISH_E) * ws[i] / sum;
+    var ws = new Array(n);
+    ws[a] = FISH_E;
+    var flex = [];
+    for (i = 0; i < n; i++) { if (i !== a) flex.push(i); }
+    var remaining = 1 - FISH_E;
+    var changed = true;
+    while (changed) {
+      changed = false;
+      var sumRaw = 0;
+      flex.forEach(function (j) { sumRaw += raw[j]; });
+      for (i = flex.length - 1; i >= 0; i--) {
+        var j = flex[i];
+        if (raw[j] * remaining / sumRaw < FISH_MIN) {
+          ws[j] = FISH_MIN;
+          remaining -= FISH_MIN;
+          flex.splice(i, 1);
+          changed = true;
+        }
+      }
     }
+    var sumRaw2 = 0;
+    flex.forEach(function (j) { sumRaw2 += raw[j]; });
+    flex.forEach(function (j) { ws[j] = raw[j] * remaining / sumRaw2; });
     return ws;
   }
   function fish_x(t) {
