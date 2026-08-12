@@ -797,6 +797,23 @@
     var w = (seg === a) ? FISH_E : wSmall;
     return before + f * w;
   }
+  function fish_x_inv(x) {
+    var d = player.duration;
+    if (!isFinite(d) || d <= 0) return 0;
+    if (!fish_active()) return x * d;
+    var n = FISH_TICK_N;
+    var a = fish_seg();
+    var wSmall = (1 - FISH_E) / (n - 1);
+    var before = 0;
+    for (var i = 0; i < n; i++) {
+      var w = (i === a) ? FISH_E : wSmall;
+      if (x <= before + w || i === n - 1) {
+        return (i + Math.min(1, Math.max(0, (x - before) / w))) * (d / n);
+      }
+      before += w;
+    }
+    return x * d;
+  }
   function render_zoom_band() {
     if (!tagMarkers) return;
     var band = tagMarkers.querySelector('.zoom_band');
@@ -1021,7 +1038,7 @@
       render_tag_markers();
       return;
     }
-    seek_to(p * d);
+    seek_to(fish_x_inv(p));
   });
 
   player.addEventListener('play',  function () {
@@ -1040,7 +1057,7 @@
   player.addEventListener('timeupdate', function () {
     nowTime.textContent = fmt_time(player.currentTime);
     if (isFinite(player.duration) && player.duration > 0) {
-      seekFill.style.width = ((player.currentTime / player.duration) * 100) + '%';
+      seekFill.style.width = (fish_x(player.currentTime) * 100) + '%';
     }
     update_playing_tag();
     render_playhead_line();
