@@ -458,6 +458,11 @@
 
   var tagBtn    = $('tag_btn');
   var tagList   = $('tag_list');
+  // swipe_guard — a scroll swipe over the list must not count as a tap
+  var swipeMoved = false, swipeY = 0;
+  tagList.addEventListener('touchstart', function (e) { swipeMoved = false; swipeY = e.touches[0].clientY; }, { passive: true });
+  tagList.addEventListener('touchmove', function (e) { if (Math.abs(e.touches[0].clientY - swipeY) > 10) swipeMoved = true; }, { passive: true });
+  tagList.addEventListener('click', function (e) { if (swipeMoved) { e.stopPropagation(); e.preventDefault(); } }, true);
   var tagMarkers= $('tag_markers');
   var sortToggle= $('sort_toggle');
   var toastEl   = $('toast');
@@ -1189,7 +1194,7 @@
           play_from_tag(tag);   // single tap -> play; re-render re-locks the field
         }, 350);
       }
-      label.addEventListener('touchend', function () { labelTouched = true; labelHandleTap(); });
+      label.addEventListener('touchend', function () { if (swipeMoved) return; labelTouched = true; labelHandleTap(); });
       label.addEventListener('click', function () {
         if (labelTouched) { labelTouched = false; return; }  // touch already handled this
         labelHandleTap();
