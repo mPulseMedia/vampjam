@@ -96,6 +96,7 @@
   }
   .tag_marker:hover { transform: translateX(-50%) scale(1.4); }
   .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
+  .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: rgba(255,255,255,0.09); pointer-events: none; }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
   .time_row #now_time { color: var(--accent); font-weight: 600; }
   .ctrl_btn {
@@ -734,6 +735,49 @@
     }
   }
 
+  // timeline_fisheye — the region around the playhead is expanded so nearby
+  // dots spread out; the lighter band marks the expanded window.
+  var FISH_W = 90;    // seconds each side of the playhead shown expanded
+  var FISH_E = 0.35;  // fraction of bar width the expanded window occupies
+  function fish_active() {
+    return isFinite(player.duration) && player.duration > FISH_W * 6;
+  }
+  function fish_center() {
+    var d = player.duration;
+    return Math.min(Math.max(player.currentTime || 0, FISH_W), d - FISH_W);
+  }
+  function fish_x(t) {
+    var d = player.duration;
+    if (!fish_active()) return t / d;
+    var c = fish_center();
+    var t0 = c - FISH_W, t1 = c + FISH_W;
+    var L = (1 - FISH_E) * (t0 / (d - 2 * FISH_W));
+    if (t <= t0) return t0 > 0 ? (t / t0) * L : 0;
+    if (t >= t1) return d - t1 > 0 ? L + FISH_E + ((t - t1) / (d - t1)) * (1 - FISH_E - L) : 1;
+    return L + ((t - t0) / (2 * FISH_W)) * FISH_E;
+  }
+  function render_zoom_band() {
+    if (!tagMarkers) return;
+    var band = tagMarkers.querySelector('.zoom_band');
+    if (!fish_active()) { if (band) band.remove(); return; }
+    if (!band) {
+      band = document.createElement('div');
+      band.className = 'zoom_band';
+      tagMarkers.insertBefore(band, tagMarkers.firstChild);
+    }
+    var c = fish_center();
+    var x0 = fish_x(c - FISH_W), x1 = fish_x(c + FISH_W);
+    band.style.left  = (x0 * 100) + '%';
+    band.style.width = ((x1 - x0) * 100) + '%';
+  }
+  function update_fisheye() {
+    if (!tagMarkers) return;
+    render_zoom_band();
+    Array.from(tagMarkers.querySelectorAll('.tag_marker')).forEach(function (m) {
+      m.style.left = (fish_x(parseFloat(m.dataset.t)) * 100) + '%';
+    });
+  }
+
   function render_tag_markers() {
     if (!tagMarkers) return;
     tagMarkers.innerHTML = '';
@@ -741,7 +785,8 @@
     tags.forEach(function (t) {
       var m = document.createElement('div');
       m.className = 'tag_marker' + (t.id === activeTagId ? ' active' : '');
-      m.style.left = (t.t / player.duration * 100) + '%';
+      m.dataset.t = t.t;
+      m.style.left = (fish_x(t.t) * 100) + '%';
       m.title = (t.label || 'tag') + ' @ ' + fmt_time(t.t);
       m.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -753,6 +798,7 @@
       });
       tagMarkers.appendChild(m);
     });
+    render_zoom_band();
   }
 
   function fetch_repo_data() {
@@ -932,6 +978,7 @@
     }
     update_playing_tag();
     render_playhead_line();
+    update_fisheye();
     if (playbackIntent && player.currentTime >= playbackIntent.endTime) {
       var intent = playbackIntent;
       playbackIntent = null;
