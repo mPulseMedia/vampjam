@@ -1352,6 +1352,12 @@
         minus1.innerHTML = ICON_CHEV_L;
         minus1.addEventListener('click', function () { nudge_tag(tag.id, -1); });
         row.appendChild(minus1);
+        var plus1 = document.createElement('button');
+        plus1.className = 'ghost';
+        plus1.title = 'Move start +1s';
+        plus1.innerHTML = ICON_CHEV_R;
+        plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
+        row.appendChild(plus1);
       }
 
       var time = document.createElement('div');
@@ -1360,15 +1366,6 @@
       time.title = 'Jump to ' + fmt_time(tag.t);
       time.addEventListener('click', function () { play_from_tag(tag); });
       row.appendChild(time);
-
-      if (isPlaying) {
-        var plus1 = document.createElement('button');
-        plus1.className = 'ghost';
-        plus1.title = 'Move start +1s';
-        plus1.innerHTML = ICON_CHEV_R;
-        plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
-        row.appendChild(plus1);
-      }
 
       if (isPlaying && SHOW_END_UI) {
         if (tag.e == null) {
