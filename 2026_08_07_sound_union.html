@@ -777,7 +777,8 @@
   // tags keep the same relative position whether the region is expanded or
   // collapsed; layout only changes when the playhead crosses into a new region.
   var FISH_TICK_N = 10;   // number of equal time regions
-  var FISH_E = 0.50;      // width fraction given to the expanded region
+  var FISH_E = 0.40;      // width fraction given to the expanded region
+  var FISH_FALL = 0.7;    // width falloff per step away from the active region
   function fish_active() {
     return isFinite(player.duration) && player.duration > 300;
   }
@@ -785,28 +786,39 @@
     var n = FISH_TICK_N;
     return Math.min(n - 1, Math.floor((player.currentTime || 0) / (player.duration / n)));
   }
+  function fish_widths() {
+    var n = FISH_TICK_N, a = fish_seg();
+    var ws = new Array(n), sum = 0, i;
+    for (i = 0; i < n; i++) {
+      if (i === a) continue;
+      ws[i] = Math.pow(FISH_FALL, Math.abs(i - a) - 1);
+      sum += ws[i];
+    }
+    for (i = 0; i < n; i++) {
+      ws[i] = (i === a) ? FISH_E : (1 - FISH_E) * ws[i] / sum;
+    }
+    return ws;
+  }
   function fish_x(t) {
     var d = player.duration;
     if (!fish_active()) return t / d;
     var n = FISH_TICK_N;
-    var a = fish_seg();
-    var wSmall = (1 - FISH_E) / (n - 1);
     var seg = Math.min(n - 1, Math.floor(t / (d / n)));
     var f = (t - seg * (d / n)) / (d / n);
-    var before = seg * wSmall + (seg > a ? (FISH_E - wSmall) : 0);
-    var w = (seg === a) ? FISH_E : wSmall;
-    return before + f * w;
+    var ws = fish_widths();
+    var before = 0;
+    for (var i = 0; i < seg; i++) before += ws[i];
+    return before + f * ws[seg];
   }
   function fish_x_inv(x) {
     var d = player.duration;
     if (!isFinite(d) || d <= 0) return 0;
     if (!fish_active()) return x * d;
     var n = FISH_TICK_N;
-    var a = fish_seg();
-    var wSmall = (1 - FISH_E) / (n - 1);
+    var ws = fish_widths();
     var before = 0;
     for (var i = 0; i < n; i++) {
-      var w = (i === a) ? FISH_E : wSmall;
+      var w = ws[i];
       if (x <= before + w || i === n - 1) {
         return (i + Math.min(1, Math.max(0, (x - before) / w))) * (d / n);
       }
