@@ -771,25 +771,25 @@
     band.style.left  = (x0 * 100) + '%';
     band.style.width = ((x1 - x0) * 100) + '%';
   }
-  var FISH_T = 120;   // one time grid line every N seconds
+  var FISH_TICK_N = 10;   // grid line at every 1/N of full length
   function render_fish_ticks() {
     if (!tagMarkers) return;
     var ticks = Array.from(tagMarkers.querySelectorAll('.fish_tick'));
     if (!fish_active()) { ticks.forEach(function (t) { t.remove(); }); return; }
-    var n = Math.floor(player.duration / FISH_T);
+    var n = FISH_TICK_N - 1;
     if (ticks.length !== n) {
       ticks.forEach(function (t) { t.remove(); });
       ticks = [];
       for (var k = 1; k <= n; k++) {
         var tk = document.createElement('div');
         tk.className = 'fish_tick';
-        tk.dataset.t = k * FISH_T;
+        tk.dataset.f = k / FISH_TICK_N;
         tagMarkers.appendChild(tk);
         ticks.push(tk);
       }
     }
     ticks.forEach(function (tk) {
-      tk.style.left = (fish_x(parseFloat(tk.dataset.t)) * 100) + '%';
+      tk.style.left = (fish_x(parseFloat(tk.dataset.f) * player.duration) * 100) + '%';
     });
   }
   function update_fisheye() {
