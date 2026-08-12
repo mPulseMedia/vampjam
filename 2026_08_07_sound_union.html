@@ -97,7 +97,7 @@
   .tag_marker:hover { transform: translateX(-50%) scale(1.4); }
   .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
   .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: rgba(255,255,255,0.09); pointer-events: none; z-index: 0; }
-  .fish_tick { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.16); pointer-events: none; z-index: 1; }
+  .fish_tick { position: absolute; top: -3px; bottom: -3px; width: 2px; border-radius: 1px; background: rgba(255,255,255,0.35); pointer-events: none; transform: translateX(-50%); }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
   .time_row #now_time { color: var(--accent); font-weight: 600; }
   .ctrl_btn {
@@ -773,8 +773,8 @@
   }
   var FISH_TICK_N = 10;   // grid line at every 1/N of full length
   function render_fish_ticks() {
-    if (!tagMarkers) return;
-    var ticks = Array.from(tagMarkers.querySelectorAll('.fish_tick'));
+    if (!seekBar) return;
+    var ticks = Array.from(seekBar.querySelectorAll('.fish_tick'));
     if (!fish_active()) { ticks.forEach(function (t) { t.remove(); }); return; }
     var n = FISH_TICK_N - 1;
     if (ticks.length !== n) {
@@ -784,7 +784,7 @@
         var tk = document.createElement('div');
         tk.className = 'fish_tick';
         tk.dataset.f = k / FISH_TICK_N;
-        tagMarkers.appendChild(tk);
+        seekBar.appendChild(tk);
         ticks.push(tk);
       }
     }
