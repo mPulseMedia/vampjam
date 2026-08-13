@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "40 drive_folder_audio",
+        id: "41 drive_audio_verify",
         expanded: true,
+        nodes: [
+          { text: "41 drive_audio_verify", children: [
+            { text: "prompt_restate", children: [
+              { text: "Rename Drive files to match the app." },
+              { text: "Verify all files present per the sources doc." },
+              { text: "If all present, delete the doc." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "look at the app and the names... change the names of these files to match... double check that I've gotten all the files in the right place per the vamp Jam audio file sources... and if I did get them all then delete that... Google doc" }
+            ]},
+            { text: "result_names_ok", children: [
+              { text: "All uploaded files already match the app filenames — no rename needed." },
+              { text: "Sizes also match the real assets, so they are the right recordings." }
+            ]},
+            { text: "result_present", children: [
+              { text: "5 of 6 present: bazaar, 23, 24.v2, 07-24, 08-07 v2." }
+            ]},
+            { text: "result_missing", children: [
+              { text: "Sound.Union.2026-07-31.m4a (07-31 session) not in folder." },
+              { text: "Gave the GitHub download link." }
+            ]},
+            { text: "result_doc", children: [
+              { text: "Did NOT delete the sources doc — one file still missing." },
+              { text: "Will delete once 07-31 is added." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "drive_audio_verify, missing_0731, sources_doc" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "40 drive_folder_audio",
+        expanded: false,
         nodes: [
           { text: "40 drive_folder_audio", children: [
             { text: "prompt_restate", children: [
