@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "39 preunlock_keyboard",
+        id: "40 drive_folder_audio",
         expanded: true,
+        nodes: [
+          { text: "40 drive_folder_audio", children: [
+            { text: "prompt_restate", children: [
+              { text: "Copy all app audio into a Google Drive folder 'vamp jam'; give a link." },
+              { text: "May use GitHub for the files." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Move a copy of all of the audio files from the app uses... move them into a Google Drive folder that says vamp Jam and give me a link to that Google Drive" }
+            ]},
+            { text: "result_files", children: [
+              { text: "6 sessions, each one m4a, 136-198 MB." },
+              { text: "Local: bazaar, 08-07 v2. GitHub-only: 05-30, 07-17, 07-24, 07-31." }
+            ]},
+            { text: "result_done", children: [
+              { text: "Created Drive folder 'vamp jam'." },
+              { text: "link: drive.google.com/drive/folders/1mqclh1ugyodyStw1q01YxItkaZmN8vjG" },
+              { text: "Added manifest doc: every file + source URL + which are local." }
+            ]},
+            { text: "result_limit", children: [
+              { text: "Cannot upload 136-198 MB files: connector takes inline content (MB-scale); browser cap 10 MB; won't use Google creds." },
+              { text: "File transfer is Paul's drag into the folder." }
+            ]},
+            { text: "result_offer", children: [
+              { text: "Can set folder sharing so the link works for others if wanted." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "drive_folder_audio, vamp_jam_folder, upload_size_limit" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "39 preunlock_keyboard",
+        expanded: false,
         nodes: [
           { text: "39 preunlock_keyboard", children: [
             { text: "prompt_restate", children: [
