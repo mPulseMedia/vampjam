@@ -8,15 +8,15 @@
   :root {
     --bg: #faf9f5; --bg2: #f0eee6; --bg3: #e8e5da;
     --tx: #2d2b26; --tx2: #8f8d85; --mut: #8f8d85; --fs: 22px;
-    --acc: #d97757; --ok: #5b8a6e; --warn: #a8874f; --bad: #a86868;
-    --line: #e0ddd2; --code-bg: #262624; --code-tx: #f0efea;
+    --acc: #d97757; --ok: #5b8a6e; --warn: #a8874f; --bad: #a86868; --doc: #4a6fa5;
+    --line: #e0ddd2; --code-bg: #f2efe4; --code-tx: #3a382f; --code-line: #ddd8c8;
     --lbl: #cbc8bc;
   }
   html.night {
     --bg: #181816; --bg2: #222220; --bg3: #2b2b28;
     --tx: #f0efea; --tx2: #918f89; --mut: #918f89;
-    --acc: #d97757; --ok: #86b298; --warn: #c4a878; --bad: #c08d8d;
-    --line: #302f2c; --code-bg: #111110; --code-tx: #f0efea;
+    --acc: #d97757; --ok: #86b298; --warn: #c4a878; --bad: #c08d8d; --doc: #7fa3d1;
+    --line: #302f2c; --code-bg: #21211e; --code-tx: #d9d7cf; --code-line: #35342f;
     --lbl: #56554f;
   }
   @media (max-width: 760px) and (orientation: portrait) {
@@ -65,6 +65,16 @@
     transition: top .15s, background .15s;
   }
   html.night #thm::after { top: 16px; background: var(--mut); }
+  #recentq {
+    position: fixed; z-index: 60; display: none; overflow: hidden;
+    background: var(--bg2); border: 1px solid var(--line); border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.25);
+  }
+  .rq_item {
+    padding: 10px 16px; cursor: pointer; text-align: left;
+    font-size: var(--fs); color: var(--tx); white-space: nowrap;
+  }
+  .rq_item:hover { background: var(--bg3); }
   .rowcopy {
     margin-left: auto; background: var(--bg3); color: var(--tx2);
     border: 1px solid var(--line); border-radius: 5px; padding: 1px 12px;
@@ -109,6 +119,10 @@
   }
   .dom {
     color: var(--acc); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
+  .readym {
+    color: var(--doc); margin-left: 10px;
     font-size: calc(var(--fs) * 0.82);
   }
   li.has_here > .row > .txt::after { content: ' \25B8'; color: var(--acc); }
@@ -181,12 +195,21 @@
   .codewrap { position: relative; margin: 6px 0 6px 56px; max-width: 860px; }
   pre {
     background: var(--code-bg); color: var(--code-tx); border-radius: 8px;
-    padding: 13px 15px; overflow-x: auto; font-size: var(--fs); line-height: 1.55;
+    border: 1px solid var(--code-line); font-weight: 300;
+    padding: 11px 13px; overflow-x: auto;
+    font-size: calc(var(--fs) * 0.7); line-height: 1.5;
     font-family: ui-monospace, Menlo, monospace; margin: 0; white-space: pre;
   }
+  .codewrap pre { max-height: calc(1.5em * 3 + 24px); overflow-y: hidden; cursor: pointer; }
+  .codewrap:not(.xfull)::after {
+    content: ""; position: absolute; left: 1px; right: 1px; bottom: 1px;
+    height: 1.8em; border-radius: 0 0 8px 8px; pointer-events: none;
+    background: linear-gradient(to bottom, transparent, var(--code-bg));
+  }
+  .codewrap.xfull pre { max-height: none; }
   .copybtn {
     position: absolute; top: 8px; right: 8px; font-size: var(--fs);
-    background: #ffffff22; color: #fff; border: 1px solid #ffffff33;
+    background: var(--bg2); color: var(--tx2); border: 1px solid var(--line);
     border-radius: 5px; padding: 3px 10px; cursor: pointer;
   }
   .copybtn:active { background: #ffffff44; }
@@ -320,19 +343,19 @@ function json(obj, status, cors) {
 <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">list_order <span class="donem">#done</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">newest at the bottom; drawer opens scrolled to newest; scroll up for older</span></div></li>
 </ul></li>
-<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">session_row_format <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">session_row_format <span class="readym">#ready</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">left = &#8220;Name — Date&#8221; as editable text (like the title); right = duration + highlight count</span></div></li>
 </ul></li>
-<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">durations <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">durations <span class="readym">#ready</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">seed each length once via the browser, then each session saves its own length on load</span></div></li>
 </ul></li>
-<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">index_latest <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">index_latest <span class="readym">#ready</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">drop the odd index grid; index loads the last-opened or most-recent session</span></div></li>
 </ul></li>
-<li class="n" data-l="E"><div class="row"><span class="tri">▶</span><span class="lbl">E</span><span class="txt">new_recording_row <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="E"><div class="row"><span class="tri">▶</span><span class="lbl">E</span><span class="txt">new_recording_row <span class="readym">#ready</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">a row in the session list that starts a new recording (jumps to Record on Admin)</span></div></li>
 </ul></li>
-<li class="n" data-l="F"><div class="row"><span class="tri">▶</span><span class="lbl">F</span><span class="txt">session_autocreate <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="F"><div class="row"><span class="tri">▶</span><span class="lbl">F</span><span class="txt">session_autocreate <span class="readym">#ready</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">after an upload, build the session page automatically</span></div></li>
 </ul></li>
 </ul></li>
@@ -347,7 +370,7 @@ function json(obj, status, cors) {
 </ul>
 </main>
 <script>
-  const BUILD='b2';
+  const BUILD='b3';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -579,6 +602,28 @@ function json(obj, status, cors) {
     if (st && st.q) { sbox.value = st.q; applyFilter(); }
   } catch(e) {}
 
+  // search_recent: last five unique searches, click to reuse
+  const RQ_KEY = 'vampjam_org_recent_q';
+  const rq = document.createElement('div'); rq.id = 'recentq'; document.body.appendChild(rq);
+  function rqLoad() { try { return JSON.parse(localStorage.getItem(RQ_KEY)) || []; } catch(e) { return []; } }
+  function rqSave(q) { q = q.trim(); if (q.length < 2) return;
+    let r = rqLoad().filter(x => x !== q); r.unshift(q); r = r.slice(0, 5);
+    try { localStorage.setItem(RQ_KEY, JSON.stringify(r)); } catch(e) {} }
+  function rqHide() { rq.style.display = 'none'; }
+  function rqShow() {
+    const r = rqLoad(); if (!r.length) return;
+    rq.innerHTML = '';
+    r.forEach(q => { const d = document.createElement('div'); d.className = 'rq_item'; d.textContent = q;
+      d.addEventListener('mousedown', e => { e.preventDefault(); sbox.value = q; applyFilter(); rqSave(q); sbox.focus(); rqShow(); });
+      rq.appendChild(d); });
+    const b = sbox.getBoundingClientRect();
+    rq.style.left = b.left + 'px'; rq.style.top = (b.bottom + 4) + 'px'; rq.style.minWidth = b.width + 'px'; rq.style.display = 'block';
+  }
+  sbox.addEventListener('focus', rqShow);
+  sbox.addEventListener('blur', () => setTimeout(rqHide, 150));
+  let rqT = null;
+  sbox.addEventListener('input', () => { rqShow(); clearTimeout(rqT); rqT = setTimeout(() => { rqSave(sbox.value); rqShow(); }, 2000); });
+
   document.querySelectorAll('.rowcopy').forEach(btn => {
     const stop = e => e.stopPropagation();
     btn.addEventListener('dblclick', stop);
@@ -637,6 +682,14 @@ function json(obj, status, cors) {
       navigator.clipboard.writeText(btn.parentElement.querySelector('pre').textContent)
         .then(() => { btn.textContent = 'copied ✓';
                       setTimeout(() => btn.textContent = 'copy', 1500); });
+    });
+  });
+
+  document.querySelectorAll('.codewrap').forEach(w => {
+    w.addEventListener('click', e => {
+      if (e.target.closest('button')) return;
+      if (window.getSelection && String(window.getSelection())) return;
+      w.classList.toggle('xfull');
     });
   });
 
@@ -877,6 +930,20 @@ function json(obj, status, cors) {
     try { localStorage.setItem('vampjam_org_theme', n ? 'day' : 'night'); } catch(e) {}
     applyTheme();
   });
+  // steer_rule: each build may set the focus, the search, and open nodes ONCE;
+  // manual navigation wins afterward.
+  const OPEN_ON_BUILD = ['1'];
+  const STEER = { focus: null, search: null };
+  try {
+    if (localStorage.getItem('vampjam_org_steer') !== BUILD) {
+      localStorage.setItem('vampjam_org_steer', BUILD);
+      OPEN_ON_BUILD.forEach(pth => { const li = items.find(x => x.dataset.path === pth); if (li) li.classList.remove('closed'); });
+      if (STEER.search !== null && typeof STEER.search === 'string') { sbox.value = STEER.search; applyFilter(); }
+      if (STEER.focus) zoomTo(STEER.focus);
+      saveState();
+    }
+  } catch(e) {}
+
   morphIn();
 </script>
 </body>
