@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "60 shadow_panel_only",
+        id: "61 logo_icons_theme_admin",
         expanded: true,
+        nodes: [
+          { text: "61 logo_icons_theme_admin", children: [
+            { text: "prompt_restate", children: [
+              { text: "Center the session name under the vamp jam wordmark." },
+              { text: "Transport circles: number at the screen font size, the sign and unit (m/s) smaller; keep one scale, don't wrap." },
+              { text: "Cassette line-icon left of each session name; a non-cassette/non-play (gear) icon left of Admin; names shift right a touch." },
+              { text: "Move the theme switch off the drawer onto the Admin page, and carry the current theme (minimal/yellow) into Admin." },
+              { text: "Maybe rename to 'vamp SF' with a matching logo (deferred — exploratory)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Center the name of the Jam underneath vamp Jam ... we might call it vamp SF ... in the circles that contain the -2 etc I would like to make the number character be the size of the font used on the rest of the screen, but the negative and the m smaller ... make a separate visual item for the text so it can be big and not wrap ... create a logo similar in function to the play button ... a cassette stylized line drawing ... to the left of Sound Union ... Admin can have some innocuous non-tape non-play icon ... move the theme link onto the Admin page ... carry the style whether minimal or Yellow into this Admin page as well" }
+            ]},
+            { text: "result_build", children: [
+              { text: "h1 gets justify-content center so the session name centers under the wordmark." },
+              { text: "Each transport label split into spans: .cn (number, 17px) + .cu (sign/unit, 11px); button white-space nowrap." },
+              { text: "Session rows: jam_left wraps a cassette .jam_ico (accent) + name; Admin uses a gear icon (muted)." },
+              { text: "theme.js render_switch now targets #theme_switch_mount (gone from the drawer); admin.html loads theme.js and has the mount, so the switch lives there and the theme applies to Admin (its :root yellow palette is overridden by theme.js)." }
+            ]},
+            { text: "deferred", children: [
+              { text: "'vamp SF' rename + new logo: it was a 'might', so not done — say the word and I'll do it." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "theme.js + inline JS pass node --check; markup counts verified (6 cn spans, 7 jam_ico, centered h1, admin mount + theme.js)." },
+              { text: "Visual pending push (viewport wouldn't scroll in preview)." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "logo_icons_theme_admin, cn/cu, jam_ico cassette, gear, theme_switch_mount" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "60 shadow_panel_only",
+        expanded: false,
         nodes: [
           { text: "60 shadow_panel_only", children: [
             { text: "prompt_restate", children: [
