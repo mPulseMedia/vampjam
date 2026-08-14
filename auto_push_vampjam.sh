@@ -5,7 +5,7 @@
 
 REPO="$HOME/claude_cowork/vampjam"
 LOG="/tmp/autopush_vampjam.log"
-COMMIT_MSG_FILE="$HOME/claude_cowork/commit_msg.txt"
+COMMIT_MSG_FILE="$REPO/vampjam_admin/commit_msg.txt"
 SETTLE=15
 
 if [[ ! -d "$REPO/.git" ]]; then

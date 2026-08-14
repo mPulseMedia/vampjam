@@ -7,7 +7,6 @@
   <string>com.pauldsmith.autopush.vampjam</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/bin/bash</string>
     <string>/Users/pauldsmith/claude_cowork/vampjam/auto_push_vampjam.sh</string>
   </array>
   <key>WatchPaths</key>
