@@ -270,13 +270,13 @@ if(n)document.documentElement.classList.add('night');})();
 <li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">your Mac may show the old &#8220;under construction&#8221; page up to ~2 more hours (its DNS memory) &#8212; that&#8217;s normal, not broken</span></div></li>
 </ul></li>
 <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">https_check <span class="dom">#do</span></span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">wait for Cloudflare&#8217;s &#8220;vampsf.com is active&#8221; email first</span></div></li>
-<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">then open <a href="https://github.com/mPulseMedia/vampjam/settings/pages" target="_blank">repo Settings &#8594; Pages</a>: Custom domain should read <code>vampsf.com</code></span></div></li>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">the certificate is already working (see 1D) &#8212; no more waiting</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">open <a href="https://github.com/mPulseMedia/vampjam/settings/pages" target="_blank">repo Settings &#8594; Pages</a>: Custom domain should read <code>vampsf.com</code></span></div></li>
 <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">tick <b>Enforce HTTPS</b> when the cert appears</span></div></li>
 </ul></li>
-<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify <span class="dom">#do</span></span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">open <a href="http://vampsf.com" target="_blank">vampsf.com</a>: a session loads and plays</span></div></li>
-<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">my last check 3:09p showed the old parking page; propagation is under way</span></div></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">you verified, and so did I: vampsf.com opens the 08-07 session, wordmark vampsf, highlights listed</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">bonus: it already serves over httpS &#8212; the certificate exists</span></div></li>
 </ul></li>
 </ul></li>
 
@@ -346,7 +346,7 @@ if(n)document.documentElement.classList.add('night');})();
 </ul>
 </main>
 <script>
-  const BUILD='b22';
+  const BUILD='b23';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -395,7 +395,7 @@ if(n)document.documentElement.classList.add('night');})();
     }
     // per-build tidying: nodes finished in this build close themselves
     // (once — after that your own toggles win)
-    const CLOSE_ON_BUILD = ['1A','1B','2A','2B','4A'];
+    const CLOSE_ON_BUILD = ['1A','1B','1D','2A','2B','4A'];
     const OPEN_ON_BUILD = [];
     if (!st || st.b !== BUILD) {
       items.forEach(li => {
@@ -801,7 +801,7 @@ if(n)document.documentElement.classList.add('night');})();
   const chip = document.getElementById('subchip');
   chip.title = 'click to reload now';
   chip.style.cursor = 'pointer';
-  chip.textContent = 'as of 8/14 4:19:30p';
+  chip.textContent = 'as of 8/14 4:24:30p';
   chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
   const h1 = document.querySelector('header h1');
   h1.style.cursor = 'pointer';

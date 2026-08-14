@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "90 wordmark_scope",
+        id: "92 cutover_live",
         expanded: true,
+        nodes: [
+          { text: "92 cutover_live", children: [
+            { text: "prompt_restate", children: [
+              { text: "1D verified — vampsf.com loads the app." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "1d verified." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Cross-checked in Chrome: http://vampsf.com redirects to httpS://vampsf.com/2026_08_07_sound_union.html — app loads at the domain, lowercase vampsf wordmark, highlights listed, certificate already live. Screenshot attached." }
+            ]},
+            { text: "result_build", children: [
+              { text: "1D #done (closes itself); 1C is down to one tick (Enforce HTTPS in repo settings — cert already working). test_record stays #next. b23, stamp 4:24p." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "cutover_live, verify done, https cert live" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "91 wordmark_case",
+        expanded: false,
+        nodes: [
+          { text: "91 wordmark_case", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the title vampsf — lowercase sf." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make the title vampsf -- with lowercase SF" }
+            ]},
+            { text: "result_build", children: [
+              { text: "vampSF -> vampsf (wordmark + browser titles) across the 10 site files; scan shows zero vampSF left; org 4A1 updated. b22, stamp 4:19p." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "wordmark_case, vampsf" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "90 wordmark_scope",
+        expanded: false,
         nodes: [
           { text: "90 wordmark_scope", children: [
             { text: "prompt_restate", children: [

@@ -112,7 +112,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   test_record is #next.
 - (log 90 wordmark_scope — no page edit) scope note; batch had shipped; no revert asked.
 - 91 wordmark_case · b22 — vampSF → vampsf (all lowercase) across the 10 site files + 4A1.
-- NEXT → add entry 92 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 92 cutover_live · b23 — he verified 1D; my check agrees: vampsf.com serves the app over
+  httpS already (cert live), wordmark vampsf. 1D #done; 1C reduced to the Enforce-HTTPS
+  tick. Remaining #next: test_record (2C); #do: https_check tick, move_to_r2, other_place,
+  verify_ios; #decide: dups.
+- NEXT → add entry 93 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
