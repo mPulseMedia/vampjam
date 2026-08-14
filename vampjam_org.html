@@ -775,7 +775,7 @@ function json(obj, status, cors) {
   function poll() {
     if (pending) return;
     const sc = document.createElement('script');
-    sc.src = 'claude_cowork_org_build.js?' + Date.now();
+    sc.src = 'vampjam_org_build.js?' + Date.now();
     sc.onload = () => {
       sc.remove();
       const nb = window.PAGE_BUILD;
@@ -784,6 +784,8 @@ function json(obj, status, cors) {
     sc.onerror = () => sc.remove();
     document.head.appendChild(sc);
   }
+  setInterval(poll, 2000);
+  poll();
 
   // live step-status chips — fed by purge_verify.sh writing
   // claude_cowork_org_status.js next to this page
