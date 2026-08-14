@@ -21,7 +21,9 @@
     var d = drawer(); if (!d) return;
     d.classList.toggle('open', on);
     var c = caret(); if (c) c.classList.toggle('open', on);
-    if (on) { setTimeout(update_sess_overflow, 250); } else { d.classList.remove('sess_overflow'); }
+    // sessions run oldest -> newest, so open scrolled to the bottom (newest)
+    if (on) { setTimeout(function () { update_sess_overflow(); d.scrollTop = d.scrollHeight; }, 250); }
+    else { d.classList.remove('sess_overflow'); }
   }
   window.addEventListener('resize', update_sess_overflow);
   function toggle() {
