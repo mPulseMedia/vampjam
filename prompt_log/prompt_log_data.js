@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "79 vampsf_dns",
+        id: "80 org_v4_pass",
         expanded: true,
+        nodes: [
+          { text: "80 org_v4_pass", children: [
+            { text: "prompt_restate", children: [
+              { text: "Re-read live-page v4 (updated today); apply the three new top rules to this page: 60-second rule, page-carries-the-response, clean copy payloads with destination in the gray tag. Bump build + sidecar; log as a normal entry." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "re-read the live-page skill before your next page change — it was updated to v4 today from the claude_cowork_org thread. three rules now sit at the top and they change how you work... apply the deltas to your own page, bump your build and sidecar, and log the pass as a normal entry." }
+            ]},
+            { text: "result_build", children: [
+              { text: "Full body rebuild to the 60-second rule: next act on top — 1 domain_vsf (sync_cors #next loaded with the copy button), 2 record_live (deploy_worker #next), 3 audio_home (dups #decide, move_to_r2 links), 4 rebrand, 5 self_admin." },
+              { text: "Cut from the page, kept in the spec's new page_notes section: the notes section, interface history (all shipped), domain done-details, recording_hunt findings. Stale push #do row deleted — the robot pushes now." },
+              { text: "Copy buttons renamed by kind: copy text sync_cors / copy text worker_upload / copy prompt kickoff; payloads verified clean (no destination inside)." },
+              { text: "Divergence, on purpose: v4 puts destinations in the gray .tag, but this page hides .tag (his standing preference) — destinations ride as plain row text instead; noted in the spec." },
+              { text: "b12, stamp 2:32p, steer focus -> 1 (the cutover section)." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "org_v4_pass, page_notes, sync_cors, 60-second rule" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "79 vampsf_dns",
+        expanded: false,
         nodes: [
           { text: "79 vampsf_dns", children: [
             { text: "prompt_restate", children: [

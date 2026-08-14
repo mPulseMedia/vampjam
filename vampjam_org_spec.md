@@ -33,7 +33,8 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   · `#ready` blue (**Claude** can do it) · `#done` green. `.tag` gray suffix is hidden here.
 - `steer_rule` may set focus/search/open once per build. Copy buttons: `rowcopy` copies the
   `pre` in a child `sc` node.
-- sections: 1 record_live · 2 audio_home · 3 interface (done) · 4 rebrand · 5 notes · 6 self_admin.
+- sections (v4 order, next act on top): 1 domain_vsf · 2 record_live · 3 audio_home · 4 rebrand · 5 self_admin.
+- v4 divergence: .tag stays hidden on this page (his call) — copy destinations ride as plain row text instead.
 
 ## build_history (codename · bN · what changed)
 
@@ -67,7 +68,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   GitHub Pages IPs, www → CNAME mpulsemedia.github.io (parking records replaced/deleted);
   repo CNAME file added; sync-worker CORS updated in repo (deploy = new #next sync_cors);
   4B rewritten to cutover status; handoff site line updated.
-- NEXT → add entry 80 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 80 org_v4_pass · b12 — live-page v4 applied: 60-second rebuild (next act on top: domain_vsf
+  cutover first), done work + reference notes moved to this spec (page_notes below), interface
+  section retired (all shipped), stale push row cut (robot pushes), copy buttons renamed by
+  kind (copy text / copy prompt) with destinations as plain row text (.tag stays hidden here).
+- NEXT → add entry 81 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
@@ -85,3 +90,16 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   and prompt_log numbers, then work.
 - The page's section 6 self_admin has a [copy first message] button with the kickoff payload.
 - This file's numbers may age; the page's live `#next` markers never lie — trust them.
+
+## page_notes (moved off the page, v4 60-second rule)
+
+- worker_file: `cloudflare/r2_upload_worker.js` (upload) · `worker/vampjam_worker.js` (sync, CORS
+  now includes vampsf origins — deployed copy lags until sync_cors ships).
+- bucket: R2 `vampjam-audio` · public base `https://pub-33cfd8558d314eb58642c8550608850b.r2.dev`.
+- format_caveat: record on iPhone/Safari (.m4a); Chrome records .webm which iOS can't play.
+- secret_note: UPLOAD_SECRET lives in client JS — a light gate, not real security.
+- interface_history (all #done, 71): list_order, session_row_format, durations, index_latest,
+  new_recording_row.
+- domain_history (79): NetSol forwarding = $12.99/yr paywall, skipped; @ A → 185.199.108/.109/
+  .110/.111.153, www CNAME → mpulsemedia.github.io (old parking value both rows: 208.91.197.27,
+  for rollback); repo CNAME = vampsf.com; bazaar_01_17 + audit_audio audio work logged in 64-76.
