@@ -77,6 +77,20 @@
     color: var(--muted); font-size: 12.5px; line-height: 1.5; margin-top: 20px;
   }
   .note b { color: var(--fg); }
+
+  .rec_card { background: var(--panel); border: 1px solid var(--panel_3); border-radius: 14px; padding: 18px; margin: 4px 0 26px; }
+  .rec_title { font-weight: 600; font-size: 15px; margin-bottom: 14px; }
+  .rec_stage { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .rec_btn { width: 74px; height: 74px; border-radius: 50%; border: none; background: var(--accent); color: var(--on_accent); font-size: 26px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
+  .rec_btn.recording { background: #d70015; color: #fff; animation: rec_pulse 1.2s ease-in-out infinite; }
+  @keyframes rec_pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(215,0,21,0.5); } 50% { box-shadow: 0 0 0 12px rgba(215,0,21,0); } }
+  .rec_time { font-variant-numeric: tabular-nums; font-size: 22px; font-weight: 600; }
+  .rec_hint { color: var(--muted); font-size: 13px; }
+  .rec_input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--panel_3); background: var(--bg); color: var(--fg); font: inherit; margin-bottom: 8px; }
+  .rec_up { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--accent); color: var(--on_accent); font-weight: 600; font-size: 15px; cursor: pointer; }
+  .rec_up:disabled { opacity: 0.5; }
+  .rec_result { margin-top: 10px; font-size: 13px; color: var(--muted); word-break: break-all; line-height: 1.5; }
+  .rec_result a { color: var(--accent_2); }
 </style>
 </head>
 <body>
@@ -89,6 +103,23 @@
 <a class="back" href="index.html">&#8249; back to sessions</a>
 
 <div id="theme_switch_mount"></div>
+
+<h1>Record a jam</h1>
+<div class="sub">Record here and it uploads straight to R2 — no Voice Memos round-trip.</div>
+
+<div class="rec_card">
+  <div class="rec_stage">
+    <button id="rec_btn" class="rec_btn" aria-label="Record">&#9679;</button>
+    <div class="rec_time" id="rec_time">0:00</div>
+    <div class="rec_hint" id="rec_hint">tap to start recording</div>
+  </div>
+  <audio id="rec_preview" controls style="display:none;width:100%;margin-top:14px;"></audio>
+  <div id="rec_after" style="display:none;margin-top:14px;">
+    <input id="rec_name" type="text" class="rec_input" placeholder="file name (no spaces)">
+    <button id="rec_upload" class="rec_up">Upload to R2</button>
+    <div id="rec_result" class="rec_result"></div>
+  </div>
+</div>
 
 <h1>Add a new session</h1>
 <div class="sub">From a Voice Memos recording to a live, taggable session page.</div>
