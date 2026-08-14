@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "48 top_drawer",
+        id: "49 drawer_caret",
         expanded: true,
+        nodes: [
+          { text: "49 drawer_caret", children: [
+            { text: "prompt_restate", children: [
+              { text: "On session click, animate the lower part coming back up (drawer closes before nav)." },
+              { text: "Change the hamburger to a caret that signals there are choices." },
+              { text: "Align the caret with the session name — move the session title in." },
+              { text: "Keep the hamburger/caret where it is (top-left)." },
+              { text: "Mobile landscape: don't let the shadowed player card stop short of the screen edge." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "looks great. when I click on a session, animate the lower part coming up. change the hamburger to and caret that indicates there are choices. align that with the session name. so move in the session title . i like where the hamburger icon is." },
+              { text: "on mobile horizontal, don't show the shadowed part stopping short of the edge." }
+            ]},
+            { text: "result_build", children: [
+              { text: "New shared drawer.js: session links intercept click, collapse drawer (.open off), then navigate after 300ms." },
+              { text: "Hamburger glyph replaced with an SVG chevron-down (drawer_caret); rotates 180deg when open." },
+              { text: "Session title h1 gets padding-left 12px to line its left edge up under the caret." },
+              { text: "Caret button keeps its top-left absolute position." },
+              { text: "Landscape + coarse-pointer media query full-bleeds .sticky_player so its background + shadow reach the screen edges (inner content stays centered)." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "All 6 pages: drawer.js linked, caret present, rotation CSS, full-bleed CSS, h1 padding — all 1x." },
+              { text: "drawer.js + theme.js pass node --check." },
+              { text: "Live visual pending push (see status)." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "drawer_caret, drawer.js, sticky_player full-bleed" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "48 top_drawer",
+        expanded: false,
         nodes: [
           { text: "48 top_drawer", children: [
             { text: "prompt_restate", children: [
