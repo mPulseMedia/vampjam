@@ -9,8 +9,34 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "86 ns_easy",
+        id: "87 ns_done",
         expanded: true,
+        nodes: [
+          { text: "87 ns_done", children: [
+            { text: "prompt_restate", children: [
+              { text: "(with the NetSol Account Update email) I did 1B — nameservers changed to DRAKE/SIMONE.NS.CLOUDFLARE.COM." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I did 1B." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Public DNS already answers vampsf.com with all four GitHub Pages addresses (sandbox resolver) — the switch took." },
+              { text: "Cloudflare zone: pending, 'checking nameservers... wait a few hours' after I clicked Check now; the 'active' email closes it." },
+              { text: "His Mac still serves the cached parking page (old 2 h TTL) — noted on the page as normal." },
+              { text: "Sandbox cannot reach vampsf.com directly (proxy host_not_allowed) — used resolver + his Chrome instead." }
+            ]},
+            { text: "result_build", children: [
+              { text: "1B folded to #done with 4 status children and closes itself; C/D labels left alone on purpose (no more renumber churn); steer -> 2: deploy_worker holds the only live #next. b19, stamp 3:46p." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "ns_done, cutover_wait, deploy_worker (next)" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "86 ns_easy",
+        expanded: false,
         nodes: [
           { text: "86 ns_easy", children: [
             { text: "prompt_restate", children: [

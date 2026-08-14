@@ -96,7 +96,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - 86 ns_easy · b18 — still lost on 1B: it's at Network Solutions, not either Cloudflare url.
   1B rebuilt as 8 click-by-click steps for a non-technical reader, one link (NetSol domain
   page), copy buttons beside the exact fields, offer to drive to step 5 on request.
-- NEXT → add entry 87 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 87 ns_done · b19 — he flipped the nameservers (NetSol email: drake/simone). Verified: public
+  DNS now returns all 4 GitHub A records; Cloudflare zone pending-verifying (1-2 h); his Mac
+  still caching parking. 1B folded to #done status; steer → 2 (deploy_worker is the only
+  live #next); labels C/D deliberately untouched (no more renumber churn).
+- NEXT → add entry 88 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
