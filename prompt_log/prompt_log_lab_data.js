@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "49 drawer_caret",
+        id: "50 pull_reveal",
         expanded: true,
+        nodes: [
+          { text: "50 pull_reveal", children: [
+            { text: "prompt_restate", children: [
+              { text: "Add a pull gesture in addition to the caret tap." },
+              { text: "Only when the page is already at the very top: swipe down reveals the surface above, page follows the finger, then animates." },
+              { text: "If not at the very top: treat a downward swipe as a normal scroll, unchanged." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Instead of tapping or in addition to tapping the Carat; in the top left corner, make it so that if the Paige is at the very top and then I swipe the page down so as to look what's above it then yes in fact, it should animate the page sliding down and revealing what's above it, but if I'm not already scroll to the very top of the page, then you should just treat it as the scroll like how you treat it now" }
+            ]},
+            { text: "result_build", children: [
+              { text: "drawer.js touch handlers: engage only when scrollY<=0, drawer closed, and the move is a downward pull (vertical dominant)." },
+              { text: "During the pull the drawer max-height tracks the finger (dragging class removes the transition); native rubber-band suppressed via preventDefault." },
+              { text: "On release: past ~30% of open height it snaps open, else back closed; caret + shadow follow; inline height handed back to CSS 72vh after the animation." },
+              { text: "Guards: ignores touches on the seek bar and editable fields; horizontal or upward swipes fall through to native scroll." },
+              { text: "Not-at-top swipes never enter the handler, so scrolling is exactly as before." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "drawer.js passes node --check; dragging CSS present on all 6 pages." },
+              { text: "Live gesture test pending push (touch gesture needs a device)." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "pull_reveal, dragging, maxOpenPx" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "49 drawer_caret",
+        expanded: false,
         nodes: [
           { text: "49 drawer_caret", children: [
             { text: "prompt_restate", children: [
