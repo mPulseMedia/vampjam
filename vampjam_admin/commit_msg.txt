@@ -1,1 +1,1 @@
-skill_add
+auto_commit
