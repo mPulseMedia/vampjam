@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "42 drive_audio_complete",
+        id: "43 drive_rename_done",
         expanded: true,
+        nodes: [
+          { text: "43 drive_rename_done", children: [
+            { text: "prompt_restate", children: [
+              { text: "Rename Drive files to session style (2026_07_31_sound_union)." },
+              { text: "Drive the browser to do it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "yes, like 2026_07_31_sound_union. drive the browser through the connector." }
+            ]},
+            { text: "result_renamed", children: [
+              { text: "All 6 audio renamed to 2026_MM_DD_{venue}.m4a." },
+              { text: "Sizes unchanged — pure renames, not re-uploads." },
+              { text: "Safe: app loads audio from GitHub/R2, not Drive." }
+            ]},
+            { text: "result_method", children: [
+              { text: "Drive web UI via Chrome MCP; connector has no rename tool." },
+              { text: "Pixel-clicks kept missing (window auto-rescaled)." },
+              { text: "Switched to find + element-ref clicks + form_input — reliable." }
+            ]},
+            { text: "result_cleanup", children: [
+              { text: "A stray 'Copy of Sound.Union.23.m4a' from a misclick — trashed." },
+              { text: "Sources doc deleted (all files present, per earlier ask)." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Connector search: 6 m4a, correct names, nothing else." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "drive_rename_done, element_ref_clicks, session_style_names" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "42 drive_audio_complete",
+        expanded: false,
         nodes: [
           { text: "42 drive_audio_complete", children: [
             { text: "prompt_restate", children: [
