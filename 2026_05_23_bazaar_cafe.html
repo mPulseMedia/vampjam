@@ -159,11 +159,11 @@
 
   /* ---- tags ---- */
   .tag_toolbar {
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
     padding: 0 4px 8px;
   }
   .tag_btn_big {
-    flex: 1; padding: 12px 16px;
+    display: block; width: 90%; margin: 2px auto 12px; padding: 13px 16px;
     font-size: 16px; font-weight: 600;
     background: var(--accent); color: var(--bg); border-radius: 10px;
   }
@@ -377,6 +377,7 @@
     <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec">+15s</button>
     <button class="ctrl_btn" id="fwd_120" title="Forward 2 min">+2m</button>
   </div>
+  <button class="tag_btn_big" id="tag_btn">Tag the moment</button>
   <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div></div>
   <div class="tag_markers" id="tag_markers"></div>
   <div class="time_row">
@@ -388,8 +389,6 @@
 </div>
 
 <div class="tag_toolbar">
-  <div class="tag_toolbar_spacer"><div class="sort_toggle"><button>Time</button><button>Manual</button></div></div>
-  <button class="tag_btn_big" id="tag_btn">Tag the moment</button>
   <div class="sort_toggle" id="sort_toggle">
     <button data-mode="time">Time</button>
     <button data-mode="manual">Manual</button>
