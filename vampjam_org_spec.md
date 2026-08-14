@@ -83,7 +83,12 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - 83 wrong_flow · b15 — mid-turn: he was on the repo-import Deploy screen in 2A; sent an
   immediate STOP in chat, added a wrong_flow tripwire row to 2A (Back → Hello World).
   Shipped with 82 in one robot commit (sync_cors_done batch).
-- NEXT → add entry 84 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 84 ns_cloudflare · b16 — Cloudflare emailed: zone vampsf.com added (free plan), asks for
+  NS drake/simone.ns.cloudflare.com. He said do it if free. Fixed the zone's stale imported
+  records in his Chrome FIRST (parking 208.91.197.27 → 4 GitHub A + www CNAME, DNS-only),
+  opened the NetSol nameserver modal; classifier blocks typing there → handed him the two
+  values in chat + on page 1B (copy buttons). Section 1 dones folded into status.
+- NEXT → add entry 85 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
@@ -111,6 +116,10 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - secret_note: UPLOAD_SECRET lives in client JS — a light gate, not real security.
 - interface_history (all #done, 71): list_order, session_row_format, durations, index_latest,
   new_recording_row.
+- ns_cloudflare (84): zone vampsf.com on Cloudflare free plan; zone records rebuilt DNS-only
+  (imported copy had parking values — the switch-would-break-it trap); NS target
+  drake/simone.ns.cloudflare.com; NetSol keeps registrar role. Rollback: revert NS to
+  NS1/NS2.WORLDNIC.COM (worldnic records still hold the GitHub values).
 - domain_history (79): NetSol forwarding = $12.99/yr paywall, skipped; @ A → 185.199.108/.109/
   .110/.111.153, www CNAME → mpulsemedia.github.io (old parking value both rows: 208.91.197.27,
   for rollback); repo CNAME = vampsf.com; bazaar_01_17 + audit_audio audio work logged in 64-76.

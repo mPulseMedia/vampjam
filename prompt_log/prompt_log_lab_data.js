@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "83 wrong_flow",
+        id: "84 ns_cloudflare",
         expanded: true,
+        nodes: [
+          { text: "84 ns_cloudflare", children: [
+            { text: "prompt_restate", children: [
+              { text: "(with Cloudflare email screenshots) vampsf.com was added to his Cloudflare account; the email says switch nameservers to drake/simone.ns.cloudflare.com. Help me do this if it's free." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "help me do this if it's free." }
+            ]},
+            { text: "result_browser", children: [
+              { text: "It's free (zone shows the free plan chip; NS changes cost nothing). Found the trap before switching: Cloudflare's imported zone still had the parking records (208.91.197.27 @ + www) — flipping NS as-is would have undone today's DNS work." },
+              { text: "Fixed the zone in his Chrome: @ A -> 185.199.108.153 edited + .109/.110/.111 added, www A -> CNAME mpulsemedia.github.io, all DNS-only (gray cloud, right for GitHub's cert); Cloudflare confirmed each save." },
+              { text: "Opened NetSol Manage Nameservers (Continue past the warning). The permission classifier blocks typing in that modal (2 attempts) — handed him the two values in chat; he types them + Save." }
+            ]},
+            { text: "result_build", children: [
+              { text: "Section 1 rebuilt: dones folded into A status; B ns_cloudflare #next with per-value copy buttons + a safe-to-save note + expect (Cloudflare 'active' email); steer -> 1. b16, stamp 3:27p." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "ns_cloudflare, zone_fix, drake/simone, dns_only" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "83 wrong_flow",
+        expanded: false,
         nodes: [
           { text: "83 wrong_flow", children: [
             { text: "prompt_restate", children: [

@@ -256,8 +256,17 @@ if(n)document.documentElement.classList.add('night');})();
 <ul class="ol" id="root">
 
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">domain_vsf &#8212; <code>vampsf.com</code> cutover</span></div><ul>
-<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">status <span class="donem">#done</span> &#8212; DNS &#8594; GitHub Pages + repo CNAME live, $0 spent (detail in the spec)</span></div></li>
-<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">sync_cors <span class="donem">#done</span> &#8212; you deployed 3:14p; I checked the live version (03a595be): both vampsf origins are in &#8212; saves from vampsf.com will work</span></div></li>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">status <span class="donem">#done</span> &#8212; NetSol DNS &#8594; GitHub Pages &#183; repo CNAME in &#183; sync worker deployed + verified &#183; $0 total (detail in the spec)</span></div></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">ns_cloudflare <span class="nextm">#next</span> <span class="dom">#do</span> &#8212; the modal on your screen: 2 fields, then Save (free; moves DNS hosting to Cloudflare)</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">Nameserver 1 &#8212; paste into the first field <button class="rowcopy">copy text ns_1</button></span></div><ul>
+<li class="n sc" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">value</span></div><div class="codewrap"><pre>drake.ns.cloudflare.com</pre></div></li>
+</ul></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">Nameserver 2 &#8212; paste into the second field <button class="rowcopy">copy text ns_2</button></span></div><ul>
+<li class="n sc" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">value</span></div><div class="codewrap"><pre>simone.ns.cloudflare.com</pre></div></li>
+</ul></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">click <b>Save</b> &#8212; safe: I already rebuilt Cloudflare&#8217;s copy of the records (it had the stale parking values; now 4 GitHub A records + www CNAME, DNS-only, free plan)</span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">expect: Cloudflare emails &#8220;vampsf.com is active&#8221; (minutes&#8211;hours); if the modal fights you, Cancel &#8212; the NetSol DNS already works without this</span></div></li>
+</ul></li>
 <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">https_check <span class="dom">#do</span> (once DNS lands) &#8212; <a href="https://github.com/mPulseMedia/vampjam/settings/pages" target="_blank">repo Settings &#8594; Pages</a>: Custom domain reads <code>vampsf.com</code>; tick <b>Enforce HTTPS</b> when the cert appears</span></div></li>
 <li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify <span class="dom">#do</span> &#8212; open <a href="http://vampsf.com" target="_blank">vampsf.com</a>: a session loads and plays (checked 3:09p &#8212; still the parking page; DNS is propagating, try again within ~2 h)</span></div></li>
 </ul></li>
@@ -361,7 +370,7 @@ function json(obj, status, cors) {
 </ul>
 </main>
 <script>
-  const BUILD='b15';
+  const BUILD='b16';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -816,7 +825,7 @@ function json(obj, status, cors) {
   const chip = document.getElementById('subchip');
   chip.title = 'click to reload now';
   chip.style.cursor = 'pointer';
-  chip.textContent = 'as of 8/14 3:18:30p';
+  chip.textContent = 'as of 8/14 3:27:15p';
   chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
   const h1 = document.querySelector('header h1');
   h1.style.cursor = 'pointer';
