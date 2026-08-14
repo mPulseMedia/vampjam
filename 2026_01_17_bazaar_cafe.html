@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 <script src="theme.js"></script>
+<script src="sessions.js"></script>
 <script src="drawer.js"></script>
 <style>
   :root {
@@ -301,6 +302,8 @@
   .jam_name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .jam_ico { flex: 0 0 auto; display: inline-flex; color: var(--accent); }
   .jam_item.jam_admin .jam_ico { color: var(--muted); }
+  .jam_count { color: var(--muted); font-size: 14px; margin-left: 5px; }
+  .jam_item.jam_new .jam_ico { color: var(--accent); }
   .jam_ico svg { display: block; }
   .jam_share { flex: 0 0 auto; background: transparent; color: var(--muted); border: none; border-radius: 7px;
                padding: 6px 6px; margin-left: 6px; min-height: 32px; cursor: pointer; line-height: 0; }
