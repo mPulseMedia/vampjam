@@ -1,1 +1,1 @@
-vampjam_sync
+auto_commit
