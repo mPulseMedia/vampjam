@@ -9,8 +9,41 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "55 shadow_top_only",
+        id: "56 gutter_align",
         expanded: true,
+        nodes: [
+          { text: "56 gutter_align", children: [
+            { text: "prompt_restate", children: [
+              { text: "Give every page a consistent left/right margin (gutter) on mobile." },
+              { text: "Line up all left edges: session name, date, drawer separators, Theme, caret, session title, -2m button, Tag the moment, seek bar, each play button; same for the right edges." },
+              { text: "Use the session-list panel background behind the highlights too." },
+              { text: "Remove the gray rounded square around the play triangle." },
+              { text: "When editing a highlight title, the field background should be white." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On mobile device, I want you to have a margin that goes down the left and the right of every page ... I want the things on the left to all lineup ... the name of the session the date ... the line that separates bizarre Caffe from Admin and Admin from the theme ... the left edge of theme the left edge of the Carat ... the left edge of Sound union ... the -2 minute button ... the tag the moment ... the time bar ... each play button and similar with stuff on the right edge ... make that happen on every page and then use the same slightly darker background that's behind the session list section and put it behind the highlights get rid of the gray rounded square around the blue triangle ... and let that just be a play button when I tap to edit a highlight I want the background of the text era area of the title to be white" }
+            ]},
+            { text: "result_build", children: [
+              { text: "body gets --gutter:16px side padding; all content aligns to that gutter." },
+              { text: "Controls row justify space-between; Tag button + seek bar width 100%; playhead full width." },
+              { text: "Caret, session title, drawer links, and the Theme switch all flush-left to the gutter (drawer jam_menu + link padding-left 0; theme.js box padding-left 0)." },
+              { text: "Caret and play triangle get small negative margins so their glyph edges (not just boxes) sit on the gutter; verified all left edges = 356px on the live preview." },
+              { text: "tag_list background = var(--panel), matching the session list surface." },
+              { text: "play_tag background transparent (no square); font 22; hover/active stay transparent." },
+              { text: "tag_label:focus background #fff with a 1px panel_3 inset border." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Injected the equivalent rules on the live page: measured caret/title/-2m/tag/seek/play/session-name/theme-label all at the gutter; screenshot confirms alignment, panel behind highlights, bare play triangles." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "gutter_align, --gutter, highlights_panel, play_bare, edit_white" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "55 shadow_top_only",
+        expanded: false,
         nodes: [
           { text: "55 shadow_top_only", children: [
             { text: "prompt_restate", children: [
