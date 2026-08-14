@@ -107,6 +107,10 @@
     color: var(--warn); margin-left: 10px;
     font-size: calc(var(--fs) * 0.82);
   }
+  .dom {
+    color: var(--acc); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
   li.has_here > .row > .txt::after { content: ' \25B8'; color: var(--acc); }
   .crumb:hover { text-decoration: underline; }
   .crumb.cur { color: var(--tx); cursor: default; }
@@ -221,21 +225,11 @@ if(n)document.documentElement.classList.add('night');})();
 <main>
 <ul class="ol" id="root">
 
-<li class="n sec" data-l="1">
-  <div class="row"><span class="tri">▶</span><span class="lbl">1</span>
-    <span class="txt">now <span class="tag">turn on record &#8594; auto-upload; do these in order</span></span></div>
-  <ul>
-    <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span>
-      <span class="txt">deploy_worker <span class="tag">a plain Worker, NO Git &#8212; the connect-to-Git flow fails because a repo named vampjam already exists, and you don&#8217;t need it</span> <span class="nextm">#next</span></span></div>
-      <ul>
-        <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
-          <span class="txt"><a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers-and-pages/create" target="_blank">open Create</a> &#8594; choose <b>Start with Hello World</b> (NOT &#8220;Import a repository&#8221;) &#8594; name it <code>vampjam-upload</code> &#8594; Deploy the starter</span></div></li>
-        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
-          <span class="txt">open the worker &#8594; Edit code &#8594; select all, replace with this, then Deploy <button class="rowcopy">copy worker code</button></span></div>
-          <ul>
-            <li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
-              <span class="txt">worker code</span></div>
-              <div class="codewrap"><pre>// vampjam — R2 upload Worker
+<li class="n sec" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">record_live</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">deploy_worker <span class="nextm">#next</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt"><a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers-and-pages/create" target="_blank">open Create</a> &#8594; <b>Start with Hello World</b> (NOT &#8220;Import a repository&#8221;) &#8594; name it <code>vampjam-upload</code> &#8594; Deploy the starter</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">open the worker &#8594; Edit code &#8594; select all, replace with this, then Deploy <button class="rowcopy">copy worker code</button></span></div><ul>
+<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">worker code</span></div><div class="codewrap"><pre>// vampjam — R2 upload Worker
 // Accepts a POST with a recorded audio body and stores it in the vampjam-audio
 // R2 bucket, returning the public URL so a session can point at it.
 //
@@ -289,77 +283,71 @@ function json(obj, status, cors) {
     status,
     headers: { ...cors, 'Content-Type': 'application/json' },
   });
-}</pre></div>
-            </li>
-          </ul>
-        </li>
-        <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span>
-          <span class="txt">the worker&#8217;s Settings &#8594; Bindings &#8594; add R2 bucket binding: variable <code>BUCKET</code> &#8594; bucket <code>vampjam-audio</code></span></div></li>
-        <li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span>
-          <span class="txt">Settings &#8594; Variables: <code>PUBLIC_BASE</code> = <code>https://pub-33cfd8558d314eb58642c8550608850b.r2.dev</code> and <code>UPLOAD_SECRET</code> = a long random string you invent</span></div></li>
-        <li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span>
-          <span class="txt">Deploy, copy the worker URL (…workers.dev), and tell me that URL &#8212; I wire admin.html</span></div></li>
-      </ul>
-    </li>
-    <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span>
-      <span class="txt">wire_admin <span class="tag">put the two values into admin.html, near the top of the record script</span></span></div>
-      <ul>
-        <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
-          <span class="txt">set <code>WORKER_UPLOAD_URL</code> to the worker URL and <code>UPLOAD_SECRET</code> to the same secret</span></div></li>
-        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
-          <span class="txt">…or just tell me the worker URL + secret and I’ll wire it</span></div></li>
-      </ul>
-    </li>
-    <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span>
-      <span class="txt">test_record <span class="tag">Admin &#8594; Record a jam &#8594; record a few seconds &#8594; Upload to R2 &#8212; a URL should appear</span></span></div></li>
-    <li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span>
-      <span class="txt">push <button class="rowcopy">copy script push</button> <span class="tag">run whenever I say a commit is 1 ahead</span></span></div>
-      <ul>
-        <li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
-          <span class="txt">script</span></div>
-          <div class="codewrap"><pre>cd ~/claude_cowork/vampjam &amp;&amp; git push origin main</pre></div>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</li>
+}</pre></div></li>
+</ul></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">the worker&#8217;s Settings &#8594; Bindings &#8594; R2 bucket binding: <code>BUCKET</code> &#8594; <code>vampjam-audio</code></span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">Settings &#8594; Variables: <code>PUBLIC_BASE</code> = <code>https://pub-33cfd8558d314eb58642c8550608850b.r2.dev</code> ; <code>UPLOAD_SECRET</code> = a random string</span></div></li>
+<li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">Deploy, copy the worker URL, tell me &#8212; I wire admin.html</span></div></li>
+</ul></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">wire_admin <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">set <code>WORKER_UPLOAD_URL</code> + <code>UPLOAD_SECRET</code> in admin.html, or hand me the URL</span></div></li>
+</ul></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">test_record <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">Admin &#8594; Record a jam &#8594; record &#8594; Upload to R2 &#8594; a URL appears</span></div></li>
+</ul></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">push <span class="dom">#do</span> <button class="rowcopy">copy script push</button></span></div><ul>
+<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">script</span></div><div class="codewrap"><pre>cd ~/claude_cowork/vampjam &amp;&amp; git push origin main</pre></div></li>
+</ul></li>
+</ul></li>
 
-<li class="n sec" data-l="2">
-  <div class="row"><span class="tri">▶</span><span class="lbl">2</span>
-    <span class="txt">next <span class="tag">what I build once recording is live &#8212; no action from you</span></span></div>
-  <ul>
-    <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span>
-      <span class="txt">session_rows &#8212; title like the h1 (“Name — Date”) on the left; duration + highlight count on the right</span></div></li>
-    <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span>
-      <span class="txt">durations &#8212; seed each session’s length via the browser now; sessions save their own length on load after that</span></div></li>
-    <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span>
-      <span class="txt">index_latest &#8212; the index loads the last-opened session, or the most recent one</span></div></li>
-    <li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span>
-      <span class="txt">new_recording_row &#8212; a row in the session list that jumps to Record on Admin</span></div></li>
-    <li class="n" data-l="E"><div class="row"><span class="tri">▶</span><span class="lbl">E</span>
-      <span class="txt">session_autocreate &#8212; after an upload, build the session page automatically</span></div></li>
-  </ul>
-</li>
+<li class="n sec" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">audio_home</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">bazaar_01_17 <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">renamed, json points at R2, you uploaded it &#8212; plays from R2</span></div></li>
+</ul></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">audit_audio <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">on R2 &#10003;: 2026-08-07 SU, 2026-01-17 bazaar</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">still on GitHub releases (move these): 05-23 bazaar, 05-30 / 07-17 / 07-24 / 07-31 SU</span></div></li>
+</ul></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">move_to_r2 <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">drop each releases-hosted file into the <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/r2/default/buckets/vampjam-audio" target="_blank">vampjam-audio bucket</a>; I repoint each json</span></div></li>
+</ul></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify_ios <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">play each session on the iPhone; the old releases were what failed on iOS</span></div></li>
+</ul></li>
+</ul></li>
 
-<li class="n sec" data-l="3">
-  <div class="row"><span class="tri">▶</span><span class="lbl">3</span>
-    <span class="txt">notes <span class="tag">reference</span></span></div>
-  <ul>
-    <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span>
-      <span class="txt">worker_file &#8212; <code>cloudflare/r2_upload_worker.js</code> (setup steps in its header comment)</span></div></li>
-    <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span>
-      <span class="txt">bucket &#8212; R2 <code>vampjam-audio</code>, public base <code>pub-33cfd8558d314eb58642c8550608850b.r2.dev</code></span></div></li>
-    <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span>
-      <span class="txt">format_caveat &#8212; record on iPhone/Safari (.m4a plays everywhere); Chrome records .webm which iOS can’t play</span></div></li>
-    <li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span>
-      <span class="txt">secret_note &#8212; UPLOAD_SECRET lives in client JS, so it’s a light abuse gate, not real security — fine for a personal tool</span></div></li>
-  </ul>
-</li>
+<li class="n sec" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">interface</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">list_order <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">newest at the bottom; drawer opens scrolled to newest; scroll up for older</span></div></li>
+</ul></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">session_row_format <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">left = &#8220;Name — Date&#8221; as editable text (like the title); right = duration + highlight count</span></div></li>
+</ul></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">durations <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">seed each length once via the browser, then each session saves its own length on load</span></div></li>
+</ul></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">index_latest <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">drop the odd index grid; index loads the last-opened or most-recent session</span></div></li>
+</ul></li>
+<li class="n" data-l="E"><div class="row"><span class="tri">▶</span><span class="lbl">E</span><span class="txt">new_recording_row <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">a row in the session list that starts a new recording (jumps to Record on Admin)</span></div></li>
+</ul></li>
+<li class="n" data-l="F"><div class="row"><span class="tri">▶</span><span class="lbl">F</span><span class="txt">session_autocreate <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">after an upload, build the session page automatically</span></div></li>
+</ul></li>
+</ul></li>
+
+<li class="n sec" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">notes</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">worker_file &#8212; <code>cloudflare/r2_upload_worker.js</code></span></div></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">bucket &#8212; R2 <code>vampjam-audio</code> &#8226; <code>pub-33cfd8558d314eb58642c8550608850b.r2.dev</code></span></div></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">format_caveat &#8212; record on iPhone/Safari (.m4a); Chrome records .webm which iOS can&#8217;t play</span></div></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">secret_note &#8212; UPLOAD_SECRET lives in client JS: a light gate, not real security</span></div></li>
+</ul></li>
 
 </ul>
 </main>
 <script>
-  const BUILD='b1';
+  const BUILD='b2';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -408,7 +396,7 @@ function json(obj, status, cors) {
     }
     // per-build tidying: nodes finished in this build close themselves
     // (once — after that your own toggles win)
-    const CLOSE_ON_BUILD = [];
+    const CLOSE_ON_BUILD = ['2','3','4'];
     if (!st || st.b !== BUILD) {
       items.forEach(li => {
         if (CLOSE_ON_BUILD.includes(li.dataset.path) &&
