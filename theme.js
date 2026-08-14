@@ -17,7 +17,8 @@
         '--on_accent': '#0b0d0f',
         '--accent_hover': '#f0c97a', '--accent_active': '#c89943',
         '--accent_2_hover': '#e0bb6e', '--accent_2_active': '#b88e3d',
-        '--playhead': '#ffd84a'
+        '--playhead': '#ffd84a',
+        '--marker': '#ffffff'
       }
     },
     minimal: {
@@ -30,14 +31,15 @@
         '--on_accent': '#ffffff',
         '--accent_hover': '#0a84ff', '--accent_active': '#0062c4',
         '--accent_2_hover': '#48484a', '--accent_2_active': '#2c2c2e',
-        '--playhead': '#0071e3'
+        '--playhead': '#0071e3',
+        '--marker': '#98989d'
       }
     }
   };
   var ORDER = ['yellow', 'minimal'];
 
   function saved() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
-  function current() { var s = saved(); return THEMES[s] ? s : 'yellow'; }
+  function current() { var s = saved(); return THEMES[s] ? s : 'minimal'; }
 
   function apply(id) {
     var t = THEMES[id] ? id : 'yellow';

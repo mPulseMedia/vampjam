@@ -90,7 +90,7 @@
   .tag_markers { position: relative; height: 14px; margin-top: 4px; margin-bottom: 4px; width: 90%; margin-left: auto; margin-right: auto; }
   .tag_marker {
     position: absolute; top: 2px; width: 10px; height: 10px; z-index: 2;
-    background: #fff; border-radius: 50%;
+    background: var(--marker, #fff); border-radius: 50%;
     transform: translateX(-50%); cursor: pointer;
     border: 1.5px solid var(--bg);
     transition: transform 0.1s;
@@ -125,7 +125,7 @@
   }
   .ctrl_btn.play_btn:hover  { background: var(--accent_hover, #f0c97a); }
   .ctrl_btn.play_btn:active { background: var(--accent_active, #c89943); transform: scale(0.95); }
-  .ctrl_btn.small { width: 40px; height: 40px; font-size: 11px; }
+  .ctrl_btn.small { width: 52px; height: 52px; font-size: 12px; }
   .ctrl_btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .player_msg { display: none; }
 
@@ -306,7 +306,7 @@
 
   @media (max-width: 480px) {
     .ctrl_btn { width: 48px; height: 48px; }
-    .ctrl_btn.small { width: 34px; height: 34px; font-size: 10px; }
+    .ctrl_btn.small { width: 48px; height: 48px; }
     .ctrl_btn.play_btn { width: 76px; height: 76px; font-size: 38px; }
   }
 
