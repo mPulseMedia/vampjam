@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<script src="theme.js"></script>
 <style>
   :root {
     --bg: #4a2a0e;
@@ -117,13 +118,13 @@
     transition: background-color 0.12s, transform 0.06s;
   }
   .ctrl_btn:hover  { background: var(--panel_3); }
-  .ctrl_btn:active { background: var(--accent_2); color: #0b0d0f; transform: scale(0.95); }
+  .ctrl_btn:active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); transform: scale(0.95); }
   .ctrl_btn.play_btn {
-    width: 84px; height: 84px; background: var(--accent); color: #0b0d0f;
+    width: 84px; height: 84px; background: var(--accent); color: var(--on_accent, #0b0d0f);
     font-size: 44px; box-shadow: 0 4px 14px rgba(106,191,105,0.25);
   }
-  .ctrl_btn.play_btn:hover  { background: #f0c97a; }
-  .ctrl_btn.play_btn:active { background: #c89943; transform: scale(0.95); }
+  .ctrl_btn.play_btn:hover  { background: var(--accent_hover, #f0c97a); }
+  .ctrl_btn.play_btn:active { background: var(--accent_active, #c89943); transform: scale(0.95); }
   .ctrl_btn.small { width: 40px; height: 40px; font-size: 11px; }
   .ctrl_btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .player_msg { display: none; }
@@ -136,25 +137,25 @@
     transition: background-color 0.12s, transform 0.06s;
   }
   button:hover  { background: var(--panel_3); }
-  button:active { background: var(--accent_2); color: #0b0d0f; transform: scale(0.97); }
-  button.primary           { background: var(--accent);   color: #0b0d0f; font-weight: 600; }
-  button.primary:hover     { background: #f0c97a; }
-  button.primary:active    { background: #c89943; }
-  button.primary_2         { background: var(--accent_2); color: #0b0d0f; font-weight: 600; }
-  button.primary_2:hover   { background: #e0bb6e; }
-  button.primary_2:active  { background: #b88e3d; }
+  button:active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); transform: scale(0.97); }
+  button.primary           { background: var(--accent);   color: var(--on_accent, #0b0d0f); font-weight: 600; }
+  button.primary:hover     { background: var(--accent_hover, #f0c97a); }
+  button.primary:active    { background: var(--accent_active, #c89943); }
+  button.primary_2         { background: var(--accent_2); color: var(--on_accent, #0b0d0f); font-weight: 600; }
+  button.primary_2:hover   { background: var(--accent_2_hover, #e0bb6e); }
+  button.primary_2:active  { background: var(--accent_2_active, #b88e3d); }
   button.ghost {
     background: var(--panel_2); color: var(--accent);
     padding: 4px 6px; min-height: 28px;
   }
   button.ghost:hover  { background: var(--panel_3); }
-  button.ghost:active { background: var(--accent_2); color: #0b0d0f; }
+  button.ghost:active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); }
   button.tiny {
     padding: 4px 6px; min-height: 26px; font-size: 11px;
     background: var(--panel_3);
   }
-  button.tiny:hover  { background: var(--accent_2); color: #0b0d0f; }
-  button.tiny:active { background: var(--accent);   color: #0b0d0f; }
+  button.tiny:hover  { background: var(--accent_2); color: var(--on_accent, #0b0d0f); }
+  button.tiny:active { background: var(--accent);   color: var(--on_accent, #0b0d0f); }
 
   /* ---- tags ---- */
   .tag_toolbar {
@@ -166,8 +167,8 @@
     font-size: 16px; font-weight: 600;
     background: var(--accent); color: var(--bg); border-radius: 10px;
   }
-  .tag_btn_big:hover { background: #f0c97a; }
-  .tag_btn_big:active { background: #c89943; transform: scale(0.97); }
+  .tag_btn_big:hover { background: var(--accent_hover, #f0c97a); }
+  .tag_btn_big:active { background: var(--accent_active, #c89943); transform: scale(0.97); }
   .tag_toolbar_spacer {
     flex: 0 0 auto; visibility: hidden;
   }
@@ -178,7 +179,7 @@
     min-height: 24px; font-weight: 500; opacity: 0.7;
   }
   .sort_toggle button:hover { opacity: 1; }
-  .sort_toggle button.active { background: var(--accent_2); color: #0b0d0f; }
+  .sort_toggle button.active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); }
   .tag_list { background: transparent; padding: 0 0 28px; touch-action: pan-y; font-size: 17px; }
   .tag_row {
     display: flex; align-items: center; gap: 5px;
@@ -200,15 +201,15 @@
     padding: 5px 10px; min-height: 35px; font-size: 17px;
     border-radius: 7px; flex: 0 0 auto;
   }
-  .tag_row button.play_tag:hover { background: var(--accent); color: #0b0d0f; }
+  .tag_row button.play_tag:hover { background: var(--accent); color: var(--on_accent, #0b0d0f); }
   .tag_row button.add_end {
     background: var(--panel_3); color: var(--warn);
     font-size: 12px; padding: 4px 7px; min-height: 25px; border-radius: 7px;
     flex: 0 0 auto;
   }
-  .tag_row button.add_end:hover { background: var(--warn); color: #0b0d0f; }
+  .tag_row button.add_end:hover { background: var(--warn); color: var(--on_accent, #0b0d0f); }
   .tag_row button.play_tag.autoplay_blocked {
-    background: var(--warn); color: #0b0d0f; font-weight: 700;
+    background: var(--warn); color: var(--on_accent, #0b0d0f); font-weight: 700;
     animation: pulse_warn 1.2s ease-in-out infinite;
   }
   @keyframes pulse_warn {
@@ -236,8 +237,8 @@
   .playhead_line::before {
     content: ''; position: absolute; left: 0; right: 0;
     top: -1.5px; height: 3px; border-radius: 2px;
-    background: #ffd84a;
-    box-shadow: 0 0 10px rgba(255,216,74,0.7);
+    background: var(--playhead, #ffd84a);
+    box-shadow: 0 0 10px var(--playhead, #ffd84a);
   }
   .tag_time {
     color: var(--accent); font: inherit; font-weight: normal;
@@ -258,7 +259,7 @@
   /* ---- misc ---- */
   .toast {
     position: fixed; left: 50%; transform: translateX(-50%);
-    bottom: 24px; background: #0b0d0f; color: var(--fg);
+    bottom: 24px; background: var(--on_accent, #0b0d0f); color: var(--fg);
     padding: 8px 14px; border-radius: 20px; font-size: 13px;
     opacity: 0; transition: opacity 0.2s; pointer-events: none;
     border: 1px solid var(--panel_3); z-index: 99;
