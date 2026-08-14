@@ -712,7 +712,21 @@
   // debounced auto-sync: collapses rapid edits into one commit
   var saveDebounceTimer = null;
   var saveDebounceMsg   = null;
+  var saveInFlight      = false;
+  var lastLocalEditAt   = 0;
+  var lastTagsSig       = null;
+  function is_editing_label() {
+    var a = document.activeElement;
+    return !!(a && a.classList && a.classList.contains('tag_label') && !a.readOnly);
+  }
+  // While a moment is being created/named (or a save is still settling), the
+  // background poll must NOT overwrite local tags or rebuild the list DOM.
+  function local_edits_in_progress() {
+    return is_editing_label() || !!saveDebounceTimer || saveInFlight ||
+           (Date.now() - lastLocalEditAt < 20000);
+  }
   function queue_save_data_to_repo(msg) {
+    lastLocalEditAt = Date.now();
     if (!WORKER_URL) return;
     if (msg) saveDebounceMsg = msg;
     if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
@@ -739,6 +753,7 @@
       })
     };
     var content = JSON.stringify(payload, null, 2) + '\n';
+    saveInFlight = true;
     return fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -746,7 +761,8 @@
     }).then(function (r) {
       if (!r.ok) return r.text().then(function (t) { throw new Error('Worker ' + r.status + ': ' + t); });
       return r.json();
-    });
+    }).then(function (v) { saveInFlight = false; lastLocalEditAt = Date.now(); return v; },
+            function (e) { saveInFlight = false; throw e; });
   }
 
   function render_playhead_line() {
@@ -964,7 +980,8 @@
       load_audio_into_player();
 
       var arr = Array.isArray(data.tags) ? data.tags : null;
-      if (arr) {
+      // Never clobber a moment being created/named, or edits still settling.
+      if (arr && !local_edits_in_progress()) {
         // Start from the repo (shared source of truth)...
         var merged = arr
           .filter(function (t) { return t && t.id && typeof t.t === 'number'; })
@@ -990,8 +1007,13 @@
         // Clear stale tombstones since repo is authoritative
         try { localStorage.removeItem(STORAGE_TOMBS); } catch (e) {}
         save_tags();
-        render_tags();
-        render_tag_markers();
+        // Only rebuild the list DOM when the repo actually differs — no periodic flash.
+        var sig = JSON.stringify(tags);
+        if (sig !== lastTagsSig) {
+          lastTagsSig = sig;
+          render_tags();
+          render_tag_markers();
+        }
       }
     }).catch(function () { /* keep current state on a failed/stale fetch */ });
   }
