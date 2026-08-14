@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "68 org_three_groups",
+        id: "69 org_autoreload",
         expanded: true,
+        nodes: [
+          { text: "69 org_autoreload", children: [
+            { text: "prompt_restate", children: [
+              { text: "Why did I have to manually reload vampjam_org? It should have its own update-detection auto-reload like claude_cowork_org. Fix it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Why did I have to manually reload that page? I would think it has its own reload ... Update detection reload thing and if it's not there ... fix it" }
+            ]},
+            { text: "diagnosis", children: [
+              { text: "When I cloned claude_cowork_org I stripped its build-sidecar polling (no vampjam sidecar existed), so vampjam_org had no auto-reload." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "Pointed the poll at vampjam_org_build.js and re-enabled setInterval(poll,2000); created the sidecar with PAGE_BUILD matching the page BUILD (b2)." },
+              { text: "Going forward each page update bumps BUILD in the page AND the sidecar, so an open page detects the change and reloads on its own." }
+            ]},
+            { text: "note", children: [
+              { text: "Your currently-open copy predates the poll, so reload it once more to pick up the auto-reloader; after that it's automatic." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "org_autoreload, vampjam_org_build.js, build poll" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "68 org_three_groups",
+        expanded: false,
         nodes: [
           { text: "68 org_three_groups", children: [
             { text: "prompt_restate", children: [
