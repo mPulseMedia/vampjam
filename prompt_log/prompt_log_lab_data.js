@@ -9,6 +9,30 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
+        id: "70 org_port_style_ready",
+        expanded: true,
+        nodes: [
+          { text: "70 org_port_style_ready", children: [
+            { text: "prompt_restate", children: [
+              { text: "Add a #ready marker for tasks Claude can do (vs #do = mine)." },
+              { text: "Port the presentation/interaction/functionality that claude_cowork_org has evolved into vampjam_org, keeping our changes; e.g. the code block should not be black in day mode." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "mark the things that you would be ready to do with #ready ... update the stylistic things ... how claude co-Work org_2 and its JavaScript have diverged ... keep the changes we introduced here but incorporate ... presentation format, interaction style and functionality ... the code block ... not a black background at least not in day mode." }
+            ]},
+            { text: "result_build", children: [
+              { text: "Diffed claude_cowork_org CSS/JS vs our clone and ported: light code blocks in day mode (--code-bg #f2efe4, dark text, code-line border, smaller weight-300 font), click-to-expand collapsible code with a fade, themed copy button, --doc color, a recent-search dropdown, and a per-build steer hook (focus/search/open once)." },
+              { text: "Kept our changes: hidden .tag, vampjam storage keys, the build-sidecar poll." },
+              { text: "Added a #ready marker (.readym, blue --doc); re-tagged the 5 interface tasks (session_row_format, durations, index_latest, new_recording_row, session_autocreate) from #do to #ready. Record + audio steps stay #do (yours)." },
+              { text: "Bumped page + sidecar to b3 so your open page auto-reloads into it." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "org_port_style_ready, #ready, light code block, collapsible code, steer_rule" }
+            ]}
+          ]}
+        ]
+      },
+      {
         id: "69 org_autoreload",
         expanded: true,
         nodes: [
