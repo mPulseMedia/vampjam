@@ -9,8 +9,41 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "57 create_tag_persist",
+        id: "58 list_cards",
         expanded: true,
+        nodes: [
+          { text: "58 list_cards", children: [
+            { text: "prompt_restate", children: [
+              { text: "Both lists become recessed panel cards on a white control-panel layer, with white margins all around (top, bottom, left, right)." },
+              { text: "Indent the play button so there's a margin between the row edge and the play button, matching the delete button's margin." },
+              { text: "Make the session list look like the highlights: session name like a highlight title, date like a highlight timestamp." },
+              { text: "Session rows: no play, no delete; share is maybe (left off for now); a duration after the date would be nice." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Have the margins on the left and on the right BA lifted white layer on the same level as the control panel with the pause play tag a moment ... there should be a margin along the bottom and a margin along the top ... indent the play button ... just like there's a margin between the edge of the row and the delete button ... make the session list look like the highlight title and the date look like the highlight timestamp ... up above it won't have a play button ... I don't think it should have a delete button, it could show a duration and might as well have a duration after its date." }
+            ]},
+            { text: "result_build", children: [
+              { text: "tag_list + drawer jam_menu are now panel cards: border-radius 14, inner padding, top/bottom margin, subtle inset (recessed) shadow; drawer surface set to white." },
+              { text: "Rows get inner padding; play triangle no longer flush (margin-left 0, small left pad) so it insets like the delete button." },
+              { text: "Session rows restyled as flex rows: name at 17px like the title, date at 15px muted tabular on the right like the timestamp." },
+              { text: "Removed the old drawer bottom-inset shadow (cards carry the lift now)." }
+            ]},
+            { text: "deferred", children: [
+              { text: "Duration after the date: not added — needs each session's audio length, which the drawer doesn't have yet. Offered to pull it." },
+              { text: "Share button on session rows: left off (you were unsure)." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Injected the design on the live page and screenshotted: both cards recessed on white, play indented, session rows mirror the highlights." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "list_cards, recessed panel card, session row = highlight row" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "57 create_tag_persist",
+        expanded: false,
         nodes: [
           { text: "57 create_tag_persist", children: [
             { text: "prompt_restate", children: [
