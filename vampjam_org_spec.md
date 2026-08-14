@@ -57,7 +57,12 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   #decide; other_place lead); move_to_r2 expanded w/ release links; 4B rewritten for
   vampsf.com @ Network Solutions (forward now #next, later_full DNS); drift fix: missing
   .readym CSS rule added (claimed in 70, never landed); steer → 4B.
-- NEXT → add entry 77 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 77 vampsf_confirm — no page edit) domain name confirmed; no build.
+- 78 forward_decide · b10 — 4B1 now_redirect rebuilt from his screenshots as two doors
+  (#decide): door_you = exact NetSol click path (Domain Details → Advanced Tools → Add
+  Web Forwarding); door_claude = copy-prompt for Claude-in-Chrome to do it; purchase
+  fallback → later_full; 2a sharpened to the real Advanced-DNS edit path.
+- NEXT → add entry 79 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

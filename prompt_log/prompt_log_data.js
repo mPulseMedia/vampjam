@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "77 vampsf_confirm",
+        id: "78 forward_decide",
         expanded: true,
+        nodes: [
+          { text: "78 forward_decide", children: [
+            { text: "prompt_restate", children: [
+              { text: "From NetSol screenshots: give more precise instructions, plus the choice of copying a prompt into chat so Claude does it on the computer. Mark the choice #decide." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "give me more precide instructions. and give me the choice to copy a prompt into chat to have chat do it on the computer. both and mark with #decide. (with Network Solutions screenshots: dns-details A @ /www -> 208.91.197.27 under-construction, Advanced Tools with Web Forwarding / worldnic nameservers, domain overview Active/locked)" }
+            ]},
+            { text: "result_build", children: [
+              { text: "Screenshots confirmed: parked A records @ + www -> 208.91.197.27, default worldnic nameservers, Web Forwarding lives at Domain Details -> Advanced Tools -> Add Web Forwarding." },
+              { text: "4B1 now_redirect rebuilt as #next #decide with two doors: door_you (#do, exact click path: Back to Domain Details -> Advanced Tools -> Add Web Forwarding -> copied url, 301, masking OFF) and door_claude (copy prompt forward_setup -> I drive Chrome via Claude in Chrome, stop on any purchase)." },
+              { text: "fallback node: if forwarding demands a purchase, skip to later_full; 2a sharpened to the real UI (Advanced DNS Records -> Manage -> @ row edit + Add Record x3, www A -> CNAME)." },
+              { text: "b10; stamp 2:04p; steer stays 4B (re-fires once on the new build)." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "forward_decide, door_you, door_claude, forward_setup, fallback" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "77 vampsf_confirm",
+        expanded: false,
         nodes: [
           { text: "77 vampsf_confirm", children: [
             { text: "prompt_restate", children: [

@@ -385,14 +385,28 @@ function json(obj, status, cors) {
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">change the &#8220;vamp jam&#8221; wordmark text to &#8220;vamp SF&#8221; on every page (Sacramento font stays)</span></div></li>
 </ul></li>
 <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">domain_vsf &#8212; <code>vampsf.com</code> is yours at Network Solutions (currently parked)</span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">now_redirect <span class="nextm">#next</span> &#8212; shortcut first: vampsf.com forwards to the app <button class="rowcopy">copy forward url</button></span></div><ul>
-<li class="n sc" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">forward url</span></div><div class="codewrap"><pre>https://mpulsemedia.github.io/vampjam/</pre></div></li>
-<li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span><span class="txt">on the <a href="https://www.networksolutions.com/my-account/domain-center/domain-details?domain=vampsf.com" target="_blank">vampsf.com domain page</a>, find <b>Domain Forwarding</b> (under Manage / Details) &#8594; forward to the copied url</span></div></li>
-<li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span><span class="txt">pick plain 301 forwarding, NOT &#8220;masked&#8221;/frame forwarding (masking breaks the player + share links); include www if offered</span></div></li>
-<li class="n" data-l="d"><div class="row"><span class="tri">▶</span><span class="lbl">d</span><span class="txt">expect: within ~15 min&#8211;1 h, typing <code>vampsf.com</code> opens the app; share links still show the long github.io url for now</span></div></li>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">now_redirect <span class="nextm">#next</span> <span class="decidem">#decide</span> &#8212; two doors, pick one</span></div><ul>
+<li class="n" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">door_you <span class="dom">#do</span> &#8212; click it yourself <button class="rowcopy">copy forward url</button></span></div><ul>
+<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">forward url</span></div><div class="codewrap"><pre>https://mpulsemedia.github.io/vampjam/</pre></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">from your DNS page, click <b>Back to Domain Details</b> (top left)</span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">scroll to <b>Advanced Tools</b> &#8594; far right, <b>Web Forwarding</b> &#8594; click <b>Add Web Forwarding</b></span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">destination = the copied url &#8226; permanent/301 if it asks &#8226; masking / &#8220;keep my domain in the address bar&#8221; OFF &#8226; include www if offered</span></div></li>
+<li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">expect: NetSol rewrites the parked @ / www records itself; <code>vampsf.com</code> opens the app in minutes&#8211;hours (their banner says up to 24&#8211;48 h)</span></div></li>
+</ul></li>
+<li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span><span class="txt">door_claude &#8212; I drive your Chrome while you watch <button class="rowcopy">copy prompt forward_setup</button></span></div><ul>
+<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">prompt</span></div><div class="codewrap"><pre>forward_setup &#8212; drive my Chrome (Claude in Chrome) on the open
+Network Solutions tab. Domain Details for vampsf.com &#8594; Advanced
+Tools &#8594; Web Forwarding &#8594; Add Web Forwarding. Forward vampsf.com
+(and www if offered) to https://mpulsemedia.github.io/vampjam/
+&#8212; permanent 301, masking OFF. Save, screenshot the result, and
+report. If it demands a purchase or errors, STOP and tell me.
+-- paste this into vampjam_4 thread</pre></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">needs the Claude-in-Chrome extension on; I&#8217;ll pause before anything that spends money</span></div></li>
+</ul></li>
+<li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span><span class="txt">fallback &#8212; if Add Web Forwarding wants a purchase or errors, say so and we skip straight to later_full (real DNS, below)</span></div></li>
 </ul></li>
 <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">later_full &#8212; vampsf.com becomes the real url (session + timestamp share links ride along natively)</span></div><ul>
-<li class="n" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">at NetSol, turn forwarding OFF and set DNS instead: 4 apex A records + CNAME <code>www</code> &#8594; <code>mpulsemedia.github.io</code> <span class="dom">#do</span> <button class="rowcopy">copy A records</button></span></div><ul>
+<li class="n" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">at NetSol (forwarding OFF first): <b>Advanced DNS Records</b> &#8594; Manage &#8594; on the <code>@</code> row &#8942; Edit &#8594; first A record, then <b>Add Record</b> for the other three; delete the <code>www</code> A row and Add Record: CNAME <code>www</code> &#8594; <code>mpulsemedia.github.io</code> <span class="dom">#do</span> <button class="rowcopy">copy A records</button></span></div><ul>
 <li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">apex A records</span></div><div class="codewrap"><pre>185.199.108.153
 185.199.109.153
 185.199.110.153
@@ -424,7 +438,7 @@ function json(obj, status, cors) {
 </ul>
 </main>
 <script>
-  const BUILD='b9';
+  const BUILD='b10';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -879,7 +893,7 @@ function json(obj, status, cors) {
   const chip = document.getElementById('subchip');
   chip.title = 'click to reload now';
   chip.style.cursor = 'pointer';
-  chip.textContent = 'as of 8/14 1:57:00p';
+  chip.textContent = 'as of 8/14 2:04:30p';
   chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
   const h1 = document.querySelector('header h1');
   h1.style.cursor = 'pointer';
