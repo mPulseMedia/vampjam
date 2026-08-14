@@ -9,8 +9,44 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "62 current_row_line_shadow",
+        id: "63 record_upload",
         expanded: true,
+        nodes: [
+          { text: "63 record_upload", children: [
+            { text: "prompt_restate", children: [
+              { text: "Session rows: title like the h1 ('Name — Date', editable text) on the left; duration (h:m:s) on the right; maybe a highlight count." },
+              { text: "Index page: drop the odd grid; index should load the remembered or most-recent session." },
+              { text: "A row to create a new recording." },
+              { text: "Build the record mechanism: record and send to Cloudflare (R2) — chosen: auto-upload." }
+            ]},
+            { text: "decisions", children: [
+              { text: "Recording = record in browser then auto-upload to R2 (needs a Worker + your Cloudflare deploy)." },
+              { text: "Durations = compute now from each audio AND capture going forward." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "the session titles should appear just the way they do underneath vamp Jam ... Sound Union – 2026 07 24 ... all txt because it's all editable ... on the right side ... the duration hours minutes seconds ... maybe the number of highlights ... right now there's an index page which just looks weird ... the index may just point to whatever the most recent recording is ... a row that lets me create a new recording ... concentrate on building out the mechanism to record and have that recording ... sent to Cloudflare ... maybe just somehow directly records and then uploads try to do that" }
+            ]},
+            { text: "result_build_recorder", children: [
+              { text: "New Worker cloudflare/r2_upload_worker.js: POST audio -> puts into vampjam-audio R2, returns the public URL; CORS + optional shared secret; setup steps in the file header." },
+              { text: "admin.html gets a 'Record a jam' card: MediaRecorder (audio/mp4 on iOS, webm on Chrome), timer, live preview, filename, and an Upload-to-R2 button that POSTs to the Worker and shows the resulting URL." },
+              { text: "Config placeholders WORKER_UPLOAD_URL + UPLOAD_SECRET for you to fill after deploying; a setup note is on the page. Recording+preview work now; upload waits on the Worker." }
+            ]},
+            { text: "pending_next", children: [
+              { text: "Session-row reformat (Name — Date left, duration + count right)." },
+              { text: "Seed durations via the browser (sandbox can't reach the audio hosts to ffprobe)." },
+              { text: "Capture-going-forward: session page saves its duration on load." },
+              { text: "Index -> remembered/most-recent session; a 'new recording' row in the drawer." },
+              { text: "Optional: auto-create the session page after an upload." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "record_upload, r2_upload_worker, MediaRecorder, WORKER_UPLOAD_URL" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "62 current_row_line_shadow",
+        expanded: false,
         nodes: [
           { text: "62 current_row_line_shadow", children: [
             { text: "prompt_restate", children: [
