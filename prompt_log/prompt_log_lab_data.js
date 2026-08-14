@@ -9,8 +9,34 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "41 drive_audio_verify",
+        id: "42 drive_audio_complete",
         expanded: true,
+        nodes: [
+          { text: "42 drive_audio_complete", children: [
+            { text: "prompt_restate", children: [
+              { text: "Got the July 31 file in." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "got it" }
+            ]},
+            { text: "result_verified", children: [
+              { text: "All 6 audio files now in the vamp jam folder, names + sizes correct." },
+              { text: "07-31 present at 252,133,080 bytes (~240 MB)." }
+            ]},
+            { text: "result_doc_delete_blocked", children: [
+              { text: "Drive connector has no delete/trash tool (read/create/copy only)." },
+              { text: "Cannot delete the sources doc via connector." },
+              { text: "Handed off: right-click doc -> Remove, or offered browser deletion." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "drive_audio_complete, no_delete_tool, sources_doc" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "41 drive_audio_verify",
+        expanded: false,
         nodes: [
           { text: "41 drive_audio_verify", children: [
             { text: "prompt_restate", children: [
