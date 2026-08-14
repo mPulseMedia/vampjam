@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "80 org_v4_pass",
+        id: "81 cloudflare_link",
         expanded: true,
+        nodes: [
+          { text: "81 cloudflare_link", children: [
+            { text: "prompt_restate", children: [
+              { text: "1B should link the Cloudflare page — find the right url; the page never even said the workers live on Cloudflare. Same clarity + links for 2A." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "your instruction for 1b should have links to teh cloudflare page -- find out what the url shyould be. you didnt even tell me that thet's where the workers page is. is it cloudflare? needding the clarity and helpful links applies to 1B and 2A" }
+            ]},
+            { text: "result_build", children: [
+              { text: "Fair miss — 1B buried the link in a child row and never named Cloudflare. Verified in your Chrome: you're logged into the Cloudflare dashboard and vampjam-sync is there; exact worker url is dash.cloudflare.com/4b9c.../workers/services/view/vampjam-sync/production." },
+              { text: "1B rewritten: parent row says Cloudflare; step 1 = the deep link + Edit code top right; step 2 = select all, paste, Deploy; code + fallback door + expect follow." },
+              { text: "2A rewritten the same way (Create application link, named Cloudflare, click path before the code)." },
+              { text: "Bonus check: vampsf.com at 3:09p still shows the NetSol parking page — DNS propagating (TTL 2 h); noted on 1D." },
+              { text: "b13, stamp 3:09p." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "cloudflare_link, sync_cors, deploy_worker, verify" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "80 org_v4_pass",
+        expanded: false,
         nodes: [
           { text: "80 org_v4_pass", children: [
             { text: "prompt_restate", children: [

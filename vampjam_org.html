@@ -257,8 +257,10 @@ if(n)document.documentElement.classList.add('night');})();
 
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">domain_vsf &#8212; <code>vampsf.com</code> cutover</span></div><ul>
 <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">status <span class="donem">#done</span> &#8212; DNS &#8594; GitHub Pages + repo CNAME live, $0 spent (detail in the spec)</span></div></li>
-<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">sync_cors <span class="nextm">#next</span> <span class="dom">#do</span> &#8212; until deployed, highlight saves from vampsf.com fail <button class="rowcopy">copy text sync_cors</button></span></div><ul>
-<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">worker code &#8212; paste into the vampjam-sync editor</span></div><div class="codewrap"><pre>// vampjam_worker.js — Cloudflare Worker that proxies tag/audio writes from the
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">sync_cors <span class="nextm">#next</span> <span class="dom">#do</span> &#8212; a 2-minute paste in your <b>Cloudflare</b> dashboard; until it deploys, highlight saves from vampsf.com fail <button class="rowcopy">copy text sync_cors</button></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">open the <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers/services/view/vampjam-sync/production" target="_blank">vampjam-sync worker on Cloudflare</a> (I checked &#8212; you&#8217;re logged in and it&#8217;s there) &#8594; click <b>Edit code</b>, top right</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">in the editor: click the code &#8594; select all (&#8984;A) &#8594; paste the copied code &#8594; <b>Deploy</b>, top right</span></div></li>
+<li class="n sc" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">the code the button copies &#8212; paste into that editor</span></div><div class="codewrap"><pre>// vampjam_worker.js — Cloudflare Worker that proxies tag/audio writes from the
 // page back to the github repo, so devices never need a PAT.
 //
 // SETUP (one-time, in the Cloudflare dashboard):
@@ -375,17 +377,18 @@ export default {
   },
 };
 </pre></div></li>
-<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt"><a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers-and-pages" target="_blank">open Workers &amp; Pages</a> &#8594; <b>vampjam-sync</b> &#8594; Edit code &#8594; select all, paste &#8594; Deploy</span></div></li>
-<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">or say &#8220;deploy sync_cors in Chrome&#8221; &#8212; I drive it like the DNS</span></div></li>
-<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">expect: Deploy succeeds; later a test highlight made on vampsf.com survives a reload</span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">or say &#8220;deploy sync_cors in Chrome&#8221; &#8212; I drive it like the DNS</span></div></li>
+<li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">expect: &#8220;Deployed&#8221; banner; later a test highlight made on vampsf.com survives a reload</span></div></li>
 </ul></li>
 <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">https_check <span class="dom">#do</span> &#8212; <a href="https://github.com/mPulseMedia/vampjam/settings/pages" target="_blank">repo Settings &#8594; Pages</a>: Custom domain reads <code>vampsf.com</code>; tick <b>Enforce HTTPS</b> when the cert appears</span></div></li>
-<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify <span class="dom">#do</span> &#8212; open <a href="https://vampsf.com" target="_blank">vampsf.com</a>: a session loads and plays</span></div></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify <span class="dom">#do</span> &#8212; open <a href="http://vampsf.com" target="_blank">vampsf.com</a>: a session loads and plays (checked 3:09p &#8212; still the parking page; DNS is propagating, try again within ~2 h)</span></div></li>
 </ul></li>
 
 <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">record_live</span></div><ul>
-<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">deploy_worker <span class="nextm">#next</span> <span class="dom">#do</span> &#8212; create the upload worker <button class="rowcopy">copy text worker_upload</button></span></div><ul>
-<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">worker code &#8212; paste into the new worker&#8217;s editor</span></div><div class="codewrap"><pre>// vampjam — R2 upload Worker
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">deploy_worker <span class="nextm">#next</span> <span class="dom">#do</span> &#8212; create the upload worker, also in <b>Cloudflare</b> (same dashboard as 1B) <button class="rowcopy">copy text worker_upload</button></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">open <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers-and-pages/create" target="_blank">Create application on Cloudflare</a> &#8594; <b>Start with Hello World</b> (NOT &#8220;Import a repository&#8221;) &#8594; name it <code>vampjam-upload</code> &#8594; Deploy the starter</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">click <b>Edit code</b>, top right &#8594; select all (&#8984;A) &#8594; paste the copied code &#8594; <b>Deploy</b></span></div></li>
+<li class="n sc" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">the code the button copies &#8212; paste into that editor</span></div><div class="codewrap"><pre>// vampjam — R2 upload Worker
 // Accepts a POST with a recorded audio body and stores it in the vampjam-audio
 // R2 bucket, returning the public URL so a session can point at it.
 //
@@ -440,9 +443,7 @@ function json(obj, status, cors) {
     headers: { ...cors, 'Content-Type': 'application/json' },
   });
 }</pre></div></li>
-<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt"><a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers-and-pages/create" target="_blank">open Create</a> &#8594; <b>Start with Hello World</b> (NOT &#8220;Import a repository&#8221;) &#8594; name it <code>vampjam-upload</code> &#8594; Deploy the starter</span></div></li>
-<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">Edit code &#8594; select all, paste &#8594; Deploy</span></div></li>
-<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">Settings &#8594; Bindings: <code>BUCKET</code> &#8594; <code>vampjam-audio</code> &#183; Variables: <code>PUBLIC_BASE</code> = <code>https://pub-33cfd8558d314eb58642c8550608850b.r2.dev</code>, <code>UPLOAD_SECRET</code> = a random string you make up</span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">back on the worker: Settings &#8594; Bindings: <code>BUCKET</code> &#8594; <code>vampjam-audio</code> &#183; Variables: <code>PUBLIC_BASE</code> = <code>https://pub-33cfd8558d314eb58642c8550608850b.r2.dev</code>, <code>UPLOAD_SECRET</code> = a random string you make up</span></div></li>
 <li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">expect: the worker url (&#8230;workers.dev) &#8212; paste it in this chat</span></div></li>
 </ul></li>
 <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">wire_admin <span class="readym">#ready</span> &#8212; the moment I have your worker url I set it in admin.html</span></div></li>
@@ -481,7 +482,7 @@ function json(obj, status, cors) {
 </ul>
 </main>
 <script>
-  const BUILD='b12';
+  const BUILD='b13';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -936,7 +937,7 @@ function json(obj, status, cors) {
   const chip = document.getElementById('subchip');
   chip.title = 'click to reload now';
   chip.style.cursor = 'pointer';
-  chip.textContent = 'as of 8/14 2:32:40p';
+  chip.textContent = 'as of 8/14 3:09:45p';
   chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
   const h1 = document.querySelector('header h1');
   h1.style.cursor = 'pointer';

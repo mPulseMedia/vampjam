@@ -72,7 +72,12 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   cutover first), done work + reference notes moved to this spec (page_notes below), interface
   section retired (all shipped), stale push row cut (robot pushes), copy buttons renamed by
   kind (copy text / copy prompt) with destinations as plain row text (.tag stays hidden here).
-- NEXT → add entry 81 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 81 cloudflare_link · b13 — his feedback: 1B/2A never said WHERE (Cloudflare) and lacked
+  direct links. Verified in his Chrome: logged in, worker view url is .../workers/services/
+  view/vampjam-sync/production. Rewrote 1B + 2A: Cloudflare named on the parent row, exact
+  deep link first, click path (Edit code top right → ⌘A → paste → Deploy); vampsf.com
+  checked (3:09p): still parked = propagating.
+- NEXT → add entry 82 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
