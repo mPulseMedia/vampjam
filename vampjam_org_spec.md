@@ -88,7 +88,12 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   records in his Chrome FIRST (parking 208.91.197.27 → 4 GitHub A + www CNAME, DNS-only),
   opened the NetSol nameserver modal; classifier blocks typing there → handed him the two
   values in chat + on page 1B (copy buttons). Section 1 dones folded into status.
-- NEXT → add entry 85 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 85 bullet_link_fix · b17 — called out: 1A status crammed items into one bullet (rule
+  violation) → split into discrete children, node closes itself (CLOSE_ON_BUILD); his 1B
+  question showed the renumber churn + unlabeled links confuse — 2A now says in plain words
+  which Cloudflare page is which (Create = new upload worker; vampjam-sync = finished);
+  tripwire folded into the Create step.
+- NEXT → add entry 86 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

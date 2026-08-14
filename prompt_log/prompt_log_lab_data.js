@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "84 ns_cloudflare",
+        id: "85 bullet_link_fix",
         expanded: true,
+        nodes: [
+          { text: "85 bullet_link_fix", children: [
+            { text: "prompt_restate", children: [
+              { text: "Called out for cramming several short items into one status bullet — against the rules." },
+              { text: "Which page does 1B mean: the workers-and-pages/create url or the vampjam-sync view url? Don't assume familiarity with these tech sites." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "how dare you violate the rules that says not to put a buncj of short items all in one bullet like you did here \"status #done — NetSol DNS → GitHub Pages · repo CNAME in · sync worker deployed + verified · $0 total (detail in the spec)\" with 1b, are you referring to this page ...workers-and-pages/create or this page ...workers/services/view/vampjam-sync/production -- don;t assume I have familiarity with these tech sites" }
+            ]},
+            { text: "result_answer", children: [
+              { text: "Guilty on the bullet — split into four discrete children under a status parent that closes itself." },
+              { text: "The link question: the CREATE page (workers-and-pages/create) is for 2A — it makes the brand-new upload worker. The vampjam-sync page is the worker you already finished in old-1B sync_cors — nothing left there. And current 1B (after the b16 reload) is the Network Solutions nameserver modal, not Cloudflare at all — my renumbering caused that ambiguity." }
+            ]},
+            { text: "result_build", children: [
+              { text: "2A rewritten in plain words: parent says brand-NEW worker, unrelated to vampjam-sync; which_page child names both pages; tripwire folded into the Create step. b17, stamp 3:36p." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "bullet_link_fix, which_page, status split, CLOSE_ON_BUILD 1A" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "84 ns_cloudflare",
+        expanded: false,
         nodes: [
           { text: "84 ns_cloudflare", children: [
             { text: "prompt_restate", children: [

@@ -256,7 +256,12 @@ if(n)document.documentElement.classList.add('night');})();
 <ul class="ol" id="root">
 
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">domain_vsf &#8212; <code>vampsf.com</code> cutover</span></div><ul>
-<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">status <span class="donem">#done</span> &#8212; NetSol DNS &#8594; GitHub Pages &#183; repo CNAME in &#183; sync worker deployed + verified &#183; $0 total (detail in the spec)</span></div></li>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">status <span class="donem">#done</span> &#8212; detail in the spec</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">NetSol DNS points at GitHub Pages</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">repo CNAME file added (vampsf.com)</span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">sync worker deployed and verified</span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">$0 spent so far</span></div></li>
+</ul></li>
 <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">ns_cloudflare <span class="nextm">#next</span> <span class="dom">#do</span> &#8212; the modal on your screen: 2 fields, then Save (free; moves DNS hosting to Cloudflare)</span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">Nameserver 1 &#8212; paste into the first field <button class="rowcopy">copy text ns_1</button></span></div><ul>
 <li class="n sc" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">value</span></div><div class="codewrap"><pre>drake.ns.cloudflare.com</pre></div></li>
@@ -272,9 +277,9 @@ if(n)document.documentElement.classList.add('night');})();
 </ul></li>
 
 <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">record_live</span></div><ul>
-<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">deploy_worker <span class="nextm">#next</span> <span class="dom">#do</span> &#8212; create the upload worker, also in <b>Cloudflare</b> (same dashboard as 1B) <button class="rowcopy">copy text worker_upload</button></span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">wrong_flow tripwire: if the screen says <b>Set up your application</b> with <code>mPulseMedia/vampjam</code> and &#8220;npx wrangler deploy&#8221; &#8212; that&#8217;s the repo-import flow and it FAILS. Click <b>Back</b> to <b>Select a method</b>, then <b>Start with Hello World</b></span></div></li>
-<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">open <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers-and-pages/create" target="_blank">Create application on Cloudflare</a> &#8594; <b>Start with Hello World</b> (NOT &#8220;Import a repository&#8221;) &#8594; name it <code>vampjam-upload</code> &#8594; Deploy the starter</span></div></li>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">deploy_worker <span class="nextm">#next</span> <span class="dom">#do</span> &#8212; make a brand-NEW Cloudflare worker for uploads (nothing to do with vampjam-sync &#8212; that one is finished) <button class="rowcopy">copy text worker_upload</button></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">which_page: use the <b>Create application</b> link below (it makes a NEW worker). The other Cloudflare page you have open &#8212; vampjam-sync &#8212; is the finished sync worker; nothing left to do there</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">open <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers-and-pages/create" target="_blank">Create application on Cloudflare</a> &#8594; choose <b>Start with Hello World</b>. Tripwire: a screen saying <b>Set up your application</b> / <code>mPulseMedia/vampjam</code> / &#8220;npx wrangler deploy&#8221; is the WRONG flow (repo-import, it fails) &#8212; click Back and pick Hello World. Name it <code>vampjam-upload</code> &#8594; Deploy the starter</span></div></li>
 <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">click <b>Edit code</b>, top right &#8594; select all (&#8984;A) &#8594; paste the copied code &#8594; <b>Deploy</b></span></div></li>
 <li class="n sc" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">the code the button copies &#8212; paste into that editor</span></div><div class="codewrap"><pre>// vampjam — R2 upload Worker
 // Accepts a POST with a recorded audio body and stores it in the vampjam-audio
@@ -370,7 +375,7 @@ function json(obj, status, cors) {
 </ul>
 </main>
 <script>
-  const BUILD='b16';
+  const BUILD='b17';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -419,7 +424,7 @@ function json(obj, status, cors) {
     }
     // per-build tidying: nodes finished in this build close themselves
     // (once — after that your own toggles win)
-    const CLOSE_ON_BUILD = [];
+    const CLOSE_ON_BUILD = ['1A'];
     const OPEN_ON_BUILD = [];
     if (!st || st.b !== BUILD) {
       items.forEach(li => {
@@ -825,7 +830,7 @@ function json(obj, status, cors) {
   const chip = document.getElementById('subchip');
   chip.title = 'click to reload now';
   chip.style.cursor = 'pointer';
-  chip.textContent = 'as of 8/14 3:27:15p';
+  chip.textContent = 'as of 8/14 3:36:50p';
   chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
   const h1 = document.querySelector('header h1');
   h1.style.cursor = 'pointer';
