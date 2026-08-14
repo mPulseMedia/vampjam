@@ -331,14 +331,10 @@
     max-height: 0; overflow-y: auto; background: var(--panel);
     transition: max-height 0.18s ease; position: relative; z-index: 90;
   }
-  .session_drawer.open { max-height: 72vh; }
-  .session_drawer.dragging { transition: none; }
-  /* the vamp jam page layer casts the shadow onto the session list above it */
-  #session_drawer.open ~ header.brand,
-  #session_drawer.dragging ~ header.brand {
-    position: relative; z-index: 95;
-    box-shadow: 0 -7px 15px rgba(0,0,0,0.20);
-  }
+  /* the vamp jam bar casts a shadow up into the bottom of the session list only:
+     inset keeps it inside the list box (no bleed below the bar, none in side margins) */
+  .session_drawer.open { max-height: 72vh; box-shadow: inset 0 -11px 10px -7px rgba(0,0,0,0.22); }
+  .session_drawer.dragging { transition: none; box-shadow: inset 0 -11px 10px -7px rgba(0,0,0,0.22); }
   .session_drawer .jam_menu {
     position: static; top: auto; left: auto; background: transparent;
     border: none; box-shadow: none; min-width: 0; border-radius: 0;
