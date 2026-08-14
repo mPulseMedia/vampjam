@@ -184,7 +184,7 @@
   .tag_list { background: transparent; padding: 0 0 28px; touch-action: pan-y; font-size: 17px; }
   .tag_row {
     display: flex; align-items: center; gap: 5px;
-    padding: 5px 5px; border-radius: 9px; background: transparent;
+    padding: 6px 5px; border-radius: 9px; background: transparent;
     flex-wrap: nowrap;
   }
   .tag_row .tag_label {
@@ -199,7 +199,7 @@
   .tag_row .tag_end:hover { background: rgba(232,199,148,0.15); }
   .tag_row button.play_tag {
     background: var(--panel_3); color: var(--accent);
-    padding: 5px 10px; min-height: 35px; font-size: 17px;
+    padding: 6px 12px; min-height: 40px; font-size: 20px;
     border-radius: 7px; flex: 0 0 auto;
   }
   .tag_row button.play_tag:hover { background: var(--accent); color: var(--on_accent, #0b0d0f); }
@@ -219,8 +219,10 @@
   }
   .tag_row:hover { background: var(--panel_2); }
   .tag_row.active { background: var(--panel_2); }
-  .tag_row.active button.ghost { background: var(--panel_3); }
-  .tag_row button.ghost { padding: 5px 7px; min-height: 32px; font-size: 17px; border-radius: 7px; }
+  .tag_row.active button.ghost { background: transparent; }
+  .tag_row button.ghost { padding: 5px 7px; min-height: 32px; font-size: 18px; border-radius: 7px; background: transparent; color: var(--muted); }
+  .tag_row button.ghost:hover { background: transparent; color: var(--fg); }
+  .tag_row button.ghost:active { background: transparent; }
   .tag_row.dragging { opacity: 0.4; }
   .drag_handle {
     cursor: grab; color: var(--accent); padding: 5px 7px; user-select: none;
@@ -436,7 +438,8 @@
   var ICON_PLAY  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
   var ICON_PAUSE = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4.2" height="16" rx="1"/><rect x="13.8" y="4" width="4.2" height="16" rx="1"/></svg>';
   var ICON_LINK  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>';
-  var ICON_X     = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M18.3 5.71L12 12l6.3 6.29-1.42 1.42L10.59 13.4 4.3 19.71 2.88 18.29 9.17 12 2.88 5.71 4.3 4.29l6.29 6.3 6.29-6.3z"/></svg>';
+  var ICON_X     = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  var ICON_SHARE = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
   var ICON_CHEV_L = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>';
   var ICON_CHEV_R = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>';
 
@@ -1464,7 +1467,7 @@
       var linkBtn = document.createElement('button');
       linkBtn.className = 'ghost';
       linkBtn.title = 'Copy direct link';
-      linkBtn.innerHTML = ICON_LINK;
+      linkBtn.innerHTML = ICON_SHARE;
       linkBtn.addEventListener('click', function () {
         var url = build_share_url(tag.t);
         copy_to_clipboard(url);
