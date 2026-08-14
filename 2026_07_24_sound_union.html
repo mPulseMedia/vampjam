@@ -35,6 +35,10 @@
     font-size: 68px; line-height: 1; color: var(--fg);
     display: inline-block; margin: 0;
   }
+  .wordmark_sf {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 34px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
+  }
   .brand .tagline {
     color: var(--fg); opacity: 0.85; font-size: 13px;
     letter-spacing: 0.04em; margin-top: -2px;
@@ -385,7 +389,7 @@
 
 <header class="brand" style="position:relative;">
   <button id="drawer_toggle" onclick="vampjamDrawer.toggle()" aria-label="Sessions" style="position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--muted);background:none;border:none;padding:8px 12px 8px 0;margin-left:-4px;cursor:pointer;line-height:0;"><svg class="drawer_caret" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-  <div class="wordmark">vampsf</div>
+  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
 </header>
 
 

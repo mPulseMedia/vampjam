@@ -9,8 +9,28 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "92 cutover_live",
+        id: "93 wordmark_sf",
         expanded: true,
+        nodes: [
+          { text: "93 wordmark_sf", children: [
+            { text: "prompt_restate", children: [
+              { text: "Wordmark: SF capital, in the same font as the rest of the page but larger; vamp keeps its current script font." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make sf be capital but in the same font as the rest of the page, but larger. and keep vamp in it's current font." }
+            ]},
+            { text: "result_build", children: [
+              { text: "Wordmark is now vamp (Sacramento, unchanged) + SF (system page font, capital, 34px weight 650 — about double the body text; 30px on the smaller r2_setup header). Applied to the 9 wordmark pages; browser titles stay lowercase vampsf. b24, stamp 4:28p." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "wordmark_sf, .wordmark_sf css" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "92 cutover_live",
+        expanded: false,
         nodes: [
           { text: "92 cutover_live", children: [
             { text: "prompt_restate", children: [

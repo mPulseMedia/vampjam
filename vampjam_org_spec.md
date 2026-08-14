@@ -116,7 +116,9 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   httpS already (cert live), wordmark vampsf. 1D #done; 1C reduced to the Enforce-HTTPS
   tick. Remaining #next: test_record (2C); #do: https_check tick, move_to_r2, other_place,
   verify_ios; #decide: dups.
-- NEXT → add entry 93 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 93 wordmark_sf · b24 — wordmark split: vamp (Sacramento) + SF capital in the page's system
+  font at 34px/650 (30px on r2_setup); 9 files; titles stay lowercase vampsf.
+- NEXT → add entry 94 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
