@@ -1003,7 +1003,7 @@
       if (arr && !local_edits_in_progress()) {
         // REPLACE local tags with repo — repo is the single source of truth.
         // No tombstone filtering: if it's in the repo, show it.
-        tags = arr
+        var mapped = arr
           .filter(function (t) { return t && t.id && typeof t.t === 'number'; })
           .map(function (t, i) {
             var cp = { id: t.id, t: t.t, label: t.label || '', order: i * 10 };
@@ -1011,6 +1011,14 @@
             if (t.owner)   cp.owner = t.owner;
             return cp;
           });
+        // KEEP locally-added tags not yet in the repo, so a reload never drops
+        // a highlight you just made (localStorage is the safety net).
+        var _rid = {}; mapped.forEach(function (t) { _rid[t.id] = true; });
+        var _mo = mapped.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
+        (tags || []).forEach(function (loc) {
+          if (loc && loc.id && !_rid[loc.id]) { _mo += 10; loc.order = _mo; mapped.push(loc); }
+        });
+        tags = mapped;
         // Clear stale tombstones since repo is authoritative
         try { localStorage.removeItem(STORAGE_TOMBS); } catch (e) {}
         save_tags();
