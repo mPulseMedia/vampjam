@@ -1,1 +1,1 @@
-wordmark_scope
+auto_commit
