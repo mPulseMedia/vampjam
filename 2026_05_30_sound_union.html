@@ -115,9 +115,11 @@
     background: var(--panel_2); color: var(--accent); font: inherit; font-weight: 600;
     border-radius: 50%; width: 52px; height: 52px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; line-height: 1; padding: 0;
+    font-size: 12px; line-height: 1; padding: 0; white-space: nowrap;
     transition: background-color 0.12s, transform 0.06s;
   }
+  .ctrl_btn .cn { font-size: 17px; font-weight: 600; }
+  .ctrl_btn .cu { font-size: 11px; font-weight: 600; }
   .ctrl_btn:hover  { background: var(--panel_3); }
   .ctrl_btn:active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); transform: scale(0.95); }
   .ctrl_btn.play_btn {
@@ -285,10 +287,15 @@
   .jam_item { display: flex; align-items: center; min-height: 54px; box-sizing: border-box; padding: 0 12px; }
   .jam_item:hover { background: var(--row_active); }
   .jam_item.jam_admin { border-top: 1px solid var(--panel_3); }
-  .jam_link { flex: 1 1 auto; min-width: 0; display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  .jam_link { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px;
               color: var(--fg); text-decoration: none; font-size: 17px; font-weight: 400; padding: 6px 0; }
   .jam_link.current { color: var(--accent); font-weight: 600; }
   .jam_link .menu_sub { display: inline; font-size: 17px; color: var(--muted); font-weight: 400; margin: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .jam_left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .jam_name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .jam_ico { flex: 0 0 auto; display: inline-flex; color: var(--accent); }
+  .jam_item.jam_admin .jam_ico { color: var(--muted); }
+  .jam_ico svg { display: block; }
   .jam_share { flex: 0 0 auto; background: transparent; color: var(--muted); border: none; border-radius: 7px;
                padding: 6px 6px; margin-left: 6px; min-height: 32px; cursor: pointer; line-height: 0; }
   .jam_share:hover { background: transparent; color: var(--fg); }
@@ -361,13 +368,13 @@
 <body>
 <div class="session_drawer" id="session_drawer">
   <div class="jam_menu">
-    <div class="jam_item"><a class="jam_link" href="2026_08_07_sound_union.html">Sound Union<span class="menu_sub">Aug 7, 2026</span></a><button class="jam_share" data-href="2026_08_07_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
-    <div class="jam_item"><a class="jam_link" href="2026_07_31_sound_union.html">Sound Union<span class="menu_sub">Jul 31, 2026</span></a><button class="jam_share" data-href="2026_07_31_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
-    <div class="jam_item"><a class="jam_link" href="2026_07_24_sound_union.html">Sound Union<span class="menu_sub">Jul 24, 2026</span></a><button class="jam_share" data-href="2026_07_24_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
-    <div class="jam_item"><a class="jam_link" href="2026_07_17_sound_union.html">Sound Union<span class="menu_sub">Jul 17, 2026</span></a><button class="jam_share" data-href="2026_07_17_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
-    <div class="jam_item"><a class="jam_link current" href="2026_05_30_sound_union.html">Sound Union<span class="menu_sub">May 30, 2026</span></a><button class="jam_share" data-href="2026_05_30_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
-    <div class="jam_item"><a class="jam_link" href="2026_05_23_bazaar_cafe.html">Bazaar Cafe<span class="menu_sub">May 23, 2026</span></a><button class="jam_share" data-href="2026_05_23_bazaar_cafe.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
-    <div class="jam_item jam_admin"><a class="jam_link" href="admin.html">Admin<span class="menu_sub">setup &amp; uploads</span></a></div>
+    <div class="jam_item"><a class="jam_link" href="2026_08_07_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Aug 7, 2026</span></a><button class="jam_share" data-href="2026_08_07_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link" href="2026_07_31_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Jul 31, 2026</span></a><button class="jam_share" data-href="2026_07_31_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link" href="2026_07_24_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Jul 24, 2026</span></a><button class="jam_share" data-href="2026_07_24_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link" href="2026_07_17_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Jul 17, 2026</span></a><button class="jam_share" data-href="2026_07_17_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link current" href="2026_05_30_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">May 30, 2026</span></a><button class="jam_share" data-href="2026_05_30_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link" href="2026_05_23_bazaar_cafe.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Bazaar Cafe</span></span><span class="menu_sub">May 23, 2026</span></a><button class="jam_share" data-href="2026_05_23_bazaar_cafe.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item jam_admin"><a class="jam_link" href="admin.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.6l1.7 2.2 2.7-.7.4 2.8 2.5 1.2-1 2.6 1 2.6-2.5 1.2-.4 2.8-2.7-.7L12 21.4l-1.7-2.2-2.7.7-.4-2.8-2.5-1.2 1-2.6-1-2.6 2.5-1.2.4-2.8 2.7.7z"/></svg></span><span class="jam_name">Admin</span></span><span class="menu_sub">setup &amp; uploads</span></a></div>
   </div>
 </div>
 
@@ -378,7 +385,7 @@
 
 
 
-<h1 style="display:flex;align-items:center;gap:6px;">Sound Union — 2026-05-30 <button class="ghost" id="audio_edit_btn" title="Change audio file" style="font-size:17px;padding:5px 7px;min-height:32px;">✎</button></h1>
+<h1 style="display:flex;align-items:center;justify-content:center;gap:6px;">Sound Union — 2026-05-30 <button class="ghost" id="audio_edit_btn" title="Change audio file" style="font-size:17px;padding:5px 7px;min-height:32px;">✎</button></h1>
 
 <!-- audio edit form (hidden, toggled by pencil) -->
 <div class="audio_card" id="audio_card" style="display:none;">
@@ -404,13 +411,13 @@
 <div class="player_card">
   <audio id="player" preload="metadata"></audio>
   <div class="ctrl_row">
-    <button class="ctrl_btn" id="back_120" title="Back 2 min">−2m</button>
-    <button class="ctrl_btn" id="back_15"  title="Back 15 sec">−15s</button>
-    <button class="ctrl_btn small" id="back_5" title="Back 5 sec">−5s</button>
+    <button class="ctrl_btn" id="back_120" title="Back 2 min"><span class="cu">−</span><span class="cn">2</span><span class="cu">m</span></button>
+    <button class="ctrl_btn" id="back_15"  title="Back 15 sec"><span class="cu">−</span><span class="cn">15</span><span class="cu">s</span></button>
+    <button class="ctrl_btn small" id="back_5" title="Back 5 sec"><span class="cu">−</span><span class="cn">5</span><span class="cu">s</span></button>
     <button class="ctrl_btn play_btn" id="play_btn" title="Play / Pause"></button>
-    <button class="ctrl_btn small" id="fwd_5"  title="Forward 5 sec">+5s</button>
-    <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec">+15s</button>
-    <button class="ctrl_btn" id="fwd_120" title="Forward 2 min">+2m</button>
+    <button class="ctrl_btn small" id="fwd_5"  title="Forward 5 sec"><span class="cu">+</span><span class="cn">5</span><span class="cu">s</span></button>
+    <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec"><span class="cu">+</span><span class="cn">15</span><span class="cu">s</span></button>
+    <button class="ctrl_btn" id="fwd_120" title="Forward 2 min"><span class="cu">+</span><span class="cn">2</span><span class="cu">m</span></button>
   </div>
   <button class="tag_btn_big" id="tag_btn">Tag the moment</button>
   <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div></div>
