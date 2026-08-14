@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "85 bullet_link_fix",
+        id: "86 ns_easy",
         expanded: true,
+        nodes: [
+          { text: "86 ns_easy", children: [
+            { text: "prompt_restate", children: [
+              { text: "Still doesn't understand 1B or which page to go to; wants a URL — possibly one of the two he posted — written so someone without technical knowledge or Cloudflare familiarity can do it. Make it easier." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I still don't understand one B and I don't know which page you are telling me to go to so I want you to give a URL. It can be one of the two URLs that I recently posted to you but make this so clear that someone who does not have technical knowledge nor familiarity with Cloudflare can do what you're asking me to do. You are not making this easy and I want you to make it easier?" }
+            ]},
+            { text: "result_answer", children: [
+              { text: "Key correction: 1B is NOT on Cloudflare at all — neither of his two urls. It happens at networksolutions.com (the site where he logged in this morning); gave that one url straight in chat." },
+              { text: "1B rebuilt as 8 numbered clicks: link -> last white card -> Manage next to Nameservers -> Continue -> paste value 1 (copy button) -> paste value 2 -> Save -> what success looks like; offer standing to drive his Chrome to step 5 so only the two pastes are his." }
+            ]},
+            { text: "result_build", children: [
+              { text: "b18, stamp 3:40p." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "ns_easy, ns_cloudflare, networksolutions url" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "85 bullet_link_fix",
+        expanded: false,
         nodes: [
           { text: "85 bullet_link_fix", children: [
             { text: "prompt_restate", children: [

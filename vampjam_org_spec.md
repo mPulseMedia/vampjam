@@ -93,7 +93,10 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   question showed the renumber churn + unlabeled links confuse — 2A now says in plain words
   which Cloudflare page is which (Create = new upload worker; vampjam-sync = finished);
   tripwire folded into the Create step.
-- NEXT → add entry 86 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 86 ns_easy · b18 — still lost on 1B: it's at Network Solutions, not either Cloudflare url.
+  1B rebuilt as 8 click-by-click steps for a non-technical reader, one link (NetSol domain
+  page), copy buttons beside the exact fields, offer to drive to step 5 on request.
+- NEXT → add entry 87 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
