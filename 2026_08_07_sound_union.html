@@ -317,17 +317,23 @@
   .sort_toggle:hover { opacity: 0.95; }
   .sort_toggle button.active { background: var(--panel_3); color: var(--muted); font-weight: 500; }
 
+
+  /* ---- session drawer: slides the page down from the top edge ---- */
+  .session_drawer {
+    max-height: 0; overflow-y: auto; background: var(--panel);
+    transition: max-height 0.3s ease; position: relative; z-index: 90;
+  }
+  .session_drawer.open { max-height: 72vh; box-shadow: 0 7px 16px rgba(0,0,0,0.18); }
+  .session_drawer .jam_menu {
+    position: static; top: auto; left: auto; background: transparent;
+    border: none; box-shadow: none; min-width: 0; border-radius: 0;
+    padding: 10px 12px 14px; max-width: 760px; margin: 0 auto;
+  }
 </style>
 </head>
 <body>
-
-<header class="brand" style="position:relative;">
-  <button onclick="document.getElementById('jamMenu').classList.add('open')" style="position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--muted);background:none;border:none;font-size:22px;padding:8px 12px;cursor:pointer;">&#9776;</button>
-  <div class="wordmark">vamp jam</div>
-</header>
-
-<div class="jam_menu_overlay" id="jamMenu" onclick="this.classList.remove('open')">
-  <div class="jam_menu" onclick="event.stopPropagation()">
+<div class="session_drawer" id="session_drawer">
+  <div class="jam_menu">
     <a href="2026_08_07_sound_union.html" class="current">Sound Union<span class="menu_sub">Aug 7, 2026</span></a>
     <a href="2026_07_31_sound_union.html">Sound Union<span class="menu_sub">Jul 31, 2026</span></a>
     <a href="2026_07_24_sound_union.html">Sound Union<span class="menu_sub">Jul 24, 2026</span></a>
@@ -337,6 +343,13 @@
     <a href="admin.html" style="border-top:1px solid var(--panel_3);margin-top:4px;padding-top:12px;">Admin<span class="menu_sub">setup &amp; uploads</span></a>
   </div>
 </div>
+
+<header class="brand" style="position:relative;">
+  <button onclick="document.getElementById('session_drawer').classList.toggle('open')" style="position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--muted);background:none;border:none;font-size:22px;padding:8px 12px;cursor:pointer;">&#9776;</button>
+  <div class="wordmark">vamp jam</div>
+</header>
+
+
 
 <h1 style="display:flex;align-items:center;gap:6px;">Sound Union — 2026-08-07 <button class="ghost" id="audio_edit_btn" title="Change audio file" style="font-size:17px;padding:5px 7px;min-height:32px;">✎</button></h1>
 
