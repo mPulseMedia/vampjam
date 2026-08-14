@@ -9,8 +9,44 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "58 list_cards",
+        id: "59 list_refine",
         expanded: true,
+        nodes: [
+          { text: "59 list_refine", children: [
+            { text: "prompt_restate", children: [
+              { text: "Playhead line: no glow, just a blue line, full width of the row." },
+              { text: "Row highlight: full width, opaque light blue in the Tag-the-moment/accent family (not gray)." },
+              { text: "Tag the moment: not grotesquely wide — comfortable around the words." },
+              { text: "Laptop: group the -2/-15/-5 and +5/+15/+2m circles near the center play button." },
+              { text: "Same row height for sessions and highlights." },
+              { text: "One font size everywhere (names, timestamps, session titles/dates, theme buttons) = the title-by-the-pencil / Tag-the-moment size." },
+              { text: "Share button to the right of each session date, linking to the session (no timestamp)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "In the list of highlights, there's that blue line don't give it a glow ... make it the full width of the row and make the row highlight be the full width of the row as well, and change it from the slightly darker gray to an opaque light blue in the same family as the tag the moment button ... make the tag the moment not so grotesquely wide ... on the laptop move the -2 -15 -5 circles closer to the center play/pause button and same with the positive three circles ... do the same row height for the sessions as the highlight ... just one font size across all ... make that the same as the session name next to the pencil and the same as tag the moment ... do a share button to the right of the session date and it'll just link to that session and not a particular timestamp." }
+            ]},
+            { text: "result_build", children: [
+              { text: "Playhead ::before glow (box-shadow) removed; the line spans the full card (cards now have 0 horizontal padding + overflow hidden)." },
+              { text: "New --row_active theme var (minimal #e3edfc light blue, yellow warm); tag_row + session row hover/active use it, full width." },
+              { text: "tag_btn_big is inline-block auto-width, centered, comfortable padding." },
+              { text: "ctrl_row centers/groups by default; mobile (<=480px) reverts to space-between so it still fills the narrow width." },
+              { text: "Both row types set to min-height 54 (border-box) for equal height." },
+              { text: "Unified 17px: session date 15->17, theme label/buttons 11/12->17, h1 18->17, tag button 16->17; titles/timestamps already 17." },
+              { text: "Session rows rebuilt as jam_item > jam_link(name+date) + jam_share button; share copies the session page URL (no timestamp) via drawer.js." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "drawer.js + theme.js + inline JS pass node --check; 6 session rows each got a share button, Admin none, current marked." },
+              { text: "Live injection preview: grouped controls, comfy tag button, full-width light-blue row highlight." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "list_refine, --row_active, jam_item, jam_share, ctrl group" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "58 list_cards",
+        expanded: false,
         nodes: [
           { text: "58 list_cards", children: [
             { text: "prompt_restate", children: [
