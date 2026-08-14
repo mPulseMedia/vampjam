@@ -9,8 +9,36 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "52 highlight_style",
+        id: "53 close_swipe_shadow",
         expanded: true,
+        nodes: [
+          { text: "53 close_swipe_shadow", children: [
+            { text: "prompt_restate", children: [
+              { text: "When the session list is open, a swipe up brings the vamp jam page back to the top and stops once its top edge hits the top of the screen." },
+              { text: "Then a swipe down can reveal again." },
+              { text: "Flip the shadow: the vamp jam layer casts a drop shadow onto the session list, not the list onto the page." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK and so if I'm scrolled such that I'm showing the session list then if I swipe down, sorry if I swipe up meaning to bring the vamp jam to the top of the page, then that scroll should immediately stop once the top of the vamp Jam page edge has has hit the top the phone, and then I may swipe down again but but I also want to have the drop shadow fall from the layer that contains the vamp Jam logo it should cast a shadow on to the session list not the other way around" }
+            ]},
+            { text: "result_build", children: [
+              { text: "drawer.js drag now has two modes: open (pull down at rest at top) and close (swipe up while open)." },
+              { text: "Close engages only once the list is at its own scroll top; it shrinks the drawer with the finger and snaps closed past ~30%, stopping at the page top." },
+              { text: "Shadow flipped: removed the drawer's downward box-shadow; header.brand (vamp jam layer) gets z-index 95 + an upward box-shadow (0 -7px 15px) while the drawer is open or dragging, so the page casts onto the list." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "drawer.js passes node --check; CSS swap applied on all 6 pages." },
+              { text: "Gesture + shadow pending device test after push." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "close_swipe_shadow, drag mode close, header shadow" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "52 highlight_style",
+        expanded: false,
         nodes: [
           { text: "52 highlight_style", children: [
             { text: "prompt_restate", children: [

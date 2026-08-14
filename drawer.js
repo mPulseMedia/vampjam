@@ -1,12 +1,13 @@
 // vampjam_drawer — the session surface that slides down from the top edge.
-// Open it two ways:
-//   1. tap the caret (top-left), or
-//   2. when the page is already scrolled to the very top, swipe DOWN to pull
-//      the surface into view (the page follows your finger, then snaps).
+// Open it three ways:
+//   1. tap the caret (top-left),
+//   2. when the page is at rest at the very top, swipe DOWN to pull the surface in,
+//   3. when the surface is open, swipe UP to push it back (page returns to the top).
 // If you are not at the top, a downward swipe is just a normal scroll.
 // Clicking a session collapses the drawer (page slides back up) before nav.
 (function () {
   var OPEN_FRACTION = 0.72;                 // matches .session_drawer.open max-height: 72vh
+  var SETTLE_MS = 350;                      // rest-at-top time required before a pull reveals
   function drawer() { return document.getElementById('session_drawer'); }
   function caret()  { return document.getElementById('drawer_toggle'); }
   function maxOpenPx() { return Math.round(window.innerHeight * OPEN_FRACTION); }
@@ -40,25 +41,27 @@
     });
   }
 
-  // ---- pull-to-reveal at the very top ----
+  // ---- drag: pull down (at top) to reveal, swipe up (when open) to close ----
   var drag = null;
   var last_scroll_at = 0;
-  var SETTLE_MS = 350;   // page must rest at the top this long before a pull can reveal
   window.addEventListener('scroll', function () { last_scroll_at = Date.now(); }, { passive: true });
 
   function onStart(e) {
     var d = drawer();
     if (!d || e.touches.length !== 1) { drag = null; return; }
-    if (d.classList.contains('open')) { drag = null; return; }   // already open
-    if (window.scrollY > 0) { drag = null; return; }             // not at top -> plain scroll
-    // just scrolled to the top? make this touch a normal stop, not a reveal.
-    if (Date.now() - last_scroll_at < SETTLE_MS) { drag = null; return; }
+    var t = e.touches[0];
+    if (d.classList.contains('open')) {
+      // swipe up to close (only once the list itself is at its own top)
+      drag = { mode: 'close', y0: t.clientY, x0: t.clientX, active: false };
+      return;
+    }
+    if (window.scrollY > 0) { drag = null; return; }                 // not at top -> plain scroll
+    if (Date.now() - last_scroll_at < SETTLE_MS) { drag = null; return; } // just scrolled -> stop at top
     var tg = e.target;
     if (tg && tg.closest && tg.closest('.seek_bar, input, textarea, [contenteditable]')) {
-      drag = null; return;                                       // don't hijack seek / editing
+      drag = null; return;                                           // don't hijack seek / editing
     }
-    var t = e.touches[0];
-    drag = { y0: t.clientY, x0: t.clientX, active: false };
+    drag = { mode: 'open', y0: t.clientY, x0: t.clientX, active: false };
   }
 
   function onMove(e) {
@@ -66,16 +69,25 @@
     var d = drawer(); if (!d) { drag = null; return; }
     var t = e.touches[0];
     var dy = t.clientY - drag.y0, dx = t.clientX - drag.x0;
+    var max = maxOpenPx();
     if (!drag.active) {
-      if (Math.abs(dy) < 6 && Math.abs(dx) < 6) return;          // not moved enough to decide
-      if (dy <= 0 || Math.abs(dx) > Math.abs(dy)) { drag = null; return; } // not a downward pull
-      if (window.scrollY > 0) { drag = null; return; }           // scrolled away since start
+      if (Math.abs(dy) < 6 && Math.abs(dx) < 6) return;              // too small to decide
+      if (Math.abs(dx) > Math.abs(dy)) { drag = null; return; }      // horizontal -> ignore
+      if (drag.mode === 'open') {
+        if (dy <= 0) { drag = null; return; }                        // reveal needs a downward pull
+        if (window.scrollY > 0) { drag = null; return; }             // scrolled away since start
+      } else { // close
+        if (dy >= 0) { drag = null; return; }                        // close needs an upward swipe
+        if (d.scrollTop > 0) { drag = null; return; }                // let the list scroll to its top first
+      }
       drag.active = true;
-      d.classList.add('dragging');                               // track the finger, no transition
+      d.classList.add('dragging');                                   // track finger, no transition
     }
-    var h = Math.max(0, Math.min(maxOpenPx(), dy));
+    var h = (drag.mode === 'open')
+      ? Math.max(0, Math.min(max, dy))          // grow from 0 with the pull
+      : Math.max(0, Math.min(max, max + dy));   // shrink from full as you swipe up (dy < 0)
     d.style.maxHeight = h + 'px';
-    e.preventDefault();                                          // suppress native rubber-band
+    e.preventDefault();                                              // suppress native rubber-band
   }
 
   function onEnd() {
@@ -84,11 +96,13 @@
       if (d) {
         var cur = parseFloat(d.style.maxHeight) || 0;
         var max = maxOpenPx();
-        var openIt = cur > Math.min(100, max * 0.3);             // pulled far enough?
-        d.classList.remove('dragging');                          // re-enable transition
-        d.style.maxHeight = (openIt ? max : 0) + 'px';           // animate to the snap point
-        set_open(openIt);                                        // caret + shadow follow
-        setTimeout(function () {                                 // hand back to CSS (72vh)
+        var openIt = (drag.mode === 'open')
+          ? cur > Math.min(100, max * 0.3)      // pulled far enough to open?
+          : cur > max * 0.7;                    // released before pulling up ~30% -> stay open
+        d.classList.remove('dragging');                             // re-enable transition
+        d.style.maxHeight = (openIt ? max : 0) + 'px';              // animate to the snap point
+        set_open(openIt);                                           // caret + shadow follow
+        setTimeout(function () {                                    // hand back to CSS (72vh)
           if (d.classList.contains('open') === openIt) d.style.maxHeight = '';
         }, 320);
       }
