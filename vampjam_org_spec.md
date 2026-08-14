@@ -49,7 +49,10 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   notes → 5.
 - 73 org_spec_v3 · b7 — adopted live-page v3: save-note commit flow (no sandbox commits), this spec
   file, section 6 self_admin + kickoff button, header stamp refreshed.
-- NEXT → add entry 74 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 74 org_pickup_steer · b8 — vampjam_4 pickup; drift check clean (spec b7 == page b7,
+  spec 73 == log 73); steer focus → 1A deploy_worker (#next, user); header stamp; standing
+  by for wire_admin.
+- NEXT → add entry 75 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

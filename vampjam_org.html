@@ -401,7 +401,7 @@ function json(obj, status, cors) {
 </ul>
 </main>
 <script>
-  const BUILD='b7';
+  const BUILD='b8';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -856,7 +856,7 @@ function json(obj, status, cors) {
   const chip = document.getElementById('subchip');
   chip.title = 'click to reload now';
   chip.style.cursor = 'pointer';
-  chip.textContent = 'as of 8/14 4:18:23a';
+  chip.textContent = 'as of 8/14 12:26:24p';
   chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
   const h1 = document.querySelector('header h1');
   h1.style.cursor = 'pointer';
@@ -1005,7 +1005,7 @@ function json(obj, status, cors) {
 
   // steer_rule (117): each build may set the focus, the search, and
   // open nodes ONCE; his manual navigation wins afterward.
-  const STEER = { focus: null, search: null };
+  const STEER = { focus: '1A', search: null };
   try {
     if (localStorage.getItem('vampjam_org_steer') !== BUILD) {
       localStorage.setItem('vampjam_org_steer', BUILD);

@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "73 org_spec_v3",
+        id: "74 org_pickup_steer",
         expanded: true,
+        nodes: [
+          { text: "74 org_pickup_steer", children: [
+            { text: "prompt_restate", children: [
+              { text: "vampjam_4 pickup: read vampjam_handoff.md then vampjam_org_spec.md; open vampjam_org.html and act on #next." },
+              { text: "Claim the next prompt_log + build_history numbers before editing; write the batch codename to commit_msg.txt first; the login robot commits and pushes." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "vampjam_4 — read vampjam_handoff.md, then vampjam_org_spec.md, top to bottom. Open vampjam_org.html and act on #next. Before editing, claim the next number in both the prompt_log thread and the spec build_history. Write the batch codename to vampjam_admin/commit_msg.txt first, then write files — the login robot commits and pushes; do NOT commit from the sandbox." }
+            ]},
+            { text: "result_build", children: [
+              { text: "Drift check clean: spec b7 == page b7; spec entry 73 == log entry 73. Claimed 74 · b8." },
+              { text: "#next is deploy_worker (1A) — a #do task only you can run (Cloudflare login). Steered the page to it: STEER.focus = 1A, so the auto-reload lands you on the five deploy steps (worker code + copy button already in place)." },
+              { text: "Bumped page + sidecar to b8; refreshed the header stamp; spec build_history 74 added, NEXT → 75; collapsed the older log entries (only 74 expanded)." },
+              { text: "Standing by: wire_admin becomes mine the moment you hand over the worker URL; session_autocreate + wordmark_name stay #ready on your say-so." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "org_pickup_steer, deploy_worker, steer_rule, wire_admin" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "73 org_spec_v3",
+        expanded: false,
         nodes: [
           { text: "73 org_spec_v3", children: [
             { text: "prompt_restate", children: [
@@ -36,7 +60,7 @@ window.prompt_log_data = [
       },
       {
         id: "72 handoff_spec",
-        expanded: true,
+        expanded: false,
         nodes: [
           { text: "72 handoff_spec", children: [
             { text: "prompt_restate", children: [
@@ -57,7 +81,7 @@ window.prompt_log_data = [
       },
       {
         id: "71 interface_ready_done",
-        expanded: true,
+        expanded: false,
         nodes: [
           { text: "71 interface_ready_done", children: [
             { text: "prompt_restate", children: [
@@ -86,7 +110,7 @@ window.prompt_log_data = [
       },
       {
         id: "70 org_port_style_ready",
-        expanded: true,
+        expanded: false,
         nodes: [
           { text: "70 org_port_style_ready", children: [
             { text: "prompt_restate", children: [
@@ -110,7 +134,7 @@ window.prompt_log_data = [
       },
       {
         id: "69 org_autoreload",
-        expanded: true,
+        expanded: false,
         nodes: [
           { text: "69 org_autoreload", children: [
             { text: "prompt_restate", children: [
