@@ -9,8 +9,69 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "50 pull_reveal",
+        id: "52 highlight_style",
         expanded: true,
+        nodes: [
+          { text: "52 highlight_style", children: [
+            { text: "prompt_restate", children: [
+              { text: "Space the highlight rows out ~20% more (more comfortable)." },
+              { text: "Per-row play button ~15% bigger; keep its look." },
+              { text: "Share + delete become gray line icons on white, no filled square." },
+              { text: "Delete = a gray line X; share = a share-arrow icon (not the link/chain), gray line drawing." },
+              { text: "Keep the highlight title font the same." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Also space out the highlights, make it a little more comfortable a little more make the buttons a little bigger the play button bigger the share button maybe the same share and delete you can you can just make those gray on white and the way that the delete highlight is X a gray X on white the Sherry c I think it should be the share arrow icon not the link but that should also just be a light gray line drawing on white yeah and then the play button should just be good 15% bigger than it is and same with the gap between the Rose maybe increase that 20% and keep the font the same and let's see how that looks" }
+            ]},
+            { text: "result_build", children: [
+              { text: "tag_row vertical padding 5px to 6px (+20% row gap)." },
+              { text: "play_tag: font 17 to 20, min-height 35 to 40, padding 6x12 (~15% bigger); blue-on-panel look kept." },
+              { text: "tag_row ghost buttons now transparent bg + muted gray; active/hover no longer fill a square." },
+              { text: "ICON_X redrawn as a thin stroke X; new ICON_SHARE = iOS-style share arrow (stroke)." },
+              { text: "Share button swapped from ICON_LINK to ICON_SHARE; still copies the moment link." },
+              { text: "Highlight title font untouched (17px)." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "All 6 pages patched (6 string edits each, asserted)." },
+              { text: "Live visual pending push." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "highlight_style, ICON_SHARE, play_tag, tag_row ghost" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "51 top_detent",
+        expanded: false,
+        nodes: [
+          { text: "51 top_detent", children: [
+            { text: "prompt_restate", children: [
+              { text: "A swipe-down that starts below the top should just scroll and stop at the top." },
+              { text: "Revealing the session list must be a separate, deliberate pull once at rest at the top." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I swipe the page down, if I'm below the top edge of the default screen which I can see the vamp Jam logo, then the scrolling should be stopped when it hits the top state such that I would have to swipe up again in order to see the session list above it" }
+            ]},
+            { text: "result_build", children: [
+              { text: "drawer.js: track last_scroll_at on every scroll event." },
+              { text: "Reveal now requires the page to have rested at the top for 350ms (SETTLE_MS) before a pull engages." },
+              { text: "So a flick that scrolls to the top no longer carries through into the drawer; you pull again from rest to reveal." },
+              { text: "Existing touchstart gate (scrollY<=0) unchanged." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "drawer.js passes node --check." },
+              { text: "Gesture feel pending device test after push." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "top_detent, SETTLE_MS, last_scroll_at" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "50 pull_reveal",
+        expanded: false,
         nodes: [
           { text: "50 pull_reveal", children: [
             { text: "prompt_restate", children: [
