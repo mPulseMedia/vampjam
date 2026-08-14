@@ -169,7 +169,7 @@
   li.sec > .row .txt { font-size: var(--fs); }
   
 
-  .tag { margin-left: 8px; color: var(--tx2); }
+  .tag { display: none; }
   .tag::before { content: "— "; }
 
   .hl-ok, .hl-warn, .hl-bad { color: inherit; }
@@ -229,7 +229,7 @@ if(n)document.documentElement.classList.add('night');})();
       <span class="txt">deploy_worker <span class="tag">a plain Worker, NO Git &#8212; the connect-to-Git flow fails because a repo named vampjam already exists, and you don&#8217;t need it</span> <span class="nextm">#next</span></span></div>
       <ul>
         <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
-          <span class="txt">Workers &amp; Pages &#8594; Create &#8594; choose <b>Start with Hello World</b> (NOT &#8220;Import a repository&#8221;) &#8594; name it <code>vampjam-upload</code> &#8594; Deploy the starter</span></div></li>
+          <span class="txt"><a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers-and-pages/create" target="_blank">open Create</a> &#8594; choose <b>Start with Hello World</b> (NOT &#8220;Import a repository&#8221;) &#8594; name it <code>vampjam-upload</code> &#8594; Deploy the starter</span></div></li>
         <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
           <span class="txt">open the worker &#8594; Edit code &#8594; select all, replace with this, then Deploy <button class="rowcopy">copy worker code</button></span></div>
           <ul>
