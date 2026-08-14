@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "74 org_pickup_steer",
+        id: "75 skill_add",
         expanded: true,
+        nodes: [
+          { text: "75 skill_add", children: [
+            { text: "prompt_restate", children: [
+              { text: "How do I add the live-page skill to this thread?" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I wanna add the live page skill to this thread. How do I do that?" }
+            ]},
+            { text: "result_answer", children: [
+              { text: "Nothing to install: the skill is synced to your account and offered to every Cowork thread; it just has to be invoked once to load into a thread's context." },
+              { text: "Invoked it this prompt — live_page v3 is now active here. Saying 'use the live-page skill' (or anything that matches its triggers) in a future thread does the same." },
+              { text: "Cross-check vs current practice: v3 flow already adopted in 73 org_spec_v3 (save-note first, robot ships, spec + NEXT marker, handoff pack). New in v3 to honor going forward: #decide marker available; #here retired; chat replies in outline as the delta, page carries detail." },
+              { text: "No page edit, so no build bump or build_history entry — prompt_log only." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "skill_add, live_page v3, steer unchanged (b8)" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "74 org_pickup_steer",
+        expanded: false,
         nodes: [
           { text: "74 org_pickup_steer", children: [
             { text: "prompt_restate", children: [
