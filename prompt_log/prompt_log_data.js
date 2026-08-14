@@ -9,6 +9,27 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
+        id: "72 handoff_spec",
+        expanded: true,
+        nodes: [
+          { text: "72 handoff_spec", children: [
+            { text: "prompt_restate", children: [
+              { text: "Create a markdown file with everything a new model thread needs to pick up and run with what has been established here." },
+              { text: "Gather all conventions, requirements, and requests; make the transition to a new thread incredibly smooth." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Create a markdown file with everything that a new model thread will need to pick up and run with what youve established ... gather all the conventions and requirements and requests ... make it an incredibly smooth transition to a new thread with a new model to pick up and go where it needs to go" }
+            ]},
+            { text: "result_build", children: [
+              { text: "Wrote vampjam_handoff.md: what vampjam is; repo/hosting/key IDs; file map; conventions (codenames, prompt log, commits, feedback); session data flow + the merge-on-load tag rule; full UI/behavior spec; the sessions manifest table; recording status + deploy steps; how the org runbook + auto-reload + markers work; current open work; gotchas; a pick-up checklist." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "handoff_spec, vampjam_handoff.md" }
+            ]}
+          ]}
+        ]
+      },
+      {
         id: "71 interface_ready_done",
         expanded: true,
         nodes: [
