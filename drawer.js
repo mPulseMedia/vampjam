@@ -23,7 +23,7 @@
   }
   function close_then(go) {
     set_open(false);
-    setTimeout(go, 300); // matches the .session_drawer max-height transition
+    setTimeout(go, 190); // matches the .session_drawer max-height transition
   }
   window.vampjamDrawer = { toggle: toggle };
 
@@ -104,7 +104,7 @@
         set_open(openIt);                                           // caret + shadow follow
         setTimeout(function () {                                    // hand back to CSS (72vh)
           if (d.classList.contains('open') === openIt) d.style.maxHeight = '';
-        }, 320);
+        }, 200);
       }
     }
     drag = null;

@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "53 close_swipe_shadow",
+        id: "54 drawer_faster",
         expanded: true,
+        nodes: [
+          { text: "54 drawer_faster", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the drawer reveal animation faster." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "animate the swipping down faster." }
+            ]},
+            { text: "result_build", children: [
+              { text: "session_drawer max-height transition 0.3s to 0.18s (all 6 pages)." },
+              { text: "drawer.js snap-clear timeout 320 to 200ms; link close-then-nav 300 to 190ms." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "drawer.js passes node --check; transition updated on all 6 pages." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "drawer_faster" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "53 close_swipe_shadow",
+        expanded: false,
         nodes: [
           { text: "53 close_swipe_shadow", children: [
             { text: "prompt_restate", children: [
