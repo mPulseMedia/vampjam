@@ -9,8 +9,39 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "64 vampjam_org_page",
+        id: "65 add_session_reverse_order",
         expanded: true,
+        nodes: [
+          { text: "65 add_session_reverse_order", children: [
+            { text: "prompt_restate", children: [
+              { text: "Add the session 'bazaar cafe 2026-01-17' (audio already in the folder)." },
+              { text: "Sort sessions so the most recent is at the bottom; scroll up for older and older." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "add this to the session list. I have the audio in the folder and called this: bazaar cafe 2026-01-17" },
+              { text: "Sort the sessions so that the most recent is at the bottom and so that I see I may have to scroll up to see older and older sessions" }
+            ]},
+            { text: "result_build", children: [
+              { text: "Renamed the audio to 2026-01-17_bazaar_cafe.m4a (no spaces); created 2026_01_17_bazaar_cafe.html (cloned from the 05_23 bazaar page) + 2026_01_17_bazaar_cafe.json (empty tags, audio -> the GitHub Pages URL of the file)." },
+              { text: "Rebuilt the drawer on all 7 pages: Admin at top, then sessions oldest->newest, so Aug 7 (newest) sits at the bottom." },
+              { text: "drawer.js now opens the drawer scrolled to the bottom, so you land on the newest and scroll up for older." }
+            ]},
+            { text: "caveat", children: [
+              { text: "The audio is served from the repo via GitHub Pages for now; it may be unreliable on iOS until it lives on R2 (once the recorder/upload is set up, we move it)." },
+              { text: "No highlights yet — send timestamps and I'll add them." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "New page PAGE_ID/title/h1 = 2026-01-17; inline JS + drawer.js pass node --check; drawer order confirmed Jan 17 -> Aug 7." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "add_session_reverse_order, 2026_01_17_bazaar_cafe, drawer reverse, scroll-to-newest" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "64 vampjam_org_page",
+        expanded: false,
         nodes: [
           { text: "64 vampjam_org_page", children: [
             { text: "prompt_restate", children: [
