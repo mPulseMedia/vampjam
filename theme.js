@@ -56,7 +56,8 @@
   apply(current());
 
   function render_switch() {
-    var menu = document.querySelector('.jam_menu');
+    // the theme switch now lives on the Admin page only (mount element).
+    var menu = document.querySelector('#theme_switch_mount');
     if (!menu) return;
     var box = menu.querySelector('.theme_switch');
     if (!box) {
