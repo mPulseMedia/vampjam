@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "46 tag_btn_reposition",
+        id: "47 hide_sort_toggle",
         expanded: true,
+        nodes: [
+          { text: "47 hide_sort_toggle", children: [
+            { text: "prompt_restate", children: [
+              { text: "Hide the whole Manual/Time toggle; keep it as time only." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Put the Manuel actually hide the whole Manuel/time base thing and just keep it as time" }
+            ]},
+            { text: "result_fix", children: [
+              { text: "tag_toolbar (the only remaining thing there = sort toggle) set display:none." },
+              { text: "sortMode forced to 'time' (ignores any saved 'manual')." },
+              { text: "Manual code paths left dormant; no toggle to reach them." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Live: toolbar display none, toggle not visible, tag_btn present; JS valid." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "hide_sort_toggle, time_only" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "46 tag_btn_reposition",
+        expanded: false,
         nodes: [
           { text: "46 tag_btn_reposition", children: [
             { text: "prompt_restate", children: [
