@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "45 minimal_default_tweaks",
+        id: "46 tag_btn_reposition",
         expanded: true,
+        nodes: [
+          { text: "46 tag_btn_reposition", children: [
+            { text: "prompt_restate", children: [
+              { text: "Move the Tag the moment button between the play controls and the highlight bar." },
+              { text: "Trial — see how it feels." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Put the tag the moment button in between the play button and the bar with the highlights on it see how that feels" }
+            ]},
+            { text: "result_reorder", children: [
+              { text: "Moved #tag_btn out of the bottom toolbar to right after ctrl_row, before seek_bar." },
+              { text: "Order: controls -> Tag button -> seek bar + markers -> time -> Time/Manual toggle -> list." }
+            ]},
+            { text: "result_css", children: [
+              { text: "tag_btn_big: flex:1 -> block, width 90%, centered, margins." },
+              { text: "tag_toolbar right-aligns the lone sort toggle; removed the spacer/dummy." },
+              { text: "Same id/handlers, behavior unchanged." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "All 6 matched; one tag_btn each; order confirmed; JS valid; live screenshot looks clean." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "tag_btn_reposition, player_layout" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "45 minimal_default_tweaks",
+        expanded: false,
         nodes: [
           { text: "45 minimal_default_tweaks", children: [
             { text: "prompt_restate", children: [
