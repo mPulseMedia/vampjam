@@ -60,7 +60,7 @@
     if (!box) {
       box = document.createElement('div');
       box.className = 'theme_switch';
-      box.style.cssText = 'display:flex;align-items:center;gap:6px;margin-top:4px;padding:12px 8px 4px;border-top:1px solid var(--panel_3);';
+      box.style.cssText = 'display:flex;align-items:center;gap:6px;margin-top:4px;padding:12px 0 4px;border-top:1px solid var(--panel_3);';
       var label = document.createElement('span');
       label.textContent = 'Theme';
       label.style.cssText = 'font-size:11px;color:var(--muted);margin-right:2px;';
