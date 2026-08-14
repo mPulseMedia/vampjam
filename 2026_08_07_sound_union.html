@@ -301,9 +301,14 @@
     background: var(--bg); padding-top: 8px; padding-bottom: 4px;
     transition: box-shadow 0.2s;
   }
-  .sticky_player.scrolled {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  /* the white control layer casts a shadow ONLY onto the darker highlight list
+     below it, only while scrolling (gradient strip = no side or white bleed) */
+  .sticky_player::after {
+    content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 12px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.16), rgba(0,0,0,0));
+    opacity: 0; transition: opacity 0.2s; pointer-events: none;
   }
+  .sticky_player.scrolled::after { opacity: 1; }
 
   @media (max-width: 480px) {
     .ctrl_row { justify-content: space-between; gap: 4px; }
@@ -331,12 +336,15 @@
     transition: max-height 0.18s ease; position: relative; z-index: 90;
   }
   .session_drawer.open { max-height: 72vh; }
+  /* session list tucks under the white control layer below it: shadow on the
+     darker card's bottom edge, only when the list overflows the drawer */
+  .session_drawer.open.sess_overflow { box-shadow: inset 0 -16px 13px -11px rgba(0,0,0,0.22); }
   .session_drawer.dragging { transition: none; }
   .session_drawer .jam_menu {
     position: static; top: auto; left: auto; min-width: 0;
     background: var(--panel); border: none; border-radius: 14px; overflow: hidden;
     box-shadow: inset 0 2px 5px -2px rgba(0,0,0,0.13);
-    padding: 6px 0; margin: 12px auto; max-width: 760px;
+    padding: 6px 0; margin: 12px auto 0; max-width: 760px;
   }
   #drawer_toggle { transition: none; }
   .drawer_caret { transition: transform 0.3s ease; }

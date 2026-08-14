@@ -12,11 +12,18 @@
   function caret()  { return document.getElementById('drawer_toggle'); }
   function maxOpenPx() { return Math.round(window.innerHeight * OPEN_FRACTION); }
 
+  function update_sess_overflow() {
+    var d = drawer(); if (!d) return;
+    // shadow the session card's bottom only when the list is taller than the drawer
+    d.classList.toggle('sess_overflow', d.classList.contains('open') && d.scrollHeight > d.clientHeight + 2);
+  }
   function set_open(on) {
     var d = drawer(); if (!d) return;
     d.classList.toggle('open', on);
     var c = caret(); if (c) c.classList.toggle('open', on);
+    if (on) { setTimeout(update_sess_overflow, 250); } else { d.classList.remove('sess_overflow'); }
   }
+  window.addEventListener('resize', update_sess_overflow);
   function toggle() {
     var d = drawer(); if (!d) return;
     set_open(!d.classList.contains('open'));
