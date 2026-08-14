@@ -1,1 +1,1 @@
-wire_wordmark
+wordmark_scope

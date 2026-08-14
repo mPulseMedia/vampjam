@@ -9,8 +9,28 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "89 wire_wordmark",
+        id: "90 wordmark_scope",
         expanded: true,
+        nodes: [
+          { text: "90 wordmark_scope", children: [
+            { text: "prompt_restate", children: [
+              { text: "Clarifying: only meant the title on the web page itself, not everywhere; the rest another day." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "oh -- I mean just on the web page itself. you don;t have to change everwhere. I'll do that another day." }
+            ]},
+            { text: "result_answer", children: [
+              { text: "The batch had already shipped before this arrived: the on-page wordmark (what you meant) now says vampSF, and the browser-tab titles changed with it. Everything is consistent, nothing is broken; if any specific spot should go back, name it and I revert just that. No new edits this prompt — log only." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "wordmark_scope (page stays b21)" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "89 wire_wordmark",
+        expanded: false,
         nodes: [
           { text: "89 wire_wordmark", children: [
             { text: "prompt_restate", children: [
