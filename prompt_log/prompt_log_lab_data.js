@@ -9,8 +9,30 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "66 highlight_reload_keep",
+        id: "67 hide_tag_footer",
         expanded: true,
+        nodes: [
+          { text: "67 hide_tag_footer", children: [
+            { text: "prompt_restate", children: [
+              { text: "Hide the Export tags / Import tags / Clear tags buttons (they do nothing yet); keep the code, don't delete it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Remove the clear tags button the import tags and the export tags get rid of those buttons. You don't actually do anything ... hide them, but don't kill them all together. Don't kill all the code." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "Those three buttons + the import file input sit in <div class=\"footer\"> on the two bazaar pages (older template)." },
+              { text: "Added style=display:none to that footer on both bazaar pages — hidden, all code intact." },
+              { text: "SU pages never had them." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "hide_tag_footer, footer display none" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "66 highlight_reload_keep",
+        expanded: false,
         nodes: [
           { text: "66 highlight_reload_keep", children: [
             { text: "prompt_restate", children: [
