@@ -9,8 +9,34 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "67 hide_tag_footer",
+        id: "68 org_three_groups",
         expanded: true,
+        nodes: [
+          { text: "68 org_three_groups", children: [
+            { text: "prompt_restate", children: [
+              { text: "Expand vampjam_org: keep the record-live infra, add a group for organizing all audio onto R2/into the app, and bring back the suspended session-list/interface tasks." },
+              { text: "Organize focus with #do / #next / #done; feel free to open/close nodes, set the focus note, and prefill search." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Update the vamp Jam org Paige ... stuff in there is about setting up the infrastructure to record live ... also ... tasks around updating all the audio files, getting them organized into the right place and into the app ... another set ... around the interface and updating the session list the way I asked ... that you suspended ... bring that back in ... use the #do and #next and #done tags ... open and close notes and even change what the focus note is ... fill the search term with what I might need." }
+            ]},
+            { text: "result_build", children: [
+              { text: "Rebuilt the outline into 4 sections: 1 record_live (deploy_worker #next + wire/test/push #do), 2 audio_home (bazaar_01_17 #done, audit/move_to_r2/verify_ios #do), 3 interface (list_order #done; session_row_format/durations/index_latest/new_recording_row/session_autocreate #do), 4 notes." },
+              { text: "Added a #do marker style (.dom, accent); #next stays the single focus on deploy_worker." },
+              { text: "Bumped BUILD b1->b2 and set CLOSE_ON_BUILD ['2','3','4'] so the page opens focused on section 1." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Page JS passes node --check; 14 markers present." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "org_three_groups, record_live, audio_home, interface, #do marker" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "67 hide_tag_footer",
+        expanded: false,
         nodes: [
           { text: "67 hide_tag_footer", children: [
             { text: "prompt_restate", children: [
