@@ -363,7 +363,26 @@ function json(obj, status, cors) {
 </ul></li>
 </ul></li>
 
-<li class="n sec" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">notes</span></div><ul>
+<li class="n sec" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">rebrand</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">wordmark_name <span class="readym">#ready</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">change the &#8220;vamp jam&#8221; wordmark text to &#8220;vamp SF&#8221; on every page (Sacramento font stays)</span></div></li>
+</ul></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">domain_vsf</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">choose / register the domain <span class="dom">#do</span></span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">add a <code>CNAME</code> file to the repo with that domain <span class="readym">#ready</span></span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">repo Settings &#8594; Pages &#8594; Custom domain = it, then Enforce HTTPS <span class="dom">#do</span></span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">at the registrar, point DNS at GitHub Pages <span class="dom">#do</span> <button class="rowcopy">copy A records</button></span></div><ul>
+<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">apex A records</span></div><div class="codewrap"><pre>185.199.108.153
+185.199.109.153
+185.199.110.153
+185.199.111.153</pre></div></li>
+</ul></li>
+<li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">update page &lt;title&gt;s + any mpulsemedia.github.io references <span class="readym">#ready</span></span></div></li>
+<li class="n" data-l="6"><div class="row"><span class="tri">▶</span><span class="lbl">6</span><span class="txt">R2 audio URLs already absolute (r2.dev) &#8212; nothing to change</span></div></li>
+</ul></li>
+</ul></li>
+
+<li class="n sec" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">notes</span></div><ul>
 <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">worker_file &#8212; <code>cloudflare/r2_upload_worker.js</code></span></div></li>
 <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">bucket &#8212; R2 <code>vampjam-audio</code> &#8226; <code>pub-33cfd8558d314eb58642c8550608850b.r2.dev</code></span></div></li>
 <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">format_caveat &#8212; record on iPhone/Safari (.m4a); Chrome records .webm which iOS can&#8217;t play</span></div></li>
@@ -373,7 +392,7 @@ function json(obj, status, cors) {
 </ul>
 </main>
 <script>
-  const BUILD='b5';
+  const BUILD='b6';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
