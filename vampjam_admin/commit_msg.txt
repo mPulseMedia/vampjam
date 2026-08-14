@@ -1,1 +1,1 @@
-commit_msg_unify
+auto_commit
