@@ -9,6 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
+        id: "71 interface_ready_done",
+        expanded: true,
+        nodes: [
+          { text: "71 interface_ready_done", children: [
+            { text: "prompt_restate", children: [
+              { text: "Do all the #ready items (the interface tasks)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "do all the #ready items" }
+            ]},
+            { text: "result_build", children: [
+              { text: "Probed all 7 session durations via the browser player (01-17 52:37 ... 05-30 2:52:55)." },
+              { text: "New sessions.js manifest (page,name,date,dur,count); drawer.js now renders the list from it." },
+              { text: "session_row_format: each row shows the cassette + Name — Date (title format) on the left, duration + highlight count on the right." },
+              { text: "durations: seeded in the manifest; each session page now caches its own duration in localStorage on load (going forward)." },
+              { text: "new_recording_row: a New recording row at the bottom of the list linking to Admin (record)." },
+              { text: "index_latest: index.html replaced with a redirect to the last-opened session, else the most recent." },
+              { text: "session_autocreate left #ready — best done once the recorder is live (it builds a page from an upload)." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "drawer.js + sessions.js pass node --check; live injection preview shows the new list correctly." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "interface_ready_done, sessions.js manifest, data-driven drawer, index redirect" }
+            ]}
+          ]}
+        ]
+      },
+      {
         id: "70 org_port_style_ready",
         expanded: true,
         nodes: [
