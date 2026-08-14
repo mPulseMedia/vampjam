@@ -9,8 +9,28 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "76 audio_audit_vampsf",
+        id: "77 vampsf_confirm",
         expanded: true,
+        nodes: [
+          { text: "77 vampsf_confirm", children: [
+            { text: "prompt_restate", children: [
+              { text: "Clarifying: the domain is vampsf.com." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "the url I'm talking about is vampsf.com" }
+            ]},
+            { text: "result_answer", children: [
+              { text: "Understood — vampsf.com is exactly what everything was built against: the DNS check (parked at Network Solutions), the 4B forwarding + later_full steps, and the domain-page link. Nothing to change; no page edit, log only." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "vampsf_confirm (page stays b9)" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "76 audio_audit_vampsf",
+        expanded: false,
         nodes: [
           { text: "76 audio_audit_vampsf", children: [
             { text: "prompt_restate", children: [
