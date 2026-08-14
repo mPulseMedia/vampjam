@@ -389,10 +389,19 @@ function json(obj, status, cors) {
 <li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">secret_note &#8212; UPLOAD_SECRET lives in client JS: a light gate, not real security</span></div></li>
 </ul></li>
 
+
+<li class="n sec" data-l="6"><div class="row"><span class="tri">▶</span><span class="lbl">6</span><span class="txt">self_admin</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">spec_file &#8212; <code>vampjam_org_spec.md</code> (build_history + update protocol)</span></div></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">handoff &#8212; <code>vampjam_handoff.md</code> (full operational pickup)</span></div></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">kickoff <button class="rowcopy">copy first message</button> <span class="dom">#do</span></span></div><ul>
+<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">message</span></div><div class="codewrap"><pre>vampjam pickup — read vampjam_handoff.md, then vampjam_org_spec.md, top to bottom. Open vampjam_org.html and act on #next. Before editing, claim the next number in both the prompt_log thread and the spec build_history. Write the batch codename to vampjam_admin/commit_msg.txt first, then write files — the login robot commits and pushes; do NOT commit from the sandbox.</pre></div></li>
+</ul></li>
+</ul></li>
+
 </ul>
 </main>
 <script>
-  const BUILD='b6';
+  const BUILD='b7';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -847,7 +856,7 @@ function json(obj, status, cors) {
   const chip = document.getElementById('subchip');
   chip.title = 'click to reload now';
   chip.style.cursor = 'pointer';
-  chip.textContent = 'as of 8/14 3:12:45a';
+  chip.textContent = 'as of 8/14 4:18:23a';
   chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
   const h1 = document.querySelector('header h1');
   h1.style.cursor = 'pointer';

@@ -1,1 +1,1 @@
-window.PAGE_BUILD='b6';
+window.PAGE_BUILD='b7';
