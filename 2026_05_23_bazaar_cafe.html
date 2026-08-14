@@ -497,7 +497,7 @@
   var audio        = null;   // { label, url, kind } | null
   var audioSha     = null;   // sha of sources/<PAGE_ID>.json from last GitHub GET (for PUTs)
   var tags         = load_json(STORAGE_TAGS, []);
-  var sortMode     = localStorage.getItem(STORAGE_SORT) || 'time';
+  var sortMode     = 'time';   // Manual sort removed -- always time-ordered
   var activeTagId  = null;
   var playingTagId = null;     // tag currently containing currentTime (auto-tracked)
   var autoplayBlocked = false; // true if a play() promise rejected (browser blocked autoplay)
