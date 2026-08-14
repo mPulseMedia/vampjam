@@ -9,8 +9,36 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "65 add_session_reverse_order",
+        id: "66 highlight_reload_keep",
         expanded: true,
+        nodes: [
+          { text: "66 highlight_reload_keep", children: [
+            { text: "prompt_restate", children: [
+              { text: "Audio works, but a highlight can't be saved — reloading loses it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "audio works. but I can't save a higlight. if I reload, I loose it" }
+            ]},
+            { text: "diagnosis", children: [
+              { text: "On load, fetch_repo_data REPLACED local tags with the repo copy. The new 2026-01-17 json has empty tags, and a just-added highlight hasn't round-tripped to the repo yet, so the reload wiped it (and save_tags then overwrote localStorage with empty too)." },
+              { text: "The SU pages 07/08 already merged; the bazaar pages + 05_30 still replaced." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "Changed those 3 pages to MERGE: start from the repo, then keep any local tag whose id isn't in the repo yet (localStorage safety net), so a reload never drops a fresh highlight." },
+              { text: "All 7 pages now merge; inline JS passes node --check." }
+            ]},
+            { text: "note", children: [
+              { text: "This stops the reload-loss regardless of Worker timing. If highlights still don't sync server-side across devices, the Worker save itself needs a look — say so and I'll dig in." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "highlight_reload_keep, merge local-only tags" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "65 add_session_reverse_order",
+        expanded: false,
         nodes: [
           { text: "65 add_session_reverse_order", children: [
             { text: "prompt_restate", children: [
