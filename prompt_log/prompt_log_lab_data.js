@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "44 theme_system",
+        id: "45 minimal_default_tweaks",
         expanded: true,
+        nodes: [
+          { text: "45 minimal_default_tweaks", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make minimal the default theme." },
+              { text: "Highlight dots (markers by the time bar) invisible in minimal." },
+              { text: "Likes the encircled-circle ring under the active/most-recent highlight." },
+              { text: "Make the 5s buttons the same size as the 2m and 15s ones." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Make the default theme minimal but I can't see the highlights the little circles by the time bar... I like the effect of a kind of in circled circle under the most recent highlight... making the 5 2nd circle the same size as the two minute and 15 second one." }
+            ]},
+            { text: "result_cause", children: [
+              { text: "Tag markers had hardcoded background #fff." },
+              { text: "White dots on yellow's dark bg = visible; on minimal's white bg = invisible." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "New var --marker: yellow #ffffff, minimal #98989d (gray, visible on white)." },
+              { text: "Active marker ring (accent_2 box-shadow) left intact — the effect he likes." },
+              { text: "Default theme changed to minimal; cleared his stale saved pref so it shows." },
+              { text: "ctrl_btn.small sized to 52px (48px responsive) to match the others." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Live: current=minimal, --marker=#98989d, small btn 52x52 = regular." },
+              { text: "Markers not visible in test browser only because audio (hence duration) doesn't load there." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "minimal_default_tweaks, marker_var, uniform_ctrl_btn" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "44 theme_system",
+        expanded: false,
         nodes: [
           { text: "44 theme_system", children: [
             { text: "prompt_restate", children: [
