@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "54 drawer_faster",
+        id: "55 shadow_top_only",
         expanded: true,
+        nodes: [
+          { text: "55 shadow_top_only", children: [
+            { text: "prompt_restate", children: [
+              { text: "The shadow currently wraps the vamp jam bar (above, below, and the side margins)." },
+              { text: "Only want it above the bar, cast into the session-list surface." },
+              { text: "No shadow below the bar; none in the white left/right margins." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I can see the drop shadow all around the bar that holds the vamp Jam logo and the up Carat; I mean, I can see the shadow below it as well as above it. I only wanna see it above it, and it should gracefully you know these white margins I shouldn't see the shadow to the writer to the left. It should only be as though it is casting down and into the surface below." }
+            ]},
+            { text: "result_build", children: [
+              { text: "Dropped the header box-shadow + z-index approach (it bled on all sides)." },
+              { text: "session_drawer now uses an inset box-shadow at its bottom edge (inset 0 -11px 10px -7px), so the shadow lives inside the list box only." },
+              { text: "Negative spread keeps it off the left/right edges; inset means nothing shows below the bar." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Injected the inset rule onto the live page and screenshotted: shadow only at the list's bottom, no below-bar or side-margin bleed." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "shadow_top_only, inset drawer shadow" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "54 drawer_faster",
+        expanded: false,
         nodes: [
           { text: "54 drawer_faster", children: [
             { text: "prompt_restate", children: [
