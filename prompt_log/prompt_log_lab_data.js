@@ -9,6 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
+        id: "73 org_spec_v3",
+        expanded: true,
+        nodes: [
+          { text: "73 org_spec_v3", children: [
+            { text: "prompt_restate", children: [
+              { text: "Use the updated live-page skill (v3)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "use the updated skill live-page" }
+            ]},
+            { text: "result_build", children: [
+              { text: "Adopted the v3 commit flow: write the batch codename to vampjam_admin/commit_msg.txt FIRST, then write files; the login robot (auto_push_vampjam.sh, ssh remote) commits AND pushes on its own. Stopped committing/pushing from the sandbox (that was racing the robot and causing the stray auto-commit names)." },
+              { text: "Created vampjam_org_spec.md: the anti-drift ledger (file map, build_history with a NEXT marker, update_protocol, pickup_note); defers to vampjam_handoff.md for full detail." },
+              { text: "Added org section 6 self_admin: links the spec + handoff and a [copy first message] kickoff button (#do) for model-switch day." },
+              { text: "Refreshed the header as-of stamp; bumped page + sidecar to b7." }
+            ]},
+            { text: "note_divergence", children: [
+              { text: "Kept this project's #do/#ready markers (user-requested) alongside the skill's #next/#done; #here unused." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "org_spec_v3, vampjam_org_spec.md, self_admin, save-note flow, login robot" }
+            ]}
+          ]}
+        ]
+      },
+      {
         id: "72 handoff_spec",
         expanded: true,
         nodes: [
