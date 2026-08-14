@@ -9,8 +9,39 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "47 hide_sort_toggle",
+        id: "48 top_drawer",
         expanded: true,
+        nodes: [
+          { text: "48 top_drawer", children: [
+            { text: "prompt_restate", children: [
+              { text: "Hamburger reveals a surface ABOVE the page top edge, not a layer atop." },
+              { text: "Visible page slides down to expose the surface." },
+              { text: "Top surface casts a small shadow (like the highlight list)." },
+              { text: "Top surface holds a scrolling area of the sessions." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "instead of a hamburger bringing up a layer atop. have the hamburger reveal a surface above the top edge of the page -- slide the visible page down to reveal a surface atop the initial surface casting a small shadow (just like the shadow cast on the highlight list). and this top layer contains a scrolling area of the sessions" }
+            ]},
+            { text: "result_build", children: [
+              { text: "session_drawer div added at top of body, wraps jam_menu (session links + admin + theme switch)." },
+              { text: "Old jam_menu_overlay removed." },
+              { text: "Hamburger toggles session_drawer .open class." },
+              { text: "CSS: max-height 0 to 72vh transition pushes page down; overflow-y auto scrolls sessions." },
+              { text: "box-shadow 0 7px 16px rgba(0,0,0,0.18) matches highlight-list shadow." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "All 6 pages: drawer present, overlay gone, JS valid; pushed live." },
+              { text: "Live screenshot: drawer expands above, sessions scroll, shadow casts, page slides down." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "top_drawer, session_drawer" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "47 hide_sort_toggle",
+        expanded: false,
         nodes: [
           { text: "47 hide_sort_toggle", children: [
             { text: "prompt_restate", children: [
