@@ -8,7 +8,7 @@
     {
       "id": "t_1786400000001_hl01",
       "t": 317,
-      "label": "1) I See (a la, radio head)"
+      "label": "I See (~radio head)"
     },
     {
       "id": "t_1786400000002_hl02",
@@ -33,7 +33,7 @@
     {
       "id": "t_1786400000005_hl05",
       "t": 747,
-      "label": "2) song"
+      "label": "Shelton’s song"
     },
     {
       "id": "t_1786400000006_hl06",
@@ -43,7 +43,7 @@
     {
       "id": "t_1786400000007_hl07",
       "t": 958,
-      "label": "7"
+      "label": "…"
     },
     {
       "id": "t_1786400000008_hl08",
@@ -53,7 +53,7 @@
     {
       "id": "t_1786400000009_hl09",
       "t": 1653,
-      "label": "3) Busting Start"
+      "label": "Busting Start !"
     },
     {
       "id": "t_1786400000010_hl10",
@@ -63,22 +63,22 @@
     {
       "id": "t_1786477114235_l9kh",
       "t": 1735.5586489740015,
-      "label": "The Elevated"
+      "label": "… The Elevated"
     },
     {
       "id": "t_1786400000011_hl11",
       "t": 1835,
-      "label": "Dm Gm7 etc"
+      "label": "… Dm Gm7 etc"
     },
     {
       "id": "t_1786400000012_hl12",
       "t": 1905,
-      "label": "12"
+      "label": "… town"
     },
     {
       "id": "t_1786400000013_hl13",
       "t": 2318,
-      "label": "4) Samba"
+      "label": "Samba"
     },
     {
       "id": "t_1786400000014_hl14",
@@ -88,22 +88,22 @@
     {
       "id": "t_1786426238007_10pt",
       "t": 4070.000792,
-      "label": "5) Rock Pop Song"
+      "label": "Rock Pop Song"
     },
     {
       "id": "t_1786426355174_qghu",
       "t": 4729.186151,
-      "label": "6) Song"
+      "label": "Find a Love"
     },
     {
       "id": "t_1786426476290_0cnc",
       "t": 5369.257733,
-      "label": "7) Fast light drum"
+      "label": "Fast light drums"
     },
     {
       "id": "t_1786426530423_deoo",
       "t": 5776.110472,
-      "label": "8) song"
+      "label": "Trixie"
     },
     {
       "id": "t_1786426628440_wug0",
@@ -128,12 +128,12 @@
     {
       "id": "t_1786426712357_k7e0",
       "t": 8245.129677,
-      "label": "9) Slow Love Song"
+      "label": "Slow Love Song"
     },
     {
       "id": "t_1786427071055_0tx9",
       "t": 8666.559504,
-      "label": "...almost"
+      "label": "late solos!"
     }
   ]
 }
