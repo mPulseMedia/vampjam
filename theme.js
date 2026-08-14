@@ -18,7 +18,8 @@
         '--accent_hover': '#f0c97a', '--accent_active': '#c89943',
         '--accent_2_hover': '#e0bb6e', '--accent_2_active': '#b88e3d',
         '--playhead': '#ffd84a',
-        '--marker': '#ffffff'
+        '--marker': '#ffffff',
+        '--row_active': '#7a4f2a'
       }
     },
     minimal: {
@@ -32,7 +33,8 @@
         '--accent_hover': '#0a84ff', '--accent_active': '#0062c4',
         '--accent_2_hover': '#48484a', '--accent_2_active': '#2c2c2e',
         '--playhead': '#0071e3',
-        '--marker': '#98989d'
+        '--marker': '#98989d',
+        '--row_active': '#e3edfc'
       }
     }
   };
@@ -63,14 +65,14 @@
       box.style.cssText = 'display:flex;align-items:center;gap:6px;margin-top:4px;padding:12px 0 4px;border-top:1px solid var(--panel_3);';
       var label = document.createElement('span');
       label.textContent = 'Theme';
-      label.style.cssText = 'font-size:11px;color:var(--muted);margin-right:2px;';
+      label.style.cssText = 'font-size:17px;color:var(--muted);margin-right:2px;';
       box.appendChild(label);
       ORDER.forEach(function (id) {
         var b = document.createElement('button');
         b.type = 'button';
         b.setAttribute('data-theme-btn', id);
         b.textContent = THEMES[id].name;
-        b.style.cssText = 'font:inherit;font-size:12px;padding:4px 11px;border-radius:999px;border:1px solid var(--panel_3);cursor:pointer;background:transparent;color:var(--fg);';
+        b.style.cssText = 'font:inherit;font-size:17px;padding:4px 14px;border-radius:999px;border:1px solid var(--panel_3);cursor:pointer;background:transparent;color:var(--fg);';
         b.addEventListener('click', function (e) { e.stopPropagation(); apply(id); });
         box.appendChild(b);
       });

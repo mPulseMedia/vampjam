@@ -39,6 +39,16 @@
         close_then(function () { window.location.href = href; });
       });
     });
+    // share button on each session row: copy that session's page link (no timestamp)
+    Array.prototype.forEach.call(menu.querySelectorAll('.jam_share'), function (b) {
+      b.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var href = b.getAttribute('data-href');
+        var url = new URL(href, window.location.href).href;
+        try { if (navigator.clipboard) navigator.clipboard.writeText(url); } catch (err) {}
+        if (typeof window.toast === 'function') window.toast('Link copied: ' + url);
+      });
+    });
   }
 
   // ---- drag: pull down (at top) to reveal, swipe up (when open) to close ----
