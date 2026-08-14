@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "63 record_upload",
+        id: "64 vampjam_org_page",
         expanded: true,
+        nodes: [
+          { text: "64 vampjam_org_page", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make vampjam_org.html borrowing everything from claude_cowork_org, holding the tasks I should execute to follow the recording-setup steps." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make a page called vampjam_org.html that borrows everything from Claude_cowork_org, but contains the tasks I should execute to follow these steps: [the record-upload build + deploy steps]" }
+            ]},
+            { text: "result_build", children: [
+              { text: "Cloned claude_cowork_org.html (its CSS + collapsible-outline engine: toggle, double-click subtree, search, zoom+crumbs, copy buttons, day/night theme, state persistence)." },
+              { text: "Renamed identity + storage keys to vampjam_org (title, BUILD b1, page_state key, theme key); dropped the claude_cowork_org watcher/build-sidecar polling (no watcher here)." },
+              { text: "Content = the vampjam runbook: 1 now (deploy_worker, wire_admin, test_record, push w/ copy button), 2 next (session_rows, durations, index_latest, new_recording_row, session_autocreate), 3 notes (worker_file, bucket, format_caveat, secret_note)." },
+              { text: "Saved to the vampjam folder as vampjam_org.html; page JS passes node --check." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "vampjam_org_page, runbook, borrowed outline engine" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "63 record_upload",
+        expanded: false,
         nodes: [
           { text: "63 record_upload", children: [
             { text: "prompt_restate", children: [
