@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "75 skill_add",
+        id: "76 audio_audit_vampsf",
         expanded: true,
+        nodes: [
+          { text: "76 audio_audit_vampsf", children: [
+            { text: "prompt_restate", children: [
+              { text: "Find Sound Union / Bazaar Cafe recordings not on the vampjam site; list them; give steps to get them to the right place." },
+              { text: "Next steps to put the app at vampsf.com (owned via Dotster, now Network Solutions); he will log in there." },
+              { text: "Mid-turn: sent the NetSol domain page for vampsf.com; a redirect shortcut is fine now; the full native-url version (timestamps, session links) later." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Find other Sound Union or Bazaar cafe recordings that are not uploaded to the vamp Jam website and list them out and give me the steps to get them to the right place. Also help me with the next steps to set the URL of the app to vampsf..com which I think I own through Doster and I'll open up and log into the Doster website which is actually now the network solution." },
+              { text: "(mid-turn) I wanna have fan Sf.com .2 and appear as the front URL for the app and as a shortcut just having SF exist and redirect to the full weird URL is fine as a longer-term solution. I'd like to have it function with vamp SF and allow the URL to have things like timestamps and session selections as part of it, but I'll probably do that later." }
+            ]},
+            { text: "result_hunt", children: [
+              { text: "Searched both connected folders (find over m4a/qta/mp3/wav/webm/etc), the repo's git tags, and every session json's audio url." },
+              { text: "No unposted jams found: all 7 site sessions accounted for; Sound Union 29.qta is the raw of the 08-07 session (exported 4 min apart); 05_30 bazaar html/json are redirect stubs, not a lost session." },
+              { text: "08_07 dups #decide: raw .qta + 3 spare exports (~1.2 GB) next to the live v2 file; trash-on-request to claude_trash/." },
+              { text: "Lead: QuickTime's counter (29) suggests captures outside the folder; can't see beyond the two connected folders — Add-folder to audit." },
+              { text: "move_to_r2 (2D) expanded: 05-23 drags from the Mac; the 4 SU files get download links (release assets) then drag to bucket; I repoint 5 jsons #ready." }
+            ]},
+            { text: "result_domain", children: [
+              { text: "vampsf.com confirmed live at Network Solutions (parked, A 208.91.197.27)." },
+              { text: "4B rewritten: now_redirect #next (Domain Forwarding, plain 301 not masked, to mpulsemedia.github.io/vampjam/ — copy button + his domain-page link); later_full (A records + www CNAME, then my CNAME-file + retitle #ready, then Pages custom domain + HTTPS); either/or note." }
+            ]},
+            { text: "result_build", children: [
+              { text: "b9; stamp 1:57p; steer focus → 4B; drift fix: .readym CSS rule was missing since 70 — added (said so in chat, not silent)." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "audio_audit_vampsf, recording_hunt, 08_07_dups, other_place, move_to_r2, now_redirect, later_full, dns_now, readym fix" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "75 skill_add",
+        expanded: false,
         nodes: [
           { text: "75 skill_add", children: [
             { text: "prompt_restate", children: [

@@ -125,6 +125,10 @@
     color: var(--doc); margin-left: 10px;
     font-size: calc(var(--fs) * 0.82);
   }
+  .readym {
+    color: var(--doc); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
   li.has_here > .row > .txt::after { content: ' \25B8'; color: var(--acc); }
   .crumb:hover { text-decoration: underline; }
   .crumb.cur { color: var(--tx); cursor: default; }
@@ -334,10 +338,23 @@ function json(obj, status, cors) {
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">on R2 &#10003;: 2026-08-07 SU, 2026-01-17 bazaar</span></div></li>
 <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">still on GitHub releases (move these): 05-23 bazaar, 05-30 / 07-17 / 07-24 / 07-31 SU</span></div></li>
 </ul></li>
-<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">move_to_r2 <span class="dom">#do</span></span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">drop each releases-hosted file into the <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/r2/default/buckets/vampjam-audio" target="_blank">vampjam-audio bucket</a>; I repoint each json</span></div></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">recording_hunt</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">searched all I can see: every jam in the vampjam folder is already on the site &#8212; no unposted recordings here</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">08_07_dups <span class="decidem">#decide</span> &#8212; live file is <code>Sound.Union.2026-08-07.v2.m4a</code>; the raw <code>Sound Union 29.qta</code> + 3 spare exports (~1.2 GB) sit beside it &#8212; say &#8220;trash dups&#8221; and I move them to claude_trash/</span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">other_place <span class="dom">#do</span> &#8212; QuickTime&#8217;s auto-name counter hit 29; only some captures are in this folder. If older jams live elsewhere (where QuickTime saves, Voice Memos, the iPhone), Add-folder it and I&#8217;ll audit &#8212; I can&#8217;t see outside the two connected folders</span></div></li>
 </ul></li>
-<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify_ios <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">move_to_r2 <span class="dom">#do</span> &#8212; 5 sessions still play from GitHub releases</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">05-23 bazaar is on this Mac: drag <code>~/claude_cowork/vampjam/2026-05-23_bazaar_cafe.m4a</code> into the <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/r2/default/buckets/vampjam-audio" target="_blank">vampjam-audio bucket</a></span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">the 4 Sound Union files aren&#8217;t on this Mac &#8212; click each to download, then drag into the same bucket, names unchanged</span></div><ul>
+<li class="n" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/soundunion_2026-05-30_2/Sound.Union.23.m4a">05-30 &#8212; Sound.Union.23.m4a</a></span></div></li>
+<li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/2026-07-17_vampjam_su_m4a/Sound.Union.24.v2.m4a">07-17 &#8212; Sound.Union.24.v2.m4a</a></span></div></li>
+<li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/2026-07-24_vampjam_su/Sound.Union.2026-07-24.m4a">07-24 &#8212; Sound.Union.2026-07-24.m4a</a></span></div></li>
+<li class="n" data-l="d"><div class="row"><span class="tri">▶</span><span class="lbl">d</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/2026-07-31_vampjam_su/Sound.Union.2026-07-31.m4a">07-31 &#8212; Sound.Union.2026-07-31.m4a</a></span></div></li>
+</ul></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">tell me when the bucket has all 5 &#8212; I repoint the 5 jsons to r2.dev <span class="readym">#ready</span></span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">expect: each session page still plays, now from <code>pub-&#8230;r2.dev</code> (I check the jsons; you spot-check the iPhone)</span></div></li>
+</ul></li>
+<li class="n" data-l="E"><div class="row"><span class="tri">▶</span><span class="lbl">E</span><span class="txt">verify_ios <span class="dom">#do</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">play each session on the iPhone; the old releases were what failed on iOS</span></div></li>
 </ul></li>
 </ul></li>
@@ -367,19 +384,25 @@ function json(obj, status, cors) {
 <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">wordmark_name <span class="readym">#ready</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">change the &#8220;vamp jam&#8221; wordmark text to &#8220;vamp SF&#8221; on every page (Sacramento font stays)</span></div></li>
 </ul></li>
-<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">domain_vsf</span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">choose / register the domain <span class="dom">#do</span></span></div></li>
-<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">add a <code>CNAME</code> file to the repo with that domain <span class="readym">#ready</span></span></div></li>
-<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">repo Settings &#8594; Pages &#8594; Custom domain = it, then Enforce HTTPS <span class="dom">#do</span></span></div></li>
-<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">at the registrar, point DNS at GitHub Pages <span class="dom">#do</span> <button class="rowcopy">copy A records</button></span></div><ul>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">domain_vsf &#8212; <code>vampsf.com</code> is yours at Network Solutions (currently parked)</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">now_redirect <span class="nextm">#next</span> &#8212; shortcut first: vampsf.com forwards to the app <button class="rowcopy">copy forward url</button></span></div><ul>
+<li class="n sc" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">forward url</span></div><div class="codewrap"><pre>https://mpulsemedia.github.io/vampjam/</pre></div></li>
+<li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span><span class="txt">on the <a href="https://www.networksolutions.com/my-account/domain-center/domain-details?domain=vampsf.com" target="_blank">vampsf.com domain page</a>, find <b>Domain Forwarding</b> (under Manage / Details) &#8594; forward to the copied url</span></div></li>
+<li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span><span class="txt">pick plain 301 forwarding, NOT &#8220;masked&#8221;/frame forwarding (masking breaks the player + share links); include www if offered</span></div></li>
+<li class="n" data-l="d"><div class="row"><span class="tri">▶</span><span class="lbl">d</span><span class="txt">expect: within ~15 min&#8211;1 h, typing <code>vampsf.com</code> opens the app; share links still show the long github.io url for now</span></div></li>
+</ul></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">later_full &#8212; vampsf.com becomes the real url (session + timestamp share links ride along natively)</span></div><ul>
+<li class="n" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">at NetSol, turn forwarding OFF and set DNS instead: 4 apex A records + CNAME <code>www</code> &#8594; <code>mpulsemedia.github.io</code> <span class="dom">#do</span> <button class="rowcopy">copy A records</button></span></div><ul>
 <li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">apex A records</span></div><div class="codewrap"><pre>185.199.108.153
 185.199.109.153
 185.199.110.153
 185.199.111.153</pre></div></li>
 </ul></li>
-<li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">update page &lt;title&gt;s + any mpulsemedia.github.io references <span class="readym">#ready</span></span></div></li>
-<li class="n" data-l="6"><div class="row"><span class="tri">▶</span><span class="lbl">6</span><span class="txt">R2 audio URLs already absolute (r2.dev) &#8212; nothing to change</span></div></li>
+<li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span><span class="txt">tell me &#8594; I add the repo <code>CNAME</code> file + update &lt;title&gt;s and github.io references <span class="readym">#ready</span></span></div></li>
+<li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span><span class="txt">repo Settings &#8594; Pages &#8594; Custom domain = <code>vampsf.com</code>, then Enforce HTTPS once the cert issues <span class="dom">#do</span></span></div></li>
+<li class="n" data-l="d"><div class="row"><span class="tri">▶</span><span class="lbl">d</span><span class="txt">note: forwarding and DNS mode are either/or &#8212; the site serves at the domain root (no /vampjam path)</span></div></li>
 </ul></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">dns_now &#8212; vampsf.com resolves to 208.91.197.27 (Web.com parking) &#8212; the domain is live and waiting</span></div></li></ul></li>
 </ul></li>
 
 <li class="n sec" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">notes</span></div><ul>
@@ -401,7 +424,7 @@ function json(obj, status, cors) {
 </ul>
 </main>
 <script>
-  const BUILD='b8';
+  const BUILD='b9';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -856,7 +879,7 @@ function json(obj, status, cors) {
   const chip = document.getElementById('subchip');
   chip.title = 'click to reload now';
   chip.style.cursor = 'pointer';
-  chip.textContent = 'as of 8/14 12:26:24p';
+  chip.textContent = 'as of 8/14 1:57:00p';
   chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
   const h1 = document.querySelector('header h1');
   h1.style.cursor = 'pointer';
@@ -1005,7 +1028,7 @@ function json(obj, status, cors) {
 
   // steer_rule (117): each build may set the focus, the search, and
   // open nodes ONCE; his manual navigation wins afterward.
-  const STEER = { focus: '1A', search: null };
+  const STEER = { focus: '4B', search: null };
   try {
     if (localStorage.getItem('vampjam_org_steer') !== BUILD) {
       localStorage.setItem('vampjam_org_steer', BUILD);

@@ -52,7 +52,12 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - 74 org_pickup_steer · b8 — vampjam_4 pickup; drift check clean (spec b7 == page b7,
   spec 73 == log 73); steer focus → 1A deploy_worker (#next, user); header stamp; standing
   by for wire_admin.
-- NEXT → add entry 75 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 75 skill_add — no page edit) live-page v3 loaded into thread; no build.
+- 76 audio_audit_vampsf · b9 — recording hunt (no unposted jams in folder; 08_07 dups
+  #decide; other_place lead); move_to_r2 expanded w/ release links; 4B rewritten for
+  vampsf.com @ Network Solutions (forward now #next, later_full DNS); drift fix: missing
+  .readym CSS rule added (claimed in 70, never landed); steer → 4B.
+- NEXT → add entry 77 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
