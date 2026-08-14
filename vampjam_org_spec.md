@@ -62,7 +62,12 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   (#decide): door_you = exact NetSol click path (Domain Details → Advanced Tools → Add
   Web Forwarding); door_claude = copy-prompt for Claude-in-Chrome to do it; purchase
   fallback → later_full; 2a sharpened to the real Advanced-DNS edit path.
-- NEXT → add entry 79 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 79 vampsf_dns · b11 — he pasted forward_setup + "don't pay": forwarding turned out to be a
+  $12.99/yr paywall → STOPPED, pivoted to free real-DNS path; drove his Chrome: @ A ×4 →
+  GitHub Pages IPs, www → CNAME mpulsemedia.github.io (parking records replaced/deleted);
+  repo CNAME file added; sync-worker CORS updated in repo (deploy = new #next sync_cors);
+  4B rewritten to cutover status; handoff site line updated.
+- NEXT → add entry 80 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

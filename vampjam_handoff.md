@@ -13,7 +13,7 @@ sharing them. One static HTML page per **session** (a recording). You play the a
 share link that deep-links into the audio at that timestamp. Sessions are ~50 min to ~3 h.
 
 - **Repo:** `github.com/mPulseMedia/vampjam`
-- **Site (GitHub Pages):** `https://mpulsemedia.github.io/vampjam/`
+- **Site:** `https://vampsf.com` (custom domain, DNS + CNAME live 8/14; `mpulsemedia.github.io/vampjam` redirects). Sync-worker CORS must include the vampsf origins.
 - **Audio host:** Cloudflare R2, bucket `vampjam-audio`, public base
   `https://pub-33cfd8558d314eb58642c8550608850b.r2.dev`
 - **Cloudflare account id:** `4b9c9adf79c3fb2d43be0ced2b2a8553`

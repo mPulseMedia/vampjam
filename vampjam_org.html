@@ -384,39 +384,138 @@ function json(obj, status, cors) {
 <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">wordmark_name <span class="readym">#ready</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">change the &#8220;vamp jam&#8221; wordmark text to &#8220;vamp SF&#8221; on every page (Sacramento font stays)</span></div></li>
 </ul></li>
-<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">domain_vsf &#8212; <code>vampsf.com</code> is yours at Network Solutions (currently parked)</span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">now_redirect <span class="nextm">#next</span> <span class="decidem">#decide</span> &#8212; two doors, pick one</span></div><ul>
-<li class="n" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">door_you <span class="dom">#do</span> &#8212; click it yourself <button class="rowcopy">copy forward url</button></span></div><ul>
-<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">forward url</span></div><div class="codewrap"><pre>https://mpulsemedia.github.io/vampjam/</pre></div></li>
-<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">from your DNS page, click <b>Back to Domain Details</b> (top left)</span></div></li>
-<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">scroll to <b>Advanced Tools</b> &#8594; far right, <b>Web Forwarding</b> &#8594; click <b>Add Web Forwarding</b></span></div></li>
-<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">destination = the copied url &#8226; permanent/301 if it asks &#8226; masking / &#8220;keep my domain in the address bar&#8221; OFF &#8226; include www if offered</span></div></li>
-<li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">expect: NetSol rewrites the parked @ / www records itself; <code>vampsf.com</code> opens the app in minutes&#8211;hours (their banner says up to 24&#8211;48 h)</span></div></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">domain_vsf &#8212; <code>vampsf.com</code> &#8594; GitHub Pages: DNS done, cutover in progress</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">forward_paywall <span class="donem">#done</span> &#8212; NetSol wanted $12.99/yr for forwarding; skipped it, went straight to real DNS ($0)</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">dns_live <span class="donem">#done</span> &#8212; set via your Chrome, NetSol confirmed &#8220;Success&#8221;</span></div><ul>
+<li class="n" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt"><code>@</code> A &#8594; 185.199.108/.109/.110/.111.153 (parking record replaced)</span></div></li>
+<li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span><span class="txt"><code>www</code> &#8594; CNAME <code>mpulsemedia.github.io</code> (parking A deleted first &#8212; NetSol requires it)</span></div></li>
+<li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span><span class="txt">propagation: usually minutes&#8211;2 h (old TTL); NetSol&#8217;s banner says up to 24&#8211;48 h worst case</span></div></li>
 </ul></li>
-<li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span><span class="txt">door_claude &#8212; I drive your Chrome while you watch <button class="rowcopy">copy prompt forward_setup</button></span></div><ul>
-<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">prompt</span></div><div class="codewrap"><pre>forward_setup &#8212; drive my Chrome (Claude in Chrome) on the open
-Network Solutions tab. Domain Details for vampsf.com &#8594; Advanced
-Tools &#8594; Web Forwarding &#8594; Add Web Forwarding. Forward vampsf.com
-(and www if offered) to https://mpulsemedia.github.io/vampjam/
-&#8212; permanent 301, masking OFF. Save, screenshot the result, and
-report. If it demands a purchase or errors, STOP and tell me.
--- paste this into vampjam_4 thread</pre></div></li>
-<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">needs the Claude-in-Chrome extension on; I&#8217;ll pause before anything that spends money</span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">cname_repo <span class="donem">#done</span> &#8212; <code>CNAME</code> file (vampsf.com) added; Pages serves the site at vampsf.com and redirects github.io there</span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">sync_cors <span class="nextm">#next</span> <span class="dom">#do</span> &#8212; until this deploys, saving a highlight FROM vampsf.com fails (the sync worker only trusts the old address) <button class="rowcopy">copy worker code sync_cors</button></span></div><ul>
+<li class="n sc" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">updated sync worker (adds the vampsf origins)</span></div><div class="codewrap"><pre>// vampjam_worker.js — Cloudflare Worker that proxies tag/audio writes from the
+// page back to the github repo, so devices never need a PAT.
+//
+// SETUP (one-time, in the Cloudflare dashboard):
+//   1. dash.cloudflare.com → Workers &amp; Pages → Create → Hello World
+//   2. Name it e.g. vampjam-sync.
+//   3. "Edit code" — paste this entire file, replace the contents.
+//   4. Deploy.
+//   5. After deploy, go to the Worker's Settings → Variables and Secrets:
+//        Add a SECRET named GITHUB_PAT
+//        Value: a fine-grained Personal Access Token with
+//          Repository access: mPulseMedia/vampjam, Contents: Read &amp; write.
+//        (Create at github.com/settings/personal-access-tokens/new)
+//   6. Copy the worker URL (looks like https://vampjam-sync.&lt;your-subdomain&gt;.workers.dev).
+//      Send it to me and I'll wire it into the pages.
+
+const REPO_OWNER = 'mPulseMedia';
+const REPO_NAME  = 'vampjam';
+
+// only requests from these origins are accepted (mild abuse barrier)
+const ALLOWED_ORIGINS = [
+  'https://mpulsemedia.github.io',
+  'https://vampsf.com',
+  'https://www.vampsf.com',
+  'http://localhost',
+  'null',                            // file:// sends Origin: null
+];
+
+// only files matching this regex can be written (also a mild abuse barrier)
+const PATH_RE = /^[a-zA-Z0-9_\-]+\.json$/;
+
+function cors(origin) {
+  const allow = ALLOWED_ORIGINS.includes(origin) ? origin : 'null';
+  return {
+    'Access-Control-Allow-Origin': allow,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin',
+  };
+}
+
+function b64utf8(s) {
+  return btoa(unescape(encodeURIComponent(s)));
+}
+
+export default {
+  async fetch(request, env) {
+    const origin = request.headers.get('Origin') || '';
+    const headers = cors(origin);
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { headers, status: 204 });
+    }
+    if (request.method !== 'POST') {
+      return new Response('POST only', { status: 405, headers });
+    }
+    if (!ALLOWED_ORIGINS.includes(origin)) {
+      return new Response('forbidden origin', { status: 403, headers });
+    }
+    if (!env.GITHUB_PAT) {
+      return new Response('worker not configured: GITHUB_PAT secret missing', { status: 500, headers });
+    }
+
+    let body;
+    try { body = await request.json(); }
+    catch (e) { return new Response('invalid json', { status: 400, headers }); }
+
+    const path = (body.path || '').trim();
+    const content = body.content;
+    const message = body.message || `update ${path}`;
+    if (!PATH_RE.test(path)) {
+      return new Response('invalid path', { status: 400, headers });
+    }
+    if (typeof content !== 'string') {
+      return new Response('content (string) required', { status: 400, headers });
+    }
+
+    const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
+    const ghHeaders = {
+      'Authorization': `Bearer ${env.GITHUB_PAT}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'User-Agent': 'vampjam-worker',
+    };
+
+    // get current sha (if file exists)
+    let sha = null;
+    const getRes = await fetch(apiUrl, { headers: ghHeaders });
+    if (getRes.ok) {
+      const data = await getRes.json();
+      sha = data.sha || null;
+    } else if (getRes.status !== 404) {
+      const errText = await getRes.text();
+      return new Response(`github GET ${getRes.status}: ${errText}`, { status: 502, headers });
+    }
+
+    const putBody = { message, content: b64utf8(content) };
+    if (sha) putBody.sha = sha;
+
+    const putRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { ...ghHeaders, 'Content-Type': 'application/json' },
+      body: JSON.stringify(putBody),
+    });
+
+    if (!putRes.ok) {
+      const errText = await putRes.text();
+      return new Response(`github PUT ${putRes.status}: ${errText}`, { status: 502, headers });
+    }
+
+    const out = await putRes.json();
+    return new Response(JSON.stringify({ ok: true, sha: out.content &amp;&amp; out.content.sha }), {
+      headers: { ...headers, 'Content-Type': 'application/json' },
+    });
+  },
+};
+</pre></div></li>
+<li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span><span class="txt"><a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers-and-pages" target="_blank">open Workers &amp; Pages</a> &#8594; <b>vampjam-sync</b> &#8594; Edit code &#8594; select all, paste the copied code &#8594; Deploy</span></div></li>
+<li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span><span class="txt">or say &#8220;deploy sync_cors in Chrome&#8221; and I drive it the same way as the DNS</span></div></li>
 </ul></li>
-<li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span><span class="txt">fallback &#8212; if Add Web Forwarding wants a purchase or errors, say so and we skip straight to later_full (real DNS, below)</span></div></li>
-</ul></li>
-<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">later_full &#8212; vampsf.com becomes the real url (session + timestamp share links ride along natively)</span></div><ul>
-<li class="n" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt">at NetSol (forwarding OFF first): <b>Advanced DNS Records</b> &#8594; Manage &#8594; on the <code>@</code> row &#8942; Edit &#8594; first A record, then <b>Add Record</b> for the other three; delete the <code>www</code> A row and Add Record: CNAME <code>www</code> &#8594; <code>mpulsemedia.github.io</code> <span class="dom">#do</span> <button class="rowcopy">copy A records</button></span></div><ul>
-<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">apex A records</span></div><div class="codewrap"><pre>185.199.108.153
-185.199.109.153
-185.199.110.153
-185.199.111.153</pre></div></li>
-</ul></li>
-<li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span><span class="txt">tell me &#8594; I add the repo <code>CNAME</code> file + update &lt;title&gt;s and github.io references <span class="readym">#ready</span></span></div></li>
-<li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span><span class="txt">repo Settings &#8594; Pages &#8594; Custom domain = <code>vampsf.com</code>, then Enforce HTTPS once the cert issues <span class="dom">#do</span></span></div></li>
-<li class="n" data-l="d"><div class="row"><span class="tri">▶</span><span class="lbl">d</span><span class="txt">note: forwarding and DNS mode are either/or &#8212; the site serves at the domain root (no /vampjam path)</span></div></li>
-</ul></li>
-<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">dns_now &#8212; vampsf.com resolves to 208.91.197.27 (Web.com parking) &#8212; the domain is live and waiting</span></div></li></ul></li>
+<li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">https_check <span class="dom">#do</span> &#8212; <a href="https://github.com/mPulseMedia/vampjam/settings/pages" target="_blank">repo Settings &#8594; Pages</a>: Custom domain should read <code>vampsf.com</code>; tick <b>Enforce HTTPS</b> once the cert is issued (auto, after DNS verifies)</span></div></li>
+<li class="n" data-l="6"><div class="row"><span class="tri">▶</span><span class="lbl">6</span><span class="txt">verify <span class="dom">#do</span> &#8212; <a href="https://vampsf.com" target="_blank">vampsf.com</a> loads a session; after step 4, make a test highlight there and reload &#8212; it sticks</span></div></li>
+<li class="n" data-l="7"><div class="row"><span class="tri">▶</span><span class="lbl">7</span><span class="txt">share_note &#8212; once cutover completes, session + timestamp share links carry vampsf.com natively (no extra work)</span></div></li></ul></li>
 </ul></li>
 
 <li class="n sec" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">notes</span></div><ul>
@@ -438,7 +537,7 @@ report. If it demands a purchase or errors, STOP and tell me.
 </ul>
 </main>
 <script>
-  const BUILD='b10';
+  const BUILD='b11';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -893,7 +992,7 @@ report. If it demands a purchase or errors, STOP and tell me.
   const chip = document.getElementById('subchip');
   chip.title = 'click to reload now';
   chip.style.cursor = 'pointer';
-  chip.textContent = 'as of 8/14 2:04:30p';
+  chip.textContent = 'as of 8/14 2:18:30p';
   chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
   const h1 = document.querySelector('header h1');
   h1.style.cursor = 'pointer';

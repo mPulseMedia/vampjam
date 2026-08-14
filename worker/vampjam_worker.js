@@ -20,6 +20,8 @@ const REPO_NAME  = 'vampjam';
 // only requests from these origins are accepted (mild abuse barrier)
 const ALLOWED_ORIGINS = [
   'https://mpulsemedia.github.io',
+  'https://vampsf.com',
+  'https://www.vampsf.com',
   'http://localhost',
   'null',                            // file:// sends Origin: null
 ];
