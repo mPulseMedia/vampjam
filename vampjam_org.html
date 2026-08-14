@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>claude_cowork_org</title>
+<style>
+  :root {
+    --bg: #faf9f5; --bg2: #f0eee6; --bg3: #e8e5da;
+    --tx: #2d2b26; --tx2: #8f8d85; --mut: #8f8d85; --fs: 22px;
+    --acc: #d97757; --ok: #5b8a6e; --warn: #a8874f; --bad: #a86868;
+    --line: #e0ddd2; --code-bg: #262624; --code-tx: #f0efea;
+    --lbl: #cbc8bc;
+  }
+  html.night {
+    --bg: #181816; --bg2: #222220; --bg3: #2b2b28;
+    --tx: #f0efea; --tx2: #918f89; --mut: #918f89;
+    --acc: #d97757; --ok: #86b298; --warn: #c4a878; --bad: #c08d8d;
+    --line: #302f2c; --code-bg: #111110; --code-tx: #f0efea;
+    --lbl: #56554f;
+  }
+  @media (max-width: 760px) and (orientation: portrait) {
+    :root { --fs: 31px; }   /* mobile portrait only: ~40% bigger */
+    header { padding: 10px 12px 8px; gap: 8px; }
+    .controls { width: 100%; margin-left: 0; }
+    .controls button { padding: 6px 14px; }
+    #sbox { flex: 1 1 auto; width: auto; min-width: 120px; }
+    #subchip { min-width: 0; }
+    main { padding: 8px 10px 90px; }
+    ul.ol ul { padding-left: 18px; }
+    .codewrap, .tblwrap, figure { margin-left: 8px; }
+  }
+  .row:has(figure) { align-items: flex-start; }  /* label at TOP of images */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--tx);
+    font: var(--fs)/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  header {
+    padding: 14px 18px 10px; border-bottom: 1px solid var(--line);
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  }
+  header h1 { font-size: var(--fs); margin: 0; font-weight: 400; }
+  header .sub { color: var(--mut); font-size: var(--fs); }
+  .controls { margin-left: auto; display: flex; gap: 8px; }
+  .controls button {
+    background: var(--bg3); color: var(--tx2); border: 1px solid var(--line);
+    border-radius: 6px; padding: 4px 12px; font-size: var(--fs); cursor: pointer;
+  }
+  #subchip { min-width: 130px; font-variant-numeric: tabular-nums; }
+  #sbox {
+    background: var(--bg2); color: var(--tx); border: 1px solid var(--line);
+    border-radius: 6px; padding: 4px 12px; font-size: var(--fs); width: 210px;
+  }
+  #sbox:focus { outline: none; border-color: var(--acc); }
+  #thm {
+    width: 16px; height: 30px; border-radius: 8px; align-self: center;
+    margin-left: 6px; margin-right: 18px;
+    background: var(--bg3); border: 1px solid var(--line);
+    position: relative; cursor: pointer; flex: 0 0 auto; padding: 0;
+  }
+  #thm::after {
+    content: ''; position: absolute; left: 3px; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--acc); top: 4px;
+    transition: top .15s, background .15s;
+  }
+  html.night #thm::after { top: 16px; background: var(--mut); }
+  .rowcopy {
+    margin-left: auto; background: var(--bg3); color: var(--tx2);
+    border: 1px solid var(--line); border-radius: 5px; padding: 1px 12px;
+    font-size: calc(var(--fs) * 0.78); cursor: pointer; flex: 0 0 auto;
+  }
+  .rowcopy:active { background: var(--line); }
+  .report {
+    margin-left: auto; background: transparent; color: var(--tx2);
+    border: 1px solid var(--line); border-radius: 5px; padding: 1px 12px;
+    font-size: calc(var(--fs) * 0.78); cursor: pointer; flex: 0 0 auto;
+  }
+  .report:active { background: var(--bg3); }
+  .st {
+    margin-left: 12px; color: var(--tx); font-variant-numeric: tabular-nums;
+  }
+  .sd::before { content: '\25CF\00a0\00a0'; color: var(--mut); }
+  .sd.st_wait::before { color: var(--warn); }
+  .sd.st_ok::before { color: var(--ok); }
+  .sd.st_bad::before { color: var(--bad); }
+  .st_inline { margin-left: 14px; }
+  #crumbs {
+    display: none; gap: 8px; align-items: baseline; flex-wrap: wrap;
+    padding: 8px 18px; border-bottom: 1px solid var(--line);
+    font-size: calc(var(--fs) * 0.86);
+  }
+  .crumb { color: var(--tx); cursor: pointer; }
+  .crumb .clbl { color: var(--mut); margin-right: 8px; }
+  .youare {
+    color: var(--acc); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
+  .donem {
+    color: var(--ok); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
+  #rn_tbl td.cc { cursor: pointer; }
+  #rn_tbl td.cc:hover { background: var(--bg3); }
+  #rn_tbl td.ccdone { outline: 2px solid var(--ok); outline-offset: -2px; }
+  .nextm {
+    color: var(--warn); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
+  li.has_here > .row > .txt::after { content: ' \25B8'; color: var(--acc); }
+  .crumb:hover { text-decoration: underline; }
+  .crumb.cur { color: var(--tx); cursor: default; }
+  .csep { color: var(--mut); }
+  li.zhide { display: none !important; }
+  li.zanc > .row { display: none; }
+  li.zanc > ul { padding-left: 0; display: block !important; }
+  .st + .report { margin-left: 0; }
+  body.filtering li.sc.closed > .codewrap { display: none; }
+  body.filtering li.n.hid { display: none; }
+  body.filtering li.closed > ul { display: block; }
+  body.filtering li.closed > .tblwrap, body.filtering li.closed > figure,
+  body.filtering li.closed > .codewrap { display: block; }
+  body.filtering li.srev li.n.hid { display: list-item; }
+  body.filtering li.sclose > ul, body.filtering li.sclose > .tblwrap,
+  body.filtering li.sclose > figure,
+  body.filtering li.sclose > .codewrap { display: none !important; }
+  #dropbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    background: var(--bg2); border-bottom: 1px solid var(--line);
+    padding: 14px 18px; text-align: center; cursor: pointer;
+    font-variant-numeric: tabular-nums;
+    transform: perspective(700px) rotateX(-95deg); transform-origin: top;
+    transition: transform .45s ease;
+  }
+  #dropbar.show { transform: perspective(700px) rotateX(0deg); }
+  main { max-width: 980px; margin: 0 auto; padding: 10px 16px 90px; }
+
+  ul.ol { list-style: none; margin: 0; padding: 0; }
+  ul.ol ul { list-style: none; margin: 0; padding: 0 0 0 30px; }
+  li.n { position: relative; margin: 1px 0; }
+  .row {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 3px 6px 3px 2px; border-radius: 6px;
+  }
+  .row:hover { background: var(--bg2); }
+  .tri {
+    flex: 0 0 18px; width: 18px; text-align: center; cursor: pointer;
+    color: var(--mut); font-size: 14px; user-select: none;
+    transition: transform .12s; transform: rotate(90deg);
+  }
+  li.closed > .row .tri { transform: rotate(0deg); }
+  li.leaf > .row .tri { visibility: hidden; }
+  .lbl {
+    flex: 0 0 30px; text-align: right; color: var(--lbl);
+    font-size: var(--fs); font-variant-numeric: tabular-nums;
+  }
+  .txt { flex: 1; min-width: 0; }
+  .txt b { font-weight: 650; }
+  .txt code {
+    font-size: calc(var(--fs) * 0.92); font-family: ui-monospace, Menlo, monospace;
+    background: var(--bg2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 0 9px; color: #e08d79;
+  }
+  li.closed > ul { display: none; }
+  li.closed > .tblwrap, li.closed > figure, li.closed > .codewrap { display: none; }
+
+  li.sec { margin-top: 18px; }
+  li.sec > .row { padding: 6px 6px 6px 2px; }
+  li.sec > .row .txt { font-size: var(--fs); }
+  
+
+  .tag { margin-left: 8px; color: var(--tx2); }
+  .tag::before { content: "— "; }
+
+  .hl-ok, .hl-warn, .hl-bad { color: inherit; }
+
+  .codewrap { position: relative; margin: 6px 0 6px 56px; max-width: 860px; }
+  pre {
+    background: var(--code-bg); color: var(--code-tx); border-radius: 8px;
+    padding: 13px 15px; overflow-x: auto; font-size: var(--fs); line-height: 1.55;
+    font-family: ui-monospace, Menlo, monospace; margin: 0; white-space: pre;
+  }
+  .copybtn {
+    position: absolute; top: 8px; right: 8px; font-size: var(--fs);
+    background: #ffffff22; color: #fff; border: 1px solid #ffffff33;
+    border-radius: 5px; padding: 3px 10px; cursor: pointer;
+  }
+  .copybtn:active { background: #ffffff44; }
+
+  figure { margin: 4px 0 8px 56px; max-width: 880px; }
+  figure svg { width: 100%; height: auto; display: block; }
+  figcaption { font-size: var(--fs); color: var(--mut); margin-top: 3px; }
+  svg text { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+  .tblwrap { margin: 6px 0 8px 56px; overflow-x: auto; }
+  table { border-collapse: collapse; font-size: calc(var(--fs) * 0.86); }
+  th, td { text-align: left; padding: 5px 14px 5px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--tx2); font-weight: 400; }
+  td a { color: var(--acc); text-decoration: none; }
+  .txt a { color: var(--acc); text-decoration: none; }
+  .txt a:hover { text-decoration: underline; }
+  td a:hover { text-decoration: underline; }
+
+</style>
+<script>
+(function(){var o=null;try{o=localStorage.getItem('claude_cowork_org_theme')}catch(e){}
+var n=o?o==='night':window.matchMedia('(prefers-color-scheme: dark)').matches;
+if(n)document.documentElement.classList.add('night');})();
+</script>
+</head>
+<body>
+<header>
+  <h1>claude_cowork_org</h1>
+  <span class="sub" id="subchip"></span>
+  <div class="controls">
+    <button onclick="setAll(false)">open</button>
+    <button onclick="setAll(true)">close</button>
+    <input id="sbox" type="search" placeholder="search" autocomplete="off">
+    <div id="thm"></div>
+  </div>
+</header>
+<main>
+<ul class="ol" id="root">
+
+<li class="n sec" data-l="1">
+  <div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+    <span class="txt">now <span class="tag">the live board — dots are real, fed by the watcher every 3s</span></span></div>
+  <ul>
+    <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span>
+      <span class="txt"><span class="sd" data-for="st_w"></span>watcher <button class="rowcopy">copy script watcher_restart</button> <span class="tag">paste into a fresh terminal after any restart — it feeds every dot on this page</span> <span class="st" id="st_w">not running</span></span></div>
+      <ul>
+        <li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">script</span></div>
+          <div class="codewrap"><pre>:
+echo '********************************************'
+echo '**                                        **'
+echo '**            watcher_restart             **'
+echo '**                                        **'
+echo '********************************************'
+:
+bash "$HOME/claude_cowork/private/claude_cowork_org/triage_verify.sh"</pre></div>
+        </li>
+      </ul>
+    </li>
+    <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span>
+      <span class="txt"><span class="sd" data-for="st_ag"></span>login_robots <span class="st" id="st_ag">watcher off</span> <span class="tag">the four 8/13 revivals — the older four (lab · vampjam · partyline · cb) prove themselves by pushing</span></span></div></li>
+    <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span>
+      <span class="txt"><span class="sd" data-for="st_six"></span>six_backup <span class="st" id="st_six">watcher off</span></span></div></li>
+    <li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span>
+      <span class="txt"><span class="sd" data-for="st_pv"></span>private_folder <span class="st" id="st_pv">watcher off</span> <span class="tag">goes green on its own once the private robot is live (3D)</span></span></div></li>
+    <li class="n next" data-l="E"><div class="row"><span class="tri">▶</span><span class="lbl">E</span>
+      <span class="txt"><span class="sd" data-for="st_cm"></span>commit_name <button class="rowcopy">copy name</button> <span class="tag">until the private robot is on: click · paste into the github app summary · commit · Push origin</span> <span class="st" id="st_cm">watcher off</span> <span class="nextm">#next</span></span></div>
+      <ul>
+        <li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">name</span></div>
+          <div class="codewrap"><pre>page_rehouse</pre></div>
+        </li>
+        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+          <span class="txt">expect <span class="tag">the dot goes green when a commit with exactly this name lands; after the robot is live this row retires</span></span></div></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="n sec" data-l="2">
+  <div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+    <span class="txt">next <span class="tag">the recommendation list, reordered for where you are now</span></span></div>
+  <ul>
+    <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span>
+      <span class="txt">local_only_move — unclutter the workspace root <span class="tag">the active project · runbook at section 3</span> <span class="nextm">#next</span></span></div></li>
+    <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span>
+      <span class="txt">private_robot — private saves itself like lab does <span class="tag">files already on disk · one paste at 4D</span> <span class="nextm">#next</span></span></div></li>
+    <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span>
+      <span class="txt">walkie_fix — the one github-pages click only you can make <span class="tag">open the walkie_talkie pages setting · deploy from branch main / root · save · tell me</span></span></div></li>
+    <li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span>
+      <span class="txt">fix_pops <button class="rowcopy">copy prompt fix_pops</button> <span class="tag">the pops page is sparse with a broken image — say the word and I dig in</span></span></div>
+      <ul>
+        <li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">prompt</span></div>
+          <div class="codewrap"><pre>fix_pops — the pops live page loads sparse with a broken image.
+dig into the repo, fix the page, and decide with me whether pops
+folds into pops26 or stays its own repo.
+-- paste this into claude_cowork_org_2 thread</pre></div>
+        </li>
+      </ul>
+    </li>
+    <li class="n" data-l="E"><div class="row"><span class="tri">▶</span><span class="lbl">E</span>
+      <span class="txt">key_keychain — api_key.txt sits in plaintext in claude_cowork_admin <span class="tag">worth moving to the keychain once local_only settles</span></span></div></li>
+    <li class="n" data-l="F"><div class="row"><span class="tri">▶</span><span class="lbl">F</span>
+      <span class="txt">now3_name — the last "bash" row in login items is the now3 relay <span class="tag">say the word and it gets a named start file like the others</span></span></div></li>
+  </ul>
+</li>
+
+<li class="n sec" data-l="3">
+  <div class="row"><span class="tri">▶</span><span class="lbl">3</span>
+    <span class="txt">local_only <span class="tag">the third special folder — private · lab · local_only</span></span></div>
+  <ul>
+    <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span>
+      <span class="txt">the idea — everything with no repo moves under one roof, one project at a time, watching for breakage after each move</span></div></li>
+    <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span>
+      <span class="txt">movers — in risk order</span></div>
+      <div class="tblwrap"><table>
+        <tr><th>order</th><th>folder</th><th>risk</th><th>why</th></tr>
+        <tr><td>1</td><td>drive_claude · claude_cowork_admin</td><td>none</td><td>empty + standalone pages — the test movers</td></tr>
+        <tr><td>2</td><td>Maple</td><td>low</td><td>self-contained; one maple-log link on this page to refix</td></tr>
+        <tr><td>3</td><td>dev · dev other</td><td>low</td><td>old piles, no automation — just bulk</td></tr>
+        <tr><td>4</td><td>connection_loop</td><td>medium</td><td>workflowy scripts may carry absolute paths — last, checked after</td></tr>
+        <tr><td>—</td><td>claude_trash</td><td>stays</td><td>the soft-delete bin stays at the root by rule</td></tr>
+      </table></div></li>
+    <li class="n next" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span>
+      <span class="txt">local_only_first <button class="rowcopy">copy script local_only_first</button> <span class="tag">paste into a fresh terminal — creates the folder and moves the two test movers</span> <span class="nextm">#next</span></span></div>
+      <ul>
+        <li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">script</span></div>
+          <div class="codewrap"><pre>:
+echo '********************************************'
+echo '**                                        **'
+echo '**            local_only_first            **'
+echo '**                                        **'
+echo '********************************************'
+:
+mkdir -p "$HOME/claude_cowork/local_only"
+mv "$HOME/claude_cowork/drive_claude" "$HOME/claude_cowork/local_only/"
+mv "$HOME/claude_cowork/claude_cowork_admin" "$HOME/claude_cowork/local_only/"
+ls "$HOME/claude_cowork/local_only"</pre></div>
+        </li>
+        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+          <span class="txt">expect <span class="tag">the ls prints the two folder names; paste the output here and I check nothing broke, then hand you the next mover</span></span></div></li>
+      </ul>
+    </li>
+    <li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span>
+      <span class="txt">staged — the next three pastes, one per confirmation</span></div>
+      <ul>
+        <li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">local_only_maple <button class="rowcopy">copy script local_only_maple</button></span></div>
+          <div class="codewrap"><pre>:
+echo '********************************************'
+echo '**                                        **'
+echo '**            local_only_maple            **'
+echo '**                                        **'
+echo '********************************************'
+:
+mv "$HOME/claude_cowork/Maple" "$HOME/claude_cowork/local_only/"
+ls "$HOME/claude_cowork/local_only"</pre></div>
+        </li>
+        <li class="n sc" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+          <span class="txt">local_only_dev <button class="rowcopy">copy script local_only_dev</button></span></div>
+          <div class="codewrap"><pre>:
+echo '********************************************'
+echo '**                                        **'
+echo '**             local_only_dev             **'
+echo '**                                        **'
+echo '********************************************'
+:
+mv "$HOME/claude_cowork/dev" "$HOME/claude_cowork/local_only/"
+mv "$HOME/claude_cowork/dev other" "$HOME/claude_cowork/local_only/"
+ls "$HOME/claude_cowork/local_only"</pre></div>
+        </li>
+        <li class="n sc" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span>
+          <span class="txt">local_only_loop <button class="rowcopy">copy script local_only_loop</button> <span class="tag">last — I check its scripts for absolute paths before you run it</span></span></div>
+          <div class="codewrap"><pre>:
+echo '********************************************'
+echo '**                                        **'
+echo '**            local_only_loop             **'
+echo '**                                        **'
+echo '********************************************'
+:
+mv "$HOME/claude_cowork/connection_loop" "$HOME/claude_cowork/local_only/"
+ls "$HOME/claude_cowork/local_only"</pre></div>
+        </li>
+      </ul>
+    </li>
+    <li class="n" data-l="E"><div class="row"><span class="tri">▶</span><span class="lbl">E</span>
+      <span class="txt">after each move — I refix the links this page owns (3D table · maple log) and note anything else that referenced the old path</span></div></li>
+  </ul>
+</li>
+
+<li class="n sec" data-l="4">
+  <div class="row"><span class="tri">▶</span><span class="lbl">4</span>
+    <span class="txt">auto_push <span class="tag">the machine that saves your work — every component, one place</span></span></div>
+  <ul>
+    <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span>
+      <span class="txt">how it works — four parts per project</span></div>
+      <ul>
+        <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">a start file in Library/LaunchAgents — macOS runs it at login and every 60s <span class="tag">named auto_push_&lt;project&gt;.sh in the settings list since 8/13</span></span></div></li>
+        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+          <span class="txt">the script itself in &lt;project&gt;_admin/ — waits for quiet, commits, pushes</span></div></li>
+        <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span>
+          <span class="txt">the save-note &lt;project&gt;_admin/commit_msg.txt — line 1 names the next commit, then resets to auto_commit</span></div></li>
+        <li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span>
+          <span class="txt">the proof — a fresh commit on github; the dots at section 1 watch the ones that matter</span></div></li>
+      </ul>
+    </li>
+    <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span>
+      <span class="txt">auto_push_map — who pushes where</span></div>
+      <figure>
+      <svg viewBox="0 0 940 770" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--warn)"/>
+          </marker>
+          <marker id="argB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--ok)"/>
+          </marker>
+        </defs>
+        <g font-size="17" fill="var(--tx)">
+          <text x="30" y="30" fill="var(--tx2)" font-size="15">mac — ~/claude_cowork/</text>
+          <text x="910" y="30" fill="var(--tx2)" font-size="15" text-anchor="end">github — mPulseMedia</text>
+
+          <rect x="30" y="50" width="300" height="86" rx="10" fill="var(--bg2)" stroke="var(--tx)"/>
+          <text x="50" y="80">lab_repo <tspan fill="var(--tx2)" font-size="15">· public hub</tspan></text>
+          <text x="50" y="106" fill="var(--tx2)" font-size="15">~35 subprojects live inside it</text>
+
+          <rect x="30" y="150" width="300" height="86" rx="10" fill="var(--bg2)" stroke="var(--tx)"/>
+          <text x="50" y="180">private <tspan fill="var(--tx2)" font-size="15">· private hub</tspan></text>
+          <text x="50" y="206" fill="var(--tx2)" font-size="15">page · spec · logs · export</text>
+
+          <rect x="30" y="260" width="300" height="42" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="50" y="287">vampjam</text>
+          <rect x="30" y="312" width="300" height="42" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="50" y="339">partyline</text>
+          <rect x="30" y="364" width="300" height="42" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="50" y="391">cb-radio</text>
+
+          <rect x="30" y="430" width="300" height="180" rx="10" fill="none" stroke="var(--ok)"/>
+          <text x="50" y="458">resurrect group <tspan fill="var(--tx2)" font-size="15">· live 8/13</tspan></text>
+          <text x="50" y="486" fill="var(--tx2)" font-size="15">speech_to_outline · walkie_talkie</text>
+          <text x="50" y="509" fill="var(--tx2)" font-size="15">storycall · pops — 4 new robots</text>
+          <text x="50" y="537" fill="var(--tx2)" font-size="15">claude_arch — uploaded · no robot</text>
+          <text x="50" y="560" fill="var(--tx2)" font-size="15">storycall_corp — manual by choice</text>
+          <text x="50" y="588" fill="var(--warn)" font-size="14">storycall.org is production — hands off</text>
+
+          <rect x="30" y="634" width="300" height="120" rx="10" fill="none" stroke="var(--line)" stroke-dasharray="2 4"/>
+          <text x="50" y="662">local_only — no repo</text>
+          <text x="50" y="688" fill="var(--tx2)" font-size="15">Maple · connection_loop</text>
+          <text x="50" y="711" fill="var(--tx2)" font-size="15">claude_cowork_admin · lab_admin · dev ×2</text>
+          <text x="50" y="734" fill="var(--tx2)" font-size="15">claude_trash · drive_claude</text>
+
+          <rect x="690" y="50" width="220" height="42" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="710" y="77">lab</text>
+          <rect x="690" y="150" width="220" height="42" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="710" y="177">private</text>
+          <rect x="690" y="260" width="220" height="42" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="710" y="287">vampjam</text>
+          <rect x="690" y="312" width="220" height="42" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="710" y="339">partyline</text>
+          <rect x="690" y="364" width="220" height="42" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="710" y="391">cb-radio</text>
+
+          <rect x="690" y="430" width="220" height="180" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="710" y="458">all six uploaded ✓</text>
+          <text x="710" y="486" fill="var(--tx2)" font-size="15">fresh commits 8/13</text>
+          <text x="710" y="509" fill="var(--tx2)" font-size="15">walkie page still blank —</text>
+          <text x="710" y="532" fill="var(--tx2)" font-size="15">your deploy click at 7D3</text>
+
+          <line x1="330" y1="71" x2="682" y2="71" stroke="var(--ok)" stroke-width="2" marker-end="url(#argB)"/>
+          <text x="506" y="60" text-anchor="middle" fill="var(--ok)" font-size="14">launchd auto-push · clean</text>
+
+          <line x1="330" y1="171" x2="682" y2="171" stroke="var(--ok)" stroke-width="2" marker-end="url(#argB)"/>
+          <text x="506" y="160" text-anchor="middle" fill="var(--warn)" font-size="14">manual today — its own robot is staged below (3D)</text>
+
+          <line x1="330" y1="281" x2="682" y2="281" stroke="var(--ok)" stroke-width="2" marker-end="url(#argB)"/>
+          <text x="506" y="270" text-anchor="middle" fill="var(--ok)" font-size="14">launchd auto-push</text>
+
+          <line x1="330" y1="333" x2="682" y2="333" stroke="var(--ok)" stroke-width="2" marker-end="url(#argB)"/>
+          <text x="506" y="322" text-anchor="middle" fill="var(--ok)" font-size="14">launchd auto-push</text>
+
+          <line x1="330" y1="385" x2="682" y2="385" stroke="var(--ok)" stroke-width="2" marker-end="url(#argB)"/>
+          <text x="506" y="374" text-anchor="middle" fill="var(--ok)" font-size="14">launchd auto-push · revived 8/13</text>
+
+          <line x1="330" y1="520" x2="682" y2="520" stroke="var(--ok)" stroke-width="2" marker-end="url(#argB)"/>
+          <text x="506" y="509" text-anchor="middle" fill="var(--ok)" font-size="14">4 robots auto-push · 2 go by hand</text>
+
+          <text x="635" y="690" text-anchor="middle" fill="var(--tx2)" font-size="15">nothing leaves the mac —</text>
+          <text x="635" y="713" text-anchor="middle" fill="var(--tx2)" font-size="15">by design (Maple) or by default (dev piles)</text>
+        </g>
+      </svg>
+      <figcaption>the auto_push map — solid green flows on its own · the private line goes green when you load its robot below</figcaption>
+      </figure>
+    </li>
+    <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span>
+      <span class="txt">script_map — every background script, folder by folder</span></div>
+      <div class="tblwrap"><table>
+        <tr><th>folder</th><th>script</th><th>kind</th><th>what it does</th><th>how it starts</th><th>after a restart</th><th>proof it's alive</th></tr>
+        <tr><td>lab_repo</td><td>auto_push_lab.sh</td><td>login_robot</td><td>saves + uploads 15s after any change</td><td>login — automatic</td><td>comes back by itself</td><td>github shows a fresh commit</td></tr>
+        <tr><td>vampjam</td><td>auto_push_vampjam.sh</td><td>login_robot</td><td>same</td><td>login — automatic</td><td>comes back by itself</td><td>github fresh</td></tr>
+        <tr><td>partyline</td><td>auto_push_partyline.sh</td><td>login_robot</td><td>same</td><td>login — automatic</td><td>comes back by itself</td><td>github fresh</td></tr>
+        <tr><td>cb-radio</td><td>auto_push_cb_radio.sh</td><td>login_robot</td><td>same</td><td>login — automatic</td><td>comes back by itself</td><td>github fresh</td></tr>
+        <tr><td>speech_to_outline</td><td>auto_push_speech_to_outline.sh</td><td>login_robot</td><td>same <span class="tag">new 8/13</span></td><td>login — automatic</td><td>comes back by itself</td><td>auto-save row at <a href="#1">the live board</a></td></tr>
+        <tr><td>walkie_talkie</td><td>auto_push_walkie_talkie.sh</td><td>login_robot</td><td>same <span class="tag">new 8/13</span></td><td>login — automatic</td><td>comes back by itself</td><td>auto-save row at <a href="#1">the live board</a></td></tr>
+        <tr><td>storycall</td><td>auto_push_storycall.sh</td><td>login_robot</td><td>same <span class="tag">new 8/13</span></td><td>login — automatic</td><td>comes back by itself</td><td>auto-save row at <a href="#1">the live board</a></td></tr>
+        <tr><td>pops</td><td>auto_push_pops.sh</td><td>login_robot</td><td>same <span class="tag">new 8/13</span></td><td>login — automatic</td><td>comes back by itself</td><td>auto-save row at <a href="#1">the live board</a></td></tr>
+        <tr><td>storycall_corp</td><td>auto_push_storycall_corp.sh</td><td>login_robot</td><td>manual by choice — robot removed 8/13</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>private</td><td>START_auto_sync.command</td><td>window_loop</td><td>save + upload loop, 10s settle</td><td>you double-click it</td><td>gone — double-click again</td><td>its terminal window is open</td></tr>
+        <tr><td>private</td><td>COMMIT_now.command</td><td>one_shot</td><td>one save; offers the codename from commit_desc.txt</td><td>you double-click it</td><td>one-shot — nothing to survive</td><td>—</td></tr>
+        <tr><td>private/claude_cowork_org</td><td>triage_verify.sh</td><td>window_loop</td><td>read-only checker that feeds this page's circles</td><td>you paste it <span class="tag">7A3</span></td><td>gone — repaste</td><td>watcher row at <a href="#1">the live board</a> flips green</td></tr>
+        <tr><td>private/claude_cowork_org</td><td>purge_verify.sh</td><td>retired</td><td>retired — the purge is done</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>lab_repo/now3 + wf + cl</td><td>now3_watch · wf_watch · cl_watch</td><td>mixed</td><td>workflowy relays</td><td>double-click; now3 has a login file too</td><td>can't see from here — check after next restart</td><td>their terminal windows</td></tr>
+        <tr><td>connection_loop</td><td>push_wf_* and friends</td><td>one_shot</td><td>one-shot workflowy pushes</td><td>you double-click one</td><td>one-shots — nothing to survive</td><td>—</td></tr>
+      </table></div>
+    </li>
+    <li class="n next" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span>
+      <span class="txt">private_robot — the private folder adopts the lab flow <span class="tag">you never touch it again; files are already on disk</span> <span class="nextm">#next</span></span></div>
+      <ul>
+        <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">what I placed — private_admin/auto_push_private.sh + its start file, modeled on lab's</span></div></li>
+        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+          <span class="txt">the twist — it names each commit from commit_desc line 1, so the codename tie survives automation; a name is used once, then commits fall back to auto_commit</span></div></li>
+        <li class="n sc" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span>
+          <span class="txt">private_robot_on <button class="rowcopy">copy script private_robot_on</button> <span class="tag">paste into a fresh terminal</span></span></div>
+          <div class="codewrap"><pre>:
+echo '********************************************'
+echo '**                                        **'
+echo '**            private_robot_on            **'
+echo '**                                        **'
+echo '********************************************'
+:
+cp "$HOME/claude_cowork/private/private_admin/com.pauldsmith.autopush.private.plist" "$HOME/Library/LaunchAgents/"
+launchctl unload "$HOME/Library/LaunchAgents/com.pauldsmith.autopush.private.plist" 2>/dev/null
+launchctl load "$HOME/Library/LaunchAgents/com.pauldsmith.autopush.private.plist"</pre></div>
+        </li>
+        <li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span>
+          <span class="txt">expect <span class="tag">within a minute the pending batch commits itself as page_rehouse and pushes; the private dot at 1D goes green on its own from then on</span></span></div></li>
+        <li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span>
+          <span class="txt">COMMIT_now and the github app stay as the manual override — nothing is taken away</span></div></li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="n sec" data-l="5">
+  <div class="row"><span class="tri">▶</span><span class="lbl">3</span>
+    <span class="txt">repo_map <span class="tag">11 folders tied to github (all mPulseMedia)</span></span></div>
+  <ul>
+    <li class="n" data-l="A">
+      <div class="row"><span class="tri">▶</span><span class="lbl">A</span>
+      <span class="txt">table <span class="tag">refreshed 8/13 evening · dirty = unsaved edits right now</span></span></div>
+      <div class="tblwrap"><table>
+        <tr><th>folder</th><th>remote</th><th>auto push</th><th>dirty</th><th>last commit</th></tr>
+        <tr><td>lab_repo</td><td>lab · ssh</td><td>launchd</td><td>0</td><td>2026-08-13</td></tr>
+        <tr><td>private</td><td>private · https</td><td>manual watcher</td><td>2</td><td>2026-08-13</td></tr>
+        <tr><td>vampjam</td><td>vampjam · ssh</td><td>launchd</td><td>0</td><td>2026-08-13</td></tr>
+        <tr><td>partyline</td><td>partyline · ssh</td><td>launchd</td><td>2</td><td>2026-07-27</td></tr>
+        <tr><td>cb-radio</td><td>cb-radio · https</td><td>launchd</td><td>9</td><td>2026-04-01</td></tr>
+        <tr><td>claude_arch</td><td>claude_arch · ssh</td><td>none</td><td>4</td><td>2026-08-13</td></tr>
+        <tr><td>speech_to_outline</td><td>speech_to_outline · ssh</td><td>none</td><td>0</td><td>2026-08-13</td></tr>
+        <tr><td>walkie_talkie</td><td>walkie_talkie · ssh</td><td>none</td><td>2</td><td>2026-08-13</td></tr>
+        <tr><td>storycall</td><td>storycall · ssh</td><td>none</td><td>1</td><td>2026-08-13</td></tr>
+        <tr><td>storycall_corp</td><td>storycall_corp · ssh</td><td>none</td><td>3</td><td>2026-08-13</td></tr>
+        <tr><td>pops</td><td>pops · ssh</td><td>none</td><td>5</td><td>2026-08-13</td></tr>
+      </table></div>
+      <ul>
+        <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">remote = the repo this folder pushes to — github.com/mPulseMedia/&lt;name&gt;</span></div></li>
+        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+          <span class="txt">ssh vs https = how git logs in: key on your mac vs token <span class="tag">both fine, no action needed</span></span></div></li>
+      </ul>
+    </li>
+    <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span>
+      <span class="txt">hub_pattern <span class="tag">working as designed</span></span></div>
+      <ul>
+        <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt"><code>lab_repo</code> — public hub; ~35 subprojects share one repo + one auto-push</span></div></li>
+        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+          <span class="txt"><code>private</code> — private hub; estate/ · claude_export · claude_cowork_org (this page)</span></div></li>
+        <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span>
+          <span class="txt">graduated: vampjam, partyline — own repo + launchd push</span></div></li>
+      </ul>
+    </li>
+    <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span>
+      <span class="txt">resurrect group — all six uploaded ✓ <span class="tag">live status on the board at 1C</span></span></div>
+      <ul>
+        <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">was true: 100+ files existed only on this laptop</span></div></li>
+        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+          <span class="txt">the backup pass at <a href="#1">the live board</a> is fixing that — claude_arch, storycall, pops already uploaded</span></div></li>
+        <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span>
+          <span class="txt">still true: none of the six auto-save</span></div></li>
+        <li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span>
+          <span class="txt">you decide that per folder at 7A5 "decide" — bring back adds auto-save; the other choices don't need it</span></div></li>
+      </ul>
+    </li>
+    <li class="n" data-l="D">
+      <div class="row"><span class="tri">▶</span><span class="lbl">D</span>
+      <span class="txt">folder_link — everything tied to each folder <span class="tag">links are clickable · — means none found</span></span></div>
+      <div class="tblwrap"><table>
+        <tr><th>folder</th><th>github</th><th>auto-save</th><th>hub</th><th>public url</th><th>prompt_log</th><th>google drive</th><th>also tied</th></tr>
+        <tr><td>lab_repo</td><td><a href="https://github.com/mPulseMedia/lab" target="_blank">lab</a></td><td>auto_push_lab.sh ✓</td><td>1</td><td><a href="https://mpulsemedia.github.io/lab/" target="_blank">github.io/lab</a></td><td><a href="https://mpulsemedia.github.io/lab/prompt_log/prompt_log_lab.html" target="_blank">published log</a> · <a href="https://mpulsemedia.github.io/lab/prompt_log/prompt_log_everything.html#lab_repo" target="_blank">everything</a></td><td><a href="https://drive.google.com/drive/folders/1DRQwWMY_x3zwXskFF6TlukIFkffkdbU3" target="_blank">__tee time</a> <span class="tag">per subproject</span></td><td>hub.html</td></tr>
+        <tr><td>private</td><td><a href="https://github.com/mPulseMedia/private" target="_blank">private</a></td><td>manual — COMMIT_now</td><td></td><td>—</td><td><a href="file:///Users/pauldsmith/claude_cowork/private/prompt_log/index.html" target="_blank">cowork log</a> · <a href="https://github.com/mPulseMedia/private/tree/main/prompt_log" target="_blank">github</a> · <a href="https://mpulsemedia.github.io/lab/prompt_log/prompt_log_everything.html#thread_estate_tax25_notes1" target="_blank">estate thread</a></td><td><a href="https://drive.google.com/drive/folders/1cajJ3mbQtUHQeTeiriqR8lTvcBnjm9FF" target="_blank">__estate</a></td><td>this page · the logs · the export · manual sync</td></tr>
+        <tr><td>vampjam</td><td><a href="https://github.com/mPulseMedia/vampjam" target="_blank">vampjam</a></td><td>auto_push_vampjam.sh ✓</td><td>1</td><td><a href="https://mpulsemedia.github.io/vampjam/" target="_blank">github.io/vampjam</a></td><td>—</td><td><a href="https://drive.google.com/drive/folders/1mqclh1ugyodyStw1q01YxItkaZmN8vjG" target="_blank">vamp jam</a></td><td>cloudflare worker</td></tr>
+        <tr><td>partyline</td><td><a href="https://github.com/mPulseMedia/partyline" target="_blank">partyline</a></td><td>auto_push_partyline.sh ✓</td><td>1</td><td><a href="https://mpulsemedia.github.io/partyline/" target="_blank">github.io/partyline</a></td><td><a href="https://mpulsemedia.github.io/lab/prompt_log/prompt_log_everything.html#thread_pl" target="_blank">lab log · its thread</a></td><td>—</td><td>own backend</td></tr>
+        <tr><td>cb-radio</td><td><a href="https://github.com/mPulseMedia/cb-radio" target="_blank">cb-radio</a></td><td>auto_push_cb_radio.sh ✓ <span class="tag">revived 8/13</span></td><td></td><td>— <span class="tag">no site published</span></td><td>—</td><td>—</td><td>ssh remote ✓</td></tr>
+        <tr><td>claude_arch</td><td><a href="https://github.com/mPulseMedia/claude_arch" target="_blank">claude_arch</a></td><td>—</td><td></td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>speech_to_outline</td><td><a href="https://github.com/mPulseMedia/speech_to_outline" target="_blank">speech_to_outline</a></td><td>auto_push_speech_to_outline.sh ✓</td><td>1</td><td><a href="https://mpulsemedia.github.io/speech_to_outline/" target="_blank">github.io/speech…</a></td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td>walkie_talkie</td><td><a href="https://github.com/mPulseMedia/walkie_talkie" target="_blank">walkie_talkie</a></td><td>auto_push_walkie_talkie.sh ✓</td><td>1</td><td><a href="https://mpulsemedia.github.io/walkie_talkie/" target="_blank">github.io/walkie…</a> <span class="tag">blank — walkie_fix at 2C</span></td><td><a href="https://mpulsemedia.github.io/lab/prompt_log/prompt_log_everything.html#thread_wt1" target="_blank">lab log · its thread</a></td><td>—</td><td>—</td></tr>
+        <tr><td>storycall</td><td><a href="https://github.com/mPulseMedia/storycall" target="_blank">storycall</a></td><td>auto_push_storycall.sh ✓</td><td>1</td><td><a href="https://mpulsemedia.github.io/lab/prompt_log/prompt_log_everything.html#thread_sc1" target="_blank">lab log · its thread</a></td><td>—</td><td><a href="https://drive.google.com/drive/folders/1xzjcrldyUow6N9tAXeKu58oppoa6B0RF" target="_blank">storycall</a></td><td>—</td></tr>
+        <tr><td>storycall_corp</td><td><a href="https://github.com/mPulseMedia/storycall_corp" target="_blank">storycall_corp</a></td><td>manual by choice</td><td>1</td><td><a href="https://storycall.org" target="_blank">storycall.org</a></td><td>—</td><td>—</td><td>owns the domain</td></tr>
+        <tr><td>pops</td><td><a href="https://github.com/mPulseMedia/pops" target="_blank">pops</a></td><td>auto_push_pops.sh ✓</td><td>1</td><td><a href="https://mpulsemedia.github.io/pops/" target="_blank">github.io/pops</a></td><td>—</td><td><a href="https://drive.google.com/drive/folders/1mI5vpJFz6JRAehaOGElMFGDiWCyrYx6u" target="_blank">__pops_book_recordings</a></td><td>—</td></tr>
+        <tr><td>lab_repo/pops26</td><td><a href="https://github.com/mPulseMedia/lab" target="_blank">lab</a></td><td>rides lab's robot</td><td>1</td><td><a href="https://mpulsemedia.github.io/lab/pops26/pops26.html" target="_blank">github.io/lab/pops26</a></td><td>—</td><td>—</td><td>reigh's page · rides lab's auto-save</td></tr>
+        <tr><td>Maple</td><td>—</td><td>—</td><td></td><td>—</td><td><a href="file:///Users/pauldsmith/claude_cowork/Maple/prompt_log/prompt_log.html" target="_blank">maple log</a> <span class="tag">local only</span></td><td><a href="https://drive.google.com/drive/folders/1Z6ycqFxL5nloW12YJlrt-RBxUD7GS3Ct" target="_blank">MapleRentalCT</a></td><td>property pdfs · local only</td></tr>
+        <tr><td>private/prompt_log</td><td><a href="https://github.com/mPulseMedia/private/tree/main/prompt_log" target="_blank">private/prompt_log</a></td><td>rides private's manual save</td><td></td><td>—</td><td><a href="file:///Users/pauldsmith/claude_cowork/private/prompt_log/index.html" target="_blank">the cowork log itself</a></td><td>—</td><td>archive + thread/ files · moved by log_home (77)</td></tr>
+        <tr><td>connection_loop</td><td>—</td><td>—</td><td></td><td>—</td><td>—</td><td>—</td><td>workflowy push scripts</td></tr>
+        <tr><td>claude_cowork_admin</td><td>—</td><td>—</td><td></td><td>—</td><td>—</td><td>—</td><td>api key pages</td></tr>
+        <tr><td>lab_admin</td><td>—</td><td>—</td><td></td><td>—</td><td>—</td><td>—</td><td>in claude_trash ✓ 8/13</td></tr>
+        <tr><td>claude_trash</td><td>—</td><td>—</td><td></td><td>—</td><td>—</td><td>—</td><td>soft-delete bin</td></tr>
+        <tr><td>dev · dev other</td><td>—</td><td>—</td><td>1</td><td>—</td><td>—</td><td>—</td><td>old project piles</td></tr>
+        <tr><td>drive_claude</td><td>—</td><td>—</td><td></td><td>—</td><td>—</td><td>—</td><td>empty</td></tr>
+      </table></div>
+      <ul>
+        <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">drive links come from a live search of your drive today — tell me any that look wrong and I'll fix the row</span></div></li>
+        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+          <span class="txt">workflowy ties exist too (connection_loop) but I can't list node links from here — say the word and we'll add that column</span></div></li>
+        <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span>
+          <span class="txt">hub column — 1 on the hub · 0 has a page but not linked · blank no page to link</span></div></li>
+        <li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span>
+          <span class="txt">prompt_log links open the published lab log zoomed to that project's own thread — the viewer zooms to whatever #node the url names; vampjam and pops have no thread there yet, so their cells stay —</span></div></li>
+      </ul>
+    </li>
+    <li class="n" data-l="E"><div class="row"><span class="tri">▶</span><span class="lbl">E</span>
+      <span class="txt">cb_ssh <span class="tag">done — ssh remote ✓ · robot loaded 11:14p · cb_ssh committed and pushed</span> <span class="donem">#done</span></span></div>
+      <ul>
+        <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">done — remote is now git@github.com:mPulseMedia/cb-radio.git <span class="donem">#done</span></span></div></li>
+        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+          <span class="txt">found — the login robot is OFF, not just blocked</span></div>
+          <ul>
+            <li class="n" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span>
+              <span class="txt">last commit is 4 months old and 9 files are waiting</span></div></li>
+            <li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span>
+              <span class="txt">its plist sits in cb_admin but is not loaded in launchd</span></div></li>
+            <li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span>
+              <span class="txt">the waiting commit is already named — cb_ssh sits in cb_admin/commit_msg.txt</span></div></li>
+          </ul>
+        </li>
+        <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span>
+          <span class="txt">cb_robot_on <button class="rowcopy">copy script cb_robot_on</button> <span class="tag">done 11:14p — loaded clean; first push landed within the minute</span> <span class="donem">#done</span></span></div>
+          <ul>
+            <li class="n sc" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span>
+              <span class="txt">script</span></div>
+              <div class="codewrap"><pre>:
+echo '********************************************'
+echo '**                                        **'
+echo '**              cb_robot_on               **'
+echo '**                                        **'
+echo '********************************************'
+:
+cp "$HOME/claude_cowork/cb-radio/cb_admin/com.pauldsmith.autopush.cbradio.plist" "$HOME/Library/LaunchAgents/"
+launchctl unload "$HOME/Library/LaunchAgents/com.pauldsmith.autopush.cbradio.plist" 2>/dev/null
+launchctl load "$HOME/Library/LaunchAgents/com.pauldsmith.autopush.cbradio.plist"</pre></div>
+            </li>
+            <li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span>
+              <span class="txt">expect <span class="tag">within a minute the robot commits the 9 waiting files as "cb_ssh" and pushes over ssh</span></span></div></li>
+            <li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span>
+              <span class="txt">expect <span class="tag">tell me it ran and I'll confirm the push landed, then flip this row #done</span></span></div></li>
+          </ul>
+        </li>
+        <li class="n sc" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span>
+          <span class="txt">prompt</span></div>
+          <div class="codewrap"><pre>cb_ssh — cb-radio still uses the old https connection that
+password auth killed. switch its remote to ssh
+(git@github.com:mPulseMedia/cb-radio.git) the same way the dormant
+six were switched, then verify its login robot can push again and
+update the 3D row.
+-- paste this into claude_cowork_org_2 thread</pre></div>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</li>
+
+<li class="n sec" data-l="6">
+  <div class="row"><span class="tri">▶</span><span class="lbl">6</span>
+    <span class="txt">views <span class="tag">the two system pictures</span></span></div>
+  <ul>
+    <li class="n" data-l="A">
+      <div class="row"><span class="tri">▶</span><span class="lbl">A</span>
+      <span class="txt">prompt_flow — one prompt, end to end</span></div>
+      <figure>
+      <svg viewBox="0 0 940 800" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--tx2)"/>
+          </marker>
+          <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--ok)"/>
+          </marker>
+        </defs>
+        <g font-size="17" fill="var(--tx)">
+          <rect x="355" y="30" width="230" height="74" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="470" y="60" text-anchor="middle">you — claude thread</text>
+          <text x="470" y="84" text-anchor="middle" fill="var(--tx2)" font-size="15">type or dictate a prompt</text>
+
+          <line x1="470" y1="104" x2="470" y2="132" stroke="var(--tx2)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="484" y="124" fill="var(--tx2)" font-size="14">1</text>
+
+          <rect x="355" y="140" width="230" height="74" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="470" y="170" text-anchor="middle">claude — cowork session</text>
+          <text x="470" y="194" text-anchor="middle" fill="var(--tx2)" font-size="15">edits files · writes commit_desc</text>
+
+          <line x1="470" y1="214" x2="470" y2="242" stroke="var(--tx2)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="484" y="234" fill="var(--tx2)" font-size="14">2 device bridge</text>
+
+          <rect x="355" y="250" width="230" height="74" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="470" y="280" text-anchor="middle">mac — repo folders</text>
+          <text x="470" y="304" text-anchor="middle" fill="var(--tx2)" font-size="15">page · spec · logs land here</text>
+
+          <line x1="390" y1="324" x2="250" y2="382" stroke="var(--tx2)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="300" y="344" text-anchor="end" fill="var(--tx2)" font-size="14">3 robot folders — launchd fires</text>
+          <line x1="550" y1="324" x2="690" y2="382" stroke="var(--tx2)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="640" y="344" fill="var(--tx2)" font-size="14">3 private — you act</text>
+
+          <rect x="60" y="390" width="320" height="96" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="220" y="420" text-anchor="middle">login robots ×8</text>
+          <text x="220" y="444" text-anchor="middle" fill="var(--tx2)" font-size="15">auto_push_&lt;repo&gt; — on at login</text>
+          <text x="220" y="466" text-anchor="middle" fill="var(--tx2)" font-size="15">wait 15s · commit · push</text>
+
+          <rect x="560" y="390" width="320" height="96" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="720" y="420" text-anchor="middle">you — COMMIT_now + Push origin</text>
+          <text x="720" y="444" text-anchor="middle" fill="var(--tx2)" font-size="15">private only · two clicks</text>
+          <text x="720" y="466" text-anchor="middle" fill="var(--tx2)" font-size="15">name offered = commit_desc line 1</text>
+
+          <line x1="240" y1="486" x2="400" y2="544" stroke="var(--tx2)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="298" y="530" fill="var(--tx2)" font-size="14">4</text>
+          <line x1="700" y1="486" x2="540" y2="544" stroke="var(--tx2)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="632" y="530" fill="var(--tx2)" font-size="14">4</text>
+
+          <rect x="355" y="552" width="230" height="74" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="470" y="582" text-anchor="middle">github — mPulseMedia</text>
+          <text x="470" y="606" text-anchor="middle" fill="var(--tx2)" font-size="15">every commit named by claude</text>
+
+          <line x1="390" y1="626" x2="250" y2="682" stroke="var(--tx2)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="300" y="646" text-anchor="end" fill="var(--tx2)" font-size="14">5 pages deploy</text>
+
+          <rect x="60" y="690" width="320" height="74" rx="10" fill="var(--bg2)" stroke="var(--line)"/>
+          <text x="220" y="720" text-anchor="middle">github pages urls</text>
+          <text x="220" y="744" text-anchor="middle" fill="var(--tx2)" font-size="15">public views · walkie pending 7D3</text>
+
+          <rect x="560" y="690" width="320" height="74" rx="10" fill="var(--bg2)" stroke="var(--ok)"/>
+          <text x="720" y="720" text-anchor="middle">live page in your browser</text>
+          <text x="720" y="744" text-anchor="middle" fill="var(--tx2)" font-size="15">sidecar poll → 3s reload + morph</text>
+
+          <line x1="585" y1="287" x2="905" y2="287" stroke="var(--ok)" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <line x1="905" y1="287" x2="905" y2="727" stroke="var(--ok)" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <line x1="905" y1="727" x2="886" y2="727" stroke="var(--ok)" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arg)"/>
+          <text x="898" y="676" text-anchor="end" fill="var(--tx2)" font-size="14">page saved → build bump</text>
+
+          <text x="470" y="792" text-anchor="middle" fill="var(--tx2)" font-size="15">6 · triage_verify writes status.js every 3s — the circles on the page flip live</text>
+        </g>
+      </svg>
+      <figcaption>one prompt: thread → session → mac — 8 robots push on their own · private goes up with your two clicks · the page reloads itself</figcaption>
+      </figure>
+    </li>
+    <li class="n" data-l="B">
+      <div class="row"><span class="tri">▶</span><span class="lbl">B</span>
+      <span class="txt">thread_layer — how claude threads coordinate the pieces</span></div>
+      <figure>
+      <svg viewBox="0 0 940 660" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--tx2)"/>
+          </marker>
+          <marker id="argC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--ok)"/>
+          </marker>
+        </defs>
+        <g font-size="17" fill="var(--tx)">
+          <rect x="20" y="40" width="900" height="120" rx="10" fill="var(--bg2)" opacity="0.55"/>
+          <rect x="20" y="200" width="900" height="100" rx="10" fill="var(--bg2)" opacity="0.55"/>
+          <rect x="20" y="340" width="900" height="120" rx="10" fill="var(--bg2)" opacity="0.55"/>
+          <rect x="20" y="500" width="900" height="90" rx="10" fill="var(--bg2)" opacity="0.55"/>
+          <text x="35" y="64" fill="var(--tx2)" font-size="14">CLAUDE THREADS</text>
+          <text x="35" y="224" fill="var(--tx2)" font-size="14">COWORK SESSION</text>
+          <text x="35" y="364" fill="var(--tx2)" font-size="14">MAC FILES</text>
+          <text x="35" y="524" fill="var(--tx2)" font-size="14">GITHUB</text>
+
+          <rect x="60" y="80" width="240" height="56" rx="9" fill="var(--bg)" stroke="var(--ok)"/>
+          <text x="180" y="104" text-anchor="middle">claude_cowork_org_2</text>
+          <text x="180" y="124" text-anchor="middle" fill="var(--tx2)" font-size="14">owns the page · entries 72 →</text>
+
+          <rect x="320" y="80" width="200" height="56" rx="9" fill="var(--bg)" stroke="var(--line)" stroke-dasharray="3 3"/>
+          <text x="420" y="114" text-anchor="middle" fill="var(--tx2)">one thread per move</text>
+
+          <rect x="540" y="80" width="380" height="56" rx="9" fill="var(--bg)" stroke="var(--line)"/>
+          <text x="730" y="104" text-anchor="middle">handoff protocol — spec section 5</text>
+          <text x="730" y="124" text-anchor="middle" fill="var(--tx2)" font-size="14">read the spec · claim the next entry · then touch</text>
+
+          <rect x="240" y="232" width="380" height="56" rx="9" fill="var(--bg)" stroke="var(--line)"/>
+          <text x="430" y="258" text-anchor="middle">claude does the work</text>
+          <text x="430" y="280" text-anchor="middle" fill="var(--tx2)" font-size="15">edits files · writes commit_desc · logs prompts</text>
+
+          <rect x="50" y="380" width="180" height="56" rx="9" fill="var(--bg)" stroke="var(--ok)"/>
+          <text x="140" y="404" text-anchor="middle">live page</text>
+          <text x="140" y="426" text-anchor="middle" fill="var(--tx2)" font-size="14">the shared scoreboard</text>
+          <rect x="250" y="380" width="170" height="56" rx="9" fill="var(--bg)" stroke="var(--line)"/>
+          <text x="335" y="404" text-anchor="middle">the spec</text>
+          <text x="335" y="426" text-anchor="middle" fill="var(--tx2)" font-size="14">rules + build history</text>
+          <rect x="440" y="380" width="170" height="56" rx="9" fill="var(--bg)" stroke="var(--line)"/>
+          <text x="525" y="404" text-anchor="middle">prompt_log</text>
+          <text x="525" y="426" text-anchor="middle" fill="var(--tx2)" font-size="14">archive + thread files</text>
+          <rect x="630" y="380" width="130" height="56" rx="9" fill="var(--bg)" stroke="var(--line)"/>
+          <text x="695" y="404" text-anchor="middle">hub.html</text>
+          <text x="695" y="426" text-anchor="middle" fill="var(--tx2)" font-size="14">index of it all</text>
+          <rect x="780" y="380" width="140" height="56" rx="9" fill="var(--bg)" stroke="var(--line)"/>
+          <text x="850" y="404" text-anchor="middle">repo folders</text>
+          <text x="850" y="426" text-anchor="middle" fill="var(--tx2)" font-size="14">the actual work</text>
+
+          <rect x="240" y="530" width="380" height="46" rx="9" fill="var(--bg)" stroke="var(--line)"/>
+          <text x="430" y="559" text-anchor="middle">repos + pages urls <tspan fill="var(--tx2)" font-size="15">· history = undo stack</tspan></text>
+
+          <line x1="295" y1="136" x2="380" y2="226" stroke="var(--tx2)" stroke-width="1.5" marker-end="url(#arC)"/>
+          <line x1="480" y1="226" x2="480" y2="146" stroke="var(--tx2)" stroke-width="1.5" marker-end="url(#arC)"/>
+          <text x="500" y="190" fill="var(--tx2)" font-size="14">you steer · claude reports back</text>
+
+          <line x1="430" y1="288" x2="430" y2="372" stroke="var(--tx2)" stroke-width="1.5" marker-end="url(#arC)"/>
+          <text x="445" y="330" fill="var(--tx2)" font-size="14">device bridge writes</text>
+
+          <line x1="850" y1="436" x2="850" y2="470" stroke="var(--ok)" stroke-width="1.5"/>
+          <line x1="850" y1="470" x2="628" y2="546" stroke="var(--ok)" stroke-width="1.5" marker-end="url(#argC)"/>
+          <text x="810" y="490" fill="var(--ok)" font-size="14" text-anchor="end">8 robots auto_push</text>
+
+          <line x1="140" y1="380" x2="140" y2="146" stroke="var(--ok)" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#argC)"/>
+          <text x="155" y="330" fill="var(--tx2)" font-size="14">every thread starts + ends at the page</text>
+
+          <text x="470" y="632" text-anchor="middle" fill="var(--tx2)" font-size="15">one codename joins commit_desc · spec · log · git history — search it anywhere, the others answer</text>
+        </g>
+      </svg>
+      <figcaption>threads steer · the session writes · page + spec + log hold state — the codename ties it all to git history</figcaption>
+      </figure>
+    </li>
+  </ul>
+</li>
+
+<li class="n sec" data-l="7">
+  <div class="row"><span class="tri">▶</span><span class="lbl">7</span>
+    <span class="txt">self_admin <span class="tag">how this page runs itself — read this before touching anything</span></span></div>
+  <ul>
+    <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span>
+      <span class="txt">one thread owns the page — currently claude_cowork_org_2; a new thread reads the spec, claims the next entry number, then works</span></div></li>
+    <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span>
+      <span class="txt">the records</span></div>
+      <ul>
+        <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span>
+          <span class="txt">spec — claude_cowork_org_spec.md: rules + the numbered build history</span></div></li>
+        <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span>
+          <span class="txt">log — <a href="file:///Users/pauldsmith/claude_cowork/private/prompt_log/index.html" target="_blank">the cowork log</a> · <a href="https://github.com/mPulseMedia/private/tree/main/prompt_log" target="_blank">on github</a>: every prompt verbatim + results</span></div></li>
+        <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span>
+          <span class="txt">commit_desc.txt — line 1 is the next commit's name; the body tells a future agent where to look</span></div></li>
+      </ul>
+    </li>
+    <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span>
+      <span class="txt">the join — one codename appears in the spec entry, the log entry, and the git commit; search it anywhere and the others answer</span></div></li>
+  </ul>
+</li>
+
+<li class="n sec closed" data-l="8">
+  <div class="row"><span class="tri">▶</span><span class="lbl">8</span>
+    <span class="txt">archive <span class="tag">the finished record · 8/13→8/14 · details live in the spec + log</span> <span class="donem">#done</span></span></div>
+  <ul>
+    <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span>
+      <span class="txt">purge_done — the exposed export was pulled, history force-purged, verified zero traces; treat as possibly seen (~20 min public)</span></div></li>
+    <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span>
+      <span class="txt">resurrect_done — the dormant six live again: all uploaded, four with robots, storycall_corp manual by choice, cb-radio revived over ssh</span></div></li>
+    <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span>
+      <span class="txt">plumbing_done — save-notes unified in &lt;project&gt;_admin · loose copies + stale lab_admin in claude_trash · robots named in settings · logs live in the private repo with real urls</span></div></li>
+    <li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span>
+      <span class="txt">rename_done — all 39 default-titled threads wear snake_case codenames; the map below is the record</span></div>
+      <div class="tblwrap" id="rn_tbl"><table>
+            <tr><th>group</th><th>proposed codename</th><th>current title</th><th>date</th><th>msgs</th></tr>
+            <tr style="opacity:.55"><td>storycall ✓</td><td class="cc">storycall_instagram_voicemail</td><td class="cc">Setting Up Instagram Voicemail for Loved Ones</td><td>12/13/24</td><td>30</td></tr>
+            <tr style="opacity:.55"><td>storycall ✓</td><td class="cc">storycall_grandma_app</td><td class="cc">Grandma’s Instagram App: Connecting Generations</td><td>9/23/24</td><td>28</td></tr>
+            <tr style="opacity:.55"><td>storycall ✓</td><td class="cc">storycall_user_guide</td><td class="cc">StoryCall User Guide: Scheduling Calls and Sharing…</td><td>9/29/24</td><td>16</td></tr>
+            <tr style="opacity:.55"><td>storycall ✓</td><td class="cc">storycall_home_page</td><td class="cc">Connecting Families Through Shared Stories</td><td>9/29/24</td><td>16</td></tr>
+            <tr style="opacity:.55"><td>storycall ✓</td><td class="cc">storycall_patent_draft</td><td class="cc">Voice-Based Social Software for Inclusive Digital…</td><td>9/26/24</td><td>8</td></tr>
+            <tr style="opacity:.55"><td>storycall ✓</td><td class="cc">storycall_seed_list</td><td class="cc">Collaborative Project Ideas for Two</td><td>7/23/24</td><td>10</td></tr>
+            <tr style="opacity:.55"><td>storycall ✓</td><td class="cc">storycall_guide_rewrite</td><td class="cc">StoryCall User Guide Rewrite</td><td>9/27/24</td><td>6</td></tr>
+            <tr style="opacity:.55"><td>storycall ✓</td><td class="cc">storycall_site_suggest</td><td class="cc">Storycall.org website suggestions</td><td>8/11/26</td><td>2</td></tr>
+            <tr style="opacity:.55"><td>claude_use ✓</td><td class="cc">two_phase_protocol</td><td class="cc">Two-phase response protocol</td><td>6/28/26</td><td>136</td></tr>
+            <tr style="opacity:.55"><td>claude_use ✓</td><td class="cc">cowork_15_line_ui</td><td class="cc">claude cowork 15_line ui</td><td>3/28/26</td><td>151</td></tr>
+            <tr style="opacity:.55"><td>claude_use ✓</td><td class="cc">sim_project_kickoff</td><td class="cc">Simulation project discussion kickoff</td><td>7/1/26</td><td>29</td></tr>
+            <tr style="opacity:.55"><td>claude_use ✓</td><td class="cc">claude_drive_bound</td><td class="cc">Bounded Claude access to Google Drive</td><td>3/26/26</td><td>20</td></tr>
+            <tr style="opacity:.55"><td>claude_use ✓</td><td class="cc">cowork_mount_fix</td><td class="cc">Fixing virtiofs mount permission error</td><td>3/25/26</td><td>16</td></tr>
+            <tr style="opacity:.55"><td>claude_use ✓</td><td class="cc">repeat_back_protocol</td><td class="cc">Repeating back without direction</td><td>5/11/26</td><td>12</td></tr>
+            <tr style="opacity:.55"><td>claude_use ✓</td><td class="cc">cowork_global_instruction</td><td class="cc">Formatting instructions for Clause Cowork</td><td>5/24/26</td><td>4</td></tr>
+            <tr style="opacity:.55"><td>claude_use ✓</td><td class="cc">prompt_goal_tailor</td><td class="cc">Tailoring Prompt Goals to Context</td><td>7/25/24</td><td>20</td></tr>
+            <tr style="opacity:.55"><td>claude_use ✓</td><td class="cc">cowork_phone_view</td><td class="cc">Viewing design app output remotely on phone</td><td>7/1/26</td><td>2</td></tr>
+            <tr style="opacity:.55"><td>partyline ✓</td><td class="cc">partyline_logo_design</td><td class="cc">Partyline logo design specifications</td><td>4/3/26</td><td>22</td></tr>
+            <tr style="opacity:.55"><td>partyline ✓</td><td class="cc">partyline_feature_intro</td><td class="cc">Improving the Partyline feature introduction prompt</td><td>4/3/26</td><td>14</td></tr>
+            <tr style="opacity:.55"><td>partyline ✓</td><td class="cc">codename_rule_study</td><td class="cc">Code naming conventions and standards</td><td>4/21/26</td><td>16</td></tr>
+            <tr style="opacity:.55"><td>camp ✓</td><td class="cc">camp_golf_cart</td><td class="cc">Golf cart transportation for camp accessibility</td><td>6/19/26</td><td>30</td></tr>
+            <tr style="opacity:.55"><td>camp ✓</td><td class="cc">camp_golf_volunteer</td><td class="cc">Golf cart volunteer coordination for senior members</td><td>7/2/26</td><td>10</td></tr>
+            <tr style="opacity:.55"><td>camp ✓</td><td class="cc">mentor_program_draft</td><td class="cc">Mentorship Program for New Group Leaders</td><td>12/14/24</td><td>16</td></tr>
+            <tr style="opacity:.55"><td>writing ✓</td><td class="cc">great_books_inquiry</td><td class="cc">Shared inquiry discussion questions</td><td>4/6/26</td><td>46</td></tr>
+            <tr style="opacity:.55"><td>writing ✓</td><td class="cc">change_rewrite_pass</td><td class="cc">Navigating the Path to Change</td><td>12/19/24</td><td>30</td></tr>
+            <tr style="opacity:.55"><td>writing ✓</td><td class="cc">sentence_refine</td><td class="cc">Refining an Elegant Sentence</td><td>12/7/24</td><td>24</td></tr>
+            <tr style="opacity:.55"><td>writing ✓</td><td class="cc">widow_bio_draft</td><td class="cc">Cultured Widow’s Lifelong Pursuits</td><td>1/17/25</td><td>24</td></tr>
+            <tr style="opacity:.55"><td>writing ✓</td><td class="cc">typo_minimal_fix</td><td class="cc">Correcting typos with minimal changes</td><td>5/6/26</td><td>16</td></tr>
+            <tr style="opacity:.55"><td>writing ✓</td><td class="cc">topic_spinner_rewrite</td><td class="cc">Rewriting for eloquence</td><td>6/10/26</td><td>14</td></tr>
+            <tr style="opacity:.55"><td>philosophy ✓</td><td class="cc">human_decenter_philosophy</td><td class="cc">The Gradual Decentering of Humanity</td><td>8/30/24</td><td>14</td></tr>
+            <tr style="opacity:.55"><td>philosophy ✓</td><td class="cc">centrist_caucus_idea</td><td class="cc">Building a centrist political caucus</td><td>7/23/26</td><td>16</td></tr>
+            <tr style="opacity:.55"><td>philosophy ✓</td><td class="cc">tech_unemployment_talk</td><td class="cc">Technological unemployment and job elimination</td><td>—</td><td>8</td></tr>
+            <tr style="opacity:.55"><td>pops ✓</td><td class="cc">pops_philosophy_talk</td><td class="cc">Philosophy as the art of living</td><td>5/1/26</td><td>16</td></tr>
+            <tr style="opacity:.55"><td>home_mac ✓</td><td class="cc">catawba_noise_letter</td><td class="cc">Addressing excessive noise from restaurant live music</td><td>6/8/26</td><td>12</td></tr>
+            <tr style="opacity:.55"><td>home_mac ✓</td><td class="cc">mac_parental_control</td><td class="cc">Aggressive parental controls for Mac computers</td><td>8/7/26</td><td>6</td></tr>
+            <tr style="opacity:.55"><td>home_mac ✓</td><td class="cc">mac_calendar_share</td><td class="cc">Editing shared calendar events on Mac</td><td>7/27/26</td><td>10</td></tr>
+            <tr style="opacity:.55"><td>misc ✓</td><td class="cc">solar_system_ios</td><td class="cc">solar system ios</td><td>4/25/26</td><td>38</td></tr>
+            <tr style="opacity:.55"><td>misc ✓</td><td class="cc">curriculum_five_min</td><td class="cc">(untitled) — five-minute curriculum</td><td>6/30/26</td><td>11</td></tr>
+            <tr style="opacity:.55"><td>misc ✓</td><td class="cc">sitka_musical_read</td><td class="cc">Saving Sitka: A Russian Romantic Musical</td><td>10/29/24</td><td>8</td></tr>
+          </table></div>
+    </li>
+    <li class="n" data-l="E"><div class="row"><span class="tri">▶</span><span class="lbl">E</span>
+      <span class="txt">page_history — builds b1→b63 chronicled in the spec build_history; this page was rehoused at b64 (entry 95)</span></div></li>
+  </ul>
+</li>
+
+</ul>
+</main>
+<script>
+  const BUILD='b64';
+  const KEY='claude_cowork_org_page_state';
+
+  function label_path(li) {
+    const parts = [];
+    let node = li;
+    while (node) {
+      if (node.dataset && node.dataset.l) parts.unshift(node.dataset.l);
+      node = node.parentElement ? node.parentElement.closest('li.n') : null;
+    }
+    return parts.join('');
+  }
+
+  const items = [...document.querySelectorAll('li.n')];
+  items.forEach(li => {
+    const kids = li.querySelector(':scope > ul');
+    const extra = li.querySelector(':scope > figure, :scope > .codewrap, :scope > .tblwrap, :scope > .row + figure');
+    if (!kids && !extra) li.classList.add('leaf');
+    li.dataset.path = label_path(li);
+  });
+
+  function saveState() {
+    try {
+      const closed = items.filter(li => li.classList.contains('closed'))
+                          .map(li => li.dataset.path);
+      const scOpen = items.filter(li => li.classList.contains('sc') &&
+                          !li.classList.contains('closed'))
+                          .map(li => li.dataset.path);
+      const q = (document.getElementById('sbox') || {}).value || '';
+      localStorage.setItem(KEY, JSON.stringify({ b: BUILD, closed, scOpen, scroll: window.scrollY, q, zoom: zoomPath }));
+    } catch (e) { /* sandboxed preview — no storage, still interactive */ }
+  }
+
+  function restoreState() {
+    let st = null;
+    try { st = JSON.parse(localStorage.getItem(KEY)); } catch(e) {}
+    if (st && Array.isArray(st.closed)) {
+      const set = new Set(st.closed);
+      items.forEach(li => li.classList.toggle('closed',
+        set.has(li.dataset.path) && !li.classList.contains('leaf')));
+      if (typeof st.scroll === 'number')
+        requestAnimationFrame(() => window.scrollTo(0, st.scroll));
+    } else {
+      document.querySelectorAll('#root > li.sec').forEach(li => {
+        if (!['1'].includes(li.dataset.l)) li.classList.add('closed');
+      });
+    }
+    // per-build tidying: nodes finished in this build close themselves
+    // (once — after that your own toggles win)
+    const CLOSE_ON_BUILD = [];
+    if (!st || st.b !== BUILD) {
+      items.forEach(li => {
+        if (CLOSE_ON_BUILD.includes(li.dataset.path) &&
+            !li.classList.contains('leaf')) li.classList.add('closed');
+      });
+    }
+    // script nodes: hidden unless explicitly opened before
+    const scOpen = new Set((st && st.scOpen) || []);
+    items.forEach(li => {
+      if (li.classList.contains('sc'))
+        li.classList.toggle('closed', !scOpen.has(li.dataset.path));
+    });
+  }
+
+  items.forEach(li => {
+    const row = li.querySelector(':scope > .row');
+    row.addEventListener('click', e => {
+      if (e.target.closest('a, button, pre')) return;
+      if (li.classList.contains('leaf')) return;
+      if (document.body.classList.contains('filtering') &&
+          !li.classList.contains('sc')) {
+        // search_reveal + search_close (74/94): open shows REAL children,
+        // click again closes; closed nodes reopen fully.
+        if (li.classList.contains('sclose')) {
+          li.classList.remove('sclose');
+          li.classList.add('srev');
+        } else {
+          const anyKid = [...li.querySelectorAll(':scope > ul > li.n')]
+            .some(c => c.offsetParent !== null);
+          if (anyKid) { li.classList.add('sclose'); li.classList.remove('srev'); }
+          else li.classList.toggle('srev');
+        }
+        return;
+      }
+      if (e.detail === 1) {
+        li._t = setTimeout(() => { li.classList.toggle('closed'); saveState(); }, 220);
+      }
+    });
+    row.addEventListener('dblclick', e => {
+      if (e.target.closest('a, button, pre')) return;
+      if (li.classList.contains('leaf')) return;
+      clearTimeout(li._t);
+      const wasClosed = li.classList.contains('closed');
+      const desc = li.querySelectorAll('li.n:not(.leaf)');
+      if (wasClosed) {
+        li.classList.remove('closed');
+        desc.forEach(d => d.classList.remove('closed'));
+      } else {
+        desc.forEach(d => d.classList.add('closed'));
+        li.classList.add('closed');
+      }
+      saveState();
+    });
+  });
+
+  function setAll(closed) {
+    items.forEach(li => { if (!li.classList.contains('leaf'))
+      li.classList.toggle('closed', closed); });
+    saveState();
+  }
+
+  // ---- morph_reload: the new build first paints looking like the old
+  // page, then animates (~1s) into its new state.
+  const MKEY = KEY + '_morph';
+  function saveMorph() {
+    try {
+      const m = { b: BUILD, t: Date.now(), rows: {} };
+      items.forEach(li => {
+        const row = li.querySelector(':scope > .row');
+        if (!row) return;
+        m.rows[li.dataset.path] = {
+          c: li.classList.contains('closed') ? 1 : 0,
+          y: Math.round(row.getBoundingClientRect().top)
+        };
+      });
+      localStorage.setItem(MKEY, JSON.stringify(m));
+    } catch (e) {}
+  }
+  function morphIn() {
+    let m = null;
+    try {
+      m = JSON.parse(localStorage.getItem(MKEY));
+      localStorage.removeItem(MKEY);
+    } catch (e) {}
+    if (!m || m.b === BUILD || (Date.now() - m.t) > 60000) return;
+    // phase 1 — dress the page as the OLD page: old open/closed on shared
+    // nodes, brand-new rows hidden
+    const fin = items.map(li => [li, li.classList.contains('closed')]);
+    items.forEach(li => {
+      const o = m.rows[li.dataset.path];
+      if (o && !li.classList.contains('leaf'))
+        li.classList.toggle('closed', !!o.c);
+      if (!o) { const r = li.querySelector(':scope > .row'); if (r) r.style.opacity = '0'; }
+    });
+    // phase 2 — after a beat, jump to the new state and FLIP-animate rows
+    setTimeout(() => {
+      const first = {};
+      items.forEach(li => {
+        const row = li.querySelector(':scope > .row');
+        if (row) first[li.dataset.path] =
+          row.offsetParent ? row.getBoundingClientRect().top : null;
+      });
+      fin.forEach(([li, c]) => li.classList.toggle('closed', c));
+      items.forEach(li => {
+        const row = li.querySelector(':scope > .row');
+        if (!row) return;
+        const path = li.dataset.path;
+        const r = row.getBoundingClientRect();
+        const isNew = !(path in m.rows) || first[path] == null;
+        const d = isNew ? 0 : (first[path] - r.top);
+        if (isNew) { if (!row.offsetParent) return; row.style.opacity = '0'; }
+        else if (Math.abs(d) > 1 && Math.abs(d) < innerHeight * 2)
+          row.style.transform = 'translateY(' + d + 'px)';
+        else { row.style.opacity = ''; return; }
+        row.style.transition = 'none';
+        requestAnimationFrame(() => {
+          row.style.transition =
+            'transform 1s cubic-bezier(.4,0,.2,1), opacity 1s ease';
+          row.style.transform = '';
+          row.style.opacity = '';
+          setTimeout(() => { row.style.transition = ''; }, 1100);
+        });
+      });
+    }, 450);
+  }
+
+  let scrollTimer = null;
+  window.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(saveState, 300);
+  }, { passive: true });
+
+  restoreState();
+
+  // "your turn" markers: ancestors of any li.here get a small salmon arrow
+  document.querySelectorAll('li.here').forEach(li => {
+    let n = li.parentElement ? li.parentElement.closest('li.n') : null;
+    while (n) { n.classList.add('has_here'); n = n.parentElement ? n.parentElement.closest('li.n') : null; }
+  });
+
+  // search filter — matches node text, code, tables, captions;
+  // ancestors of a match stay visible, everything opens while filtering
+  const sbox = document.getElementById('sbox');
+  function own_text(li) {
+    let t = '';
+    const tx = li.querySelector(':scope > .row .txt');
+    if (tx) t += tx.textContent;
+    const pre = li.querySelector(':scope > .codewrap pre');
+    if (pre) t += ' ' + pre.textContent;
+    const tb = li.querySelector(':scope > .tblwrap');
+    if (tb) t += ' ' + tb.textContent;
+    const fg = li.querySelector(':scope > figure figcaption');
+    if (fg) t += ' ' + fg.textContent;
+    return t.toLowerCase();
+  }
+  function applyFilter() {
+    const q = sbox.value.trim().toLowerCase();
+    items.forEach(li => li.classList.remove('srev', 'sclose'));
+    document.body.classList.toggle('filtering', !!q);
+    if (!q) { items.forEach(li => li.classList.remove('hid')); saveState(); return; }
+    // and/or logic (79): space-separated words all must hit (AND);
+    // an interior standalone "or" flips to any-word-hits (OR).
+    const words = q.split(/\s+/).filter(Boolean);
+    const orMode = words.length >= 3 &&
+      words.slice(1, -1).some(w => w === 'or');
+    const terms = orMode ? words.filter(w => w !== 'or') : words;
+    const hit = t => orMode ? terms.some(w => t.includes(w))
+                            : terms.every(w => t.includes(w));
+    const m = new Map(items.map(li => [li, hit(own_text(li))]));
+    items.forEach(li => {
+      const keep = m.get(li) ||
+        [...li.querySelectorAll(':scope li.n')].some(d => m.get(d));
+      li.classList.toggle('hid', !keep);
+    });
+    saveState();
+  }
+  sbox.addEventListener('input', applyFilter);
+  try {
+    const st = JSON.parse(localStorage.getItem(KEY));
+    if (st && st.q) { sbox.value = st.q; applyFilter(); }
+  } catch(e) {}
+
+  document.querySelectorAll('.rowcopy').forEach(btn => {
+    const stop = e => e.stopPropagation();
+    btn.addEventListener('dblclick', stop);
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const pre = btn.closest('li.n').querySelector(':scope .codewrap pre');
+      const orig = btn.dataset.orig || (btn.dataset.orig = btn.textContent);
+      const done = () => { btn.textContent = 'copied ✓';
+                           setTimeout(() => btn.textContent = orig, 1500); };
+      const fallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = pre.textContent; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); ta.remove(); done();
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText)
+        navigator.clipboard.writeText(pre.textContent).then(done, fallback);
+      else fallback();
+    });
+  });
+
+  document.querySelectorAll('#rn_tbl td.cc').forEach(td => {
+    td.addEventListener('click', () => {
+      const txt = td.textContent.trim();
+      const done = () => { td.classList.add('ccdone');
+                           setTimeout(() => td.classList.remove('ccdone'), 900); };
+      const fb = () => { const ta = document.createElement('textarea');
+        ta.value = txt; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); ta.remove(); done(); };
+      if (navigator.clipboard && navigator.clipboard.writeText)
+        navigator.clipboard.writeText(txt).then(done, fb);
+      else fb();
+    });
+  });
+
+  document.querySelectorAll('.report').forEach(btn => {
+    const stop = e => e.stopPropagation();
+    btn.addEventListener('dblclick', stop);
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const li = btn.closest('li.n');
+      const code = li.querySelector(':scope > .row .txt').textContent.trim().split(/\s/)[0];
+      const line = 'purge_walk ' + li.dataset.path + ' ' + code + ': ';
+      const done = () => { btn.textContent = 'paste in chat';
+                           setTimeout(() => btn.textContent = 'report', 2500); };
+      const fb = () => { const ta = document.createElement('textarea');
+        ta.value = line; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); ta.remove(); done(); };
+      if (navigator.clipboard && navigator.clipboard.writeText)
+        navigator.clipboard.writeText(line).then(done, fb);
+      else fb();
+    });
+  });
+
+  document.querySelectorAll('.copybtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(btn.parentElement.querySelector('pre').textContent)
+        .then(() => { btn.textContent = 'copied ✓';
+                      setTimeout(() => btn.textContent = 'copy', 1500); });
+    });
+  });
+
+  // zoom — click any label to focus that node; crumbs navigate back up
+  const crumbs = document.createElement('div');
+  crumbs.id = 'crumbs';
+  document.querySelector('header').after(crumbs);
+  var zoomPath = null;
+  function crumbName(li) {
+    const t = li.querySelector(':scope > .row .txt');
+    let s = '';
+    if (t) {
+      const c = t.cloneNode(true);
+      c.querySelectorAll('.tag, button').forEach(x => x.remove());
+      s = c.textContent.trim();
+    }
+    s = s.split('\u2014')[0].trim();
+    const w = s.split(/\s+/);
+    s = w.slice(0, w[0] && w[0].includes('_') ? 1 : 3).join(' ');
+    return s;
+  }
+  function applyZoom() {
+    items.forEach(li => li.classList.remove('zhide', 'zanc', 'zfocus'));
+    crumbs.innerHTML = '';
+    const target = zoomPath ? items.find(li => li.dataset.path === zoomPath) : null;
+    if (!target) { zoomPath = null; crumbs.style.display = 'none'; return; }
+    const chain = [];
+    let n = target.parentElement ? target.parentElement.closest('li.n') : null;
+    while (n) { chain.unshift(n); n = n.parentElement ? n.parentElement.closest('li.n') : null; }
+    if (!chain.length) { crumbs.style.display = 'none'; }
+    else {
+      crumbs.style.display = 'flex';
+      chain.forEach(a => {
+        const c = document.createElement('span');
+        c.className = 'crumb';
+        const lb = document.createElement('span');
+        lb.className = 'clbl';
+        lb.textContent = a.dataset.l;
+        c.appendChild(lb);
+        c.appendChild(document.createTextNode(crumbName(a)));
+        c.onclick = () => zoomTo(a.dataset.path);
+        crumbs.appendChild(c);
+        const sep = document.createElement('span');
+        sep.className = 'csep';
+        sep.textContent = '\u203a';
+        crumbs.appendChild(sep);
+      });
+    }
+    const anc = new Set(chain);
+    items.forEach(li => {
+      if (li === target || target.contains(li)) return;
+      if (anc.has(li)) { li.classList.add('zanc'); return; }
+      li.classList.add('zhide');
+    });
+    target.classList.add('zfocus');
+    target.classList.remove('closed');
+    window.scrollTo(0, 0);
+  }
+  const FOCUS_CLEARS_SEARCH = true; // focus_clear trial — set false to revert
+  function zoomTo(path) {
+    zoomPath = path;
+    if (FOCUS_CLEARS_SEARCH && sbox.value) { sbox.value = ''; applyFilter(); }
+    history.replaceState(null, '', '#' + path);
+    applyZoom();
+    saveState();
+  }
+  document.querySelectorAll('.lbl').forEach(l => {
+    l.style.cursor = 'pointer';
+    l.addEventListener('click', e => {
+      const li = e.target.closest('li.n');
+      if (!li) return;
+      e.stopPropagation();
+      zoomTo(li.dataset.path);
+    });
+  });
+  {
+    const hp = decodeURIComponent(location.hash.slice(1));
+    let st0 = null;
+    try { st0 = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+    zoomPath = hp || (st0 && st0.zoom) || null;
+    applyZoom();
+  }
+  window.addEventListener('hashchange', () => {
+    zoomPath = decodeURIComponent(location.hash.slice(1)) || null;
+    applyZoom();
+    saveState();
+  });
+
+  // reload ONLY when the source updates. the page polls its sidecar
+  // theo_build.js via a plain <script> tag (works from file:// where fetch
+  // can't). when the sidecar's build id differs, a 5s countdown runs, then
+  // reload. state + scroll survive.
+  const RELOAD_WAIT = 3;
+  const chip = document.getElementById('subchip');
+  chip.title = 'click to reload now';
+  chip.style.cursor = 'pointer';
+  chip.textContent = 'as of 8/14 12:58:19a';
+  chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
+  const h1 = document.querySelector('header h1');
+  h1.style.cursor = 'pointer';
+  h1.title = 'back to top level';
+  h1.addEventListener('click', () => {
+    zoomPath = null;
+    if (FOCUS_CLEARS_SEARCH && sbox.value) { sbox.value = ''; applyFilter(); }
+    history.replaceState(null, '', location.pathname);
+    applyZoom();
+    saveState();
+  });
+
+  // fold-down countdown bar: appears from the top edge when an update lands;
+  // clicking it cancels the reload (until the NEXT update).
+  const bar = document.createElement('div');
+  bar.id = 'dropbar';
+  document.body.appendChild(bar);
+
+  let pending = false, dismissed = null, timer = null;
+  function startCountdown(nb) {
+    pending = true;
+    let n = RELOAD_WAIT;
+    const draw = () => bar.textContent =
+      'updated — reloading in ' + n + 's — click to cancel';
+    draw();
+    requestAnimationFrame(() => bar.classList.add('show'));
+    timer = setInterval(() => {
+      n--;
+      if (n <= 0) { clearInterval(timer); saveState(); saveMorph(); location.reload(); }
+      else draw();
+    }, 1000);
+    bar.onclick = () => {
+      clearInterval(timer);
+      pending = false;
+      dismissed = nb;               // don't re-offer this same build
+      bar.classList.remove('show');
+    };
+  }
+  function poll() {
+    if (pending) return;
+    const sc = document.createElement('script');
+    sc.src = 'claude_cowork_org_build.js?' + Date.now();
+    sc.onload = () => {
+      sc.remove();
+      const nb = window.PAGE_BUILD;
+      if (!pending && nb && nb !== BUILD && nb !== dismissed) startCountdown(nb);
+    };
+    sc.onerror = () => sc.remove();
+    document.head.appendChild(sc);
+  }
+  setInterval(poll, 2000);
+  poll();
+
+  // live step-status chips — fed by purge_verify.sh writing
+  // claude_cowork_org_status.js next to this page
+  const ST_LABEL = {
+    ok:   ['st_ok',   'backed up \u2713'],
+    new:  ['st_wait', 'uploaded \u00b7 new edits since'],
+    part: ['st_wait', 'saved here \u00b7 upload failed'],
+    wait: ['st_wait', 'watching\u2026'],
+    bad:  ['st_bad',  'problem \u2014 tell me']
+  };
+  let wLastT = null, wLastSeen = 0;
+  function renderStatus(s) {
+    if (s && s.t && s.t !== wLastT) { wLastT = s.t; wLastSeen = Date.now(); }
+    const alive = s && s.t && (Date.now() - wLastSeen < 12000);
+    const set = (el, cls, txt) => {
+      el.className = 'st' + (cls ? ' ' + cls : '');
+      el.textContent = txt;
+      const d = document.querySelector('[data-for="' + el.id + '"]');
+      if (d) d.className = 'sd' + (cls ? ' ' + cls : '');
+    };
+    document.querySelectorAll('.st').forEach(el => {
+      const k = el.id.slice(3);
+      if (k === 'w') {
+        if (alive) set(el, 'st_ok', 'watcher running \u2713 ' + (s.t || ''));
+        else if (s && s.t) set(el, 'st_wait', 'watcher stopped \u2014 repaste');
+        else set(el, '', 'not running');
+        return;
+      }
+      if (k === 'six') {
+        const v6 = s ? s.six : undefined;
+        if (v6 === 'ok') set(el, 'st_ok', 'all six uploaded \u2713');
+        else if (v6 !== undefined) set(el, 'st_wait', 'backup in progress \u2014 see 7A');
+        else set(el, '', 'watcher off');
+        return;
+      }
+      if (k === 'ag') {
+        const av = s ? parseInt(s.ag || '0', 10) : null;
+        if (av === null) set(el, '', 'watcher off');
+        else if (av >= 4) set(el, 'st_ok', 'on for all four \u2713');
+        else set(el, 'st_wait', 'on for ' + av + ' of 4');
+        return;
+      }
+      if (k === 'cm') {
+        const v = s ? s.cm : undefined;
+        const nm = s ? (s.cmn || '') : '';
+        if (v === undefined) set(el, '', 'watcher off');
+        else if (v === 'ok') set(el, 'st_ok', 'committed as "' + nm + '" \u2713');
+        else set(el, 'st_wait', '"' + nm + '" not in git yet');
+        return;
+      }
+      if (k === 'pv') {
+        const v = s ? s.pv : undefined;
+        if (v === undefined) set(el, '', 'watcher off');
+        else if (v === 'ok') set(el, 'st_ok', 'saved + uploaded \u2713 ' + (s.t || ''));
+        else if (v === 'new') set(el, 'st_wait', 'new work here \u00b7 not yet saved up');
+        else if (v === 'part') set(el, 'st_wait', 'committed \u00b7 push still needed');
+        else set(el, 'st_wait', 'checking\u2026');
+        return;
+      }
+      if (k === 'ran' || k === 'ran2' || k === 'ran3') {
+        const rv = s ? s[k] : '';
+        if (rv) set(el, 'st_ok', 'script ran ' + rv);
+        else set(el, '', s ? 'not run yet' : 'watcher off');
+        return;
+      }
+      const v = s ? s[k] : undefined;
+      if (v === undefined) { set(el, '', 'watcher off'); return; }
+      const m = ST_LABEL[v] || ['st_wait', v];
+      set(el, m[0], m[1] + (v === 'ok' && s.t ? ' ' + s.t : ''));
+    });
+  }
+  function pollStatus() {
+    const sc = document.createElement('script');
+    sc.src = 'claude_cowork_org_status.js?' + Date.now();
+    sc.onload = () => { sc.remove(); renderStatus(window.PAGE_STATUS); };
+    sc.onerror = () => { sc.remove(); renderStatus(null); };
+    document.head.appendChild(sc);
+  }
+  const thmMq = window.matchMedia('(prefers-color-scheme: dark)');
+  function applyTheme() {
+    let o = null;
+    try { o = localStorage.getItem('claude_cowork_org_theme'); } catch(e) {}
+    const n = o ? o === 'night' : thmMq.matches;
+    document.documentElement.classList.toggle('night', n);
+  }
+  if (thmMq.addEventListener) thmMq.addEventListener('change', applyTheme);
+  document.getElementById('thm').addEventListener('click', () => {
+    const n = document.documentElement.classList.contains('night');
+    try { localStorage.setItem('claude_cowork_org_theme', n ? 'day' : 'night'); } catch(e) {}
+    applyTheme();
+  });
+  setInterval(pollStatus, 2000);
+  pollStatus();
+  morphIn();
+</script>
+</body>
+</html>
