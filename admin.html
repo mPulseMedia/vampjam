@@ -173,5 +173,97 @@
   is the one drag into the bucket; Claude does everything after that.
 </div>
 
+<div class="note" id="rec_setup">
+  <b>To turn on in-app recording upload:</b> deploy the one-file Worker at
+  <code>cloudflare/r2_upload_worker.js</code> (setup steps are in that file), then
+  put its URL + your chosen secret into <code>WORKER_UPLOAD_URL</code> and
+  <code>UPLOAD_SECRET</code> near the top of the record script in this page. Until
+  then the recorder still records and previews; only the upload button waits.
+</div>
+
+<script>
+(function () {
+  // ==== CONFIG — fill these in after deploying r2_upload_worker.js ====
+  var WORKER_UPLOAD_URL = '';   // e.g. 'https://vampjam-upload.<you>.workers.dev/'
+  var UPLOAD_SECRET     = '';   // must match the Worker's UPLOAD_SECRET
+  // ===================================================================
+
+  var recBtn = document.getElementById('rec_btn'),
+      timeEl = document.getElementById('rec_time'),
+      hint   = document.getElementById('rec_hint'),
+      preview= document.getElementById('rec_preview'),
+      after  = document.getElementById('rec_after'),
+      nameIn = document.getElementById('rec_name'),
+      upBtn  = document.getElementById('rec_upload'),
+      result = document.getElementById('rec_result');
+
+  var mediaRec = null, chunks = [], startT = 0, timer = null, blob = null, mime = '', ext = 'm4a';
+
+  function pickMime() {
+    var c = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'];
+    for (var i = 0; i < c.length; i++) {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported(c[i])) return c[i];
+    }
+    return '';
+  }
+  function fmt(s) { var m = Math.floor(s / 60), ss = Math.floor(s % 60); return m + ':' + (ss < 10 ? '0' : '') + ss; }
+  function tick() { timeEl.textContent = fmt((Date.now() - startT) / 1000); }
+  function defaultName() {
+    var d = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return 'rec_' + d.getFullYear() + '_' + p(d.getMonth() + 1) + '_' + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes());
+  }
+
+  async function start() {
+    try {
+      var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mime = pickMime(); ext = mime.indexOf('webm') >= 0 ? 'webm' : 'm4a';
+      mediaRec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      chunks = [];
+      mediaRec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      mediaRec.onstop = function () {
+        blob = new Blob(chunks, { type: mime || 'audio/mp4' });
+        preview.src = URL.createObjectURL(blob); preview.style.display = 'block';
+        after.style.display = 'block'; nameIn.value = defaultName() + '.' + ext;
+        stream.getTracks().forEach(function (t) { t.stop(); });
+      };
+      mediaRec.start();
+      startT = Date.now(); timer = setInterval(tick, 250); tick();
+      recBtn.classList.add('recording'); recBtn.innerHTML = '&#9632;'; hint.textContent = 'recording… tap to stop';
+    } catch (err) { hint.textContent = 'microphone blocked: ' + (err && err.message ? err.message : err); }
+  }
+  function stop() {
+    if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
+    clearInterval(timer);
+    recBtn.classList.remove('recording'); recBtn.innerHTML = '&#9679;'; hint.textContent = 'tap to record again';
+  }
+  recBtn.addEventListener('click', function () {
+    if (mediaRec && mediaRec.state === 'recording') stop(); else start();
+  });
+
+  upBtn.addEventListener('click', async function () {
+    if (!blob) return;
+    if (!WORKER_UPLOAD_URL) { result.textContent = 'Set WORKER_UPLOAD_URL first (deploy the Worker — see the note below).'; return; }
+    upBtn.disabled = true; result.textContent = 'Uploading…';
+    try {
+      var r = await fetch(WORKER_UPLOAD_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': blob.type || 'audio/mp4',
+          'X-File-Name': nameIn.value || ('rec.' + ext),
+          'X-Upload-Secret': UPLOAD_SECRET
+        },
+        body: blob
+      });
+      var j = await r.json();
+      if (j.ok) {
+        result.innerHTML = 'Uploaded &#10003; <a href="' + j.url + '" target="_blank">' + j.url + '</a>' +
+          '<br>Tell Claude this URL + the session date to build the page.';
+      } else { result.textContent = 'Upload failed: ' + (j.error || r.status); }
+    } catch (err) { result.textContent = 'Upload error: ' + (err && err.message ? err.message : err); }
+    upBtn.disabled = false;
+  });
+})();
+</script>
+
 </body>
 </html>
