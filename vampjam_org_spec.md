@@ -35,6 +35,7 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   `pre` in a child `sc` node.
 - sections (v4 order, next act on top): 1 domain_vsf · 2 record_live · 3 audio_home · 4 rebrand · 5 self_admin.
 - v4 divergence: .tag stays hidden on this page (his call) — copy destinations ride as plain row text instead.
+- row_form (88): a codename row carries only codename + tags + button; any '— detail' text lives in a child bullet.
 
 ## build_history (codename · bN · what changed)
 
@@ -100,7 +101,10 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   DNS now returns all 4 GitHub A records; Cloudflare zone pending-verifying (1-2 h); his Mac
   still caching parking. 1B folded to #done status; steer → 2 (deploy_worker is the only
   live #next); labels C/D deliberately untouched (no more renumber churn).
-- NEXT → add entry 88 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 88 dash_audit · b20 — his rule pass: codename rows no longer carry '— detail' text; every
+  dash-detail moved to a child bullet (17 rows across all 5 sections); redundant details
+  dropped where a child already said it (anti-repeat rule); buttons stay on the codename row.
+- NEXT → add entry 89 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

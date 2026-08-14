@@ -9,8 +9,30 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "87 ns_done",
+        id: "88 dash_audit",
         expanded: true,
+        nodes: [
+          { text: "88 dash_audit", children: [
+            { text: "prompt_restate", children: [
+              { text: "Per the updated skill: the dash-and-details after a codename on a bullet move down to a child bullet. Audit the whole vampjam outline to comply." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "The light of the updated skill talks about moving the dash and details that follow a Code name on the Bullet down to being a child Bullet audit all the Ramp outline to comply" }
+            ]},
+            { text: "result_build", children: [
+              { text: "17 rows transformed across all 5 sections: domain_vsf, status, ns_cloudflare, https_check, verify, deploy_worker, wire_admin, test_record, session_autocreate, dups_decide, move_to_r2, other_place, verify_ios, wordmark_name, spec_file, handoff, kickoff." },
+              { text: "Codename rows now carry only codename + tags + copy button; every dash-detail became a child bullet; where a child already said the same thing (ns_cloudflare, deploy_worker) the detail was dropped, not duplicated." },
+              { text: "Verified by scan: zero codename-dash rows remain. Rule recorded in the spec (row_form). b20, stamp 3:52p." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "dash_audit, row_form" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "87 ns_done",
+        expanded: false,
         nodes: [
           { text: "87 ns_done", children: [
             { text: "prompt_restate", children: [

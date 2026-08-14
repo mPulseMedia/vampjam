@@ -255,25 +255,33 @@ if(n)document.documentElement.classList.add('night');})();
 <main>
 <ul class="ol" id="root">
 
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">domain_vsf &#8212; <code>vampsf.com</code> cutover</span></div><ul>
-<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">status <span class="donem">#done</span> &#8212; detail in the spec</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">domain_vsf</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">status <span class="donem">#done</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">NetSol DNS points at GitHub Pages</span></div></li>
 <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">repo CNAME file added (vampsf.com)</span></div></li>
 <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">sync worker deployed and verified</span></div></li>
 <li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">$0 spent so far</span></div></li>
+<li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">full detail lives in the spec</span></div></li>
 </ul></li>
-<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">ns_cloudflare <span class="donem">#done</span> &#8212; you did it; nothing to do here but wait</span></div><ul>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">ns_cloudflare <span class="donem">#done</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">NetSol emailed: nameservers are now drake + simone (cloudflare)</span></div></li>
 <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">I checked from outside: vampsf.com already answers with all four GitHub addresses</span></div></li>
 <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">Cloudflare is verifying (typically 1&#8211;2 h); their &#8220;vampsf.com is active&#8221; email = fully done</span></div></li>
 <li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">your Mac may show the old &#8220;under construction&#8221; page up to ~2 more hours (its DNS memory) &#8212; that&#8217;s normal, not broken</span></div></li>
 </ul></li>
-<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">https_check <span class="dom">#do</span> (once DNS lands) &#8212; <a href="https://github.com/mPulseMedia/vampjam/settings/pages" target="_blank">repo Settings &#8594; Pages</a>: Custom domain reads <code>vampsf.com</code>; tick <b>Enforce HTTPS</b> when the cert appears</span></div></li>
-<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify <span class="dom">#do</span> &#8212; open <a href="http://vampsf.com" target="_blank">vampsf.com</a>: a session loads and plays (checked 3:09p &#8212; still the parking page; DNS is propagating, try again within ~2 h)</span></div></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">https_check <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">wait for Cloudflare&#8217;s &#8220;vampsf.com is active&#8221; email first</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">then open <a href="https://github.com/mPulseMedia/vampjam/settings/pages" target="_blank">repo Settings &#8594; Pages</a>: Custom domain should read <code>vampsf.com</code></span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">tick <b>Enforce HTTPS</b> when the cert appears</span></div></li>
+</ul></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">open <a href="http://vampsf.com" target="_blank">vampsf.com</a>: a session loads and plays</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">my last check 3:09p showed the old parking page; propagation is under way</span></div></li>
+</ul></li>
 </ul></li>
 
 <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">record_live</span></div><ul>
-<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">deploy_worker <span class="nextm">#next</span> <span class="dom">#do</span> &#8212; make a brand-NEW Cloudflare worker for uploads (nothing to do with vampjam-sync &#8212; that one is finished) <button class="rowcopy">copy text worker_upload</button></span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">deploy_worker <span class="nextm">#next</span> <span class="dom">#do</span> <button class="rowcopy">copy text worker_upload</button></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">which_page: use the <b>Create application</b> link below (it makes a NEW worker). The other Cloudflare page you have open &#8212; vampjam-sync &#8212; is the finished sync worker; nothing left to do there</span></div></li>
 <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">open <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers-and-pages/create" target="_blank">Create application on Cloudflare</a> &#8594; choose <b>Start with Hello World</b>. Tripwire: a screen saying <b>Set up your application</b> / <code>mPulseMedia/vampjam</code> / &#8220;npx wrangler deploy&#8221; is the WRONG flow (repo-import, it fails) &#8212; click Back and pick Hello World. Name it <code>vampjam-upload</code> &#8594; Deploy the starter</span></div></li>
 <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">click <b>Edit code</b>, top right &#8594; select all (&#8984;A) &#8594; paste the copied code &#8594; <b>Deploy</b></span></div></li>
@@ -335,43 +343,65 @@ function json(obj, status, cors) {
 <li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">back on the worker: Settings &#8594; Bindings: <code>BUCKET</code> &#8594; <code>vampjam-audio</code> &#183; Variables: <code>PUBLIC_BASE</code> = <code>https://pub-33cfd8558d314eb58642c8550608850b.r2.dev</code>, <code>UPLOAD_SECRET</code> = a random string you make up</span></div></li>
 <li class="n" data-l="6"><div class="row"><span class="tri">▶</span><span class="lbl">6</span><span class="txt">expect: the worker url (&#8230;workers.dev) &#8212; paste it in this chat</span></div></li>
 </ul></li>
-<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">wire_admin <span class="readym">#ready</span> &#8212; the moment I have your worker url I set it in admin.html</span></div></li>
-<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">test_record <span class="dom">#do</span> &#8212; then: Admin &#8594; Record a jam &#8594; record &#8594; Upload to R2 &#8594; a url appears</span></div></li>
-<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">session_autocreate <span class="readym">#ready</span> &#8212; say go: after an upload I build the session page + json automatically</span></div></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">wire_admin <span class="readym">#ready</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">the moment I have your worker url I set it in admin.html</span></div></li>
+</ul></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">test_record <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">after wire_admin: Admin &#8594; Record a jam &#8594; record &#8594; Upload to R2 &#8594; a url appears</span></div></li>
+</ul></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">session_autocreate <span class="readym">#ready</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">say go: after an upload I build the session page + json automatically</span></div></li>
+</ul></li>
 </ul></li>
 
 <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">audio_home</span></div><ul>
-<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">dups_decide <span class="decidem">#decide</span> &#8212; say &#8220;trash dups&#8221;: raw <code>Sound Union 29.qta</code> + 3 spare 08-07 exports (~1.2 GB) &#8594; claude_trash/; the live v2 file stays</span></div></li>
-<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">move_to_r2 <span class="dom">#do</span> &#8212; 5 sessions still play from GitHub releases (flaky on iPhone)</span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">drag <code>~/claude_cowork/vampjam/2026-05-23_bazaar_cafe.m4a</code> into the <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/r2/default/buckets/vampjam-audio" target="_blank">vampjam-audio bucket</a></span></div></li>
-<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">download each, then drag into the same bucket, names unchanged</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">dups_decide <span class="decidem">#decide</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">say &#8220;trash dups&#8221; and I move the raw <code>Sound Union 29.qta</code> + 3 spare 08-07 exports (~1.2 GB) to claude_trash/</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">the live file (<code>Sound.Union.2026-08-07.v2.m4a</code>) stays</span></div></li>
+</ul></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">move_to_r2 <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">5 sessions still play from GitHub releases (flaky on iPhone)</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">drag <code>~/claude_cowork/vampjam/2026-05-23_bazaar_cafe.m4a</code> into the <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/r2/default/buckets/vampjam-audio" target="_blank">vampjam-audio bucket</a></span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">download each, then drag into the same bucket, names unchanged</span></div><ul>
 <li class="n" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/soundunion_2026-05-30_2/Sound.Union.23.m4a">05-30 &#8212; Sound.Union.23.m4a</a></span></div></li>
 <li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/2026-07-17_vampjam_su_m4a/Sound.Union.24.v2.m4a">07-17 &#8212; Sound.Union.24.v2.m4a</a></span></div></li>
 <li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/2026-07-24_vampjam_su/Sound.Union.2026-07-24.m4a">07-24 &#8212; Sound.Union.2026-07-24.m4a</a></span></div></li>
 <li class="n" data-l="d"><div class="row"><span class="tri">▶</span><span class="lbl">d</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/2026-07-31_vampjam_su/Sound.Union.2026-07-31.m4a">07-31 &#8212; Sound.Union.2026-07-31.m4a</a></span></div></li>
 </ul></li>
-<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">say &#8220;bucket has all 5&#8221; &#8212; I repoint the jsons <span class="readym">#ready</span></span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">say &#8220;bucket has all 5&#8221; &#8212; I repoint the jsons <span class="readym">#ready</span></span></div></li>
 </ul></li>
-<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">other_place <span class="dom">#do</span> &#8212; if older jams live outside this folder (QuickTime saves, Voice Memos, the iPhone), Add-folder it and I audit &#8212; I can&#8217;t see past the two connected folders</span></div></li>
-<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify_ios <span class="dom">#do</span> &#8212; after the moves: play each session on the iPhone</span></div></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">other_place <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">if older jams live outside this folder (QuickTime saves, Voice Memos, the iPhone), Add-folder it and I audit</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">I can&#8217;t see past the two connected folders</span></div></li>
+</ul></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify_ios <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">after the moves: play each session on the iPhone</span></div></li>
+</ul></li>
 </ul></li>
 
 <li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">rebrand</span></div><ul>
-<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">wordmark_name <span class="readym">#ready</span> &#8212; say go: &#8220;vamp jam&#8221; &#8594; &#8220;vamp SF&#8221; on every page (Sacramento font stays) + titles to vampsf</span></div></li>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">wordmark_name <span class="readym">#ready</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">say go: &#8220;vamp jam&#8221; &#8594; &#8220;vamp SF&#8221; on every page (Sacramento font stays) + titles to vampsf</span></div></li>
+</ul></li>
 </ul></li>
 
 <li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">self_admin</span></div><ul>
-<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">spec_file &#8212; <code>vampjam_org_spec.md</code> (build_history + the notes moved off this page)</span></div></li>
-<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">handoff &#8212; <code>vampjam_handoff.md</code></span></div></li>
-<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">kickoff &#8212; paste into a fresh Cowork thread on model-switch day <button class="rowcopy">copy prompt kickoff</button></span></div><ul>
-<li class="n sc" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">first message</span></div><div class="codewrap"><pre>vampjam pickup — read vampjam_handoff.md, then vampjam_org_spec.md, top to bottom. Open vampjam_org.html and act on #next. Before editing, claim the next number in both the prompt_log thread and the spec build_history. Write the batch codename to vampjam_admin/commit_msg.txt first, then write files — the login robot commits and pushes; do NOT commit from the sandbox.</pre></div></li>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">spec_file</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt"><code>vampjam_org_spec.md</code> (build_history + the notes moved off this page)</span></div></li>
+</ul></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">handoff</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt"><code>vampjam_handoff.md</code></span></div></li>
+</ul></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">kickoff <button class="rowcopy">copy prompt kickoff</button></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">paste into a fresh Cowork thread on model-switch day</span></div></li>
+<li class="n sc" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">first message</span></div><div class="codewrap"><pre>vampjam pickup — read vampjam_handoff.md, then vampjam_org_spec.md, top to bottom. Open vampjam_org.html and act on #next. Before editing, claim the next number in both the prompt_log thread and the spec build_history. Write the batch codename to vampjam_admin/commit_msg.txt first, then write files — the login robot commits and pushes; do NOT commit from the sandbox.</pre></div></li>
 </ul></li>
 </ul></li>
 
 </ul>
 </main>
 <script>
-  const BUILD='b19';
+  const BUILD='b20';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -826,7 +856,7 @@ function json(obj, status, cors) {
   const chip = document.getElementById('subchip');
   chip.title = 'click to reload now';
   chip.style.cursor = 'pointer';
-  chip.textContent = 'as of 8/14 3:46:00p';
+  chip.textContent = 'as of 8/14 3:52:30p';
   chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
   const h1 = document.querySelector('header h1');
   h1.style.cursor = 'pointer';
