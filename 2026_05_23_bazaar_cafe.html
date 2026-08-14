@@ -181,10 +181,10 @@
   }
   .sort_toggle button:hover { opacity: 1; }
   .sort_toggle button.active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); }
-  .tag_list { background: var(--panel); padding: 6px 0 20px; touch-action: pan-y; font-size: 17px; }
+  .tag_list { background: var(--panel); border-radius: 14px; padding: 4px 10px; margin: 12px 0 24px; box-shadow: inset 0 2px 5px -2px rgba(0,0,0,0.13); touch-action: pan-y; font-size: 17px; }
   .tag_row {
     display: flex; align-items: center; gap: 5px;
-    padding: 6px 0; border-radius: 9px; background: transparent;
+    padding: 7px 4px; border-radius: 9px; background: transparent;
     flex-wrap: nowrap;
   }
   .tag_row .tag_label {
@@ -199,7 +199,7 @@
   .tag_row .tag_end:hover { background: rgba(232,199,148,0.15); }
   .tag_row button.play_tag {
     background: transparent; color: var(--accent);
-    padding: 6px 10px 6px 0; margin-left: -6px; min-height: 40px; font-size: 22px;
+    padding: 6px 8px 6px 6px; margin-left: 0; min-height: 40px; font-size: 22px;
     border-radius: 7px; flex: 0 0 auto;
   }
   .tag_row button.play_tag:hover,
@@ -289,12 +289,12 @@
     box-shadow: 0 8px 32px rgba(0,0,0,0.5);
   }
   .jam_menu a {
-    display: block; padding: 10px 0; border-radius: 8px;
-    color: var(--fg); text-decoration: none; font-size: 14px; font-weight: 500;
+    display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 8px 6px; border-radius: 8px;
+    color: var(--fg); text-decoration: none; font-size: 17px; font-weight: 400;
   }
   .jam_menu a:hover { background: var(--panel_2); }
   .jam_menu a.current { color: var(--accent); font-weight: 600; }
-  .jam_menu a .menu_sub { display: block; font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 1px; }
+  .jam_menu a .menu_sub { display: inline; font-size: 15px; color: var(--muted); font-weight: 400; margin: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
   details.about_page { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
   details.about_page summary { cursor: pointer; color: var(--fg); font-weight: 600; }
   details.about_page code { background: var(--panel_2); padding: 1px 6px; border-radius: 4px; color: var(--fg); }
@@ -329,17 +329,16 @@
 
   /* ---- session drawer: slides the page down from the top edge ---- */
   .session_drawer {
-    max-height: 0; overflow-y: auto; background: var(--panel);
+    max-height: 0; overflow-y: auto; background: var(--bg);
     transition: max-height 0.18s ease; position: relative; z-index: 90;
   }
-  /* the vamp jam bar casts a shadow up into the bottom of the session list only:
-     inset keeps it inside the list box (no bleed below the bar, none in side margins) */
-  .session_drawer.open { max-height: 72vh; box-shadow: inset 0 -11px 10px -7px rgba(0,0,0,0.22); }
-  .session_drawer.dragging { transition: none; box-shadow: inset 0 -11px 10px -7px rgba(0,0,0,0.22); }
+  .session_drawer.open { max-height: 72vh; }
+  .session_drawer.dragging { transition: none; }
   .session_drawer .jam_menu {
-    position: static; top: auto; left: auto; background: transparent;
-    border: none; box-shadow: none; min-width: 0; border-radius: 0;
-    padding: 10px 0 14px; max-width: 760px; margin: 0 auto;
+    position: static; top: auto; left: auto; min-width: 0;
+    background: var(--panel); border: none; border-radius: 14px;
+    box-shadow: inset 0 2px 5px -2px rgba(0,0,0,0.13);
+    padding: 4px 10px; margin: 12px auto; max-width: 760px;
   }
   #drawer_toggle { transition: none; }
   .drawer_caret { transition: transform 0.3s ease; }
