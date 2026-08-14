@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "56 gutter_align",
+        id: "57 create_tag_persist",
         expanded: true,
+        nodes: [
+          { text: "57 create_tag_persist", children: [
+            { text: "prompt_restate", children: [
+              { text: "Bug: creating + naming a moment often flashes and loses the new row or the typed title; page seems to reload." },
+              { text: "Seemed maybe worse on yellow than minimal (unsure)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "It seems often like when I create a moment I try to name it and often the Paige kind of flashes and I lose the highlight row that I created or more often reloads and I lose the title that I typed in. Can you look into that bug and I'm not sure if this is true, but it seems like it happens more when I'm with the yellow interface versus the minimal I'm not sure about that though." }
+            ]},
+            { text: "diagnosis", children: [
+              { text: "A 15s setInterval poll (fetch_repo_data) replaced local tags with the repo copy and rebuilt the whole list DOM." },
+              { text: "If it fired while typing, render_tags destroyed the focused input (title lost); if it fired before the new tag's debounced save reached the repo/CDN, the new row vanished." },
+              { text: "Theme is unrelated — it is a timing race, so any correlation with yellow was coincidental." }
+            ]},
+            { text: "result_fix", children: [
+              { text: "Added local_edits_in_progress(): true while a title field is focused, a save is pending/in-flight, or within 20s of the last local edit." },
+              { text: "The poll now skips replacing tags + rebuilding the DOM whenever edits are in progress." },
+              { text: "Also added a change-signature check: the list only re-renders when the repo actually differs, killing the periodic 15s flash." },
+              { text: "Applied to all 6 pages (two different fetch_repo_data variants); inline JS passes node --check." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "create_tag_persist, local_edits_in_progress, lastTagsSig, saveInFlight" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "56 gutter_align",
+        expanded: false,
         nodes: [
           { text: "56 gutter_align", children: [
             { text: "prompt_restate", children: [
