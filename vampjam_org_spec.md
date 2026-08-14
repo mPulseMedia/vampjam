@@ -110,7 +110,9 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   wire_admin done (WORKER_UPLOAD_URL = vampjam-upload.crimson-dust-a18d.workers.dev).
   Mid-turn wordmark go: 'vamp jam' → 'vampSF' + titles across 10 site files (none left).
   test_record is #next.
-- NEXT → add entry 90 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 90 wordmark_scope — no page edit) scope note; batch had shipped; no revert asked.
+- 91 wordmark_case · b22 — vampSF → vampsf (all lowercase) across the 10 site files + 4A1.
+- NEXT → add entry 92 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,28 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "90 wordmark_scope",
+        id: "91 wordmark_case",
         expanded: true,
+        nodes: [
+          { text: "91 wordmark_case", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the title vampsf — lowercase sf." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make the title vampsf -- with lowercase SF" }
+            ]},
+            { text: "result_build", children: [
+              { text: "vampSF -> vampsf (wordmark + browser titles) across the 10 site files; scan shows zero vampSF left; org 4A1 updated. b22, stamp 4:19p." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "wordmark_case, vampsf" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "90 wordmark_scope",
+        expanded: false,
         nodes: [
           { text: "90 wordmark_scope", children: [
             { text: "prompt_restate", children: [
