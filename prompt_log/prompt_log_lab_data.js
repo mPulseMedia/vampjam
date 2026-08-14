@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "59 list_refine",
+        id: "60 shadow_panel_only",
         expanded: true,
+        nodes: [
+          { text: "60 shadow_panel_only", children: [
+            { text: "prompt_restate", children: [
+              { text: "Theme label left-aligned with the session names (Admin, Bazaar, etc.); Theme/Yellow/Minimal one font size on mobile and desktop." },
+              { text: "Remove the drop shadow around the controls (the on-scroll one)." },
+              { text: "Show shadow ONLY on the darker panel lists, never on white, and only when a list is taller than the viewport." },
+              { text: "Highlights: white control layer casts a shadow onto the list as it scrolls under." },
+              { text: "Sessions: the list should appear to tuck under the white control layer, with the shadow on the darker session card." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Let's have the word theme be left aligned with the word Admin and bizarre ... Yellow and Minimal same font size on mobile and desktop ... drop the shadow around the controls ... get rid of that drop shadow ... I only want to see shadow on the slightly darker background portions that are the highlight list and above the session list and only when the list is taller than the viewport ... the upper session list appears as though it has gone underneath that white background area ... shadow dropping on the darker background session list area." }
+            ]},
+            { text: "result_build", children: [
+              { text: "theme.js theme_switch padding-left 12px so Theme aligns with the row names; label + buttons all 17px." },
+              { text: "Removed .sticky_player.scrolled box-shadow; added a gradient strip (::after at the sticky bottom) that fades onto the panel list, shown only when .scrolled (i.e., when the page is scrollable)." },
+              { text: "Strip is the exact control-layer width and has no blur, so it never bleeds onto the white gutter." },
+              { text: "Session card fills to the drawer bottom (margin-bottom 0); .session_drawer.open.sess_overflow gets an inset bottom shadow." },
+              { text: "drawer.js adds sess_overflow when the session list is taller than the drawer (checked on open + resize)." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "drawer.js + theme.js pass node --check." },
+              { text: "Couldn't force a scroll in the preview viewport (device-pixel quirk); shadow shows only on overflow, so verify on the phone." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "shadow_panel_only, sticky strip, sess_overflow" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "59 list_refine",
+        expanded: false,
         nodes: [
           { text: "59 list_refine", children: [
             { text: "prompt_restate", children: [
