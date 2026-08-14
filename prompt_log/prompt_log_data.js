@@ -9,8 +9,36 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "61 logo_icons_theme_admin",
+        id: "62 current_row_line_shadow",
         expanded: true,
+        nodes: [
+          { text: "62 current_row_line_shadow", children: [
+            { text: "prompt_restate", children: [
+              { text: "Highlight the currently-selected session row with the light-blue background (no blue line, just the bg)." },
+              { text: "Seat the blue playhead line (at time 0) right on the top edge of the gray highlight card, ends trimmed by the rounded corners." },
+              { text: "The shadow above the highlight card should fall on the gray card, not on the white background." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I want this currently selected session ... its row highlighted ... the light blue background ... no hard blue line above it ... when the time is zero and the blue line's at the top ... a couple pixels shy of the very edge of the rounded rectangle ... I'd like that blue line to rest right on the very edge of that gray area ... ends trimmed off by the rounded rectangle ... there's a drop shadow above the rounded rectangle ... not casting on the white background, but casting on the slightly darker gray of the highlight list just like happens up above." }
+            ]},
+            { text: "result_build", children: [
+              { text: "Current session's jam_item gets a 'current' class -> background var(--row_active) light blue, no line." },
+              { text: "tag_list top padding removed (0) so the time-0 playhead line sits on the card's top edge; overflow hidden trims its ends on the rounded corners; playhead ::before top 0." },
+              { text: "tag_list top shadow changed to inset 0 6px 7px -5px (a drop shadow onto the gray card top, never on white); session card matched to the same inset." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "String edits applied on all 6 pages (asserted)." },
+              { text: "Visual pending push." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "current_row_line_shadow, jam_item.current, top-edge line, gray-cast shadow" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "61 logo_icons_theme_admin",
+        expanded: false,
         nodes: [
           { text: "61 logo_icons_theme_admin", children: [
             { text: "prompt_restate", children: [
