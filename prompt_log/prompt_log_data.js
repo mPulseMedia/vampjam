@@ -9,8 +9,52 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "81 cloudflare_link",
+        id: "83 wrong_flow",
         expanded: true,
+        nodes: [
+          { text: "83 wrong_flow", children: [
+            { text: "prompt_restate", children: [
+              { text: "(mid-turn, with screenshots) I'm here doing the 2A steps — screenshots show the repo-import 'Set up your application' screen with mPulseMedia/vampjam and npx wrangler deploy, one click from Deploy." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I'm here in doing 2a steps." }
+            ]},
+            { text: "result_live", children: [
+              { text: "Recognized the screen as the Import-a-repository flow (the one that fails on the existing repo) and sent an immediate STOP to chat: don't Deploy, Back to Select a method, Start with Hello World, name vampjam-upload." },
+              { text: "Page: added a wrong_flow tripwire as 2A's first row so the trap is named where he'll hit it; later steps renumbered. b15, stamp 3:18p; ships in the same robot commit as 82." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "wrong_flow, deploy_worker, hello_world flow" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "82 sync_cors_done",
+        expanded: false,
+        nodes: [
+          { text: "82 sync_cors_done", children: [
+            { text: "prompt_restate", children: [
+              { text: "He did 1B (deployed the sync worker); check it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "did 1b. check it" }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Sandbox curl to workers.dev is blocked by the egress proxy (bare 403, no CORS headers) — so verified in his Chrome instead: worker versions show 03a595be Manually deployed 2m ago (Active), and the editor's active code shows ALLOWED_ORIGINS lines 22-24 with https://vampsf.com and https://www.vampsf.com. Real deployed code confirmed, not the repo copy." }
+            ]},
+            { text: "result_build", children: [
+              { text: "1B shrunk to a one-line #done; https_check tagged (once DNS lands); steer -> 2: deploy_worker is the next act. b14, stamp 3:16p." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "sync_cors_done, deploy_worker (next), 03a595be" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "81 cloudflare_link",
+        expanded: false,
         nodes: [
           { text: "81 cloudflare_link", children: [
             { text: "prompt_restate", children: [

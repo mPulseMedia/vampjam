@@ -77,7 +77,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   view/vampjam-sync/production. Rewrote 1B + 2A: Cloudflare named on the parent row, exact
   deep link first, click path (Edit code top right → ⌘A → paste → Deploy); vampsf.com
   checked (3:09p): still parked = propagating.
-- NEXT → add entry 82 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 82 sync_cors_done · b14 — he deployed; verified in his Chrome that active version 03a595be
+  of vampjam-sync carries both vampsf origins (sandbox can't reach workers.dev — proxy 403).
+  1B shrunk to #done status; https_check gated 'once DNS lands'; steer → 2 (deploy_worker).
+- 83 wrong_flow · b15 — mid-turn: he was on the repo-import Deploy screen in 2A; sent an
+  immediate STOP in chat, added a wrong_flow tripwire row to 2A (Back → Hello World).
+  Shipped with 82 in one robot commit (sync_cors_done batch).
+- NEXT → add entry 84 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
