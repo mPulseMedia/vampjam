@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "43 drive_rename_done",
+        id: "44 theme_system",
         expanded: true,
+        nodes: [
+          { text: "44 theme_system", children: [
+            { text: "prompt_restate", children: [
+              { text: "Support multiple switchable style themes, evolvable in isolation + coordination." },
+              { text: "Keep current as 'yellow'; add 'minimal' (same structure, different colors)." },
+              { text: "Be able to switch and switch back, both intact." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Will you support multiple style sheets... call the style Yellow and make a new one called minimal... entirely different color scheme... switch back... Keep multiple styles intact" }
+            ]},
+            { text: "result_architecture", children: [
+              { text: "Shared theme.js holds all themes as CSS-variable sets." },
+              { text: "Applies saved theme on load (in head, no flash); persists in localStorage." },
+              { text: "Auto-injects a Theme switcher into the jam_menu." }
+            ]},
+            { text: "result_themeable", children: [
+              { text: "Added vars: on_accent, accent_hover/active, accent_2_hover/active, playhead." },
+              { text: "Replaced hardcoded #0b0d0f etc. with var(--x, <yellow fallback>) in all 6 pages." }
+            ]},
+            { text: "result_themes", children: [
+              { text: "yellow = original palette (default, intact)." },
+              { text: "minimal = white bg, charcoal text, blue accent, white on-accent." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Live: default yellow; apply minimal -> bg #fff; back to yellow -> #4a2a0e." },
+              { text: "Switcher shows Yellow/Minimal; screenshot of minimal looks clean." },
+              { text: "Restored browser to yellow after test." }
+            ]},
+            { text: "result_evolve", children: [
+              { text: "Edit a theme block in theme.js to evolve in isolation; all pages update (coordination)." },
+              { text: "Add a theme by copying a block + name." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "theme_system, theme_yellow, theme_minimal, on_accent_var" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "43 drive_rename_done",
+        expanded: false,
         nodes: [
           { text: "43 drive_rename_done", children: [
             { text: "prompt_restate", children: [
