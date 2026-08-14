@@ -42,12 +42,17 @@
 
   // ---- pull-to-reveal at the very top ----
   var drag = null;
+  var last_scroll_at = 0;
+  var SETTLE_MS = 350;   // page must rest at the top this long before a pull can reveal
+  window.addEventListener('scroll', function () { last_scroll_at = Date.now(); }, { passive: true });
 
   function onStart(e) {
     var d = drawer();
     if (!d || e.touches.length !== 1) { drag = null; return; }
     if (d.classList.contains('open')) { drag = null; return; }   // already open
     if (window.scrollY > 0) { drag = null; return; }             // not at top -> plain scroll
+    // just scrolled to the top? make this touch a normal stop, not a reveal.
+    if (Date.now() - last_scroll_at < SETTLE_MS) { drag = null; return; }
     var tg = e.target;
     if (tg && tg.closest && tg.closest('.seek_bar, input, textarea, [contenteditable]')) {
       drag = null; return;                                       // don't hijack seek / editing
