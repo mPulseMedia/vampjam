@@ -104,7 +104,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - 88 dash_audit · b20 — his rule pass: codename rows no longer carry '— detail' text; every
   dash-detail moved to a child bullet (17 rows across all 5 sections); redundant details
   dropped where a child already said it (anti-repeat rule); buttons stay on the codename row.
-- NEXT → add entry 89 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 89 wire_wordmark · b21 — he did 2A 1-3 (worker exists, code verified live: GET → 'POST
+  only'); I finished in his Chrome: PUBLIC_BASE var + BUCKET→vampjam-audio binding deployed.
+  UPLOAD_SECRET intentionally skipped ('' both sides — gate off, add-later note on 2B).
+  wire_admin done (WORKER_UPLOAD_URL = vampjam-upload.crimson-dust-a18d.workers.dev).
+  Mid-turn wordmark go: 'vamp jam' → 'vampSF' + titles across 10 site files (none left).
+  test_record is #next.
+- NEXT → add entry 90 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

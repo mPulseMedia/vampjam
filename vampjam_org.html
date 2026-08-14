@@ -281,73 +281,18 @@ if(n)document.documentElement.classList.add('night');})();
 </ul></li>
 
 <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">record_live</span></div><ul>
-<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">deploy_worker <span class="nextm">#next</span> <span class="dom">#do</span> <button class="rowcopy">copy text worker_upload</button></span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">which_page: use the <b>Create application</b> link below (it makes a NEW worker). The other Cloudflare page you have open &#8212; vampjam-sync &#8212; is the finished sync worker; nothing left to do there</span></div></li>
-<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">open <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/workers-and-pages/create" target="_blank">Create application on Cloudflare</a> &#8594; choose <b>Start with Hello World</b>. Tripwire: a screen saying <b>Set up your application</b> / <code>mPulseMedia/vampjam</code> / &#8220;npx wrangler deploy&#8221; is the WRONG flow (repo-import, it fails) &#8212; click Back and pick Hello World. Name it <code>vampjam-upload</code> &#8594; Deploy the starter</span></div></li>
-<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">click <b>Edit code</b>, top right &#8594; select all (&#8984;A) &#8594; paste the copied code &#8594; <b>Deploy</b></span></div></li>
-<li class="n sc" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">the code the button copies &#8212; paste into that editor</span></div><div class="codewrap"><pre>// vampjam — R2 upload Worker
-// Accepts a POST with a recorded audio body and stores it in the vampjam-audio
-// R2 bucket, returning the public URL so a session can point at it.
-//
-// ONE-TIME SETUP (Cloudflare dashboard → Workers &amp; Pages → Create Worker,
-// paste this in, then):
-//   1. Settings → Bindings → add an R2 bucket binding:
-//        Variable name: BUCKET      Bucket: vampjam-audio
-//   2. Settings → Variables &amp; Secrets, add:
-//        PUBLIC_BASE   = https://pub-33cfd8558d314eb58642c8550608850b.r2.dev
-//        UPLOAD_SECRET = (any long random string you make up)
-//   3. Deploy. Copy the worker URL (…workers.dev).
-//   4. In admin.html set WORKER_UPLOAD_URL to that URL and UPLOAD_SECRET to the
-//      same string you chose above.
-//
-// The client (admin.html recorder) POSTs the audio blob with headers:
-//   Content-Type: audio/mp4 | audio/webm
-//   X-File-Name:  desired file name
-//   X-Upload-Secret: the shared secret
-
-export default {
-  async fetch(request, env) {
-    const cors = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, X-Upload-Secret, X-File-Name',
-    };
-    if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
-    if (request.method !== 'POST') return json({ error: 'POST only' }, 405, cors);
-
-    if (env.UPLOAD_SECRET &amp;&amp; request.headers.get('X-Upload-Secret') !== env.UPLOAD_SECRET) {
-      return json({ error: 'unauthorized' }, 401, cors);
-    }
-
-    let name = (request.headers.get('X-File-Name') || ('rec_' + Date.now()))
-      .replace(/[^A-Za-z0-9._-]/g, '_');
-    const ctype = request.headers.get('Content-Type') || 'audio/mp4';
-    if (!/\.[A-Za-z0-9]+$/.test(name)) name += ctype.includes('webm') ? '.webm' : '.m4a';
-
-    const body = await request.arrayBuffer();
-    if (!body || body.byteLength === 0) return json({ error: 'empty body' }, 400, cors);
-
-    await env.BUCKET.put(name, body, { httpMetadata: { contentType: ctype } });
-
-    const base = (env.PUBLIC_BASE || '').replace(/\/+$/, '');
-    return json({ ok: true, name, size: body.byteLength, url: base ? base + '/' + name : null }, 200, cors);
-  },
-};
-
-function json(obj, status, cors) {
-  return new Response(JSON.stringify(obj), {
-    status,
-    headers: { ...cors, 'Content-Type': 'application/json' },
-  });
-}</pre></div></li>
-<li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">back on the worker: Settings &#8594; Bindings: <code>BUCKET</code> &#8594; <code>vampjam-audio</code> &#183; Variables: <code>PUBLIC_BASE</code> = <code>https://pub-33cfd8558d314eb58642c8550608850b.r2.dev</code>, <code>UPLOAD_SECRET</code> = a random string you make up</span></div></li>
-<li class="n" data-l="6"><div class="row"><span class="tri">▶</span><span class="lbl">6</span><span class="txt">expect: the worker url (&#8230;workers.dev) &#8212; paste it in this chat</span></div></li>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">deploy_worker <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">your 1-2-3 built it; I finished the settings in your Chrome (storage hookup + public address)</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">checked the live worker: it answers exactly as our code should</span></div></li>
 </ul></li>
-<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">wire_admin <span class="readym">#ready</span></span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">the moment I have your worker url I set it in admin.html</span></div></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">wire_admin <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">Admin now knows the worker&#8217;s address; recording can upload</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">no password gate for now: anyone who learns the worker address could upload a file. Low risk; say &#8220;add the secret&#8221; later and we bolt it on</span></div></li>
 </ul></li>
-<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">test_record <span class="dom">#do</span></span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">after wire_admin: Admin &#8594; Record a jam &#8594; record &#8594; Upload to R2 &#8594; a url appears</span></div></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">test_record <span class="nextm">#next</span> <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">wait ~2 minutes (the site is republishing), then on your iPhone open <a href="https://mpulsemedia.github.io/vampjam/admin.html" target="_blank">the Admin page</a></span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">Record a jam &#8594; record a few seconds &#8594; stop &#8594; <b>Upload to R2</b></span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">expect: a link appears under the button; tell me what it says</span></div></li>
 </ul></li>
 <li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">session_autocreate <span class="readym">#ready</span></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">say go: after an upload I build the session page + json automatically</span></div></li>
@@ -380,8 +325,8 @@ function json(obj, status, cors) {
 </ul></li>
 
 <li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">rebrand</span></div><ul>
-<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">wordmark_name <span class="readym">#ready</span></span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">say go: &#8220;vamp jam&#8221; &#8594; &#8220;vamp SF&#8221; on every page (Sacramento font stays) + titles to vampsf</span></div></li>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">wordmark_name <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">every page now says <b>vampSF</b> (wordmark + browser titles); Sacramento font untouched</span></div></li>
 </ul></li>
 </ul></li>
 
@@ -401,7 +346,7 @@ function json(obj, status, cors) {
 </ul>
 </main>
 <script>
-  const BUILD='b20';
+  const BUILD='b21';
   const KEY='vampjam_org_page_state';
 
   function label_path(li) {
@@ -450,7 +395,7 @@ function json(obj, status, cors) {
     }
     // per-build tidying: nodes finished in this build close themselves
     // (once — after that your own toggles win)
-    const CLOSE_ON_BUILD = ['1A','1B'];
+    const CLOSE_ON_BUILD = ['1A','1B','2A','2B','4A'];
     const OPEN_ON_BUILD = [];
     if (!st || st.b !== BUILD) {
       items.forEach(li => {
@@ -856,7 +801,7 @@ function json(obj, status, cors) {
   const chip = document.getElementById('subchip');
   chip.title = 'click to reload now';
   chip.style.cursor = 'pointer';
-  chip.textContent = 'as of 8/14 3:52:30p';
+  chip.textContent = 'as of 8/14 4:15:50p';
   chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
   const h1 = document.querySelector('header h1');
   h1.style.cursor = 'pointer';
