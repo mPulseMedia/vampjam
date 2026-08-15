@@ -1,1 +1,1 @@
-dur_swipe
+auto_commit
