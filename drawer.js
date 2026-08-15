@@ -44,7 +44,7 @@
   var HERE = (location.pathname.split('/').pop() || '');
 
   function pad(n) { return (n < 10 ? '0' : '') + n; }
-  function fmt_dur(s) { s = Math.round(s || 0); if (!s) return ''; var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), ss = s % 60; return h > 0 ? h + ':' + pad(m) + ':' + pad(ss) : m + ':' + pad(ss); }
+  function fmt_dur(s) { s = Math.round(s || 0); if (!s) return ''; var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60); return h > 0 ? h + ':' + pad(m) : m + 'm'; }
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
   function build_menu() {
@@ -123,8 +123,12 @@
     if (window.scrollY > 0) { drag = null; return; }                 // not at top -> plain scroll
     if (Date.now() - last_scroll_at < SETTLE_MS) { drag = null; return; } // just scrolled -> stop at top
     var tg = e.target;
-    if (tg && tg.closest && tg.closest('.seek_bar, input, textarea, [contenteditable]')) {
-      drag = null; return;                                           // don't hijack seek / editing
+    if (tg && tg.closest) {
+      if (tg.closest('.seek_bar')) { drag = null; return; }          // don't hijack the seek bar
+      var ed = tg.closest('input, textarea, [contenteditable]');
+      if (ed && ed === document.activeElement) { drag = null; return; } // actively editing -> leave it
+      // note: highlight titles are readonly inputs; a pull that starts on one
+      // should reveal the drawer just like the control region does
     }
     drag = { mode: 'open', y0: t.clientY, x0: t.clientX, active: false };
   }

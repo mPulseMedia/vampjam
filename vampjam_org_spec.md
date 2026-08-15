@@ -118,7 +118,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   verify_ios; #decide: dups.
 - 93 wordmark_sf · b24 — wordmark split: vamp (Sacramento) + SF capital in the page's system
   font at 34px/650 (30px on r2_setup); 9 files; titles stay lowercase vampsf.
-- NEXT → add entry 94 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 94 dur_swipe — no page edit) drawer.js: session-list durations drop seconds (h:mm /
+  Nm); pull-to-reveal now also starts on the highlight list — root cause: titles are
+  readonly <input>s and the old guard excluded ALL inputs; now only a focused editable
+  blocks the gesture.
+- NEXT → add entry 95 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

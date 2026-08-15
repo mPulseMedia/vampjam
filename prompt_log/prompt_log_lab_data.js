@@ -9,8 +9,34 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "93 wordmark_sf",
+        id: "94 dur_swipe",
         expanded: true,
+        nodes: [
+          { text: "94 dur_swipe", children: [
+            { text: "prompt_restate", children: [
+              { text: "Session list: drop the seconds from durations — hours and minutes are enough." },
+              { text: "Pull-down reveal: it works when the swipe starts on the control region, but not when it starts on the highlight list even with the page at top; make the highlight list start the same reveal." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Two things. Please remove the second: digit digit that shows the second in the duration of the session up on the session list. I don't think we need to know that Houran minute is just fine. Secondly, when I swipe down on the control portion of the screen it behaves just the way I hope it would ... but when I swipe down the highlights ... I can't swipe down the highlights in order to move the controls in the overall page down lower ... I wanna have that same downward swiping affect occur if I start the swipe on the highlight list." }
+            ]},
+            { text: "result_build", children: [
+              { text: "fmt_dur in drawer.js: 2:52:55 -> 2:52; under an hour shows 52m." },
+              { text: "Found the real cause of the swipe gap: highlight titles are readonly input fields, and the gesture guard ignored ANY touch starting on an input. Now only a field you are actively editing blocks the pull; the seek bar stays protected. Single-tap play and double-tap edit are untouched (the gesture only takes over after a 6px vertical move)." },
+              { text: "drawer.js passes node --check; shared file, so all session pages get both fixes at once. No org-page edit (b24 stands)." }
+            ]},
+            { text: "result_verify", children: [
+              { text: "Your check, next time you're on the phone: page at top -> swipe down starting ON a highlight name -> the session list should ride in, same as from the controls. While renaming (keyboard up) a swipe should NOT hijack." }
+            ]},
+            { text: "codename_list", children: [
+              { text: "dur_swipe, fmt_dur, tag_label readonly guard" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "93 wordmark_sf",
+        expanded: false,
         nodes: [
           { text: "93 wordmark_sf", children: [
             { text: "prompt_restate", children: [
