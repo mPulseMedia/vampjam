@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "123 rec_live",
+        id: "124 git_heal",
         expanded: true,
+        nodes: [
+          { text: "124 git_heal", children: [
+            { text: "prompt_restate", children: [
+              { text: "The new Record page isn't loading — not a cache issue (incognito and computer show the old one too)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I don\u2019t see an update to the Record page. I don\u2019t think it\u2019s a cash issue cashing issue because I grabbed the URL and went into an incognito browser. It show the same same one not the new one. I\u2019m here computer. Yeah it\u2019s not loading the new page on the computer either." }
+            ]},
+            { text: "response", children: [
+              { text: "git_heal", children: [
+                { text: "you were right — it never shipped. The Mac's push robot got stuck" },
+                { text: "your 2:14p recording changed the session list on the server at the same time my batch changed it locally; the robot hit that clash and stopped pushing" },
+                { text: "taught the robot to resolve that clash automatically (the server copy of the list wins; your page files are untouched)" },
+                { text: "it should catch up and push the new Record page within a minute or two" }
+              ]},
+              { text: "verify", children: [
+                { text: "~3 min: reload the record page — big record button with dimmed seek buttons around it" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "123 rec_live",
+        expanded: false,
         nodes: [
           { text: "123 rec_live", children: [
             { text: "prompt_restate", children: [

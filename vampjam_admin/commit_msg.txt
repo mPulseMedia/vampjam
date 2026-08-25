@@ -1,1 +1,1 @@
-git_heal
+auto_commit

@@ -294,7 +294,16 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   typed live ship as the tags' labels in the session json. window.__rec_set_elapsed test
   hook. Playwright: 2 tags → 2 rows + 2 dots ✓, 4000s render → 6 seg ticks + 1h@90% ✓, dot
   click flashes row ✓, typed name 'killer riff' arrives in the uploaded tags ✓.
-- NEXT → add entry 124 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 124 git_heal — no page edit) rec_live never reached vampsf.com: the save robot's
+  merge hit a conflict (local delete_stick set sessions_auto.json to [] while the Worker's
+  commits — Paul's 2:14p recording — changed it on origin) and the script aborts on merge
+  failure, so the Mac sat ahead 4 / behind 16 with pushes rejected since delete_stick.
+  Fix: auto_push_vampjam.sh merge is now `git merge -X theirs` — conflicts resolve to
+  origin's copy (the Worker is source of truth for the files it writes; local-only files
+  like record.html are untouched). Also learned: the device bridge cannot repair git itself
+  (unlink blocked), and my stray index.lock is cleared by the robot's own rm -f preamble.
+  Standing rule reaffirmed: never ship sessions_auto.json in a batch again.
+- NEXT → add entry 125 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
