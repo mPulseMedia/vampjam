@@ -1,1 +1,1 @@
-tag_blur
+auto_commit
