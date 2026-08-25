@@ -115,6 +115,10 @@
     var d = drawer();
     if (!d || e.touches.length !== 1) { drag = null; return; }
     var t = e.touches[0];
+    // split_land: in the landscape split view the right pane (highlights)
+    // holds still — drawer gestures only start on the left half
+    if (window.matchMedia('(orientation: landscape) and (pointer: coarse) and (max-height: 520px)').matches &&
+        e.target && e.target.closest && e.target.closest('.tag_list')) { drag = null; return; }
     if (d.classList.contains('open')) {
       // swipe up to close (only once the list itself is at its own top)
       drag = { mode: 'close', y0: t.clientY, x0: t.clientX, active: false };

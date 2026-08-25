@@ -9,8 +9,34 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "100 seg_remain",
+        id: "101 split_land",
         expanded: true,
+        nodes: [
+          { text: "101 split_land", children: [
+            { text: "prompt_restate", children: [
+              { text: "Mobile landscape: split screen — play/jump controls on the left half, highlights on the right; sliding the left down reveals the session list while the right holds still." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "when on mobile, in landscape mode, display a split screen with the play, jump ahead and back, on th eleft half. on the righ t side are the highlight. I slide the left side down to show the session list (the right holds still)." }
+            ]},
+            { text: "response", children: [
+              { text: "split_land", children: [
+                { text: "turn the phone sideways: controls left, list right" },
+                { text: "the list scrolls on its own; playhead line rides it" },
+                { text: "pull-down works on the left half only; right stays" },
+                { text: "portrait is untouched" }
+              ]},
+              { text: "verify", children: [
+                { text: "phone only (I can't fake landscape from here)" },
+                { text: "~2 min, reload, rotate: two panes appear" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "100 seg_remain",
+        expanded: false,
         nodes: [
           { text: "100 seg_remain", children: [
             { text: "prompt_restate", children: [
