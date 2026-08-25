@@ -1,1 +1,1 @@
-bar_preload
+auto_commit
