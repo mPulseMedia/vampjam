@@ -90,9 +90,9 @@
       var right = fmt_dur(dur);
       if (s.count) right += ' <span class="jam_count">' + s.count + '</span>';
       if (s._pending || s.pending) right = '<span class="jam_sync">syncing…</span>';
-      // the row shows the session's own title; the date is appended only when
-      // the title doesn't already carry it (so list name == session title)
-      var disp = (s.name && String(s.name).indexOf(s.date) >= 0) ? s.name : (s.name + ' — ' + s.date);
+      // naming convention: date first, then the time (default recordings) or the
+      // venue name — and the row shows exactly the session's title
+      var disp = (s.name && String(s.name).indexOf(s.date) >= 0) ? s.name : (s.date + ' ' + s.name);
       var isAuto = s.page.indexOf('session.html?p=') === 0;
       var del = isAuto
         ? '<button class="jam_del" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this session">' + ICO_TRASH + '</button>'

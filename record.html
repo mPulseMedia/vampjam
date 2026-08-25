@@ -132,7 +132,7 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (j) {
           var city = j && (j.locality || j.city);
-          if (city && !nameEdited) { nameIn.value = city + ' — ' + DEFT; size_name(); }
+          if (city && !nameEdited) { nameIn.value = ISO + ' ' + city; size_name(); }
         }).catch(function () {});
     }, function () {}, { timeout: 6000, maximumAge: 600000 });
   }
@@ -219,7 +219,9 @@
     status.textContent = 'Uploading…';
     var id = rec_id();
     var page = 'session.html?p=' + id;
-    var label = nameIn.value || ('Recording — ' + DEFT);
+    var label = nameIn.value || DEFT;
+    // new convention: date first — '2026-08-25 12:38:05' or '2026-08-25 Sound Union'
+    if (label.indexOf(ISO) < 0) label = ISO + ' ' + label;
     // placeholder first: every device's session list shows a syncing… row
     // for this recording while the upload is still in flight
     try {

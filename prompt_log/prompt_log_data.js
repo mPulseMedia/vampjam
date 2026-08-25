@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "119 row_delete",
+        id: "120 name_order",
         expanded: true,
+        nodes: [
+          { text: "120 name_order", children: [
+            { text: "prompt_restate", children: [
+              { text: "New convention for session names: date first, then either the time (if default) or the venue (Sound Union / Bazaar Cafe)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I get it. You\u2019re renaming the session to follow the convention, but we don\u2019t need to do that. We\u2019re gonna create a new convention. In fact in those session names, let\u2019s put the date first and then either the time if it\u2019s just left as default or what we now have, which is either Sound Union or are the Bazaar cafe" }
+            ]},
+            { text: "response", children: [
+              { text: "name_order", children: [
+                { text: "every session now reads date first: 2026-08-07 Sound Union, 2026-08-25 12:19:33" },
+                { text: "page titles, the session list, and new recordings all follow it" },
+                { text: "type just a venue on the record screen and the date slots in front by itself" },
+                { text: "with location on, the default becomes 2026-08-25 San Francisco" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open the Sessions list — every row starts with its date" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "119 row_delete",
+        expanded: false,
         nodes: [
           { text: "119 row_delete", children: [
             { text: "prompt_restate", children: [

@@ -256,7 +256,14 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   deleted.'). The R2 audio file itself stays in the bucket — deleting it needs an
   upload-worker change (future). drawer.js?v=119. Playwright: placeholder→json→final
   sequence ✓, exact-title rows ✓, confirm+delete posts+row gone ✓, play alert ✓, tombstone ✓.
-- NEXT → add entry 120 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 120 name_order — no page edit) NEW session-name convention: date first, then either
+  the time (default recordings, '2026-08-25 12:38:05') or the venue ('2026-08-07 Sound
+  Union'). Applied to: all 8 static page titles + h1s; drawer rows (date prepended only when
+  the title lacks it — list row still == session title); record.html city default is now
+  '2026-08-25 San Francisco', and an edited name that lacks the date gets it prefixed at
+  upload ('Sound Union' → '2026-08-25 Sound Union'). drawer.js?v=120. Playwright: h1/title/
+  rows all date-first ✓, city default ✓, typed-venue normalization in json label + registry ✓.
+- NEXT → add entry 121 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
