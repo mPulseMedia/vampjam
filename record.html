@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>vampsf — Record</title>
+<script src="theme.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    padding: max(10px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
+  }
+  .top_bar { width: 100%; max-width: 560px; display: flex; align-items: center; min-height: 44px; }
+  .back_btn {
+    display: flex; align-items: center; gap: 4px;
+    background: none; border: none; padding: 8px 12px 8px 0; margin-left: -4px;
+    color: var(--muted); font: inherit; font-size: 16px; cursor: pointer;
+  }
+  .back_btn svg { width: 20px; height: 20px; }
+  .name_row {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; max-width: 560px; margin-top: 4vh;
+  }
+  #name_in {
+    background: none; border: none; outline: none; text-align: center;
+    color: var(--muted); font: inherit; font-size: 21px; font-weight: 500;
+    width: auto; min-width: 40px; max-width: 80%;
+    border-bottom: 1px dashed transparent; padding: 2px 4px;
+  }
+  #name_in:focus { color: var(--fg); border-bottom-color: var(--panel_3); }
+  .pencil_btn {
+    background: none; border: none; padding: 6px; cursor: pointer;
+    color: var(--muted); opacity: 0.7; display: flex;
+  }
+  .pencil_btn svg { width: 17px; height: 17px; }
+  .stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; width: 100%; max-width: 560px; }
+  .rec_btn {
+    width: 108px; height: 108px; border-radius: 50%;
+    border: none; cursor: pointer; font-size: 44px; line-height: 1;
+    background: var(--panel_2); color: #d70015;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+  }
+  .rec_btn.recording { background: #d70015; color: #fff; animation: rec_pulse 1.2s ease-in-out infinite; }
+  @keyframes rec_pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(215,0,21,0.45); } 50% { box-shadow: 0 0 0 16px rgba(215,0,21,0); } }
+  .rec_state { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 17px; min-height: 24px; font-variant-numeric: tabular-nums; }
+  .rec_dot { width: 10px; height: 10px; border-radius: 50%; background: #d70015; opacity: 0; }
+  .rec_state.on .rec_dot { opacity: 1; animation: dot_blink 1.2s ease-in-out infinite; }
+  .rec_state.on { color: var(--fg); }
+  @keyframes dot_blink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+  .tag_btn {
+    width: 100%; max-width: 420px; padding: 22px; border: none; border-radius: 14px;
+    background: var(--accent); color: var(--on_accent, #fff);
+    font: inherit; font-size: 21px; font-weight: 600; cursor: pointer;
+  }
+  .tag_btn:disabled { opacity: 0.35; cursor: default; }
+  .status { min-height: 44px; text-align: center; color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 480px; word-break: break-word; }
+  .status a { color: var(--accent); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="top_bar">
+  <button class="back_btn" id="back_btn" aria-label="Back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    <span>Back</span>
+  </button>
+</div>
+
+<div class="name_row">
+  <input id="name_in" type="text" autocomplete="off" autocapitalize="words" aria-label="Session name">
+  <button class="pencil_btn" id="pencil_btn" aria-label="Edit session name">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>
+  </button>
+</div>
+
+<div class="stage">
+  <button class="rec_btn" id="rec_btn" aria-label="Record">&#9679;</button>
+  <div class="rec_state" id="rec_state"><span class="rec_dot"></span><span id="rec_time">0:00</span></div>
+  <button class="tag_btn" id="tag_btn" disabled>Tag the moment</button>
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+(function () {
+  var WORKER_UPLOAD_URL = 'https://vampjam-upload.crimson-dust-a18d.workers.dev/';
+  var WORKER_SYNC_URL   = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
+  var RAW_BASE          = 'https://raw.githubusercontent.com/mPulseMedia/vampjam/main/';
+
+  var backBtn = document.getElementById('back_btn'),
+      nameIn  = document.getElementById('name_in'),
+      pencil  = document.getElementById('pencil_btn'),
+      recBtn  = document.getElementById('rec_btn'),
+      recState= document.getElementById('rec_state'),
+      timeEl  = document.getElementById('rec_time'),
+      tagBtn  = document.getElementById('tag_btn'),
+      status  = document.getElementById('status');
+
+  backBtn.addEventListener('click', function () {
+    if (window.history.length > 1) window.history.back();
+    else window.location.href = 'index.html';
+  });
+  pencil.addEventListener('click', function () { nameIn.focus(); nameIn.select(); });
+
+  // ---- session name: date by default; city prefixed when location is known ----
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  var d0 = new Date();
+  var ISO = d0.getFullYear() + '-' + pad(d0.getMonth() + 1) + '-' + pad(d0.getDate());
+  nameIn.value = ISO;
+  function size_name() { nameIn.style.width = Math.max(3, nameIn.value.length + 1) + 'ch'; }
+  nameIn.addEventListener('input', size_name); size_name();
+  var nameEdited = false;
+  nameIn.addEventListener('input', function () { nameEdited = true; });
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=' + pos.coords.latitude +
+            '&longitude=' + pos.coords.longitude + '&localityLanguage=en')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          var city = j && (j.locality || j.city);
+          if (city && !nameEdited) { nameIn.value = city + ' — ' + ISO; size_name(); }
+        }).catch(function () {});
+    }, function () {}, { timeout: 6000, maximumAge: 600000 });
+  }
+
+  // ---- recording ----
+  var mediaRec = null, chunks = [], startT = 0, timer = null, blob = null, mime = '', ext = 'm4a';
+  var liveTags = [], recDur = 0;
+
+  function pickMime() {
+    var c = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'];
+    for (var i = 0; i < c.length; i++) {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported(c[i])) return c[i];
+    }
+    return '';
+  }
+  function fmt(s) { var m = Math.floor(s / 60), ss = Math.floor(s % 60); return m + ':' + pad(ss); }
+  function tick() { timeEl.textContent = fmt((Date.now() - startT) / 1000); }
+
+  async function start() {
+    try {
+      var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mime = pickMime(); ext = mime.indexOf('webm') >= 0 ? 'webm' : 'm4a';
+      mediaRec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      chunks = []; liveTags = []; recDur = 0; blob = null;
+      mediaRec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      mediaRec.onstop = function () {
+        blob = new Blob(chunks, { type: mime || 'audio/mp4' });
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        upload();
+      };
+      mediaRec.start();
+      startT = Date.now(); timer = setInterval(tick, 250); tick();
+      recBtn.classList.add('recording'); recBtn.innerHTML = '&#9632;';
+      recState.classList.add('on');
+      tagBtn.disabled = false;
+      status.textContent = '';
+    } catch (err) {
+      status.textContent = 'microphone blocked: ' + (err && err.message ? err.message : err);
+    }
+  }
+  function stop() {
+    recDur = Math.round((Date.now() - startT) / 1000);
+    if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
+    clearInterval(timer);
+    recBtn.classList.remove('recording'); recBtn.innerHTML = '&#9679;';
+    recState.classList.remove('on');
+    tagBtn.disabled = true;
+  }
+  recBtn.addEventListener('click', function () {
+    if (mediaRec && mediaRec.state === 'recording') stop(); else start();
+  });
+
+  tagBtn.addEventListener('click', function () {
+    if (!mediaRec || mediaRec.state !== 'recording') return;
+    liveTags.push(Math.round(((Date.now() - startT) / 1000) * 10) / 10);
+    status.textContent = liveTags.length + ' moment' + (liveTags.length === 1 ? '' : 's') + ' tagged';
+  });
+
+  // ---- upload + auto session (stop -> straight to a ready session) ----
+  function slug(t) {
+    return String(t).toLowerCase()
+      .replace(/[—–-]/g, '_').replace(/[^a-z0-9_]+/g, '_')
+      .replace(/_+/g, '_').replace(/^_|_$/g, '');
+  }
+  function rec_id() {
+    var id = slug(nameIn.value) || 'rec';
+    if (!/\d{4}_\d{2}_\d{2}/.test(id)) id += '_' + ISO.replace(/-/g, '_');
+    id += '_' + pad(d0.getHours()) + pad(new Date().getMinutes());
+    return id;
+  }
+  function sync_write(path, content, message) {
+    return fetch(WORKER_SYNC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: path, content: content, message: message })
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error('sync ' + r.status + ': ' + t.slice(0, 80)); });
+      return r.json();
+    });
+  }
+  async function upload() {
+    if (!blob) return;
+    status.textContent = 'Uploading…';
+    var id = rec_id();
+    try {
+      var r = await fetch(WORKER_UPLOAD_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': blob.type || 'audio/mp4',
+          'X-File-Name': id + '.' + ext,
+          'X-Upload-Secret': ''
+        },
+        body: blob
+      });
+      var j = await r.json();
+      if (!j.ok) throw new Error('upload ' + (j.error || r.status));
+      status.textContent = 'Creating the session…';
+      var label = nameIn.value || ('Recording — ' + ISO);
+      var now = Date.now();
+      var tags = liveTags.map(function (t, i) {
+        return { id: 't_' + now + '_lt' + (i + 1), t: t, label: '' };
+      });
+      await sync_write(id + '.json', JSON.stringify({
+        audio: { label: label, url: j.url, kind: 'url' },
+        tags: tags
+      }, null, 2), 'auto session ' + id);
+      var page = 'session.html?p=' + id;
+      var list = [];
+      try {
+        var lr = await fetch(RAW_BASE + 'sessions_auto.json?v=' + Date.now(), { cache: 'no-store' });
+        if (lr.ok) { var lj = await lr.json(); if (Array.isArray(lj)) list = lj; }
+      } catch (e) {}
+      list = list.filter(function (e2) { return e2 && e2.page !== page; });
+      list.push({ page: page, name: (label === ISO ? 'Recording' : label.replace(' — ' + ISO, '')), date: ISO, dur: recDur, count: tags.length });
+      await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
+      status.innerHTML = 'Session ready &#10003; <a href="' + page + '">open ' +
+        (label || id) + '</a>' +
+        (tags.length ? '<br>' + tags.length + ' moment' + (tags.length === 1 ? '' : 's') + ' carried over' : '');
+    } catch (err) {
+      status.innerHTML = 'Something went wrong (' + (err && err.message ? err.message : err) + ') — ' +
+        '<a href="#" id="retry_link">try again</a>';
+      var rl = document.getElementById('retry_link');
+      if (rl) rl.addEventListener('click', function (e) { e.preventDefault(); upload(); });
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

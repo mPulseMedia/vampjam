@@ -75,7 +75,7 @@
         + '<span class="menu_sub">' + right + '</span></a>'
         + '<button class="jam_share" data-href="' + s.page + '" aria-label="Copy link to this session">' + ICO_SHARE + '</button></div>');
     });
-    rows.push('<div class="jam_item jam_new"><a class="jam_link" href="admin.html">'
+    rows.push('<div class="jam_item jam_new"><a class="jam_link" href="record.html">'
       + '<span class="jam_left"><span class="jam_ico">' + ICO_NEW + '</span><span class="jam_name">New recording</span></span></a></div>');
     menu.innerHTML = rows.join('');
   }

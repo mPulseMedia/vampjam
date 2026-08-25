@@ -9,8 +9,36 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "113 rec_auto",
+        id: "114 rec_screen",
         expanded: true,
+        nodes: [
+          { text: "114 rec_screen", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make Record a very simple screen: Back top left; an editable light-text name with a pencil (default = the date, plus location if known) that names both the file and the session; a big record button; a big tag button; a recording indicator with elapsed time; drop all other text and instructions." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Make the Record session a very simplified screen with basically the return back to the other page navigation button in the top left. The I think it would be good to come up with a string that can be edited. That is then will be the name of the file and the name of the session and the default string should be the date matching the other formats and if you know the location that would be cool so that\u2019s just a kind of light colored text with a pencil next to it that I can edit and a big record button and a big tag the moment button and then some indication of the fact that it\u2019s recording, and how long it has recorded so far all the other text and instructions and everything else let\u2019s try getting rid of those" }
+            ]},
+            { text: "response", children: [
+              { text: "rec_screen", children: [
+                { text: "new page: just Back, the name, two big buttons, and the timer — nothing else" },
+                { text: "name defaults to today; if you allow location it becomes City — date" },
+                { text: "tap the name or the pencil to edit; it names the session AND the file" },
+                { text: "stopping now uploads and builds the session by itself — the Upload button is gone" },
+                { text: "the Sessions list's New recording now opens this screen" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: Sessions list > New recording (or vampsf.com/record.html)" },
+                { text: "allow mic (and location if you want the city in the name)" },
+                { text: "record, tag a couple moments, tap stop — wait for Session ready" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "113 rec_auto",
+        expanded: false,
         nodes: [
           { text: "113 rec_auto", children: [
             { text: "prompt_restate", children: [

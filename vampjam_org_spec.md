@@ -201,7 +201,17 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   'Tag the moment' button while recording on Admin; taps become the session's initial
   moments. Playwright (routed workers + raw): hour marks 1h/2h ✓, session.html binds ✓,
   admin record→2 live tags→upload posts rec json + sessions_auto ✓.
-- NEXT → add entry 114 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 114 rec_screen — no page edit) new record.html: the stripped-down record screen —
+  Back (top left), editable session-name string (light text + pencil; defaults to the date,
+  auto-prefixes the city via geolocation + bigdatacloud reverse-geocode when allowed, never
+  overwrites a user edit), big round record button with pulse, blink-dot + elapsed time, big
+  Tag the moment button (inert until recording). STOP now goes straight to upload → session
+  json → sessions_auto registration (rec_auto flow inlined) — zero instructions on screen.
+  The name string drives both label and file id (slug + date + hhmm). Drawer's 'New
+  recording' row now opens record.html. admin.html left as the setup/instructions page.
+  Playwright (fake mic + geo, routed workers): name 'San Francisco — 2026-08-25', 2 live
+  tags, stop → 'Session ready ✓' with correct json + registry posts.
+- NEXT → add entry 115 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
