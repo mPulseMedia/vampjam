@@ -128,7 +128,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - (log 96 playhead_always — no page edit) the blue playhead line now renders from page load
   and survives every list re-render: duration guard removed from render_playhead_line,
   render_tags ends by drawing it. 95+96 ship in one robot commit (night_playhead).
-- NEXT → add entry 97 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 97 moment_number — no page edit) every moment gets its time-order number: label strip
+  above the seek bar at each separator (labels closer than 16px hide; the fisheye keeps
+  current+adjacent readable — his fallback idea), number beside each name in the list,
+  numbers click-to-seek. His timecode idea dropped per his own correction: number only.
+- NEXT → add entry 98 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

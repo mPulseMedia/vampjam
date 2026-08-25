@@ -93,6 +93,9 @@
   .ctrl_row { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 14px; }
   .seek_bar { width: 100%; height: 6px; background: var(--panel_3); border-radius: 3px; position: relative; cursor: pointer; margin: 0; }
   .seek_fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; pointer-events: none; }
+  .tag_numbers { position: relative; height: 13px; margin-bottom: 3px; }
+  .tag_num_lbl { position: absolute; transform: translateX(-50%); top: 0; font-size: 11px; line-height: 13px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; }
+  .tag_num { flex: 0 0 auto; min-width: 18px; text-align: right; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
   .tag_markers { position: relative; height: 14px; margin-top: 4px; margin-bottom: 4px; width: 90%; margin-left: auto; margin-right: auto; }
   .tag_marker {
     position: absolute; top: 2px; width: 10px; height: 10px; z-index: 2;
@@ -429,6 +432,7 @@
     <button class="ctrl_btn" id="fwd_120" title="Forward 2 min"><span class="cu">+</span><span class="cn">2</span><span class="cu">m</span></button>
   </div>
   <button class="tag_btn_big" id="tag_btn">Tag the moment</button>
+  <div class="tag_numbers" id="tag_numbers"></div>
   <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div></div>
   <div class="tag_markers" id="tag_markers"></div>
   <div class="time_row">
@@ -959,6 +963,52 @@
     Array.from(tagMarkers.querySelectorAll('.tag_marker')).forEach(function (m) {
       m.style.left = (fish_x(parseFloat(m.dataset.t)) * 100) + '%';
     });
+    place_tag_numbers();
+  }
+
+  // moment_number — every moment gets its time-order number: shown above the
+  // timeline at its separator (hidden when neighbors would collide; the
+  // fisheye keeps the current + adjacent ones readable) and next to the name.
+  function tag_number_map() {
+    var m = {};
+    tags.slice().sort(function (a, b) { return a.t - b.t; })
+        .forEach(function (t, i) { m[t.id] = i + 1; });
+    return m;
+  }
+  function place_tag_numbers() {
+    var wrap = document.getElementById('tag_numbers');
+    if (!wrap) return;
+    var W = wrap.clientWidth || 1;
+    var last = -1e9;
+    Array.prototype.forEach.call(wrap.querySelectorAll('.tag_num_lbl'), function (el) {
+      var x = fish_x(parseFloat(el.dataset.t)) * W;
+      el.style.left = (x / W * 100) + '%';
+      if (x - last < 16) { el.style.visibility = 'hidden'; }
+      else { el.style.visibility = 'visible'; last = x; }
+    });
+  }
+  function render_tag_numbers() {
+    var wrap = document.getElementById('tag_numbers');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    if (!isFinite(player.duration) || player.duration <= 0) return;
+    var nums = tag_number_map();
+    tags.slice().sort(function (a, b) { return a.t - b.t; }).forEach(function (t) {
+      var el = document.createElement('span');
+      el.className = 'tag_num_lbl';
+      el.dataset.t = t.t;
+      el.textContent = nums[t.id];
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        seek_to(t.t);
+        safe_play();
+        activeTagId = t.id;
+        render_tags();
+        render_tag_markers();
+      });
+      wrap.appendChild(el);
+    });
+    place_tag_numbers();
   }
 
   function render_tag_markers() {
@@ -983,6 +1033,7 @@
     });
     render_zoom_band();
     render_fish_ticks();
+    render_tag_numbers();
   }
 
   function fetch_repo_data() {
@@ -1389,6 +1440,7 @@
       tagList.appendChild(d);
       return;
     }
+    var tagNums = tag_number_map();
     sorted_tags().forEach(function (tag) {
       var isPlaying = (tag.id === playingTagId);
       var row = document.createElement('div');
@@ -1418,6 +1470,11 @@
         else { autoplayBlocked = false; play_from_tag(tag); }
       });
       row.appendChild(playBtnRow);
+
+      var numSpan = document.createElement('span');
+      numSpan.className = 'tag_num';
+      numSpan.textContent = tagNums[tag.id] || '';
+      row.appendChild(numSpan);
 
       var label = document.createElement('input');
       label.className = 'tag_label';

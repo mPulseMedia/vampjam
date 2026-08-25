@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "96 playhead_always",
+        id: "97 moment_number",
         expanded: true,
+        nodes: [
+          { text: "97 moment_number", children: [
+            { text: "prompt_restate", children: [
+              { text: "Above the timeline, at the segment separators, show a label — his first idea was timecodes for current + adjacent, then he corrected himself: just the moment's number, with the same number next to the name in the list below." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Above the timeline at the separators of the segments above those show the current and adjacent time codes of the separating segment so maybe the one just proceeding me is that is maybe I don't need the time code. I just need the number and then I can have the number next to the name below." }
+            ]},
+            { text: "response", children: [
+              { text: "moment_number", children: [
+                { text: "numbers ride above the timeline at each separator" },
+                { text: "crowded ones hide; near playhead they spread open" },
+                { text: "same number sits before each name below" },
+                { text: "tapping a number jumps there" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, reload: numbers above bar + in the list" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "96 playhead_always",
+        expanded: false,
         nodes: [
           { text: "96 playhead_always", children: [
             { text: "prompt_restate", children: [
