@@ -1,1 +1,1 @@
-local_clear
+auto_commit
