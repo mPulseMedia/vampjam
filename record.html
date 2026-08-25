@@ -84,7 +84,7 @@
      recording so far: 10-minute segments, hour marks, moment dots. No playhead. */
   .bar_wrap { width: 100%; display: none; }
   .num_strip { position: relative; height: 13px; margin-bottom: 3px; width: 100%; }
-  .mom_no { position: absolute; transform: translateX(-50%); font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .mom_no { position: absolute; transform: translateX(-50%); font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; padding: 2px 5px; }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-top: 2px; }
   .time_row .now { color: var(--accent); font-weight: 600; }
   .rec_bar {
@@ -94,13 +94,7 @@
   .seg_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); transform: translateX(-50%); }
   .hour_mark { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--muted); opacity: 0.7; border-radius: 1px; transform: translateX(-50%); z-index: 1; }
   .hour_lbl { position: absolute; top: calc(100% + 5px); transform: translateX(-50%); font-size: 9px; line-height: 1; color: var(--muted); }
-  .mark_strip { position: relative; height: 16px; margin-top: 4px; width: 100%; }
-  .mom_dot {
-    position: absolute; top: 3px; width: 10px; height: 10px; border-radius: 50%;
-    background: var(--marker, #98989d); border: 1.5px solid var(--bg);
-    transform: translateX(-50%); cursor: pointer;
-  }
-  .mom_dot::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; }
+
 
   /* moments list — same shape as the playback page's highlight list */
   .mom_list {
@@ -158,7 +152,6 @@
   <div class="bar_wrap" id="bar_wrap">
     <div class="num_strip" id="num_strip"></div>
     <div class="rec_bar" id="rec_bar"></div>
-    <div class="mark_strip" id="mark_strip"></div>
     <div class="time_row"><span class="now" id="cur_time">0:00</span><span>/</span><span id="dur_time">0:00</span></div>
   </div>
   <button class="tag_btn" id="tag_btn" disabled>Tag the moment</button>
@@ -185,7 +178,6 @@
       numStrip = document.getElementById('num_strip'),
       curTimeEl = document.getElementById('cur_time'),
       durTimeEl = document.getElementById('dur_time'),
-      markStrip = document.getElementById('mark_strip'),
       momList = document.getElementById('mom_list'),
       status  = document.getElementById('status');
 
@@ -262,22 +254,20 @@
               '<div class="hour_lbl" style="left:' + x + '%">' + (h / 3600) + 'h</div>';
     }
     recBar.innerHTML = html;
-    var marks = '', nums = '';
+    var nums = '';
     liveTags.forEach(function (lt, i) {
       var x = (lt.t / t * 100);
-      marks += '<div class="mom_dot" data-i="' + i + '" style="left:' + x + '%" title="moment ' + (i + 1) + ' @ ' + fmt(lt.t) + '"></div>';
-      nums += '<div class="mom_no" style="left:' + x + '%">' + (i + 1) + '</div>';
+      nums += '<div class="mom_no" data-i="' + i + '" style="left:' + x + '%" title="moment ' + (i + 1) + ' @ ' + fmt(lt.t) + '">' + (i + 1) + '</div>';
     });
-    markStrip.innerHTML = marks;
     numStrip.innerHTML = nums;
     // while recording, the current time IS the duration — shown as a pair anyway
     // so the bar reads like the playback page
     curTimeEl.textContent = fmt(t);
     durTimeEl.textContent = fmt(t);
   }
-  // a dot doesn't move any playhead (there is none) — it scrolls to its row
-  markStrip.addEventListener('click', function (e) {
-    var d = e.target.closest ? e.target.closest('.mom_dot') : null;
+  // a number doesn't move any playhead (there is none) — it scrolls to its row
+  numStrip.addEventListener('click', function (e) {
+    var d = e.target.closest ? e.target.closest('.mom_no') : null;
     if (!d) return;
     var lt = liveTags[parseInt(d.getAttribute('data-i'), 10)];
     if (!lt || !lt.row) return;
@@ -316,7 +306,7 @@
       mediaRec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
       chunks = []; liveTags = []; recDur = 0; blob = null;
       momList.innerHTML = ''; momList.style.display = 'none';
-      recBar.innerHTML = ''; markStrip.innerHTML = ''; barWrap.style.display = 'none';
+      recBar.innerHTML = ''; numStrip.innerHTML = ''; barWrap.style.display = 'none';
       mediaRec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
       mediaRec.onstop = function () {
         blob = new Blob(chunks, { type: mime || 'audio/mp4' });

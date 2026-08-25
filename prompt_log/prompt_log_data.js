@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "126 tag_below",
+        id: "127 circle_gone",
         expanded: true,
+        nodes: [
+          { text: "127 circle_gone", children: [
+            { text: "prompt_restate", children: [
+              { text: "The numbers read more accurately than the circles — drop the circles and keep just the numbers on the timeline." },
+              { text: "Make the Tag-the-moment button the same width on both screens; keep playback and record looking alike." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "And the placement of the numbers near the time bar is more accurate visually than the Circle and I\u2019m starting to think maybe I get rid of the circles and I just have the numbers on the timeline. Yeah I get rid of the circles because I don\u2019t need both. Make the tag the moment button the same width on both screens so I\u2019m trying to make everything look as similar in playback mode as it looks in Record mode of course some stuff is gone but other stuff isn\u2019t meaning it\u2019s there." }
+            ]},
+            { text: "response", children: [
+              { text: "circle_gone", children: [
+                { text: "circles are gone on both screens — just the numbers above the bar now" },
+                { text: "on playback, tapping a number still jumps there and plays (it always did)" },
+                { text: "on record, tapping a number scrolls to that moment's row" },
+                { text: "Tag the moment is now the same full-width shape on both screens" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open a session — no dots under the bar, numbers still tap" },
+                { text: "open Record — same look, same button" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "126 tag_below",
+        expanded: false,
         nodes: [
           { text: "126 tag_below", children: [
             { text: "prompt_restate", children: [

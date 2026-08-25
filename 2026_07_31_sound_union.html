@@ -119,6 +119,8 @@
   .jam_confirm_cancel { background: var(--panel_3); color: var(--fg); }
   .jam_confirm_yes { background: var(--danger); color: #fff; }
   .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
+  /* circle_gone: the numbers above the bar do this job now (and seek on tap) */
+  .tag_marker { display: none; }
   .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: var(--row_active); pointer-events: none; z-index: 0; }
   .fish_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
@@ -179,9 +181,9 @@
     padding: 0 4px 8px;
   }
   .tag_btn_big {
-    display: inline-block; width: auto; margin: 2px auto 12px; padding: 12px 30px;
-    font-size: 17px; font-weight: 600;
-    background: var(--accent); color: var(--bg); border-radius: 10px;
+    display: block; width: 100%; max-width: 420px; margin: 2px auto 12px; padding: 20px;
+    font-size: 20px; font-weight: 600;
+    background: var(--accent); color: var(--bg); border-radius: 14px;
   }
   .tag_btn_big:hover { background: var(--accent_hover, #f0c97a); }
   .tag_btn_big:active { background: var(--accent_active, #c89943); transform: scale(0.97); }

@@ -317,7 +317,16 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - (log 126 tag_below — no page edit) record.html: the Tag-the-moment button moved from
   above the time bar to directly below it (order now: record button, timer, bar + numbers +
   dots + cur/dur, Tag button, moments list). Playwright: tag button top 344 > bar top 269 ✓.
-- NEXT → add entry 127 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 127 circle_gone — no page edit) circles retired on BOTH screens — the numbers above
+  the bar carry the job. Record: dot strip removed; the numbers are the tap targets now
+  (scroll+flash the row); renders/reset updated, no leftover refs. Playback (7 pages +
+  session.html): .tag_marker display:none (the numbers were already tap-to-seek, so nothing
+  lost; zoom band strip untouched). Tag-the-moment buttons now match across screens:
+  playback .tag_btn_big = block, width 100%, max-width 420px, padding 20px, font 20,
+  radius 14 — same as Record's. Playwright: record 0 dots / 1 number / tap flashes row ✓,
+  playback markers hidden + 2 number labels ✓, widths 354 vs 358 (same cap, different
+  gutters) ✓.
+- NEXT → add entry 128 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
