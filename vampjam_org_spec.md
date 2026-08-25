@@ -161,7 +161,10 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   the LEFT half (width 50vw, z 95, shadow, 88vh) via caret tap or pull-down; the old
   full-bleed sticky_player margins (pre-split media rule) are zeroed inside the split so
   they stop stretching across the right column.
-- NEXT → add entry 106 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 106 url_time — no page edit) every deliberate jump (highlight, number, marker, bar
+  tap, +/- nudge) replaceState's ?t=<sec> into the URL inside seek_to, so reload resumes at
+  the last jump; rides the existing ?t deep-link loader.
+- NEXT → add entry 107 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

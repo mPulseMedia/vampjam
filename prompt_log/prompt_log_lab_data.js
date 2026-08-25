@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "105 land_drawer",
+        id: "106 url_time",
         expanded: true,
+        nodes: [
+          { text: "106 url_time", children: [
+            { text: "prompt_restate", children: [
+              { text: "Clicking a highlight should put its timestamp in the URL so reload returns to the most recent one — and the same for clicking a time anywhere on the timeline." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I click a different highlight put that highlights timestamp in the URL so if I hit reload, it will go back to the most recent timestamp of the highlight, but this also applies to if I click on the timestamp anywhere on the timeline" }
+            ]},
+            { text: "response", children: [
+              { text: "url_time", children: [
+                { text: "every jump writes ?t= into the URL, silently" },
+                { text: "covers highlights, numbers, markers, bar, +/-" },
+                { text: "reload lands right back on the last jump" },
+                { text: "share links already understood ?t=, unchanged" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: tap a highlight, reload, same spot" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "105 land_drawer",
+        expanded: false,
         nodes: [
           { text: "105 land_drawer", children: [
             { text: "prompt_restate", children: [

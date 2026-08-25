@@ -1267,6 +1267,12 @@
           }
         }
       }
+      // url_time: remember the jump in the URL so reload comes back here
+      try {
+        var us = new URLSearchParams(window.location.search);
+        us.set('t', String(Math.round(player.currentTime || 0)));
+        history.replaceState(null, '', window.location.pathname + '?' + us.toString() + window.location.hash);
+      } catch (e2) {}
     } catch (e) {}
   }
   function nudge(d) { seek_to((player.currentTime || 0) + d); }
