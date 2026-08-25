@@ -91,8 +91,8 @@
   // On the generic session page (session.html?p=<id>) the identity includes the
   // recording id, so duration cache + current-row detection stay per-recording.
   var PKEY = (function () {
-    var m = /[?&]p=([A-Za-z0-9_\-]+)/.exec(location.search);
-    return m ? HERE + '?p=' + m[1] : HERE;
+    var m = /[?&](p|local)=([A-Za-z0-9_\-]+)/.exec(location.search);
+    return m ? HERE + '?' + m[1] + '=' + m[2] : HERE;
   })();
 
   function pad(n) { return (n < 10 ? '0' : '') + n; }
@@ -104,7 +104,8 @@
     if (!menu || !window.VAMPJAM_SESSIONS) return;   // no manifest -> keep static markup
     // merge the static manifest with auto-registered recordings (sessions_auto.json),
     // oldest first by date so the drawer keeps newest at the bottom
-    var all = window.VAMPJAM_SESSIONS.concat(window.VAMPJAM_SESSIONS_AUTO || []);
+    var all = window.VAMPJAM_SESSIONS.concat(window.VAMPJAM_SESSIONS_AUTO || [])
+      .concat(window.VAMPJAM_SESSIONS_LOCAL || []);
     all = all.filter(function (s2) { return !deleted_has(s2.page) || deleting[s2.page]; });
     var pend = pending_get();
     var pendDone = (pend && pend.done) ? pend.page : null;
@@ -129,12 +130,16 @@
       // venue name — and the row shows exactly the session's title
       var disp = (s.name && String(s.name).indexOf(s.date) >= 0) ? s.name : (s.date + ' ' + s.name);
       var isAuto = s.page.indexOf('session.html?p=') === 0;
+      var isLocal = !!s._local;
+      if (isLocal) right = fmt_dur(s.dur) + ' <span class="jam_localb">local</span>';
       var isDel = !!deleting[s.page];
       var del = isDel
         ? '<span class="jam_spin" aria-label="Deleting…"></span>'
-        : (isAuto
-          ? '<button class="jam_del" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this session">' + ICO_TRASH + '</button>'
-          : '');
+        : (isLocal
+          ? '<button class="jam_del" data-local="' + s.page.split('local=')[1] + '" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this local recording">' + ICO_TRASH + '</button>'
+          : (isAuto
+            ? '<button class="jam_del" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this session">' + ICO_TRASH + '</button>'
+            : ''));
       rows.push('<div class="jam_item' + cur + (isDel ? ' jam_deleting' : '') + '"><a class="jam_link' + cur + '" href="' + s.page + '">'
         + '<span class="jam_left"><span class="jam_ico">' + ICO_CASS + '</span>'
         + '<span class="jam_name">' + esc(disp) + '</span></span>'
@@ -176,6 +181,20 @@
     Array.prototype.forEach.call(menu.querySelectorAll('.jam_del'), function (b) {
       b.addEventListener('click', function (e) {
         e.preventDefault(); e.stopPropagation();
+        var loc = b.getAttribute('data-local');
+        if (loc) {
+          var nm = b.getAttribute('data-name');
+          if (!window.confirm('Delete "' + nm + '"?\n\nThis recording only exists on this device — deleting it is final.')) return;
+          var pg = b.getAttribute('data-page');
+          deleting[pg] = true; build_menu(); wire_links();
+          idb_delete_local(loc, function () {
+            delete deleting[pg];
+            window.VAMPJAM_SESSIONS_LOCAL = (window.VAMPJAM_SESSIONS_LOCAL || []).filter(function (s2) { return s2.page !== pg; });
+            build_menu(); wire_links();
+            if (typeof window.toast === 'function') window.toast('Deleted ' + nm);
+          });
+          return;
+        }
         delete_session(b.getAttribute('data-page'), b.getAttribute('data-name'));
       });
     });
@@ -293,6 +312,8 @@
       '.jam_del{flex:0 0 auto;background:none;border:none;color:var(--muted);opacity:0.5;' +
         'padding:6px;margin-left:2px;min-height:32px;cursor:pointer;line-height:0;}' +
       '.jam_del:hover{opacity:1;color:var(--danger,#c75450);}' +
+      '.jam_localb{background:rgba(232,180,84,0.22);color:var(--warn,#8a6d1a);border-radius:999px;' +
+        'padding:2px 8px;font-size:11px;font-weight:600;margin-left:4px;}' +
       '.jam_item.jam_deleting{opacity:0.45;}' +
       '.jam_item.jam_deleting .jam_link{pointer-events:none;}' +
       '@keyframes jam_spin_rot{to{transform:rotate(360deg)}}' +
@@ -303,6 +324,48 @@
   })();
 
   var auto_retry = 0;
+  // recordings still on this device (recorded but not yet in the cloud) —
+  // they list like any session, marked 'local', playable from the device copy
+  function fetch_local_recs() {
+    try {
+      var rq = indexedDB.open('vampjam_rec', 1);
+      rq.onupgradeneeded = function () {
+        var db = rq.result;
+        if (!db.objectStoreNames.contains('recs')) db.createObjectStore('recs', { keyPath: 'id' });
+        if (!db.objectStoreNames.contains('chunks')) db.createObjectStore('chunks', { keyPath: ['id', 'seq'] });
+      };
+      rq.onsuccess = function () {
+        try {
+          var g = rq.result.transaction('recs', 'readonly').objectStore('recs').getAll();
+          g.onsuccess = function () {
+            var arr = (g.result || [])
+              .filter(function (m) { return m && m.state && m.state !== 'uploaded'; })
+              .map(function (m) {
+                return { page: 'session.html?local=' + m.id, name: m.label || m.date, date: m.date,
+                         dur: m.dur || 0, count: (m.tags || []).length, _local: true };
+              });
+            window.VAMPJAM_SESSIONS_LOCAL = arr;
+            if (arr.length) { build_menu(); wire_links(); }
+          };
+        } catch (e) {}
+      };
+    } catch (e) {}
+  }
+  function idb_delete_local(id, done) {
+    try {
+      var rq = indexedDB.open('vampjam_rec', 1);
+      rq.onsuccess = function () {
+        try {
+          var tx = rq.result.transaction(['recs', 'chunks'], 'readwrite');
+          tx.objectStore('recs').delete(id);
+          tx.objectStore('chunks').delete(IDBKeyRange.bound([id, 0], [id, Infinity]));
+          tx.oncomplete = done;
+        } catch (e) { done(); }
+      };
+      rq.onerror = function () { done(); };
+    } catch (e) { done(); }
+  }
+
   function fetch_auto_sessions() {
     fetch('https://raw.githubusercontent.com/mPulseMedia/vampjam/main/sessions_auto.json?v=' + Date.now(),
           { cache: 'no-store' })
@@ -390,7 +453,7 @@
     }
   }
   function boot() {
-    build_menu(); wire_links(); capture_dur(); fetch_auto_sessions();
+    build_menu(); wire_links(); capture_dur(); fetch_auto_sessions(); fetch_local_recs();
     // arriving with #sessions (e.g. Back from the record screen) opens the list
     if (location.hash === '#sessions') {
       setTimeout(function () { set_open(true); }, 150);

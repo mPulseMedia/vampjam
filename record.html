@@ -220,7 +220,79 @@
   }
 
   // ---- recording ----
+  // ---- local store: every recording persists to IndexedDB as it happens, so
+  // a reload, crash, or failed upload never loses audio. A recording stays
+  // 'local' (visible in the session list) until the cloud has it.
+  function rec_db() {
+    return new Promise(function (res, rej) {
+      var rq = indexedDB.open('vampjam_rec', 1);
+      rq.onupgradeneeded = function () {
+        var db = rq.result;
+        if (!db.objectStoreNames.contains('recs')) db.createObjectStore('recs', { keyPath: 'id' });
+        if (!db.objectStoreNames.contains('chunks')) db.createObjectStore('chunks', { keyPath: ['id', 'seq'] });
+      };
+      rq.onsuccess = function () { res(rq.result); };
+      rq.onerror = function () { rej(rq.error); };
+    });
+  }
+  function idb_put(store, val) {
+    return rec_db().then(function (db) {
+      return new Promise(function (res, rej) {
+        var tx = db.transaction(store, 'readwrite');
+        tx.objectStore(store).put(val);
+        tx.oncomplete = res; tx.onerror = function () { rej(tx.error); };
+      });
+    });
+  }
+  function idb_all(store) {
+    return rec_db().then(function (db) {
+      return new Promise(function (res, rej) {
+        var g = db.transaction(store, 'readonly').objectStore(store).getAll();
+        g.onsuccess = function () { res(g.result || []); };
+        g.onerror = function () { rej(g.error); };
+      });
+    });
+  }
+  function idb_chunks(id) {
+    return rec_db().then(function (db) {
+      return new Promise(function (res, rej) {
+        var g = db.transaction('chunks', 'readonly').objectStore('chunks')
+          .getAll(IDBKeyRange.bound([id, 0], [id, Infinity]));
+        g.onsuccess = function () {
+          res((g.result || []).sort(function (x, y) { return x.seq - y.seq; }).map(function (c) { return c.blob; }));
+        };
+        g.onerror = function () { rej(g.error); };
+      });
+    });
+  }
+  function idb_del_rec(id) {
+    return rec_db().then(function (db) {
+      return new Promise(function (res, rej) {
+        var tx = db.transaction(['recs', 'chunks'], 'readwrite');
+        tx.objectStore('recs').delete(id);
+        tx.objectStore('chunks').delete(IDBKeyRange.bound([id, 0], [id, Infinity]));
+        tx.oncomplete = res; tx.onerror = function () { rej(tx.error); };
+      });
+    });
+  }
+
   var mediaRec = null, chunks = [], startT = 0, timer = null, blob = null, mime = '', ext = 'm4a';
+  var LOC_ID = null, chunkSeq = 0;
+  function live_tag_data() {
+    return liveTags.map(function (lt) {
+      var nm = '';
+      try { nm = (lt.row.querySelector('.mom_name').value || '').trim(); } catch (e) {}
+      return { t: lt.t, label: nm };
+    });
+  }
+  function save_meta(state) {
+    if (!LOC_ID) return;
+    idb_put('recs', {
+      id: LOC_ID, label: nameIn.value || DEFT, date: ISO,
+      dur: Math.round(elapsed()), tags: live_tag_data(),
+      state: state, ts: Date.now(), mime: mime, ext: ext
+    }).catch(function () {});
+  }
   var liveTags = [], recDur = 0;   // liveTags: [{ t: seconds, row: element }]
   var debugT = null;               // test hook: overrides elapsed for bar rendering
 
@@ -309,15 +381,24 @@
       mime = pickMime(); ext = mime.indexOf('webm') >= 0 ? 'webm' : 'm4a';
       mediaRec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
       chunks = []; liveTags = []; recDur = 0; blob = null;
+      LOC_ID = 'loc_' + Date.now(); chunkSeq = 0;
       momList.innerHTML = ''; momList.style.display = 'none';
       recBar.innerHTML = ''; numStrip.innerHTML = '';
-      mediaRec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      mediaRec.ondataavailable = function (e) {
+        if (e.data && e.data.size) {
+          chunks.push(e.data);
+          // persist as we go — a reload mid-recording keeps everything so far
+          idb_put('chunks', { id: LOC_ID, seq: chunkSeq++, blob: e.data }).catch(function () {});
+          save_meta('recording');
+        }
+      };
       mediaRec.onstop = function () {
         blob = new Blob(chunks, { type: mime || 'audio/mp4' });
         stream.getTracks().forEach(function (t) { t.stop(); });
+        save_meta('ready');
         upload();
       };
-      mediaRec.start();
+      mediaRec.start(5000);   // 5s slices so the local copy is never far behind
       startT = Date.now(); timer = setInterval(tick, 250); tick();
       recBtn.classList.add('recording'); recBtn.innerHTML = '&#9632;';
       recState.classList.add('on');
@@ -373,13 +454,30 @@
       return r.json();
     });
   }
+  function rec_id_from(label, dateIso, ts) {
+    var id = slug(label) || 'rec';
+    if (!/\d{4}_\d{2}_\d{2}/.test(id)) id += '_' + dateIso.replace(/-/g, '_');
+    if (!/\d{1,2}_\d{2}_\d{2}[ap]/.test(id)) {
+      var d = new Date(ts || Date.now());
+      id += '_' + ((d.getHours() % 12) || 12) + '_' + pad(d.getMinutes()) + '_' + pad(d.getSeconds()) + (d.getHours() < 12 ? 'a' : 'p');
+    }
+    return id;
+  }
   async function upload() {
     if (!blob) return;
+    return upload_core({
+      blob: blob, label: nameIn.value || DEFT, dateIso: ISO, ts: Date.now(),
+      dur: recDur, tags: live_tag_data(), ext: ext, locId: LOC_ID
+    });
+  }
+  async function upload_core(o) {
     status.textContent = 'Uploading…';
-    var id = rec_id();
+    var blob2 = o.blob;
+    var label = o.label || (o.dateIso + ' recording');
+    if (label.indexOf(o.dateIso) < 0) label = o.dateIso + ' ' + label;
+    var id = rec_id_from(label, o.dateIso, o.ts);
     var page = 'session.html?p=' + id;
-    var label = nameIn.value || DEFT;
-    if (label.indexOf(ISO) < 0) label = ISO + ' ' + label;
+    var ISO2 = o.dateIso, recDur2 = o.dur || 0;
     // placeholder first: every device's session list shows a syncing… row
     try {
       var pre = [];
@@ -388,31 +486,29 @@
         if (pr.ok) { var pj = await pr.json(); if (Array.isArray(pj)) pre = pj; }
       } catch (e0) {}
       pre = not_deleted(pre.filter(function (e2) { return e2 && e2.page !== page; }));
-      pre.push({ page: page, name: label, date: ISO, dur: recDur, count: liveTags.length, pending: true });
+      pre.push({ page: page, name: label, date: ISO2, dur: recDur2, count: o.tags.length, pending: true });
       await sync_write('sessions_auto.json', JSON.stringify(pre, null, 2), 'placeholder ' + id);
       try {
         localStorage.setItem('vampjam_pending_session',
-          JSON.stringify({ page: page, name: label, date: ISO, dur: recDur, count: liveTags.length, ts: Date.now() }));
+          JSON.stringify({ page: page, name: label, date: ISO2, dur: recDur2, count: o.tags.length, ts: Date.now() }));
       } catch (e3) {}
     } catch (ePre) {}
     try {
       var r = await fetch(WORKER_UPLOAD_URL, {
         method: 'POST',
         headers: {
-          'Content-Type': blob.type || 'audio/mp4',
-          'X-File-Name': id + '.' + ext,
+          'Content-Type': blob2.type || 'audio/mp4',
+          'X-File-Name': id + '.' + (o.ext || 'm4a'),
           'X-Upload-Secret': ''
         },
-        body: blob
+        body: blob2
       });
       var j = await r.json();
       if (!j.ok) throw new Error('upload ' + (j.error || r.status));
       status.textContent = 'Creating the session…';
       var now = Date.now();
-      var tags = liveTags.map(function (lt, i) {
-        var nm = '';
-        try { nm = (lt.row.querySelector('.mom_name').value || '').trim(); } catch (e) {}
-        return { id: 't_' + now + '_lt' + (i + 1), t: lt.t, label: nm };
+      var tags = o.tags.map(function (lt, i) {
+        return { id: 't_' + now + '_lt' + (i + 1), t: lt.t, label: lt.label || '' };
       });
       await sync_write(id + '.json', JSON.stringify({
         audio: { label: label, url: j.url, kind: 'url' },
@@ -424,16 +520,19 @@
         if (lr.ok) { var lj = await lr.json(); if (Array.isArray(lj)) list = lj; }
       } catch (e) {}
       list = not_deleted(list.filter(function (e2) { return e2 && e2.page !== page; }));
-      list.push({ page: page, name: label, date: ISO, dur: recDur, count: tags.length });
+      list.push({ page: page, name: label, date: ISO2, dur: recDur2, count: tags.length });
       await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
       try {
         localStorage.setItem('vampjam_pending_session',
-          JSON.stringify({ page: page, name: label, date: ISO, dur: recDur, count: tags.length, ts: Date.now(), done: true }));
+          JSON.stringify({ page: page, name: label, date: ISO2, dur: recDur2, count: tags.length, ts: Date.now(), done: true }));
       } catch (e4) {}
+
+      // the cloud has it — the local safety copy can go
+      if (o.locId) { idb_del_rec(o.locId).catch(function () {}); }
 
       status.innerHTML = 'Session ready &#10003; <a href="' + page + '">open ' +
         (label || id) + '</a>' +
-        '<br>saved as ' + id + '.' + ext +
+        '<br>saved as ' + id + '.' + (o.ext || 'm4a') +
         (tags.length ? ' · ' + tags.length + ' moment' + (tags.length === 1 ? '' : 's') + ' carried over' : '');
       if (pendingBack) {
         setTimeout(function () { window.location.href = 'index.html#sessions'; }, 900);
@@ -441,11 +540,43 @@
     } catch (err) {
       pendingBack = false;
       status.innerHTML = 'Something went wrong (' + (err && err.message ? err.message : err) + ') — ' +
-        '<a href="#" id="retry_link">try again</a>';
+        '<a href="#" id="retry_link">try again</a>' +
+        '<br>your recording is safe on this device — it shows in Sessions as local';
       var rl = document.getElementById('retry_link');
-      if (rl) rl.addEventListener('click', function (e) { e.preventDefault(); upload(); });
+      if (rl) rl.addEventListener('click', function (e) { e.preventDefault(); upload_core(o); });
     }
   }
+
+  // ---- recovery: finish anything this device still holds locally ----
+  // a 'recording' state means the page died mid-recording — its chunks are the
+  // recording; 'ready' means the upload never completed. Both retry here.
+  (async function recover_locals() {
+    try {
+      var metas = await idb_all('recs');
+      if (!metas.length) return;
+      for (var i = 0; i < metas.length; i++) {
+        if (metas[i].state === 'recording') {
+          metas[i].state = 'ready';
+          await idb_put('recs', metas[i]);
+        }
+      }
+      var up = /[?&]up=([A-Za-z0-9_\-]+)/.exec(window.location.search);
+      var ready = metas.filter(function (m) { return m.state === 'ready'; });
+      if (up) ready.sort(function (x, y) { return (y.id === up[1]) - (x.id === up[1]); });
+      for (var k = 0; k < ready.length; k++) {
+        if (mediaRec && mediaRec.state === 'recording') return;   // don't fight a live take
+        var m = ready[k];
+        var parts = await idb_chunks(m.id);
+        if (!parts.length) { await idb_del_rec(m.id); continue; }
+        status.textContent = 'Finishing an earlier upload — ' + (m.label || m.date) + '…';
+        await upload_core({
+          blob: new Blob(parts, { type: m.mime || 'audio/mp4' }),
+          label: m.label, dateIso: m.date, ts: m.ts, dur: m.dur,
+          tags: m.tags || [], ext: m.ext || 'm4a', locId: m.id
+        });
+      }
+    } catch (e) {}
+  })();
 
   render_bar();   // the bar shows from page load, empty and light gray
 

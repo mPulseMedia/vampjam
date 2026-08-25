@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 <script src="theme.js"></script>
 <script src="sessions.js?v=117"></script>
-<script src="drawer.js?v=123"></script>
+<script src="drawer.js?v=124"></script>
 <style>
   :root {
     --bg: #4a2a0e;
@@ -489,11 +489,16 @@
   // Each new page only needs to change PAGE_ID. The audio source lives in sources/<PAGE_ID>.json.
   // generic session page: /session.html?p=<rec_id> binds <rec_id>.json
   var sync_tries = 0;
+  // local mode: session.html?local=<id> plays a recording still on this device
+  var LOCAL_ID = (function () {
+    var m = /[?&]local=([A-Za-z0-9_\-]+)/.exec(window.location.search);
+    return m ? m[1] : '';
+  })();
   var REC_ID = (function () {
     var m = /[?&]p=([A-Za-z0-9_\-]+)/.exec(window.location.search);
     return m ? m[1] : '';
   })();
-  var PAGE_ID    = REC_ID || 'session_generic';
+  var PAGE_ID    = REC_ID || (LOCAL_ID ? 'local_' + LOCAL_ID : 'session_generic');
   var REPO_OWNER = 'mPulseMedia';
   var REPO_NAME  = 'vampjam';
   var WORKER_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
@@ -791,8 +796,40 @@
     return is_editing_label() || !!saveDebounceTimer || saveInFlight ||
            (Date.now() - lastLocalEditAt < 20000);
   }
+  function local_db() {
+    return new Promise(function (res, rej) {
+      var rq = indexedDB.open('vampjam_rec', 1);
+      rq.onupgradeneeded = function () {
+        var db = rq.result;
+        if (!db.objectStoreNames.contains('recs')) db.createObjectStore('recs', { keyPath: 'id' });
+        if (!db.objectStoreNames.contains('chunks')) db.createObjectStore('chunks', { keyPath: ['id', 'seq'] });
+      };
+      rq.onsuccess = function () { res(rq.result); };
+      rq.onerror = function () { rej(rq.error); };
+    });
+  }
+  function local_save_tags() {
+    // local recording: edits stay on the device until it uploads
+    return local_db().then(function (db) {
+      return new Promise(function (res) {
+        var tx = db.transaction('recs', 'readwrite');
+        var st = tx.objectStore('recs');
+        var g = st.get(LOCAL_ID);
+        g.onsuccess = function () {
+          var m = g.result;
+          if (m) {
+            m.tags = tags.slice().sort(function (a, b) { return a.t - b.t; })
+              .map(function (t) { return { t: t.t, label: t.label || '' }; });
+            st.put(m);
+          }
+        };
+        tx.oncomplete = res; tx.onerror = res;
+      });
+    });
+  }
   function queue_save_data_to_repo(msg) {
     lastLocalEditAt = Date.now();
+    if (LOCAL_ID) { local_save_tags(); return; }
     if (!WORKER_URL) return;
     if (msg) saveDebounceMsg = msg;
     if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
@@ -809,6 +846,7 @@
   // POST the combined per-page data ({audio, tags}) to the Cloudflare Worker proxy.
   // The Worker holds the PAT as a secret and commits to the repo.
   function save_data_to_repo(message) {
+    if (LOCAL_ID) return local_save_tags();
     if (!WORKER_URL) return Promise.reject(new Error('worker not configured'));
     var payload = {
       audio: audio || null,
@@ -1157,7 +1195,54 @@
     update_seg_remain();
   }
 
+  var localLoaded = false;
+  function load_local_rec() {
+    if (localLoaded) return; localLoaded = true;
+    local_db().then(function (db) {
+      var g = db.transaction('recs', 'readonly').objectStore('recs').get(LOCAL_ID);
+      g.onsuccess = function () {
+        var m = g.result;
+        if (!m) {
+          if (audioLabelEl) audioLabelEl.textContent = 'This local recording is no longer on this device.';
+          return;
+        }
+        var cg = db.transaction('chunks', 'readonly').objectStore('chunks')
+          .getAll(IDBKeyRange.bound([LOCAL_ID, 0], [LOCAL_ID, Infinity]));
+        cg.onsuccess = function () {
+          var parts = (cg.result || []).sort(function (x, y) { return x.seq - y.seq; }).map(function (c) { return c.blob; });
+          if (!parts.length) {
+            if (audioLabelEl) audioLabelEl.textContent = 'This local recording is empty.';
+            return;
+          }
+          var url = URL.createObjectURL(new Blob(parts, { type: m.mime || 'audio/mp4' }));
+          audio = { label: (m.label || m.date), url: url, kind: 'url' };
+          render_audio_label();
+          load_audio_into_player();
+          document.title = 'vampsf — ' + audio.label + ' · local';
+          var st = document.getElementById('session_title');
+          if (st) st.textContent = audio.label;
+          // local banner with the way to the cloud
+          var h1 = document.querySelector('h1');
+          if (h1 && !document.getElementById('local_note')) {
+            var note = document.createElement('div');
+            note.id = 'local_note';
+            note.style.cssText = 'text-align:center;font-size:13px;color:var(--warn,#8a6d1a);margin:-2px 0 8px;';
+            note.innerHTML = 'on this device only — <a href="record.html?up=' + LOCAL_ID + '" style="color:var(--accent);font-weight:600;">upload to the cloud</a>';
+            h1.parentNode.insertBefore(note, h1.nextSibling);
+          }
+          var now2 = Date.now();
+          tags = (m.tags || []).map(function (t, i) {
+            return { id: 't_' + now2 + '_loc' + (i + 1), t: t.t, label: t.label || '', order: i * 10 };
+          });
+          save_tags();
+          render_tags();
+          render_tag_markers();
+        };
+      };
+    }).catch(function () {});
+  }
   function fetch_repo_data() {
+    if (LOCAL_ID) { load_local_rec(); return Promise.resolve(); }
     // ALWAYS fetch from github raw — Pages CDN can lag 1-2 min behind the latest push.
     var srcUrl = 'https://raw.githubusercontent.com/' + REPO_OWNER + '/' + REPO_NAME +
                  '/main/' + DATA_PATH + '?v=' + Date.now();

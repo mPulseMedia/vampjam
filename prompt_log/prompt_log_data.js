@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "129 delete_spin",
+        id: "130 local_keep",
         expanded: true,
+        nodes: [
+          { text: "130 local_keep", children: [
+            { text: "prompt_restate", children: [
+              { text: "Never lose the connection to a recorded-but-not-uploaded file — through reloads, interrupted uploads, or leaving the page. List it in the session list marked local, let it play locally, and keep pushing toward the cloud end-state." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, one thing that\u2019s really important. Is you know the recording may work but the upload might get interrupted and I want to really maintain visibility and connection with the file that\u2019s been recorded but not yet uploaded especially if things happen like a page gets reloaded or you know, I hit to stop the recording and then reload the page then it\u2019s supposed to write before While. It still was recording, which is what I tried to start with or if I go to a different page so I don\u2019t know if that connection connection to the local file probably it\u2019s it\u2019s something that\u2019s still listed with the on the session list but it just kind of is marked different like local or something like that and I think it should even play from a local file but the end state is to get the file up in the cloud and get the app connected with that recording up in the cloud, but I like the idea of really treating a recording as much the same way when it\u2019s local and still yet to be uploaded, even as it tries uploading" }
+            ]},
+            { text: "response", children: [
+              { text: "local_keep", children: [
+                { text: "every recording now saves to the phone itself every 5 seconds, WHILE recording" },
+                { text: "reload mid-recording, kill the page, lose signal — the audio so far is safe" },
+                { text: "a not-yet-uploaded recording sits in the Sessions list with an amber local mark" },
+                { text: "open it and it plays from the phone copy — moments show, names editable, all kept" },
+                { text: "the record screen quietly finishes any stuck uploads whenever you open it, and the local page has an upload-to-the-cloud link" },
+                { text: "once the cloud has it, the local copy cleans itself up and the row turns normal" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: airplane mode ON, record + tag, stop — note the safe-on-device message" },
+                { text: "open Sessions — the local row; open it — it plays" },
+                { text: "airplane mode OFF, open Record — watch it finish the upload by itself" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "129 delete_spin",
+        expanded: false,
         nodes: [
           { text: "129 delete_spin", children: [
             { text: "prompt_restate", children: [

@@ -336,7 +336,22 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   write fails, the row and its trash button come back (local tombstone reverted) with a
   'Delete failed' toast. drawer.js?v=123. Playwright (900ms-slow sync route): mid-delete
   row grayed + spinner + no trash ✓, gone after writes ✓.
-- NEXT → add entry 130 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 130 local_keep — no page edit) recordings can no longer be lost between mic and
+  cloud. record.html persists to IndexedDB (db vampjam_rec: recs meta + chunks) AS IT
+  RECORDS — MediaRecorder now runs 5s timeslices, each chunk lands in IDB with meta
+  (label/date/dur/tags incl. typed names, state recording→ready→gone-when-uploaded).
+  Reload mid-recording: chunks survive, recovery marks it ready. Upload fail: stays ready,
+  status says 'your recording is safe on this device — it shows in Sessions as local'.
+  record.html on load auto-retries every ready local (?up=<id> prioritizes one); success
+  cleans the IDB copy. rec_id_from avoids doubling times in ids. Drawer (v124): local
+  recordings list like sessions with an amber 'local' chip, playable, deletable (own
+  confirm — 'this device only, final'); PKEY understands ?local=. session.html?local=<id>:
+  plays from the device copy (blob URL), tags render and EDITS persist to IDB (repo sync
+  diverted), title gains '· local', banner 'on this device only — upload to the cloud'
+  (→ record.html?up=<id>). Playwright end-to-end: fail→ready meta w/ typed tag ✓, drawer
+  local row+chip+trash ✓, local page blob playback + banner + tag label ✓, ?up recovery
+  uploads, registers, cleans IDB ✓.
+- NEXT → add entry 131 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
