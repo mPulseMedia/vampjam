@@ -9,8 +9,34 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "117 back_stop",
+        id: "118 sync_hint",
         expanded: true,
+        nodes: [
+          { text: "118 sync_hint", children: [
+            { text: "prompt_restate", children: [
+              { text: "The new session does show up but takes a while — make the app show that it is expecting it and just needs a moment to connect." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, it does show up but it takes a while and is there anyway that on the app I can indicate that it\u2019s expecting to find something but it needs a little time to do the connection" }
+            ]},
+            { text: "response", children: [
+              { text: "sync_hint", children: [
+                { text: "your new recording now appears in the Sessions list right away, with a soft pulsing syncing… where the length will go" },
+                { text: "the app quietly keeps checking and swaps it to a normal row once it lands" },
+                { text: "opening it early shows Syncing this recording — it needs a moment to land, then it connects by itself" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: record something short, hit Back" },
+                { text: "the new row should be there instantly, breathing syncing…" },
+                { text: "wait a minute — it settles into a normal row" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "117 back_stop",
+        expanded: false,
         nodes: [
           { text: "117 back_stop", children: [
             { text: "prompt_restate", children: [

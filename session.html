@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 <script src="theme.js"></script>
 <script src="sessions.js?v=117"></script>
-<script src="drawer.js?v=117"></script>
+<script src="drawer.js?v=118"></script>
 <style>
   :root {
     --bg: #4a2a0e;
@@ -486,6 +486,7 @@
   // ============ per-page identity ============
   // Each new page only needs to change PAGE_ID. The audio source lives in sources/<PAGE_ID>.json.
   // generic session page: /session.html?p=<rec_id> binds <rec_id>.json
+  var sync_tries = 0;
   var REC_ID = (function () {
     var m = /[?&]p=([A-Za-z0-9_\-]+)/.exec(window.location.search);
     return m ? m[1] : '';
@@ -1162,7 +1163,16 @@
       if (!r.ok) return null;
       return r.json().catch(function () { return null; });
     }).then(function (data) {
-      if (!data) { audio = null; render_audio_label(); return; }
+      if (!data) {
+        audio = null; render_audio_label();
+        // a just-created recording can take a minute to land on GitHub — say so and retry
+        if (REC_ID && sync_tries < 40) {
+          sync_tries++;
+          if (audioLabelEl) audioLabelEl.textContent = 'Syncing this recording — it needs a moment to land…';
+          setTimeout(fetch_repo_data, 5000);
+        }
+        return;
+      }
       var a = data.audio;
       if (a && typeof a === 'object' && a.url) {
         audio = { label: a.label || derive_label(a.url), url: a.url, kind: a.kind || detect_kind(a.url) };

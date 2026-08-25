@@ -234,7 +234,15 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   the hash and now accepts session.html?p= as a valid last page). Menu scripts bumped to
   v117. Playwright: back mid-recording → 'saved as …m4a · 1 moment carried over' → lands on
   the last session, drawer open 564px, registry name = the time.
-- NEXT → add entry 118 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 118 sync_hint — no page edit) new recordings show up before GitHub catches up.
+  record.html stores the new entry as vampjam_pending_session (localStorage, 15-min expiry);
+  drawer.js renders that row immediately with a breathing 'syncing…' where the duration
+  goes, re-fetches sessions_auto.json every 20s until the registry contains it, then clears
+  the marker and renders the row normally. session.html?p= on a 404 json shows 'Syncing this
+  recording — it needs a moment to land…' and retries every 5s (40 tries). drawer.js?v=118.
+  Playwright: pending row + syncing… while absent ✓, cleared + normal row once present ✓,
+  session page syncing label then binds on the next retry ✓.
+- NEXT → add entry 119 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

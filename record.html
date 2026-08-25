@@ -250,6 +250,10 @@
       var regName = (label === DEFT) ? TS : label.replace(' — ' + DEFT, '').replace(' — ' + ISO, '').replace(' ' + TS, '');
       list.push({ page: page, name: regName, date: ISO, dur: recDur, count: tags.length });
       await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
+      try {
+        localStorage.setItem('vampjam_pending_session',
+          JSON.stringify({ page: page, name: regName, date: ISO, dur: recDur, count: tags.length, ts: Date.now() }));
+      } catch (e3) {}
       status.innerHTML = 'Session ready &#10003; <a href="' + page + '">open ' +
         (label || id) + '</a>' +
         '<br>saved as ' + id + '.' + ext +
