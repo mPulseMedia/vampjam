@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "110 land_fix",
+        id: "111 bleed_fix",
         expanded: true,
+        nodes: [
+          { text: "111 bleed_fix", children: [
+            { text: "prompt_restate", children: [
+              { text: "A black rectangle sticks out of the left half and blocks the right part of the screen." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "There's a black rectangle that seems to stick out of the left half of the screen at any rate it blocks what is on the right part of the screen" }
+            ]},
+            { text: "response", children: [
+              { text: "bleed_fix", children: [
+                { text: "the black slab was the player's background: an old landscape rule stretched it across the whole screen" },
+                { text: "that stretch now skips the split layout, so the player stays inside the left half" },
+                { text: "all 7 session pages fixed" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, phone landscape: highlight list fully visible on the right" },
+                { text: "Sessions tap / pull-down still opens the sheet on the left" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "110 land_fix",
+        expanded: false,
         nodes: [
           { text: "110 land_fix", children: [
             { text: "prompt_restate", children: [

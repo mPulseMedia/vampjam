@@ -201,7 +201,7 @@
     body > * { grid-column: 1; min-width: 0; }
     .tag_list { grid-column: 2; grid-row: 1 / span 30; height: calc(100vh - 12px);
                 overflow-y: auto; margin: 6px 0; -webkit-overflow-scrolling: touch; }
-    .sticky_player { margin-left: 0; margin-right: 0; }
+    .sticky_player { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
   }
   .tag_row {
     display: flex; align-items: center; gap: 5px;
@@ -386,8 +386,10 @@
     .session_drawer.open { max-height: 88vh; }
   }
   #drawer_toggle.open .drawer_caret { transform: rotate(180deg); }
-  /* mobile landscape: let the sticky player background + shadow reach the screen edges */
-  @media (orientation: landscape) and (pointer: coarse) {
+  /* tall landscape (no split): let the sticky player background + shadow reach
+     the screen edges. Split landscape (max-height 520px) is EXCLUDED — there the
+     player stays inside the left column or it paints over the highlights. */
+  @media (orientation: landscape) and (pointer: coarse) and (min-height: 521px) {
     .sticky_player {
       margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);
       padding-left: calc(50vw - 50%); padding-right: calc(50vw - 50%);

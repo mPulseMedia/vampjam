@@ -178,7 +178,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   block AFTER the base drawer rules on all 7 pages; drawer.js gained outside-tap-to-close for
   the landscape sheet (it covers the Sessions button). Playwright: land tap open 343px /
   outside-tap close / swipe open; portrait unchanged (510px).
-- NEXT → add entry 111 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 111 bleed_fix — no page edit) black slab over the right half in landscape: an older
+  landscape rule stretched .sticky_player to full screen width (negative margins + side
+  padding), and in the split layout its bg painted over the highlight list. That bleed
+  query now excludes split (min-height: 521px added); the split block also zeroes the side
+  padding. Playwright: paint probe right of midline shows tag_list on top; drawer tests
+  (land tap/outside-tap/swipe + portrait) all still pass.
+- NEXT → add entry 112 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
