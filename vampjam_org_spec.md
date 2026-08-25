@@ -314,7 +314,10 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   already focused the new row's field, unchanged. Playwright: wordmark ✓, buttons hidden ✓,
   focus lands + typed 'sweet solo' persists ✓, numbers strip ✓, cur/dur pair ✓, playback
   placeholder gone ✓.
-- NEXT → add entry 126 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 126 tag_below — no page edit) record.html: the Tag-the-moment button moved from
+  above the time bar to directly below it (order now: record button, timer, bar + numbers +
+  dots + cur/dur, Tag button, moments list). Playwright: tag button top 344 > bar top 269 ✓.
+- NEXT → add entry 127 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

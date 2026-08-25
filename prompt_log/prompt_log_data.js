@@ -9,8 +9,30 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "125 rec_polish",
+        id: "126 tag_below",
         expanded: true,
+        nodes: [
+          { text: "126 tag_below", children: [
+            { text: "prompt_restate", children: [
+              { text: "The tag button should go below the time bar." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Oh, I think the tag button should be should go below the time bar" }
+            ]},
+            { text: "response", children: [
+              { text: "tag_below", children: [
+                { text: "done — Tag the moment now sits right under the time bar, above the moments list" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Record, start — the bar grows above the button now" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "125 rec_polish",
+        expanded: false,
         nodes: [
           { text: "125 rec_polish", children: [
             { text: "prompt_restate", children: [
