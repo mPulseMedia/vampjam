@@ -411,7 +411,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   AND all 8 playback pages' add_tag — and record.html's visualViewport resize handler
   pins window.scrollTo(0,0) so the keyboard can never strand the page. Playwright: two
   Tags back-to-back → scrollY 0, both rows, focus on the newest ✓.
-- NEXT → add entry 137 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 137 batch_land — no page edit) mystery solved by Paul himself: the Favorites row
+  was missing because the Mac was closed, so batches 134-136 had never landed. On
+  reconnect the queued files committed as focus_guard and the robot pushed within seconds
+  — favorites.html, drawer v127, and the fixes confirmed live on origin.
+- NEXT → add entry 138 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

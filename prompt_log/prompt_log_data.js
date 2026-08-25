@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "136 focus_guard",
+        id: "137 batch_land",
         expanded: true,
+        nodes: [
+          { text: "137 batch_land", children: [
+            { text: "prompt_restate", children: [
+              { text: "Expecting the Favorites row in the session list and it is not there — oh, I see, I closed the computer." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I\u2019m expecting to see this new row within the session list that is favorites and it\u2019s not listed. I\u2019m not sure what\u2019s happening. 00 I see I see I closed the computer." }
+            ]},
+            { text: "response", children: [
+              { text: "batch_land", children: [
+                { text: "right — the closed computer was holding all three batches" },
+                { text: "landed them the moment it came back; everything is live now" },
+                { text: "heart a moment, then open Sessions — the Favorites row appears" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min for the site to refresh, then reload once" },
+                { text: "hearts on rows, Favorites in the list, juicy tag button, no black shelf" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "136 focus_guard",
+        expanded: false,
         nodes: [
           { text: "136 focus_guard", children: [
             { text: "prompt_restate", children: [
