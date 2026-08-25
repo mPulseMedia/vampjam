@@ -8,5 +8,6 @@ window.VAMPJAM_SESSIONS = [
   { page: "2026_07_17_sound_union.html", name: "Sound Union", date: "2026-07-17", dur: 10259, count: 5  },
   { page: "2026_07_24_sound_union.html", name: "Sound Union", date: "2026-07-24", dur: 9868,  count: 10 },
   { page: "2026_07_31_sound_union.html", name: "Sound Union", date: "2026-07-31", dur: 10105, count: 9  },
-  { page: "2026_08_07_sound_union.html", name: "Sound Union", date: "2026-08-07", dur: 8776,  count: 24 }
+  { page: "2026_08_07_sound_union.html", name: "Sound Union", date: "2026-08-07", dur: 8776,  count: 24 },
+  { page: "2026_08_25_test.html",       name: "Test",        date: "2026-08-25", dur: 0,     count: 0  }
 ];

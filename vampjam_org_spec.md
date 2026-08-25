@@ -184,7 +184,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   query now excludes split (min-height: 521px added); the split block also zeroes the side
   padding. Playwright: paint probe right of midline shows tag_list on top; drawer tests
   (land tap/outside-tap/swipe + portrait) all still pass.
-- NEXT → add entry 112 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 112 test_session — no page edit) Paul pasted the R2 URL of a fresh iPhone recording
+  (rec_2026_08_25_1144.m4a) — the Admin → Upload-to-R2 pipeline WORKS end to end (test_record
+  confirmed). New session page 2026_08_25_test.html (PAGE_ID test_2026_08_25) cloned from the
+  08-07 page, 2026_08_25_test.json binds the R2 url, sessions.js entry added (name Test,
+  dur/count 0 until first play caches it). Page JSON loads from raw.githubusercontent, so it
+  binds only after the robot pushes. Playwright local: title/h1/menu row all correct.
+- NEXT → add entry 113 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

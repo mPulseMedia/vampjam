@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "111 bleed_fix",
+        id: "112 test_session",
         expanded: true,
+        nodes: [
+          { text: "112 test_session", children: [
+            { text: "prompt_restate", children: [
+              { text: "Pasted the R2 link of a new recording uploaded today at 11:44." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "https://pub-33cfd8558d314eb58642c8550608850b.r2.dev/rec_2026_08_25_1144.m4a" }
+            ]},
+            { text: "response", children: [
+              { text: "test_session", children: [
+                { text: "your phone recording made it to R2 — the whole record-and-upload path works" },
+                { text: "new page: Test — 2026-08-25, bound to that recording" },
+                { text: "it shows up in the Sessions list on every page" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open vampsf.com/2026_08_25_test.html and hit play" },
+                { text: "or find Test — 2026-08-25 in the Sessions list" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "111 bleed_fix",
+        expanded: false,
         nodes: [
           { text: "111 bleed_fix", children: [
             { text: "prompt_restate", children: [

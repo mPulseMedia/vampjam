@@ -1,0 +1,1869 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>vampsf — Test — 2026-08-25</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<script src="theme.js"></script>
+<script src="sessions.js"></script>
+<script src="drawer.js"></script>
+<style>
+  :root {
+    --bg: #4a2a0e;
+    --panel: #5c3717;
+    --panel_2: #6b4423;
+    --panel_3: #7a4f2a;
+    --fg: #f5e5c5;
+    --muted: #c9a87e;
+    --accent: #e8b454;
+    --accent_2: #d4a95a;
+    --danger: #c75450;
+    --warn: #e8c794;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--fg); margin: 0; padding: 0; }
+  body { font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; --gutter: 16px; padding: 3px var(--gutter) 24px; max-width: 760px; margin: 0 auto; }
+  .brand { text-align: center; margin: 8px 0 6px; }
+  .brand .wordmark {
+    font-family: 'Sacramento', cursive;
+    font-size: 68px; line-height: 1; color: var(--fg);
+    display: inline-block; margin: 0;
+  }
+  .wordmark_sf {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 34px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
+  }
+  .brand .tagline {
+    color: var(--fg); opacity: 0.85; font-size: 13px;
+    letter-spacing: 0.04em; margin-top: -2px;
+  }
+  h1 { font-size: 17px; margin: 14px 0 4px; font-weight: 600; }
+  .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+  code.inline { background: var(--panel_2); padding: 1px 5px; border-radius: 4px; }
+
+  /* ---- audio source card ---- */
+  .audio_card { background: transparent; padding: 6px 0; margin-bottom: 8px; }
+  .audio_label_row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .audio_label_row .audio_icon { font-size: 18px; }
+  .audio_label_row .audio_label {
+    flex: 1; color: var(--fg); font-weight: 600; font-size: 15px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .audio_label_row .audio_label.empty { color: var(--muted); font-weight: 500; font-style: italic; }
+  .audio_label_row .audio_kind { color: var(--muted); font-size: 11px; }
+  .audio_edit_form {
+    margin-top: 10px; padding: 10px 12px;
+    background: var(--panel_2); border-radius: 8px;
+  }
+  .audio_edit_form input[type=text] {
+    width: 100%; background: var(--panel_3); border: 1px solid var(--panel_3); color: var(--fg);
+    padding: 8px 10px; border-radius: 6px; font: inherit; margin-bottom: 6px;
+  }
+  .audio_edit_form input[type=text]:focus { border-color: var(--accent_2); outline: none; }
+  .audio_edit_actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .audio_edit_actions button { font-size: 13px; padding: 7px 12px; min-height: 34px; }
+  .audio_edit_help { color: var(--muted); font-size: 11px; margin-top: 8px; }
+  .audio_edit_help a { color: var(--accent_2); }
+
+  /* ---- pat (github access) ---- */
+  .pat_setup { background: var(--panel_2); border-radius: 8px; padding: 8px 12px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+  .pat_setup summary { color: var(--fg); font-weight: 600; font-size: 12px; cursor: pointer; }
+  .pat_setup .pat_body { margin-top: 8px; }
+  .pat_setup a { color: var(--accent_2); }
+  .pat_setup p { margin: 0 0 8px; }
+  .pat_setup code { background: var(--panel_3); padding: 1px 4px; border-radius: 3px; color: var(--fg); }
+  .pat_row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pat_row input { flex: 2; min-width: 180px; background: var(--panel_3); border: 1px solid var(--panel_3); color: var(--fg); padding: 6px 8px; border-radius: 6px; font: inherit; font-size: 12px; }
+  .pat_row input:focus { border-color: var(--accent_2); outline: none; }
+  .pat_row button { font-size: 12px; padding: 6px 10px; min-height: 32px; }
+  .pat_ok { color: var(--accent); }
+  .pat_err { color: var(--danger); }
+
+  /* ---- player ---- */
+  .player_card { background: transparent; padding: 4px 0 2px; margin-bottom: 0; text-align: center; }
+  audio { display: none; }
+  .ctrl_row { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .seek_bar { width: 100%; height: 6px; background: var(--panel_3); border-radius: 3px; position: relative; cursor: pointer; margin: 0; }
+  .seek_fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; pointer-events: none; }
+  .seg_remain { position: absolute; bottom: 0; height: 2px; background: var(--accent); opacity: 0.45; border-radius: 1px; pointer-events: none; }
+  .tag_numbers { position: relative; height: 13px; margin-bottom: 3px; }
+  .tag_num_lbl { position: absolute; transform: translateX(-50%); top: 0; font-size: 11px; line-height: 13px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; }
+  .tag_num { flex: 0 0 auto; min-width: 18px; text-align: right; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+  .tag_markers { position: relative; height: 14px; margin-top: 4px; margin-bottom: 4px; width: 90%; margin-left: auto; margin-right: auto; }
+  .tag_marker {
+    position: absolute; top: 2px; width: 10px; height: 10px; z-index: 2;
+    background: var(--marker, #fff); border-radius: 50%;
+    transform: translateX(-50%); cursor: pointer;
+    border: 1.5px solid var(--bg);
+    transition: transform 0.1s;
+  }
+  .tag_marker:hover { transform: translateX(-50%) scale(1.4); }
+  .tag_marker::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; }
+  .jam_confirm_overlay { position: fixed; inset: 0; z-index: 120; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; }
+  .jam_confirm_card { background: var(--panel); color: var(--fg); border-radius: 14px; padding: 20px 22px; max-width: 320px; width: 84%; box-shadow: 0 12px 40px rgba(0,0,0,0.45); }
+  .jam_confirm_msg { margin-bottom: 16px; font-size: 16px; }
+  .jam_confirm_row { display: flex; gap: 10px; justify-content: flex-end; }
+  .jam_confirm_row button { border: none; border-radius: 10px; padding: 10px 16px; font-size: 15px; cursor: pointer; }
+  .jam_confirm_cancel { background: var(--panel_3); color: var(--fg); }
+  .jam_confirm_yes { background: var(--danger); color: #fff; }
+  .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
+  .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: var(--row_active); pointer-events: none; z-index: 0; }
+  .fish_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
+  .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
+  .time_row #now_time { color: var(--accent); font-weight: 600; }
+  .ctrl_btn {
+    appearance: none; -webkit-appearance: none; border: 0;
+    background: var(--panel_2); color: var(--accent); font: inherit; font-weight: 600;
+    border-radius: 50%; width: 52px; height: 52px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; line-height: 1; padding: 0; white-space: nowrap;
+    transition: background-color 0.12s, transform 0.06s;
+  }
+  .ctrl_btn .cn { font-size: 17px; font-weight: 600; }
+  .ctrl_btn .cu { font-size: 11px; font-weight: 600; }
+  .ctrl_btn:hover  { background: var(--panel_3); }
+  .ctrl_btn:active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); transform: scale(0.95); }
+  .ctrl_btn.play_btn {
+    width: 84px; height: 84px; background: var(--accent); color: var(--on_accent, #0b0d0f);
+    font-size: 44px; box-shadow: 0 4px 14px rgba(106,191,105,0.25);
+  }
+  .ctrl_btn.play_btn:hover  { background: var(--accent_hover, #f0c97a); }
+  .ctrl_btn.play_btn:active { background: var(--accent_active, #c89943); transform: scale(0.95); }
+  .ctrl_btn.small { width: 52px; height: 52px; font-size: 12px; }
+  .ctrl_btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .player_msg { display: none; }
+
+  /* ---- buttons ---- */
+  button {
+    appearance: none; -webkit-appearance: none; border: 0; cursor: pointer;
+    background: var(--panel_2); color: var(--fg); font: inherit;
+    padding: 8px 12px; border-radius: 8px; min-height: 36px;
+    transition: background-color 0.12s, transform 0.06s;
+  }
+  button:hover  { background: var(--panel_3); }
+  button:active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); transform: scale(0.97); }
+  button.primary           { background: var(--accent);   color: var(--on_accent, #0b0d0f); font-weight: 600; }
+  button.primary:hover     { background: var(--accent_hover, #f0c97a); }
+  button.primary:active    { background: var(--accent_active, #c89943); }
+  button.primary_2         { background: var(--accent_2); color: var(--on_accent, #0b0d0f); font-weight: 600; }
+  button.primary_2:hover   { background: var(--accent_2_hover, #e0bb6e); }
+  button.primary_2:active  { background: var(--accent_2_active, #b88e3d); }
+  button.ghost {
+    background: var(--panel_2); color: var(--accent);
+    padding: 4px 6px; min-height: 28px;
+  }
+  button.ghost:hover  { background: var(--panel_3); }
+  button.ghost:active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); }
+  button.tiny {
+    padding: 4px 6px; min-height: 26px; font-size: 11px;
+    background: var(--panel_3);
+  }
+  button.tiny:hover  { background: var(--accent_2); color: var(--on_accent, #0b0d0f); }
+  button.tiny:active { background: var(--accent);   color: var(--on_accent, #0b0d0f); }
+
+  /* ---- tags ---- */
+  .tag_toolbar {
+    display: none; align-items: center; justify-content: flex-end; gap: 8px;
+    padding: 0 4px 8px;
+  }
+  .tag_btn_big {
+    display: inline-block; width: auto; margin: 2px auto 12px; padding: 12px 30px;
+    font-size: 17px; font-weight: 600;
+    background: var(--accent); color: var(--bg); border-radius: 10px;
+  }
+  .tag_btn_big:hover { background: var(--accent_hover, #f0c97a); }
+  .tag_btn_big:active { background: var(--accent_active, #c89943); transform: scale(0.97); }
+  .tag_toolbar_spacer {
+    flex: 0 0 auto; visibility: hidden;
+  }
+  .sort_toggle { display: inline-flex; background: var(--panel_2); border-radius: 6px; padding: 2px; flex-shrink: 0; }
+  .sort_toggle button {
+    background: transparent; color: var(--muted); border: 0; cursor: pointer;
+    padding: 3px 8px; border-radius: 4px; font: inherit; font-size: 10px;
+    min-height: 24px; font-weight: 500; opacity: 0.7;
+  }
+  .sort_toggle button:hover { opacity: 1; }
+  .sort_toggle button.active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); }
+  .tag_list { background: var(--panel); border-radius: 14px; overflow: hidden; padding: 0 0 20px; margin: 12px 0 24px; box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20); touch-action: pan-y; font-size: 17px; }
+  /* split_land — phone in landscape: controls left, highlights right.
+     The left half slides down for the session list; the right holds still. */
+  @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
+    body { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14px;
+           height: 100vh; overflow: hidden; max-width: none; align-content: start; }
+    body > * { grid-column: 1; min-width: 0; }
+    .tag_list { grid-column: 2; grid-row: 1 / span 30; height: calc(100vh - 12px);
+                overflow-y: auto; margin: 6px 0; -webkit-overflow-scrolling: touch; }
+    .sticky_player { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
+  }
+  .tag_row {
+    display: flex; align-items: center; gap: 5px;
+    padding: 7px 12px; min-height: 54px; box-sizing: border-box; border-radius: 0; background: transparent;
+    flex-wrap: nowrap;
+  }
+  .tag_row .tag_label {
+    flex: 1 1 60px; min-width: 0;
+  }
+  .tag_row .tag_end {
+    font-variant-numeric: tabular-nums; color: var(--warn);
+    cursor: pointer; padding: 5px 7px; border-radius: 7px;
+    min-width: 72px; text-align: right; font-weight: 600; font-size: 15px;
+    flex: 0 0 auto;
+  }
+  .tag_row .tag_end:hover { background: rgba(232,199,148,0.15); }
+  .tag_row button.play_tag {
+    background: transparent; color: var(--accent);
+    padding: 6px 8px 6px 2px; margin-left: 0; min-height: 40px; font-size: 22px;
+    border-radius: 7px; flex: 0 0 auto;
+  }
+  .tag_row button.play_tag:hover,
+  .tag_row button.play_tag:active { background: transparent; color: var(--accent); }
+  .tag_row button.add_end {
+    background: var(--panel_3); color: var(--warn);
+    font-size: 12px; padding: 4px 7px; min-height: 25px; border-radius: 7px;
+    flex: 0 0 auto;
+  }
+  .tag_row button.add_end:hover { background: var(--warn); color: var(--on_accent, #0b0d0f); }
+  .tag_row button.play_tag.autoplay_blocked {
+    background: var(--warn); color: var(--on_accent, #0b0d0f); font-weight: 700;
+    animation: pulse_warn 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse_warn {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(232,199,148,0.6); }
+    50%      { box-shadow: 0 0 0 6px rgba(232,199,148,0); }
+  }
+  .tag_row:hover { background: var(--row_active); }
+  .tag_row.active { background: var(--row_active); }
+  .tag_row.active button.ghost { background: transparent; }
+  .tag_row button.ghost { padding: 5px 7px; min-height: 32px; font-size: 18px; border-radius: 7px; background: transparent; color: var(--muted); }
+  .tag_row button.ghost:hover { background: transparent; color: var(--fg); }
+  .tag_row button.ghost:active { background: transparent; }
+  .tag_row.dragging { opacity: 0.4; }
+  .drag_handle {
+    cursor: grab; color: var(--accent); padding: 5px 7px; user-select: none;
+    font-size: 18px; line-height: 1; touch-action: none;
+  }
+  .drag_handle:active { cursor: grabbing; }
+  .tag_row.no_drag .drag_handle { display: none; }
+  .drop_indicator { height: 2px; background: var(--accent); margin: 2px 8px; border-radius: 1px; pointer-events: none; }
+  .playhead_line {
+    /* zero layout height so it never pushes highlight rows up/down;
+       the visible bar is drawn as an overlay via ::before */
+    height: 0; margin: 0; position: relative;
+    pointer-events: none; z-index: 2;
+  }
+  .playhead_line::before {
+    content: ''; position: absolute; left: 0; right: 0;
+    top: 0; height: 3px; border-radius: 2px;
+    background: var(--playhead, #ffd84a);
+  }
+  .tag_time {
+    color: var(--accent); font: inherit; font-weight: normal;
+    cursor: pointer; padding: 5px 7px; border-radius: 7px; min-width: 0; text-align: right;
+  }
+  .tag_time:hover { background: rgba(91,155,213,0.12); }
+  .tag_label {
+    background: transparent; border: 0; color: var(--fg); font: inherit;
+    width: 100%; padding: 5px 7px; border-radius: 7px;
+    flex: 1 1 40px; min-width: 0;
+    touch-action: manipulation;   /* block double-tap zoom without preventDefault (keeps iOS keyboard) */
+  }
+  .tag_label:focus { outline: none; background: var(--edit_bg, #ffffff); box-shadow: inset 0 0 0 1px var(--panel_3); }
+  .tag_label[readonly] { cursor: pointer; }
+  .tag_actions { display: flex; gap: 2px; }
+  .empty { color: var(--muted); padding: 14px; text-align: center; font-size: 13px; }
+
+  /* ---- misc ---- */
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: 24px; background: var(--on_accent, #0b0d0f); color: var(--fg);
+    padding: 8px 14px; border-radius: 20px; font-size: 13px;
+    opacity: 0; transition: opacity 0.2s; pointer-events: none;
+    border: 1px solid var(--panel_3); z-index: 99;
+    max-width: 90%;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ---- jam menu ---- */
+  .jam_menu_overlay {
+    display: none; position: fixed; inset: 0; z-index: 80;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+  }
+  .jam_menu_overlay.open { display: block; }
+  .jam_menu {
+    position: absolute; top: 60px; left: 12px;
+    background: var(--panel); border: 1px solid var(--panel_3);
+    border-radius: 12px; padding: 6px; min-width: 220px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .jam_item { display: flex; align-items: center; min-height: 54px; box-sizing: border-box; padding: 0 12px; }
+  .jam_item:hover { background: var(--row_active); }
+  .jam_item.current { background: var(--row_active); }
+  .jam_item.jam_admin { border-top: 1px solid var(--panel_3); }
+  .jam_link { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+              color: var(--fg); text-decoration: none; font-size: 17px; font-weight: 400; padding: 6px 0; }
+  .jam_link.current { color: var(--accent); font-weight: 600; }
+  .jam_link .menu_sub { display: inline; font-size: 17px; color: var(--muted); font-weight: 400; margin: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .jam_left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .jam_name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .jam_ico { flex: 0 0 auto; display: inline-flex; color: var(--accent); }
+  .jam_item.jam_admin .jam_ico { color: var(--muted); }
+  .jam_count { color: var(--muted); font-size: 14px; margin-left: 5px; }
+  .jam_item.jam_new .jam_ico { color: var(--accent); }
+  .jam_ico svg { display: block; }
+  .jam_share { flex: 0 0 auto; background: transparent; color: var(--muted); border: none; border-radius: 7px;
+               padding: 6px 6px; margin-left: 6px; min-height: 32px; cursor: pointer; line-height: 0; }
+  .jam_share:hover { background: transparent; color: var(--fg); }
+  details.about_page { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
+  details.about_page summary { cursor: pointer; color: var(--fg); font-weight: 600; }
+  details.about_page code { background: var(--panel_2); padding: 1px 6px; border-radius: 4px; color: var(--fg); }
+
+  .sticky_player {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--bg); padding-top: 8px; padding-bottom: 4px;
+    transition: box-shadow 0.2s;
+  }
+  /* the white control layer casts a shadow ONLY onto the darker highlight list
+     below it, only while scrolling (gradient strip = no side or white bleed) */
+  .sticky_player::after {
+    content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 12px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.16), rgba(0,0,0,0));
+    opacity: 0; transition: opacity 0.2s; pointer-events: none;
+  }
+  .sticky_player.scrolled::after { opacity: 1; }
+
+  @media (max-width: 480px) {
+    .ctrl_row { justify-content: space-between; gap: 4px; }
+    .ctrl_btn { width: 48px; height: 48px; }
+    .ctrl_btn.small { width: 48px; height: 48px; }
+    .ctrl_btn.play_btn { width: 76px; height: 76px; font-size: 38px; }
+  }
+
+  /* ---- de-emphasis: make selected chrome less prominent ---- */
+  .time_row #dur_time, .time_row span:not(#now_time) { color: var(--muted); opacity: 0.4; font-weight: 400; }
+  .tag_time { color: var(--muted); opacity: 0.5; font-weight: 400; }
+  .tag_time:hover { opacity: 0.9; }
+  button.ghost.tag_del { color: var(--muted); background: transparent; opacity: 0.3; }
+  button.ghost.tag_del:hover { opacity: 0.95; color: var(--danger, #c75450); background: var(--panel_2); }
+  #audio_edit_btn { color: var(--muted); background: transparent; opacity: 0.4; }
+  #audio_edit_btn:hover { opacity: 0.9; }
+  .sort_toggle { background: transparent; opacity: 0.5; }
+  .sort_toggle:hover { opacity: 0.95; }
+  .sort_toggle button.active { background: var(--panel_3); color: var(--muted); font-weight: 500; }
+
+
+  /* ---- session drawer: slides the page down from the top edge ---- */
+  .session_drawer {
+    max-height: 0; overflow-y: auto; background: var(--bg);
+    transition: max-height 0.18s ease; position: relative; z-index: 90;
+  }
+  .session_drawer.open { max-height: 72vh; }
+  /* session list tucks under the white control layer below it: shadow on the
+     darker card's bottom edge, only when the list overflows the drawer */
+  .session_drawer.open.sess_overflow { box-shadow: inset 0 -16px 13px -11px rgba(0,0,0,0.22); }
+  .session_drawer.dragging { transition: none; }
+  .session_drawer .jam_menu {
+    position: static; top: auto; left: auto; min-width: 0;
+    background: var(--panel); border: none; border-radius: 14px; overflow: hidden;
+    box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20);
+    padding: 6px 0; margin: 12px auto 0; max-width: 760px;
+  }
+  #drawer_toggle { transition: none; }
+  .drawer_caret { transition: transform 0.3s ease; }
+  /* land_drawer — placed AFTER the base .session_drawer rules so it wins:
+     in landscape split the session list opens as a sheet over the LEFT half
+     only (caret tap or pull-down); the right half never moves */
+  @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
+    .session_drawer { position: fixed; top: 0; left: 0; width: 50vw; z-index: 95;
+                      box-shadow: 0 10px 26px rgba(0,0,0,0.3); border-radius: 0 0 14px 0; }
+    .session_drawer.open { max-height: 88vh; }
+  }
+  #drawer_toggle.open .drawer_caret { transform: rotate(180deg); }
+  /* tall landscape (no split): let the sticky player background + shadow reach
+     the screen edges. Split landscape (max-height 520px) is EXCLUDED — there the
+     player stays inside the left column or it paints over the highlights. */
+  @media (orientation: landscape) and (pointer: coarse) and (min-height: 521px) {
+    .sticky_player {
+      margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);
+      padding-left: calc(50vw - 50%); padding-right: calc(50vw - 50%);
+    }
+  }
+</style>
+</head>
+<body>
+<div class="session_drawer" id="session_drawer">
+  <div class="jam_menu">
+    <div class="jam_item jam_admin"><a class="jam_link" href="admin.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.6l1.7 2.2 2.7-.7.4 2.8 2.5 1.2-1 2.6 1 2.6-2.5 1.2-.4 2.8-2.7-.7L12 21.4l-1.7-2.2-2.7.7-.4-2.8-2.5-1.2 1-2.6-1-2.6 2.5-1.2.4-2.8 2.7.7z"/></svg></span><span class="jam_name">Admin</span></span><span class="menu_sub">setup &amp; uploads</span></a></div>
+    <div class="jam_item"><a class="jam_link" href="2026_01_17_bazaar_cafe.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Bazaar Cafe</span></span><span class="menu_sub">Jan 17, 2026</span></a><button class="jam_share" data-href="2026_01_17_bazaar_cafe.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link" href="2026_05_23_bazaar_cafe.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Bazaar Cafe</span></span><span class="menu_sub">May 23, 2026</span></a><button class="jam_share" data-href="2026_05_23_bazaar_cafe.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link" href="2026_05_30_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">May 30, 2026</span></a><button class="jam_share" data-href="2026_05_30_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link" href="2026_07_17_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Jul 17, 2026</span></a><button class="jam_share" data-href="2026_07_17_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link" href="2026_07_24_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Jul 24, 2026</span></a><button class="jam_share" data-href="2026_07_24_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link" href="2026_07_31_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Jul 31, 2026</span></a><button class="jam_share" data-href="2026_07_31_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link" href="2026_08_07_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Aug 7, 2026</span></a><button class="jam_share" data-href="2026_08_07_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item current"><a class="jam_link current" href="2026_08_25_test.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Test</span></span><span class="menu_sub">Aug 25, 2026</span></a><button class="jam_share" data-href="2026_08_25_test.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+  </div>
+</div>
+
+<header class="brand" style="position:relative;">
+  <button id="drawer_toggle" onclick="vampjamDrawer.toggle()" aria-label="Sessions" style="position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--muted);background:none;border:none;padding:8px 12px 8px 0;margin-left:-4px;cursor:pointer;display:flex;align-items:center;gap:5px;font:inherit;font-size:14px;"><span>Sessions</span><svg class="drawer_caret" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
+</header>
+
+
+
+<h1 style="display:flex;align-items:center;justify-content:center;gap:6px;">Test — 2026-08-25 <button class="ghost" id="audio_edit_btn" title="Change audio file" style="font-size:17px;padding:5px 7px;min-height:32px;">✎</button></h1>
+
+<!-- audio edit form (hidden, toggled by pencil) -->
+<div class="audio_card" id="audio_card" style="display:none;">
+  <span class="audio_label empty" id="audio_label" style="display:none;">Loading…</span>
+  <div class="audio_edit_form" id="audio_edit_form" style="display:none">
+    <input type="text" id="audio_url_in" placeholder="Paste audio URL (Google Drive share, direct URL, or filename next to this page)">
+    <input type="text" id="audio_label_in" placeholder="Label (optional — auto-derived if blank)">
+    <div class="audio_edit_actions">
+      <button class="primary" id="audio_save_btn">Save to page</button>
+      <button id="audio_cancel_btn">Cancel</button>
+      <button id="audio_pick_local" class="ghost">Pick local file (preview only)</button>
+      <input type="file" id="audio_local_in" accept="audio/*" style="display:none">
+    </div>
+    <div class="audio_edit_help">
+      Drive: share as <i>Anyone with the link → Viewer</i>, then paste the share URL.
+      Saving writes <code id="audio_path_display"></code> to the repo so every visitor sees this audio.
+    </div>
+  </div>
+</div>
+
+<!-- ===== player ===== -->
+<div class="sticky_player">
+<div class="player_card">
+  <audio id="player" preload="metadata"></audio>
+  <div class="ctrl_row">
+    <button class="ctrl_btn" id="back_120" title="Back 2 min"><span class="cu">−</span><span class="cn">2</span><span class="cu">m</span></button>
+    <button class="ctrl_btn" id="back_15"  title="Back 15 sec"><span class="cu">−</span><span class="cn">15</span><span class="cu">s</span></button>
+    <button class="ctrl_btn small" id="back_5" title="Back 5 sec"><span class="cu">−</span><span class="cn">5</span><span class="cu">s</span></button>
+    <button class="ctrl_btn play_btn" id="play_btn" title="Play / Pause"></button>
+    <button class="ctrl_btn small" id="fwd_5"  title="Forward 5 sec"><span class="cu">+</span><span class="cn">5</span><span class="cu">s</span></button>
+    <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec"><span class="cu">+</span><span class="cn">15</span><span class="cu">s</span></button>
+    <button class="ctrl_btn" id="fwd_120" title="Forward 2 min"><span class="cu">+</span><span class="cn">2</span><span class="cu">m</span></button>
+  </div>
+  <button class="tag_btn_big" id="tag_btn">Tag the moment</button>
+  <div class="tag_numbers" id="tag_numbers"></div>
+  <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div><div class="seg_remain" id="seg_remain"></div></div>
+  <div class="tag_markers" id="tag_markers"></div>
+  <div class="time_row">
+    <span id="now_time">0:00</span>
+    <span>/</span>
+    <span id="dur_time">--:--</span>
+  </div>
+  <div class="player_msg" id="player_msg"></div>
+</div>
+
+<div class="tag_toolbar">
+  <div class="sort_toggle" id="sort_toggle">
+    <button data-mode="time">Time</button>
+    <button data-mode="manual">Manual</button>
+  </div>
+</div>
+</div><!-- /sticky_player -->
+
+<div class="tag_list" id="tag_list"></div>
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+  // ============ per-page identity ============
+  // Each new page only needs to change PAGE_ID. The audio source lives in sources/<PAGE_ID>.json.
+  var PAGE_ID    = 'test_2026_08_25';
+  var REPO_OWNER = 'mPulseMedia';
+  var REPO_NAME  = 'vampjam';
+  var WORKER_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
+
+  // feature flags
+  var SHOW_END_UI = false;   // hide end-time + add-end + end ±1s buttons until needed
+
+  // SVG icons scale with font-size; renders crisp on every device.
+  var ICON_PLAY  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
+  var ICON_PAUSE = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4.2" height="16" rx="1"/><rect x="13.8" y="4" width="4.2" height="16" rx="1"/></svg>';
+  var ICON_LINK  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>';
+  var ICON_X     = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  var ICON_SHARE = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
+  var ICON_CHEV_L = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>';
+  var ICON_CHEV_R = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>';
+
+  // Single per-page JSON colocated with this HTML (e.g. 2026_05_23_bazaar_cafe.json).
+  var DATA_PATH = (function () {
+    var pn = location.pathname || '';
+    var base = pn.substring(pn.lastIndexOf('/') + 1).replace(/\.html?$/i, '');
+    return base ? base + '.json' : (PAGE_ID + '.json');
+  })();
+  // legacy paths (no longer used; kept here so we don't accidentally try to read them)
+  var SOURCES_PATH    = DATA_PATH;
+  var TAGS_PATH       = DATA_PATH;
+  var STORAGE_TAGS    = PAGE_ID + '_tags';
+  var STORAGE_SORT    = PAGE_ID + '_sort_mode';
+  var STORAGE_TOMBS   = PAGE_ID + '_deleted_tag_ids';
+  var STORAGE_PAT     = 'github_pat';
+  var STORAGE_IDENTITY= 'user_identity';
+  var STORAGE_DEVICE  = 'vampjam_device_id';
+
+  // ============ elements ============
+  var $ = function (id) { return document.getElementById(id); };
+  var audioCard     = $('audio_card');
+  var audioLabelEl  = $('audio_label');
+  var audioEditBtn  = $('audio_edit_btn');
+  var audioEditForm = $('audio_edit_form');
+  var audioUrlIn    = $('audio_url_in');
+  var audioLabelIn  = $('audio_label_in');
+  var audioSaveBtn  = $('audio_save_btn');
+  var audioCancelBtn= $('audio_cancel_btn');
+  var audioPickLocal= $('audio_pick_local');
+  var audioLocalIn  = $('audio_local_in');
+  var audioPathDisp = $('audio_path_display');
+  var patDetails    = $('pat_details');
+  var patIn         = $('pat_in');
+  var patSave       = $('pat_save');
+  var patClear      = $('pat_clear');
+  var patStatus     = $('pat_status');
+  var identityIn    = $('identity_in');
+  var identitySave  = $('identity_save');
+
+  var player    = $('player');
+  var playerMsg = $('player_msg');
+  var nowTime   = $('now_time');
+  var durTime   = $('dur_time');
+  var seekBar   = $('seek_bar');
+  var seekFill  = $('seek_fill');
+  var playBtn   = $('play_btn');
+  var back5     = $('back_5');
+  var fwd5      = $('fwd_5');
+  var back15    = $('back_15');
+  var fwd15     = $('fwd_15');
+  var back120   = $('back_120');
+  var fwd120    = $('fwd_120');
+
+  var tagBtn    = $('tag_btn');
+  var tagList   = $('tag_list');
+  // swipe_guard — a scroll swipe over the list must not count as a tap
+  var swipeMoved = false, swipeY = 0;
+  tagList.addEventListener('touchstart', function (e) { swipeMoved = false; swipeY = e.touches[0].clientY; }, { passive: true });
+  tagList.addEventListener('touchmove', function (e) { if (Math.abs(e.touches[0].clientY - swipeY) > 10) swipeMoved = true; }, { passive: true });
+  tagList.addEventListener('click', function (e) { if (swipeMoved) { e.stopPropagation(); e.preventDefault(); } }, true);
+  var tagMarkers= $('tag_markers');
+  var sortToggle= $('sort_toggle');
+  var toastEl   = $('toast');
+  var exportBtn = null;
+  var importBtn = null;
+  var importIn  = null;
+  var clearBtn  = null;
+
+  // ============ state ============
+  var audio        = null;   // { label, url, kind } | null
+  var audioSha     = null;   // sha of sources/<PAGE_ID>.json from last GitHub GET (for PUTs)
+  var tags         = load_json(STORAGE_TAGS, []);
+  var sortMode     = 'time';   // Manual sort removed -- always time-ordered
+  var activeTagId  = null;
+  var playingTagId = null;     // tag currently containing currentTime (auto-tracked)
+  var autoplayBlocked = false; // true if a play() promise rejected (browser blocked autoplay)
+  var dragState    = null;
+  var playbackIntent = null;   // { type:'preview_end', endTime, nextTagId }
+
+  audioPathDisp.textContent = DATA_PATH;
+
+  // ============ utils ============
+  function load_json(key, fallback) {
+    try {
+      var raw = localStorage.getItem(key);
+      if (!raw) return fallback;
+      var v = JSON.parse(raw);
+      return v == null ? fallback : v;
+    } catch (e) { return fallback; }
+  }
+  function save_tags() { try { localStorage.setItem(STORAGE_TAGS, JSON.stringify(tags)); } catch (e) {} }
+  function save_sort() { try { localStorage.setItem(STORAGE_SORT, sortMode); } catch (e) {} }
+  function get_tombs() { return load_json(STORAGE_TOMBS, []); }
+  function add_tombstone(id) {
+    var t = get_tombs();
+    if (t.indexOf(id) === -1) t.push(id);
+    try { localStorage.setItem(STORAGE_TOMBS, JSON.stringify(t)); } catch (e) {}
+  }
+
+  function fmt_time(sec) {
+    sec = Math.max(0, Math.floor(sec || 0));
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec % 3600) / 60);
+    var s = sec % 60;
+    if (h > 0) return h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    return m + ':' + String(s).padStart(2,'0');
+  }
+  function fmt_url(sec) {
+    sec = Math.max(0, Math.floor(sec || 0));
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec % 3600) / 60);
+    var s = sec % 60;
+    var out = '';
+    if (h > 0) out += h + 'h';
+    if (m > 0 || h > 0) out += m + 'm';
+    out += s + 's';
+    return out;
+  }
+  function parse_time(t) {
+    if (t === null || t === undefined) return null;
+    t = String(t).trim().toLowerCase();
+    if (!t) return null;
+    if (/^\d+(\.\d+)?$/.test(t)) return parseFloat(t);
+    if (/^\d+:\d+(:\d+)?$/.test(t)) {
+      var parts = t.split(':').map(Number);
+      if (parts.length === 2) return parts[0]*60 + parts[1];
+      if (parts.length === 3) return parts[0]*3600 + parts[1]*60 + parts[2];
+    }
+    var m = t.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
+    if (m && (m[1] || m[2] || m[3])) {
+      return (parseInt(m[1]||0)*3600) + (parseInt(m[2]||0)*60) + parseInt(m[3]||0);
+    }
+    return null;
+  }
+  function get_url_time() {
+    try {
+      var qp = new URLSearchParams(window.location.search);
+      if (qp.has('t')) {
+        var v = parse_time(qp.get('t'));
+        if (v !== null) return v;
+      }
+    } catch (e) {}
+    var h = window.location.hash || '';
+    if (h.startsWith('#')) h = h.slice(1);
+    try {
+      var hp = new URLSearchParams(h);
+      if (hp.has('t')) {
+        var v2 = parse_time(hp.get('t'));
+        if (v2 !== null) return v2;
+      }
+    } catch (e) {}
+    var direct = parse_time(h);
+    if (direct !== null) return direct;
+    return null;
+  }
+  function build_share_url(sec) {
+    var base = window.location.origin + window.location.pathname;
+    return base + '?t=' + fmt_url(sec);
+  }
+
+  // ============ drive url handling ============
+  function drive_id(u) {
+    if (!u) return null;
+    try {
+      var m;
+      m = u.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);            if (m) return m[1];
+      m = u.match(/[?&]id=([a-zA-Z0-9_-]+)/);                  if (m) return m[1];
+      m = u.match(/\/document\/d\/([a-zA-Z0-9_-]+)/);          if (m) return m[1];
+      m = u.match(/^([a-zA-Z0-9_-]{20,})$/);                   if (m) return m[1];
+    } catch (e) {}
+    return null;
+  }
+  function detect_kind(url) {
+    if (!url) return 'url';
+    if (/drive\.google\.com/.test(url) && drive_id(url)) return 'drive';
+    if (/^https?:\/\//i.test(url)) return 'url';
+    return 'local';
+  }
+  function resolve_url(src) {
+    if (!src) return '';
+    if (src.kind === 'drive') {
+      var id = drive_id(src.url);
+      if (id) return 'https://drive.usercontent.google.com/download?id=' + id + '&export=download&authuser=0';
+    }
+    return src.url;
+  }
+  function derive_label(url) {
+    if (!url) return 'Audio';
+    if (/drive\.google\.com/.test(url)) return 'Google Drive audio';
+    try {
+      var u = new URL(url);
+      var last = (u.pathname.split('/').pop() || '').replace(/\.[^.]+$/, '');
+      if (last) return decodeURIComponent(last);
+    } catch (e) {}
+    var bare = url.split('/').pop() || url;
+    return bare.replace(/\.[^.]+$/, '');
+  }
+
+  // ============ pat (github access) ============
+  function get_pat()  { return localStorage.getItem(STORAGE_PAT) || ''; }
+  function set_pat(p) { if (p) localStorage.setItem(STORAGE_PAT, p); else localStorage.removeItem(STORAGE_PAT); render_pat_status(); }
+  function has_pat()  { return !!get_pat(); }
+  function get_device_id() {
+    var id = localStorage.getItem(STORAGE_DEVICE);
+    if (!id) {
+      id = 'dev_' + Math.random().toString(36).slice(2, 10);
+      try { localStorage.setItem(STORAGE_DEVICE, id); } catch (e) {}
+    }
+    return id;
+  }
+  function get_identity() { return localStorage.getItem(STORAGE_IDENTITY) || ''; }
+  function set_identity(v) {
+    if (v) localStorage.setItem(STORAGE_IDENTITY, v);
+    else localStorage.removeItem(STORAGE_IDENTITY);
+  }
+  function render_pat_status() {
+    if (!patStatus || !patIn) return;
+    if (has_pat()) {
+      patStatus.innerHTML = '<span class="pat_ok">✓ Token saved.</span>';
+      patIn.value = '';
+      patIn.placeholder = '••••• (token saved)';
+    } else {
+      patStatus.innerHTML = '<span class="pat_err">No token yet — needed to save.</span>';
+      patIn.placeholder = 'github_pat_… or ghp_…';
+    }
+  }
+
+  // ============ github contents api ============
+  function gh_url() {
+    return 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + SOURCES_PATH;
+  }
+  function gh_headers() {
+    return {
+      'Authorization': 'Bearer ' + get_pat(),
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+  }
+  function b64_utf8(s) { return btoa(unescape(encodeURIComponent(s))); }
+  function utf8_b64(s) { try { return decodeURIComponent(escape(atob((s||'').replace(/\s+/g, '')))); } catch (e) { return ''; } }
+
+  function gh_get_audio() {
+    return fetch(gh_url(), { headers: gh_headers(), cache: 'no-store' }).then(function (r) {
+      if (r.status === 404) return { _missing: true };
+      if (!r.ok) return r.json().then(function (j) { throw new Error(j.message || 'GitHub GET ' + r.status); });
+      return r.json();
+    });
+  }
+  function gh_put_audio(jsonText, sha, message) {
+    var body = { message: message, content: b64_utf8(jsonText) };
+    if (sha) body.sha = sha;
+    return fetch(gh_url(), {
+      method: 'PUT',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, gh_headers()),
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (j) { throw new Error(j.message || 'GitHub PUT ' + r.status); });
+      return r.json();
+    });
+  }
+
+  // ============ audio source: read / write / play ============
+  // tags are now seeded by fetch_repo_data (combined file). keep a stub for back-compat.
+  function fetch_repo_tags() { return Promise.resolve(); }
+
+  // debounced auto-sync: collapses rapid edits into one commit
+  var saveDebounceTimer = null;
+  var saveDebounceMsg   = null;
+  var saveInFlight      = false;
+  var lastLocalEditAt   = 0;
+  var lastTagsSig       = null;
+  function is_editing_label() {
+    var a = document.activeElement;
+    return !!(a && a.classList && a.classList.contains('tag_label') && !a.readOnly);
+  }
+  // While a moment is being created/named (or a save is still settling), the
+  // background poll must NOT overwrite local tags or rebuild the list DOM.
+  function local_edits_in_progress() {
+    return is_editing_label() || !!saveDebounceTimer || saveInFlight ||
+           (Date.now() - lastLocalEditAt < 20000);
+  }
+  function queue_save_data_to_repo(msg) {
+    lastLocalEditAt = Date.now();
+    if (!WORKER_URL) return;
+    if (msg) saveDebounceMsg = msg;
+    if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
+    saveDebounceTimer = setTimeout(function () {
+      saveDebounceTimer = null;
+      var m = saveDebounceMsg || 'sync tags';
+      saveDebounceMsg = null;
+      save_data_to_repo(m).then(function () {
+      }).catch(function (err) {
+      });
+    }, 3000);
+  }
+
+  // POST the combined per-page data ({audio, tags}) to the Cloudflare Worker proxy.
+  // The Worker holds the PAT as a secret and commits to the repo.
+  function save_data_to_repo(message) {
+    if (!WORKER_URL) return Promise.reject(new Error('worker not configured'));
+    var payload = {
+      audio: audio || null,
+      tags: tags.slice().sort(function (a, b) { return a.t - b.t; }).map(function (t) {
+        var o = { id: t.id, t: t.t, label: t.label || '' };
+        if (t.e != null) o.e = t.e;
+        return o;
+      })
+    };
+    var content = JSON.stringify(payload, null, 2) + '\n';
+    saveInFlight = true;
+    return fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: DATA_PATH, content: content, message: message })
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error('Worker ' + r.status + ': ' + t); });
+      return r.json();
+    }).then(function (v) { saveInFlight = false; lastLocalEditAt = Date.now(); return v; },
+            function (e) { saveInFlight = false; throw e; });
+  }
+
+  function render_playhead_line() {
+    // remove any existing
+    var existing = tagList.querySelector('.playhead_line');
+    if (existing) existing.remove();
+    if (sortMode !== 'time') return;          // only meaningful in time-sorted view
+    if (!tags.length) return;
+    // no duration guard: the line shows from the moment the page loads (t=0)
+    var ct = player.currentTime || 0;
+    var sorted = tags.slice().sort(function (a, b) { return a.t - b.t; });
+    var nextIdx = sorted.findIndex(function (t) { return t.t > ct; });
+    var line = document.createElement('div');
+    line.className = 'playhead_line';
+    var rows = Array.from(tagList.querySelectorAll('.tag_row'));
+    if (nextIdx === -1) {
+      // playhead is past the last tag — append at end
+      tagList.appendChild(line);
+    } else if (nextIdx === 0) {
+      // playhead is before the first tag — insert at top
+      if (rows[0]) tagList.insertBefore(line, rows[0]);
+    } else {
+      var targetId = sorted[nextIdx].id;
+      var target = tagList.querySelector('.tag_row[data-tag-id="' + targetId + '"]');
+      if (target) tagList.insertBefore(line, target);
+    }
+  }
+
+  // jam_confirm — themed replacement for the native confirm() dialog
+  function jam_confirm(msg, yesLabel, onYes) {
+    var ov = document.createElement('div');
+    ov.className = 'jam_confirm_overlay';
+    var card = document.createElement('div');
+    card.className = 'jam_confirm_card';
+    var m = document.createElement('div');
+    m.className = 'jam_confirm_msg';
+    m.textContent = msg;
+    var btnRow = document.createElement('div');
+    btnRow.className = 'jam_confirm_row';
+    var noBtn = document.createElement('button');
+    noBtn.className = 'jam_confirm_cancel';
+    noBtn.textContent = 'Cancel';
+    var yesBtn = document.createElement('button');
+    yesBtn.className = 'jam_confirm_yes';
+    yesBtn.textContent = yesLabel || 'OK';
+    function close() { ov.remove(); }
+    noBtn.addEventListener('click', close);
+    yesBtn.addEventListener('click', function () { close(); onYes(); });
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    btnRow.appendChild(noBtn); btnRow.appendChild(yesBtn);
+    card.appendChild(m); card.appendChild(btnRow);
+    ov.appendChild(card);
+    document.body.appendChild(ov);
+  }
+
+  // timeline_fisheye — the bar is split into fish_n() equal time regions.
+  // The region holding the playhead is expanded to FISH_E of the width; the
+  // rest share the remainder evenly. Placement inside a region is linear, so
+  // tags keep the same relative position whether the region is expanded or
+  // collapsed; layout only changes when the playhead crosses into a new region.
+  var FISH_SEG_SEC = 600; // section_10min: target section length, 10 minutes
+  function fish_n() {     // section count sized so each is ~10 min
+    var d = eff_dur();
+    if (!isFinite(d) || d <= 0) return 10;
+    return Math.max(2, Math.min(40, Math.round(d / FISH_SEG_SEC) || 1));
+  }
+  var FISH_E = 0.40;      // width fraction given to the expanded region
+  var FISH_FALL = 0.7;    // width falloff per step away from the active region
+  // bar_preload — layout math falls back to the cached session length so the
+  // bar (markers, numbers, sections, strips) is fully drawn on load, before
+  // the audio itself has reported a duration.
+  function eff_dur() {
+    if (isFinite(player.duration) && player.duration > 0) return player.duration;
+    try {
+      var c = parseInt(localStorage.getItem('vampjam_dur_' + (location.pathname.split('/').pop() || '')), 10);
+      if (c > 0) return c;
+    } catch (e) {}
+    return NaN;
+  }
+  function fish_active() {
+    var d = eff_dur();
+    return isFinite(d) && d > 300;
+  }
+  function fish_seg() {
+    var n = fish_n();
+    return Math.min(n - 1, Math.floor((player.currentTime || 0) / (eff_dur() / n)));
+  }
+  var FISH_MIN = 0.045;   // no segment narrower than this fraction of the bar
+  function fish_widths_at(a) {
+    var n = fish_n(), i;
+    var fmin = Math.min(FISH_MIN, (1 - FISH_E) * 0.75 / Math.max(1, n - 1));
+    var raw = new Array(n);
+    for (i = 0; i < n; i++) {
+      if (i !== a) raw[i] = Math.pow(FISH_FALL, Math.abs(i - a) - 1);
+    }
+    var ws = new Array(n);
+    ws[a] = FISH_E;
+    var flex = [];
+    for (i = 0; i < n; i++) { if (i !== a) flex.push(i); }
+    var remaining = 1 - FISH_E;
+    var changed = true;
+    while (changed) {
+      changed = false;
+      var sumRaw = 0;
+      flex.forEach(function (j) { sumRaw += raw[j]; });
+      for (i = flex.length - 1; i >= 0; i--) {
+        var j = flex[i];
+        if (raw[j] * remaining / sumRaw < fmin) {
+          ws[j] = fmin;
+          remaining -= fmin;
+          flex.splice(i, 1);
+          changed = true;
+        }
+      }
+    }
+    var sumRaw2 = 0;
+    flex.forEach(function (j) { sumRaw2 += raw[j]; });
+    flex.forEach(function (j) { ws[j] = raw[j] * remaining / sumRaw2; });
+    return ws;
+  }
+
+  // seek_glide — a jump animates the section widths from their initial
+  // to their ending layout over FISH_ANIM_MS (smooth, ease-in-out).
+  var FISH_ANIM_MS = 1000;
+  var fishAnim = null;   // {from:[], to:[], t0}
+  var lastFishSeg = -1;  // play_glide: last region the playhead was in
+  function fish_widths() {
+    var target = fish_widths_at(fish_seg());
+    if (!fishAnim) return target;
+    var p = (performance.now() - fishAnim.t0) / FISH_ANIM_MS;
+    if (p >= 1) { fishAnim = null; return target; }
+    var e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+    var out = new Array(fishAnim.to.length);
+    for (var i = 0; i < out.length; i++) {
+      out[i] = fishAnim.from[i] + (fishAnim.to[i] - fishAnim.from[i]) * e;
+    }
+    return out;
+  }
+  function fish_anim_tick() {
+    update_fisheye();
+    if (isFinite(player.duration) && player.duration > 0) {
+      seekFill.style.width = (fish_x(player.currentTime) * 100) + '%';
+    }
+    if (fishAnim) requestAnimationFrame(fish_anim_tick);
+  }
+  function fish_x(t) {
+    var d = eff_dur();
+    if (!fish_active()) return t / d;
+    var n = fish_n();
+    var seg = Math.min(n - 1, Math.floor(t / (d / n)));
+    var f = (t - seg * (d / n)) / (d / n);
+    var ws = fish_widths();
+    var before = 0;
+    for (var i = 0; i < seg; i++) before += ws[i];
+    return before + f * ws[seg];
+  }
+  function fish_x_inv(x) {
+    var d = eff_dur();
+    if (!isFinite(d) || d <= 0) return 0;
+    if (!fish_active()) return x * d;
+    var n = fish_n();
+    var ws = fish_widths();
+    var before = 0;
+    for (var i = 0; i < n; i++) {
+      var w = ws[i];
+      if (x <= before + w || i === n - 1) {
+        return (i + Math.min(1, Math.max(0, (x - before) / w))) * (d / n);
+      }
+      before += w;
+    }
+    return x * d;
+  }
+  function render_zoom_band() {
+    if (!tagMarkers) return;
+    var band = tagMarkers.querySelector('.zoom_band');
+    if (!fish_active()) { if (band) band.remove(); return; }
+    if (!band) {
+      band = document.createElement('div');
+      band.className = 'zoom_band';
+      tagMarkers.insertBefore(band, tagMarkers.firstChild);
+    }
+    var a = fish_seg();
+    band.style.left  = (fish_x(a * (eff_dur() / fish_n())) * 100) + '%';
+    band.style.width = (FISH_E * 100) + '%';
+  }
+
+  function render_fish_ticks() {
+    if (!seekBar) return;
+    var ticks = Array.from(seekBar.querySelectorAll('.fish_tick'));
+    if (!fish_active()) { ticks.forEach(function (t) { t.remove(); }); return; }
+    var n = fish_n() - 1;
+    if (ticks.length !== n) {
+      ticks.forEach(function (t) { t.remove(); });
+      ticks = [];
+      for (var k = 1; k <= n; k++) {
+        var tk = document.createElement('div');
+        tk.className = 'fish_tick';
+        tk.dataset.f = k / fish_n();
+        seekBar.appendChild(tk);
+        ticks.push(tk);
+      }
+    }
+    ticks.forEach(function (tk) {
+      tk.style.left = (fish_x(parseFloat(tk.dataset.f) * eff_dur()) * 100) + '%';
+    });
+  }
+  // seg_remain — a light strip along the seek bar's bottom edge from the
+  // playhead to the end of the CURRENT section: how much of it is left.
+  function update_seg_remain() {
+    var el = document.getElementById('seg_remain');
+    if (!el) return;
+    var d = eff_dur();
+    if (!isFinite(d) || d <= 0 || !fish_active()) { el.style.display = 'none'; return; }
+    var endT = (fish_seg() + 1) * (d / fish_n());
+    var x0 = fish_x(player.currentTime || 0);
+    var x1 = fish_x(Math.min(endT, d));
+    el.style.display = 'block';
+    el.style.left = (x0 * 100) + '%';
+    el.style.width = (Math.max(0, x1 - x0) * 100) + '%';
+  }
+
+  function update_fisheye() {
+    if (!tagMarkers) return;
+    render_zoom_band();
+    render_fish_ticks();
+    update_seg_remain();
+    Array.from(tagMarkers.querySelectorAll('.tag_marker')).forEach(function (m) {
+      m.style.left = (fish_x(parseFloat(m.dataset.t)) * 100) + '%';
+    });
+    place_tag_numbers();
+  }
+
+  // moment_number — every moment gets its time-order number: shown above the
+  // timeline at its separator (hidden when neighbors would collide; the
+  // fisheye keeps the current + adjacent ones readable) and next to the name.
+  function tag_number_map() {
+    var m = {};
+    tags.slice().sort(function (a, b) { return a.t - b.t; })
+        .forEach(function (t, i) { m[t.id] = i + 1; });
+    return m;
+  }
+  function place_tag_numbers() {
+    var wrap = document.getElementById('tag_numbers');
+    if (!wrap) return;
+    var W = wrap.clientWidth || 1;
+    var last = -1e9;
+    Array.prototype.forEach.call(wrap.querySelectorAll('.tag_num_lbl'), function (el) {
+      var x = fish_x(parseFloat(el.dataset.t)) * W;
+      el.style.left = (x / W * 100) + '%';
+      if (x - last < 16) { el.style.visibility = 'hidden'; }
+      else { el.style.visibility = 'visible'; last = x; }
+    });
+  }
+  function render_tag_numbers() {
+    var wrap = document.getElementById('tag_numbers');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    if (!isFinite(eff_dur()) || eff_dur() <= 0) return;
+    var nums = tag_number_map();
+    tags.slice().sort(function (a, b) { return a.t - b.t; }).forEach(function (t) {
+      var el = document.createElement('span');
+      el.className = 'tag_num_lbl';
+      el.dataset.t = t.t;
+      el.textContent = nums[t.id];
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        seek_to(t.t);
+        safe_play();
+        activeTagId = t.id;
+        render_tags();
+        render_tag_markers();
+      });
+      wrap.appendChild(el);
+    });
+    place_tag_numbers();
+  }
+
+  function render_tag_markers() {
+    if (!tagMarkers) return;
+    tagMarkers.innerHTML = '';
+    if (!isFinite(eff_dur()) || eff_dur() <= 0) return;
+    tags.forEach(function (t) {
+      var m = document.createElement('div');
+      m.className = 'tag_marker' + (t.id === activeTagId ? ' active' : '');
+      m.dataset.t = t.t;
+      m.style.left = (fish_x(t.t) * 100) + '%';
+      m.title = (t.label || 'tag') + ' @ ' + fmt_time(t.t);
+      m.addEventListener('click', function (e) {
+        e.stopPropagation();
+        seek_to(t.t);
+        safe_play();
+        activeTagId = t.id;
+        render_tags();
+        render_tag_markers();
+      });
+      tagMarkers.appendChild(m);
+    });
+    render_zoom_band();
+    render_fish_ticks();
+    render_tag_numbers();
+    update_seg_remain();
+  }
+
+  function fetch_repo_data() {
+    // ALWAYS fetch from github raw — Pages CDN can lag 1-2 min behind the latest push.
+    var srcUrl = 'https://raw.githubusercontent.com/' + REPO_OWNER + '/' + REPO_NAME +
+                 '/main/' + DATA_PATH + '?v=' + Date.now();
+    return fetch(srcUrl, { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) return null;
+      return r.json().catch(function () { return null; });
+    }).then(function (data) {
+      if (!data) { audio = null; render_audio_label(); return; }
+      var a = data.audio;
+      if (a && typeof a === 'object' && a.url) {
+        audio = { label: a.label || derive_label(a.url), url: a.url, kind: a.kind || detect_kind(a.url) };
+      } else if (data.url && !data.tags) {
+        audio = { label: data.label || derive_label(data.url), url: data.url, kind: data.kind || detect_kind(data.url) };
+      } else {
+        audio = null;
+      }
+      render_audio_label();
+      load_audio_into_player();
+
+      var arr = Array.isArray(data.tags) ? data.tags : null;
+      // Never clobber a moment being created/named, or edits still settling.
+      if (arr && !local_edits_in_progress()) {
+        // Start from the repo (shared source of truth)...
+        var merged = arr
+          .filter(function (t) { return t && t.id && typeof t.t === 'number'; })
+          .map(function (t, i) {
+            var cp = { id: t.id, t: t.t, label: t.label || '', order: i * 10 };
+            if (t.e != null) cp.e = t.e;
+            if (t.owner)   cp.owner = t.owner;
+            return cp;
+          });
+        // ...but never drop a locally-added tag that hasn't reached the repo
+        // yet. A stale CDN read must not wipe a pending tag.
+        var repoIds = {};
+        merged.forEach(function (t) { repoIds[t.id] = true; });
+        var maxOrder = merged.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
+        tags.forEach(function (local) {
+          if (local && local.id && !repoIds[local.id]) {
+            maxOrder += 10;
+            local.order = maxOrder;
+            merged.push(local);
+          }
+        });
+        tags = merged;
+        // Clear stale tombstones since repo is authoritative
+        try { localStorage.removeItem(STORAGE_TOMBS); } catch (e) {}
+        save_tags();
+        // Only rebuild the list DOM when the repo actually differs — no periodic flash.
+        var sig = JSON.stringify(tags);
+        if (sig !== lastTagsSig) {
+          lastTagsSig = sig;
+          render_tags();
+          render_tag_markers();
+        }
+      }
+    }).catch(function () { /* keep current state on a failed/stale fetch */ });
+  }
+  // back-compat alias used elsewhere
+  function fetch_audio_public() { return fetch_repo_data(); }
+  function render_audio_label() {
+    if (audio) {
+      audioLabelEl.textContent = audio.label;
+      audioLabelEl.classList.remove('empty');
+      audioLabelEl.title = audio.url;
+    } else {
+      audioLabelEl.textContent = 'No audio file bound yet — click ✎ to add one';
+      audioLabelEl.classList.add('empty');
+      audioLabelEl.title = '';
+    }
+  }
+  function load_audio_into_player() {
+    if (!audio) {
+      player.removeAttribute('src');
+      playerMsg.textContent = '';
+      return;
+    }
+    var url = resolve_url(audio);
+    if (player.src !== url) player.src = url;
+    playerMsg.textContent = '';
+  }
+
+  function open_edit_form(prefill) {
+    audioEditForm.style.display = 'block';
+    audioUrlIn.value   = (prefill && prefill.url)   || (audio ? audio.url   : '');
+    audioLabelIn.value = (prefill && prefill.label) || (audio ? audio.label : '');
+    setTimeout(function () { audioUrlIn.focus(); }, 0);
+  }
+  function close_edit_form() {
+    audioEditForm.style.display = 'none';
+    audioUrlIn.value = '';
+    audioLabelIn.value = '';
+  }
+  audioEditBtn.addEventListener('click', function () {
+    if (audioEditForm.style.display === 'block') { close_edit_form(); audioCard.style.display = 'none'; return; }
+    audioCard.style.display = 'block';
+    open_edit_form();
+  });
+  audioCancelBtn.addEventListener('click', function () { close_edit_form(); audioCard.style.display = 'none'; });
+
+  function save_audio() {
+    var url = (audioUrlIn.value || '').trim();
+    var label = (audioLabelIn.value || '').trim();
+    if (!url) { toast('Paste an audio URL first'); audioUrlIn.focus(); return; }
+    var kind = detect_kind(url);
+    if (!label) label = derive_label(url);
+
+    toast('Saving to repo…');
+    audio = { label: label, url: url, kind: kind };
+    save_data_to_repo('set audio for ' + PAGE_ID).then(function () {
+      render_audio_label();
+      load_audio_into_player();
+      close_edit_form();
+      toast('Saved. Pages rebuilds in ~1-2 min for new visitors.');
+    }).catch(function (err) {
+      toast('Save failed: ' + err.message);
+    });
+  }
+  audioSaveBtn.addEventListener('click', save_audio);
+
+  audioPickLocal.addEventListener('click', function () { audioLocalIn.click(); });
+  audioLocalIn.addEventListener('change', function () {
+    var f = audioLocalIn.files && audioLocalIn.files[0];
+    if (!f) return;
+    var blobUrl = URL.createObjectURL(f);
+    player.src = blobUrl;
+    audioLabelEl.textContent = f.name + ' (local preview — not saved)';
+    audioLabelEl.classList.remove('empty');
+    audioLocalIn.value = '';
+    close_edit_form();
+  });
+
+  // pat / identity handlers — removed; sync now goes through the Cloudflare Worker proxy.
+  if (patSave)  patSave.addEventListener('click', function () {});
+  if (patClear) patClear.addEventListener('click', function () {});
+
+  // ============ player controls ============
+  function safe_play()  { try { player.play().catch(function(){}); } catch (e) {} }
+  function safe_pause() { try { player.pause(); } catch (e) {} }
+  function toggle_play(){ if (player.paused) safe_play(); else safe_pause(); }
+  function seek_to(sec){
+    try {
+      var d = isFinite(player.duration) ? player.duration : Infinity;
+      var from = fish_active() ? fish_widths() : null;  // display widths BEFORE the jump
+      player.currentTime = Math.max(0, Math.min(sec, d));
+      if (from) {
+        var to = fish_widths_at(fish_seg());
+        for (var i = 0; i < to.length; i++) {
+          if (Math.abs(to[i] - from[i]) > 0.001) {
+            fishAnim = { from: from, to: to, t0: performance.now() };
+            requestAnimationFrame(fish_anim_tick);
+            break;
+          }
+        }
+      }
+      // url_time: remember the jump in the URL so reload comes back here
+      try {
+        var us = new URLSearchParams(window.location.search);
+        us.set('t', String(Math.round(player.currentTime || 0)));
+        history.replaceState(null, '', window.location.pathname + '?' + us.toString() + window.location.hash);
+      } catch (e2) {}
+    } catch (e) {}
+  }
+  function nudge(d) { seek_to((player.currentTime || 0) + d); }
+
+  playBtn.addEventListener('click', toggle_play);
+  back5  .addEventListener('click', function () { nudge(-5); });
+  fwd5   .addEventListener('click', function () { nudge( 5); });
+  back15 .addEventListener('click', function () { nudge(-15); });
+  fwd15  .addEventListener('click', function () { nudge( 15); });
+  back120.addEventListener('click', function () { nudge(-120); });
+  fwd120 .addEventListener('click', function () { nudge( 120); });
+
+  seekBar.addEventListener('click', function (e) {
+    var rect = seekBar.getBoundingClientRect();
+    var p = (e.clientX - rect.left) / rect.width;
+    var d = isFinite(player.duration) ? player.duration : 0;
+    // tag_tap_priority — a tap near a highlight's dot means the highlight,
+    // not the un-tagged bar
+    var best = null, bestPx = 1e9;
+    if (d > 0) tags.forEach(function (t) {
+      var px = Math.abs(fish_x(t.t) - p) * rect.width;
+      if (px < bestPx) { bestPx = px; best = t; }
+    });
+    if (best && bestPx <= 16) {
+      seek_to(best.t);
+      safe_play();
+      activeTagId = best.id;
+      render_tags();
+      render_tag_markers();
+      return;
+    }
+    seek_to(fish_x_inv(p));
+  });
+
+  player.addEventListener('play',  function () {
+    playBtn.innerHTML = ICON_PAUSE;
+    autoplayBlocked = false;
+    render_tags();
+  });
+  player.addEventListener('pause', function () {
+    playBtn.innerHTML = ICON_PLAY;
+    render_tags();
+  });
+  player.addEventListener('ended', function () {
+    playBtn.innerHTML = ICON_PLAY;
+    render_tags();
+  });
+  player.addEventListener('timeupdate', function () {
+    nowTime.textContent = fmt_time(player.currentTime);
+    // play_glide — plain playback crossing into a new region re-proportions
+    // the sections with the same 1 s glide a jump gets
+    var fs = fish_active() ? fish_seg() : -1;
+    if (fs !== lastFishSeg) {
+      if (lastFishSeg >= 0 && fs >= 0 && !fishAnim) {
+        fishAnim = { from: fish_widths_at(lastFishSeg), to: fish_widths_at(fs), t0: performance.now() };
+        requestAnimationFrame(fish_anim_tick);
+      }
+      lastFishSeg = fs;
+    }
+    if (isFinite(player.duration) && player.duration > 0) {
+      seekFill.style.width = (fish_x(player.currentTime) * 100) + '%';
+    }
+    update_playing_tag();
+    render_playhead_line();
+    update_fisheye();
+    if (playbackIntent && player.currentTime >= playbackIntent.endTime) {
+      var intent = playbackIntent;
+      playbackIntent = null;
+      if (intent.type === 'preview_end') {
+        if (intent.nextTagId) {
+          var nt = tags.filter(function (x) { return x.id === intent.nextTagId; })[0];
+          if (nt) {
+            seek_to(nt.t);
+            activeTagId = nt.id;
+            render_tags();
+            render_tag_markers();
+          }
+        } else {
+          safe_pause();
+        }
+      }
+    }
+  });
+  player.addEventListener('loadedmetadata', function () {
+    durTime.textContent = fmt_time(player.duration);
+    var t = get_url_time();
+    if (t !== null) handle_url_time(t);
+    playerMsg.textContent = '';
+    render_tag_markers();
+    render_playhead_line();
+  });
+  player.addEventListener('error', function () {
+    if (!audio) return;
+    playerMsg.className = 'player_msg err';
+    playerMsg.innerHTML = '⚠ Could not load this source. For large Drive files, Google may block direct streaming — try Cloudflare R2, Backblaze B2, or GitHub Releases instead.';
+  });
+  player.addEventListener('loadstart', function () {
+    playerMsg.className = 'player_msg';
+    playerMsg.textContent = audio ? 'Loading audio…' : '';
+  });
+
+  // ============ tags ============
+  function ensure_order() {
+    var missing = tags.some(function (t) { return t.order == null; });
+    if (!missing) return;
+    var sorted = tags.slice().sort(function (a, b) { return a.t - b.t; });
+    sorted.forEach(function (t, i) { if (t.order == null) t.order = i * 10; });
+  }
+  function sorted_tags() {
+    var arr = tags.slice();
+    if (sortMode === 'manual') {
+      ensure_order();
+      arr.sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+    } else {
+      arr.sort(function (a, b) { return a.t - b.t; });
+    }
+    return arr;
+  }
+  function set_sort_mode(mode) {
+    if (mode !== 'time' && mode !== 'manual') return;
+    if (mode === 'manual') ensure_order();
+    sortMode = mode;
+    save_sort();
+    render_sort_toggle();
+    render_tags();
+  }
+  function render_sort_toggle() {
+    Array.from(sortToggle.querySelectorAll('button')).forEach(function (b) {
+      if (b.dataset.mode === sortMode) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+  }
+
+  function add_tag() {
+    var t = player.currentTime || 0;
+    var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
+    var tag = {
+      id: 't_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+      t: t, label: '', order: maxOrder + 10,
+      owner: get_device_id()
+    };
+    tags.push(tag);
+    activeTagId = tag.id;
+    save_tags();
+    queue_save_data_to_repo('add tag at ' + fmt_time(t));
+    render_tags();
+    // New tag: drop the cursor straight into its title, ready to type.
+    // Focus synchronously (still inside the tap gesture) so iOS opens the keyboard.
+    var newRows = tagList.querySelectorAll('.tag_row');
+    for (var ni = 0; ni < newRows.length; ni++) {
+      if (newRows[ni].dataset.tagId === tag.id) {
+        var newInp = newRows[ni].querySelector('.tag_label');
+        if (newInp) {
+          newInp.readOnly = false;            // make the new title editable
+          newInp.focus();
+          try { newInp.setSelectionRange(0, 0); } catch (e) {}
+          (function (el) {
+            setTimeout(function () { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 0);
+          })(newInp);
+        }
+        break;
+      }
+    }
+  }
+  function nudge_tag(id, delta) {
+    var tag = tags.filter(function (x) { return x.id === id; })[0];
+    if (!tag) return;
+    tag.t = Math.max(0, tag.t + delta);
+    save_tags();
+    queue_save_data_to_repo('nudge tag start');
+    render_tags();
+    render_tag_markers();
+  }
+  function next_tag_by_time(tag) {
+    var sorted = tags.slice().sort(function (a, b) { return a.t - b.t; });
+    var i = sorted.findIndex(function (t) { return t.id === tag.id; });
+    return (i >= 0 && i < sorted.length - 1) ? sorted[i + 1] : null;
+  }
+  function tag_end(tag) {
+    // null when no end has been set — user must explicitly add it
+    return (tag.e != null) ? tag.e : null;
+  }
+  function add_tag_end(id) {
+    var tag = tags.filter(function (x) { return x.id === id; })[0];
+    if (!tag) return;
+    tag.e = Math.max(tag.t + 1, player.currentTime || tag.t + 1);
+    save_tags();
+    queue_save_data_to_repo('set tag end');
+    render_tags();
+    render_tag_markers();
+    preview_end(tag);
+  }
+  function nudge_tag_end(id, delta) {
+    var tag = tags.filter(function (x) { return x.id === id; })[0];
+    if (!tag || tag.e == null) return;
+    tag.e = Math.max(tag.t + 1, tag.e + delta);
+    save_tags();
+    queue_save_data_to_repo('nudge tag end');
+    render_tags();
+    render_tag_markers();
+    preview_end(tag);
+  }
+  function preview_end(tag) {
+    if (tag.e == null) return;
+    var endT = tag.e;
+    var startT = Math.max(0, endT - 3);
+    var nx = next_tag_by_time(tag);
+    playbackIntent = { type: 'preview_end', endTime: endT, nextTagId: nx ? nx.id : null };
+    seek_to(startT);
+    safe_play();
+  }
+  function update_playing_tag() {
+    var ct = player.currentTime;
+    var found = null;
+    var sorted = tags.slice().sort(function (a, b) { return a.t - b.t; });
+    for (var i = 0; i < sorted.length; i++) {
+      var t = sorted[i];
+      var endT = t.e != null ? t.e : (sorted[i + 1] ? sorted[i + 1].t : Infinity);
+      if (ct >= t.t && ct < endT) { found = t.id; break; }
+    }
+    if (found !== playingTagId) {
+      playingTagId = found;
+      render_tags();
+    }
+  }
+  function play_from_tag(tag) {
+    playbackIntent = null;
+    seek_to(tag.t);
+    safe_play();
+    activeTagId = tag.id;
+    render_tags();
+    render_tag_markers();
+  }
+  function handle_url_time(t) {
+    if (t == null) return;
+    seek_to(t);
+    var match = tags.filter(function (x) { return Math.abs(x.t - t) < 2; })[0];
+    if (match) {
+      activeTagId = match.id;
+    } else {
+      var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
+      var tag = {
+        id: 't_url_' + Math.floor(t) + '_' + Math.random().toString(36).slice(2, 5),
+        t: t, label: '', order: maxOrder + 10
+      };
+      tags.push(tag);
+      activeTagId = tag.id;
+      save_tags();
+      // created tag silently
+    }
+    render_tags();
+    render_tag_markers();
+    // try to autoplay; on failure paint the active tag's play button yellow
+    var p = player.play();
+    if (p && typeof p.catch === 'function') {
+      p.catch(function () {
+        autoplayBlocked = true;
+        render_tags();
+      });
+    }
+  }
+  function render_tags() {
+    tagList.innerHTML = '';
+    if (!tags.length) {
+      var d = document.createElement('div');
+      d.className = 'empty';
+      d.textContent = 'No tags yet — hit play and tap "Tag this moment".';
+      tagList.appendChild(d);
+      return;
+    }
+    var tagNums = tag_number_map();
+    sorted_tags().forEach(function (tag) {
+      var isPlaying = (tag.id === playingTagId);
+      var row = document.createElement('div');
+      row.className = 'tag_row';
+      if (tag.id === activeTagId) row.classList.add('active');
+      if (isPlaying) row.classList.add('playing');
+      if (sortMode !== 'manual') row.classList.add('no_drag');
+      var myDev = get_device_id();
+      if (tag.owner && tag.owner === myDev) row.classList.add('mine');
+      row.dataset.tagId = tag.id;
+
+      var handle = document.createElement('div');
+      handle.className = 'drag_handle';
+      handle.innerHTML = '≡';
+      handle.title = (sortMode === 'manual') ? 'Drag to reorder' : 'Switch to Manual sort to drag';
+      attach_drag(handle, row, tag);
+      row.appendChild(handle);
+
+      var amPlayingThis = isPlaying && !player.paused;
+      var blockedHere   = autoplayBlocked && tag.id === activeTagId;
+      var playBtnRow = document.createElement('button');
+      playBtnRow.className = 'play_tag' + (blockedHere ? ' autoplay_blocked' : '');
+      playBtnRow.title = amPlayingThis ? 'Pause' : 'Play from this tag';
+      playBtnRow.innerHTML = amPlayingThis ? ICON_PAUSE : ICON_PLAY;
+      playBtnRow.addEventListener('click', function () {
+        if (amPlayingThis) { safe_pause(); }
+        else { autoplayBlocked = false; play_from_tag(tag); }
+      });
+      row.appendChild(playBtnRow);
+
+      var numSpan = document.createElement('span');
+      numSpan.className = 'tag_num';
+      numSpan.textContent = tagNums[tag.id] || '';
+      row.appendChild(numSpan);
+
+      var label = document.createElement('input');
+      label.className = 'tag_label';
+      label.type = 'text';
+      label.readOnly = true;                 // single tap = play; double tap = edit
+      label.setAttribute('inputmode', 'text');
+      label.setAttribute('autocapitalize', 'sentences');
+      label.value = tag.label || '';
+      label.placeholder = 'tag';
+      // Distinguish single vs double tap. On mobile the keyboard only opens if
+      // focus() runs inside the touch gesture, so the edit path lives in touchend.
+      var labelTapTimer = null;
+      var labelLastTap  = 0;
+      var labelTouched  = false;
+      function labelHandleTap() {
+        // Actively editing: let the tap place the cursor.
+        if (!label.readOnly && document.activeElement === label) return;
+        var now = Date.now();
+        if (labelLastTap && now - labelLastTap < 350) {   // second tap -> edit
+          labelLastTap = 0;
+          if (labelTapTimer) { clearTimeout(labelTapTimer); labelTapTimer = null; }
+          // The field was unlocked on the first tap, so this tap lands on an
+          // already-editable input -> iOS raises the keyboard for a real tap.
+          label.focus();
+          try { label.select(); } catch (e) {}
+          return;
+        }
+        labelLastTap = now;
+        // Unlock now (no focus) so a following double-tap is a native tap on an
+        // editable field. iOS decides keyboard by the element state at tap start,
+        // so this first tap stays silent; a lone tap just plays.
+        label.readOnly = false;
+        if (labelTapTimer) clearTimeout(labelTapTimer);
+        labelTapTimer = setTimeout(function () {
+          labelTapTimer = null;
+          if (document.activeElement === label) return;   // user is editing; don't play
+          autoplayBlocked = false;
+          play_from_tag(tag);   // single tap -> play; re-render re-locks the field
+        }, 350);
+      }
+      label.addEventListener('touchend', function () { if (swipeMoved) return; labelTouched = true; labelHandleTap(); });
+      label.addEventListener('click', function () {
+        if (labelTouched) { labelTouched = false; return; }  // touch already handled this
+        labelHandleTap();
+      });
+      label.addEventListener('input', function () {
+        tag.label = label.value;
+        save_tags();
+        queue_save_data_to_repo('rename tag');
+      });
+      label.addEventListener('blur', function () { label.readOnly = true; });
+      label.addEventListener('keydown', function (e) { if (e.key === 'Enter') label.blur(); });
+      row.appendChild(label);
+
+      if (isPlaying) {
+        var minus1 = document.createElement('button');
+        minus1.className = 'ghost';
+        minus1.title = 'Move start −1s';
+        minus1.innerHTML = ICON_CHEV_L;
+        minus1.addEventListener('click', function () { nudge_tag(tag.id, -1); });
+        row.appendChild(minus1);
+        var plus1 = document.createElement('button');
+        plus1.className = 'ghost';
+        plus1.title = 'Move start +1s';
+        plus1.innerHTML = ICON_CHEV_R;
+        plus1.addEventListener('click', function () { nudge_tag(tag.id, 1); });
+        row.appendChild(plus1);
+      }
+
+      var time = document.createElement('div');
+      time.className = 'tag_time';
+      time.textContent = fmt_time(tag.t);
+      time.title = 'Jump to ' + fmt_time(tag.t);
+      time.addEventListener('click', function () { play_from_tag(tag); });
+      row.appendChild(time);
+
+      if (isPlaying && SHOW_END_UI) {
+        if (tag.e == null) {
+          // no end yet — show "set end" button
+          var addEnd = document.createElement('button');
+          addEnd.className = 'add_end';
+          addEnd.title = 'Set end to current playback time';
+          addEnd.textContent = '+ end';
+          addEnd.addEventListener('click', function () { add_tag_end(tag.id); });
+          row.appendChild(addEnd);
+        } else {
+          var endMinus = document.createElement('button');
+          endMinus.className = 'tiny';
+          endMinus.title = 'Move end −1s (and preview)';
+          endMinus.textContent = '−1';
+          endMinus.addEventListener('click', function () { nudge_tag_end(tag.id, -1); });
+          row.appendChild(endMinus);
+
+          var endTime = document.createElement('div');
+          endTime.className = 'tag_end';
+          endTime.textContent = fmt_time(tag.e);
+          endTime.title = 'Preview end (last 3s) then jump to next tag';
+          endTime.addEventListener('click', function () { preview_end(tag); });
+          row.appendChild(endTime);
+
+          var endPlus = document.createElement('button');
+          endPlus.className = 'tiny';
+          endPlus.title = 'Move end +1s (and preview)';
+          endPlus.textContent = '+1';
+          endPlus.addEventListener('click', function () { nudge_tag_end(tag.id, 1); });
+          row.appendChild(endPlus);
+        }
+      }
+
+      var linkBtn = document.createElement('button');
+      linkBtn.className = 'ghost';
+      linkBtn.title = 'Copy direct link';
+      linkBtn.innerHTML = ICON_SHARE;
+      linkBtn.addEventListener('click', function () {
+        var url = build_share_url(tag.t);
+        copy_to_clipboard(url);
+        toast('Link copied: ' + url);
+      });
+      row.appendChild(linkBtn);
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'ghost tag_del';
+      delBtn.title = 'Delete tag';
+      delBtn.innerHTML = ICON_X;
+      delBtn.addEventListener('click', function () {
+        jam_confirm('Delete this highlight?', 'Delete', function () {
+          tags = tags.filter(function (x) { return x.id !== tag.id; });
+          add_tombstone(tag.id);
+          save_tags();
+          render_tags();
+          render_tag_markers();
+          save_data_to_repo('delete tag ' + (tag.label || tag.id))
+            .then(function () {})
+            .catch(function (err) {});
+        });
+      });
+      row.appendChild(delBtn);
+
+      tagList.appendChild(row);
+    });
+    render_tag_markers();
+    render_playhead_line();   // the line is ALWAYS visible among the moments
+  }
+
+  // ---- drag-to-reorder (pointer events) ----
+  function attach_drag(handle, row, tag) {
+    handle.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      if (sortMode !== 'manual') {
+        set_sort_mode('manual');
+        toast('Switched to Manual sort');
+        return;
+      }
+      try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+      dragState = { tag: tag, row: row, pointerId: e.pointerId, moved: false };
+      row.classList.add('dragging');
+      window.addEventListener('pointermove', on_drag_move);
+      window.addEventListener('pointerup',   on_drag_end);
+      window.addEventListener('pointercancel', on_drag_end);
+    });
+  }
+  function on_drag_move(e) {
+    if (!dragState) return;
+    dragState.moved = true;
+    var rows = Array.from(tagList.querySelectorAll('.tag_row'));
+    var y = e.clientY;
+    var insertBeforeEl = null;
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      if (r === dragState.row) continue;
+      var rect = r.getBoundingClientRect();
+      if (y < rect.top + rect.height / 2) { insertBeforeEl = r; break; }
+    }
+    var ind = tagList.querySelector('.drop_indicator');
+    if (!ind) {
+      ind = document.createElement('div');
+      ind.className = 'drop_indicator';
+    }
+    if (insertBeforeEl) tagList.insertBefore(ind, insertBeforeEl);
+    else tagList.appendChild(ind);
+  }
+  function on_drag_end(e) {
+    if (!dragState) return;
+    var s = dragState;
+    dragState = null;
+    window.removeEventListener('pointermove', on_drag_move);
+    window.removeEventListener('pointerup',   on_drag_end);
+    window.removeEventListener('pointercancel', on_drag_end);
+    s.row.classList.remove('dragging');
+    var ind = tagList.querySelector('.drop_indicator');
+    if (!s.moved || !ind) { if (ind) ind.remove(); return; }
+    var newOrder = [];
+    Array.from(tagList.children).forEach(function (el) {
+      if (el === ind) newOrder.push(s.tag.id);
+      else if (el === s.row) { /* skip */ }
+      else if (el.dataset && el.dataset.tagId) newOrder.push(el.dataset.tagId);
+    });
+    newOrder.forEach(function (id, i) {
+      var t = tags.filter(function (x) { return x.id === id; })[0];
+      if (t) t.order = i * 10;
+    });
+    save_tags();
+    ind.remove();
+    render_tags();
+  }
+
+  // Tag button: on mobile fire on touchend so the new title's focus() lands
+  // inside the touch gesture and iOS opens the keyboard (same trick as edit).
+  var tagBtnTouched = false;
+  tagBtn.addEventListener('touchend', function (e) {
+    tagBtnTouched = true;
+    if (e && e.cancelable) e.preventDefault();
+    add_tag();
+  });
+  tagBtn.addEventListener('click', function () {
+    if (tagBtnTouched) { tagBtnTouched = false; return; }
+    add_tag();
+  });
+  Array.from(sortToggle.querySelectorAll('button')).forEach(function (b) {
+    b.addEventListener('click', function () { set_sort_mode(b.dataset.mode); });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var typing = e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA');
+    if (typing) return;
+    if (e.key === ' ') { e.preventDefault(); toggle_play(); return; }
+    if (e.key === 't' || e.key === 'T') { e.preventDefault(); add_tag(); return; }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); nudge(e.shiftKey ? -120 : -15); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); nudge(e.shiftKey ?  120 :  15); }
+  });
+
+  // ============ clipboard / toast ============
+  function copy_to_clipboard(s) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(s).catch(fallback);
+    } else { fallback(); }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = s;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+  }
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toast._tid);
+    toast._tid = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
+  }
+
+  // ============ export / import (removed) ============
+
+  // ============ scroll shadow ============
+  var stickyEl = document.querySelector('.sticky_player');
+  if (stickyEl) {
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 40) stickyEl.classList.add('scrolled');
+      else stickyEl.classList.remove('scrolled');
+    }, { passive: true });
+  }
+
+  // ============ poll for sync ============
+  // Auto-poll disabled for this page: the 15s re-fetch was interrupting
+  // playback and overwriting freshly-added tags with stale CDN reads.
+  // Tags still save to the repo on add; reload manually to pull others' changes.
+  // (Re-enable by uncommenting if multi-device live sync is needed.)
+  // setInterval(function () {
+  //   fetch_repo_data();
+  // }, 15000);
+
+  // ============ boot ============
+  playBtn.innerHTML = ICON_PLAY;
+  render_sort_toggle();
+  render_tags();
+  render_pat_status();
+  render_audio_label();
+  fetch_repo_data();
+</script>
+
+</body>
+</html>
