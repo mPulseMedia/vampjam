@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "139 push_lag",
+        id: "140 fav_global",
         expanded: true,
+        nodes: [
+          { text: "140 fav_global", children: [
+            { text: "prompt_restate", children: [
+              { text: "Hearts hold within a session now, but hearting in one session doesn't show up on the Favorites page." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK within an individual session it seems to be working OK to turn a heart on reload the page it stays on turn it back off reload the page and see that it\u2019s been turned off. That\u2019s good. I think that\u2019s validated now. What\u2019s happening is they aren\u2019t showing up in the favorites session yeah when I go to some other session and hear something and then go look in the favorites, it doesn\u2019t appear added to the favorites." }
+            ]},
+            { text: "response", children: [
+              { text: "fav_global", children: [
+                { text: "the Favorites page was reading the slow shared files and couldn't see your phone's fresh flips" },
+                { text: "your phone's heart memory is now one shared note that every page reads — Favorites included" },
+                { text: "heart anywhere, open Favorites: it's there instantly; un-heart from Favorites: the session agrees" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min + a reload: heart in any session, open Favorites — the moment is listed" },
+                { text: "tap its heart off there, go back — off in the session too" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "139 push_lag",
+        expanded: false,
         nodes: [
           { text: "139 push_lag", children: [
             { text: "prompt_restate", children: [

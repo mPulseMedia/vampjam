@@ -430,7 +430,16 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   earlier heart DID persist — 2026_08_07_sound_union.json holds "fav": true — the loss was
   purely the stale-read display bug fav_stick fixes. Remaining lag is GH Pages HTML cache
   (max-age 600): a hard reload or ~10 min.
-- NEXT → add entry 140 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 140 fav_global — no page edit) hearts held per-session but fresh ones missed the
+  Favorites page: it reads stale raw jsons and couldn't see the device's recent flips
+  (stored under per-page keys). The override store is now ONE global key (vampjam_favov —
+  tag ids are unique app-wide); all 8 playback pages use it, and favorites.html overlays
+  it on every fetched session (apply_overrides) so a just-hearted moment appears there
+  instantly. Favorites' un-heart also writes the override (session pages agree at once)
+  and applies overrides to the source copy before write-back, so a stale fetched json can
+  never clobber this device's recent flips. Playwright vs permanently-stale raw: heart on
+  session → appears in Favorites ✓, un-heart from Favorites → session shows it off ✓.
+- NEXT → add entry 141 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

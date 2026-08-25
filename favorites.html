@@ -190,6 +190,30 @@
   var ICON_PLAY  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
   var ICON_PAUSE = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4.2" height="16" rx="1"/><rect x="13.8" y="4" width="4.2" height="16" rx="1"/></svg>';
 
+  // the same recent-heart-flip memory the session pages use (stale raw reads
+  // can lag minutes behind; this device's own flips must show instantly)
+  function fav_over_all() {
+    try {
+      var m = JSON.parse(localStorage.getItem('vampjam_favov') || '{}');
+      var cut = Date.now() - 10 * 60 * 1000, out = {};
+      for (var k in m) if (m[k] && m[k].ts > cut) out[k] = m[k];
+      return out;
+    } catch (e) { return {}; }
+  }
+  function fav_over_set(id, v) {
+    try {
+      var m = fav_over_all();
+      m[id] = { v: !!v, ts: Date.now() };
+      localStorage.setItem('vampjam_favov', JSON.stringify(m));
+    } catch (e) {}
+  }
+  function apply_overrides(src) {
+    var ovs = fav_over_all();
+    (src.data.tags || []).forEach(function (t) {
+      if (t && ovs[t.id]) { if (ovs[t.id].v) t.fav = true; else delete t.fav; }
+    });
+  }
+
   function toast(msg) {
     toastEl.textContent = msg;
     toastEl.classList.add('show');
@@ -243,6 +267,7 @@
       sources = loaded.filter(Boolean);
       favs = [];
       sources.forEach(function (src) {
+        apply_overrides(src);   // this device's recent flips beat stale reads
         (src.data.tags || []).forEach(function (t) {
           if (t && t.fav) favs.push({ src: src, tag: t });
         });
@@ -313,6 +338,8 @@
       hb.innerHTML = ICON_HEART;
       hb.addEventListener('click', function () {
         delete f.tag.fav;
+        fav_over_set(f.tag.id, false);   // session pages see the un-heart instantly too
+        apply_overrides(f.src);          // never write a stale fav state back
         favs = favs.filter(function (x) { return x !== f; });
         render();
         write_back(f.src, 'unfav ' + (f.tag.label || f.tag.id))
