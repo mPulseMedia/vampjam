@@ -216,7 +216,15 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   repointed drawer are confirmed live in the repo (raw checks). Answer: the new screen is
   vampsf.com/record.html; reload any session page once so the cached drawer.js picks up the
   New-recording link.
-- NEXT → add entry 116 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 116 admin_trim — no page edit) three parts. admin_trim: Admin loses the whole
+  Record-a-jam block, the Steps list, and both notes — now just theme switch, a Record-a-
+  session link (→ record.html), and the bucket button. list_check: the 'missing' session was
+  NOT missing — both 08-25 recordings are in R2, their jsons in the repo, and both registered
+  in sessions_auto.json; his phone was running the pre-rec_auto cached drawer.js. All pages
+  now load drawer.js?v=116 / sessions.js?v=116 (cache-bust) so menu updates land on reload.
+  name_time: record.html default name is now date + local hh:mm:ss (city still prefixes);
+  rec_id folds the time in without doubling it (san_francisco_2026_08_25_19_49_38).
+- NEXT → add entry 117 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

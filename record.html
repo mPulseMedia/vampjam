@@ -110,7 +110,9 @@
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   var d0 = new Date();
   var ISO = d0.getFullYear() + '-' + pad(d0.getMonth() + 1) + '-' + pad(d0.getDate());
-  nameIn.value = ISO;
+  var TS  = pad(d0.getHours()) + ':' + pad(d0.getMinutes()) + ':' + pad(d0.getSeconds());
+  var DEFT = ISO + ' ' + TS;           // date + local time, hh:mm:ss
+  nameIn.value = DEFT;
   function size_name() { nameIn.style.width = Math.max(3, nameIn.value.length + 1) + 'ch'; }
   nameIn.addEventListener('input', size_name); size_name();
   var nameEdited = false;
@@ -122,7 +124,7 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (j) {
           var city = j && (j.locality || j.city);
-          if (city && !nameEdited) { nameIn.value = city + ' — ' + ISO; size_name(); }
+          if (city && !nameEdited) { nameIn.value = city + ' — ' + DEFT; size_name(); }
         }).catch(function () {});
     }, function () {}, { timeout: 6000, maximumAge: 600000 });
   }
@@ -190,7 +192,8 @@
   function rec_id() {
     var id = slug(nameIn.value) || 'rec';
     if (!/\d{4}_\d{2}_\d{2}/.test(id)) id += '_' + ISO.replace(/-/g, '_');
-    id += '_' + pad(d0.getHours()) + pad(new Date().getMinutes());
+    var t6 = TS.replace(/:/g, '_');            // 12_38_05
+    if (id.indexOf(t6) < 0) id += '_' + t6;    // keep ids unique without doubling the time
     return id;
   }
   function sync_write(path, content, message) {
@@ -220,7 +223,7 @@
       var j = await r.json();
       if (!j.ok) throw new Error('upload ' + (j.error || r.status));
       status.textContent = 'Creating the session…';
-      var label = nameIn.value || ('Recording — ' + ISO);
+      var label = nameIn.value || ('Recording — ' + DEFT);
       var now = Date.now();
       var tags = liveTags.map(function (t, i) {
         return { id: 't_' + now + '_lt' + (i + 1), t: t, label: '' };
@@ -236,7 +239,8 @@
         if (lr.ok) { var lj = await lr.json(); if (Array.isArray(lj)) list = lj; }
       } catch (e) {}
       list = list.filter(function (e2) { return e2 && e2.page !== page; });
-      list.push({ page: page, name: (label === ISO ? 'Recording' : label.replace(' — ' + ISO, '')), date: ISO, dur: recDur, count: tags.length });
+      var regName = (label === DEFT) ? 'Recording' : label.replace(' — ' + DEFT, '').replace(' — ' + ISO, '').replace(' ' + TS, '');
+      list.push({ page: page, name: regName, date: ISO, dur: recDur, count: tags.length });
       await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
       status.innerHTML = 'Session ready &#10003; <a href="' + page + '">open ' +
         (label || id) + '</a>' +

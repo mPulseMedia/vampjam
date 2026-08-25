@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "115 record_link",
+        id: "116 admin_trim",
         expanded: true,
+        nodes: [
+          { text: "116 admin_trim", children: [
+            { text: "prompt_restate", children: [
+              { text: "Remove the recording block and the instructions from Admin." },
+              { text: "The latest session seems missing from the session list — check the bucket and the upload." },
+              { text: "Default name should include the local time (h:m:s), not just the date." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "We can remove all of the make a recording stuff from the Admin page and remove all the instructions down there. Also, the most recent session it doesn\u2019t look like it, actually added the session to the session list. Take a look at the buckets and make sure that it uploaded and also make the default name include not only the date which you have but the local time as well. I was minutes seconds." }
+            ]},
+            { text: "response", children: [
+              { text: "admin_trim", children: [
+                { text: "Admin is now just: theme, a Record-a-session link, and the bucket button" }
+              ]},
+              { text: "list_check", children: [
+                { text: "good news: nothing was lost — both of today's recordings uploaded fine" },
+                { text: "both sessions exist and ARE in the session list data" },
+                { text: "your phone was showing an older cached menu; pages now force the fresh one" }
+              ]},
+              { text: "name_time", children: [
+                { text: "default name is now date + local time, like 2026-08-25 12:38:05" },
+                { text: "with location allowed: San Francisco — 2026-08-25 12:38:05" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, reload any session page once, open Sessions — today's two recordings should be listed" },
+                { text: "open the record page — the name now shows the time" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "115 record_link",
+        expanded: false,
         nodes: [
           { text: "115 record_link", children: [
             { text: "prompt_restate", children: [
