@@ -221,7 +221,14 @@
       })
       .catch(function () {});
   }
-  function boot() { build_menu(); wire_links(); capture_dur(); fetch_auto_sessions(); }
+  function boot() {
+    build_menu(); wire_links(); capture_dur(); fetch_auto_sessions();
+    // arriving with #sessions (e.g. Back from the record screen) opens the list
+    if (location.hash === '#sessions') {
+      setTimeout(function () { set_open(true); }, 150);
+      try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    }
+  }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
   } else {

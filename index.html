@@ -4,16 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>vampsf</title>
-<script src="sessions.js?v=116"></script>
+<script src="sessions.js?v=117"></script>
 <script>
   // Index just opens the session you were last on, else the most recent one.
   (function () {
     var sessions = window.VAMPJAM_SESSIONS || [];
     var last = null;
     try { last = localStorage.getItem('vampjam_last_session'); } catch (e) {}
-    var valid = last && sessions.some(function (s) { return s.page === last; });
+    var valid = last && (sessions.some(function (s) { return s.page === last; }) ||
+                         /^session\.html\?p=[A-Za-z0-9_\-]+$/.test(last));
     var target = valid ? last : (sessions.length ? sessions[sessions.length - 1].page : 'admin.html');
-    location.replace(target);
+    location.replace(target + (location.hash || ''));
   })();
 </script>
 </head>

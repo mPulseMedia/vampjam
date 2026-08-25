@@ -224,7 +224,17 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   now load drawer.js?v=116 / sessions.js?v=116 (cache-bust) so menu updates land on reload.
   name_time: record.html default name is now date + local hh:mm:ss (city still prefixes);
   rec_id folds the time in without doubling it (san_francisco_2026_08_25_19_49_38).
-- NEXT → add entry 117 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 117 back_stop — no page edit) two things. name_match: the file IS named from the
+  editable string (slugged) and the string is the session's label; the ready message now
+  says 'saved as <id>.<ext>' so the match is visible, and a default-name recording lists as
+  its time ('19:59:37 — 2026-08-25') instead of a generic 'Recording'. back_stop: Back on
+  the record screen now equals stop when recording — finish, upload, build the session,
+  then leave; and Back always lands on the session LIST: record → index.html#sessions →
+  last session with the drawer auto-opened (drawer.js handles #sessions; index preserves
+  the hash and now accepts session.html?p= as a valid last page). Menu scripts bumped to
+  v117. Playwright: back mid-recording → 'saved as …m4a · 1 moment carried over' → lands on
+  the last session, drawer open 564px, registry name = the time.
+- NEXT → add entry 118 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

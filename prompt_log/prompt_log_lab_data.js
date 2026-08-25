@@ -9,8 +9,39 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "116 admin_trim",
+        id: "117 back_stop",
         expanded: true,
+        nodes: [
+          { text: "117 back_stop", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make sure the uploaded file name matches the editable name, and that that name is what shows in the app." },
+              { text: "Back while recording should act like stop — upload, then leave — and Back should land on the session list." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Again, when I am when I finish recording, it indicates that it uploaded the file and I\u2019m not sure if theAgain, when I am when I finish recording, it indicates that it uploaded the file and I\u2019m not sure if the file name is the same as when I\u2019m able to edit above that\u2019s what it should be and that\u2019s also what should show back inside the app? Also, I think when I hit the back button if it\u2019s recording, it should also treat it as if I hit the stop button and upload it and then go back and I think we should go back to is the session list view" }
+            ]},
+            { text: "response", children: [
+              { text: "name_match", children: [
+                { text: "the file was already named from your string — now the screen proves it: 'saved as <name>.m4a'" },
+                { text: "the string is also the session's title in the app" },
+                { text: "an unedited (default) recording now lists as its time, e.g. 12:38:05 — 2026-08-25" }
+              ]},
+              { text: "back_stop", children: [
+                { text: "Back while recording = stop: it finishes, uploads, builds the session, then leaves" },
+                { text: "Back now always lands on the session list — your last session with the list pulled open" },
+                { text: "if the upload fails it stays put so you can tap try again" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: record, tag one moment, hit Back mid-recording" },
+                { text: "watch 'saved as …' flash, then land on the open session list" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "116 admin_trim",
+        expanded: false,
         nodes: [
           { text: "116 admin_trim", children: [
             { text: "prompt_restate", children: [

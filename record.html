@@ -100,9 +100,17 @@
       tagBtn  = document.getElementById('tag_btn'),
       status  = document.getElementById('status');
 
+  // Back always returns to the session list. Mid-recording it behaves like
+  // stop: finish, upload, build the session, THEN leave.
+  var pendingBack = false;
   backBtn.addEventListener('click', function () {
-    if (window.history.length > 1) window.history.back();
-    else window.location.href = 'index.html';
+    if (mediaRec && mediaRec.state === 'recording') {
+      pendingBack = true;
+      status.textContent = 'Finishing…';
+      stop();
+      return;
+    }
+    window.location.href = 'index.html#sessions';
   });
   pencil.addEventListener('click', function () { nameIn.focus(); nameIn.select(); });
 
@@ -239,13 +247,18 @@
         if (lr.ok) { var lj = await lr.json(); if (Array.isArray(lj)) list = lj; }
       } catch (e) {}
       list = list.filter(function (e2) { return e2 && e2.page !== page; });
-      var regName = (label === DEFT) ? 'Recording' : label.replace(' — ' + DEFT, '').replace(' — ' + ISO, '').replace(' ' + TS, '');
+      var regName = (label === DEFT) ? TS : label.replace(' — ' + DEFT, '').replace(' — ' + ISO, '').replace(' ' + TS, '');
       list.push({ page: page, name: regName, date: ISO, dur: recDur, count: tags.length });
       await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
       status.innerHTML = 'Session ready &#10003; <a href="' + page + '">open ' +
         (label || id) + '</a>' +
-        (tags.length ? '<br>' + tags.length + ' moment' + (tags.length === 1 ? '' : 's') + ' carried over' : '');
+        '<br>saved as ' + id + '.' + ext +
+        (tags.length ? ' · ' + tags.length + ' moment' + (tags.length === 1 ? '' : 's') + ' carried over' : '');
+      if (pendingBack) {
+        setTimeout(function () { window.location.href = 'index.html#sessions'; }, 900);
+      }
     } catch (err) {
+      pendingBack = false;   // stay here so the retry link works
       status.innerHTML = 'Something went wrong (' + (err && err.message ? err.message : err) + ') — ' +
         '<a href="#" id="retry_link">try again</a>';
       var rl = document.getElementById('retry_link');
