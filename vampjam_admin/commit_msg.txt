@@ -1,1 +1,1 @@
-row_delete
+auto_commit
