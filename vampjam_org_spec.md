@@ -167,7 +167,12 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - (log 107 gap_big — no page edit) my seg-tick recolor (panel_3) matched the unfilled bar —
   gaps invisible right of the playhead. Ticks back to var(--bg) (contrasts fill AND bar in
   all themes) and widened 5px → 9px.
-- NEXT → add entry 108 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 108 session_label — no page edit) the drawer's only affordance was a faint 17px caret
+  — undiscoverable. The button now reads 'Sessions ⌄' (word + caret, top left, all pages);
+  gestures unchanged.
+- (log 109 gap_small — no page edit) gaps back to 5px; the real fix was the color (var(--bg)),
+  which stays.
+- NEXT → add entry 110 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

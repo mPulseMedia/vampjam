@@ -116,7 +116,7 @@
   .jam_confirm_yes { background: var(--danger); color: #fff; }
   .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
   .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: var(--row_active); pointer-events: none; z-index: 0; }
-  .fish_tick { position: absolute; top: 0; bottom: 0; width: 9px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
+  .fish_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
   .time_row #now_time { color: var(--accent); font-weight: 600; }
   .ctrl_btn {
@@ -407,7 +407,7 @@
 </div>
 
 <header class="brand" style="position:relative;">
-  <button id="drawer_toggle" onclick="vampjamDrawer.toggle()" aria-label="Sessions" style="position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--muted);background:none;border:none;padding:8px 12px 8px 0;margin-left:-4px;cursor:pointer;line-height:0;"><svg class="drawer_caret" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  <button id="drawer_toggle" onclick="vampjamDrawer.toggle()" aria-label="Sessions" style="position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--muted);background:none;border:none;padding:8px 12px 8px 0;margin-left:-4px;cursor:pointer;display:flex;align-items:center;gap:5px;font:inherit;font-size:14px;"><span>Sessions</span><svg class="drawer_caret" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
   <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
 </header>
 

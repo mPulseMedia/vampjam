@@ -9,8 +9,52 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "107 gap_big",
+        id: "109 gap_small",
         expanded: true,
+        nodes: [
+          { text: "109 gap_small", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the gaps smaller again — the problem was the same-color-ness, not the size." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make the gap smaller. the problem was the same color-ness. so make gaps smaller again" }
+            ]},
+            { text: "response", children: [
+              { text: "gap_small", children: [
+                { text: "gaps back to their original width" },
+                { text: "the contrast fix stays" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "108 session_label",
+        expanded: false,
+        nodes: [
+          { text: "108 session_label", children: [
+            { text: "prompt_restate", children: [
+              { text: "Can't see how to get to the session list." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "i don't see how to get to session list" }
+            ]},
+            { text: "response", children: [
+              { text: "session_label", children: [
+                { text: "fair: the only door was a faint little arrow" },
+                { text: "top left now says Sessions next to the arrow" },
+                { text: "tap it; pull-down still works too" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, reload: Sessions label top left" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "107 gap_big",
+        expanded: false,
         nodes: [
           { text: "107 gap_big", children: [
             { text: "prompt_restate", children: [
