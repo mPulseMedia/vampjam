@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "141 fav_push",
+        id: "142 tag_blur",
         expanded: true,
+        nodes: [
+          { text: "142 tag_blur", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tagging a moment while the keyboard is up malfunctions — first put the keyboard away, then tag the moment, then bring the keyboard back." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK when I\u2019m recording something new when I tag a moment it brings up the keyboard if I tag another moment while the keyboard is up it malfunctions so can you make it so that if I tag a moment and I have the keyboard brought up or whatever I do when I have the keyboard brought up if I hit tag a moment to add a new moment, it should first put away the keyboard and then tag the moment and bring back the keyboard" }
+            ]},
+            { text: "response", children: [
+              { text: "tag_blur", children: [
+                { text: "done exactly as you described: Tag now releases the keyboard first, creates the moment, then hands the keyboard straight to the new empty name" },
+                { text: "your typed name on the previous moment is kept" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: record, tag, type, tag again mid-typing — clean hand-off, no glitch" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "141 fav_push",
+        expanded: false,
         nodes: [
           { text: "141 fav_push", children: [
             { text: "prompt_restate", children: [

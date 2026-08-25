@@ -447,7 +447,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   when they agree, no write fires. Handled both page variants (mapped/merged). Playwright:
   repo-says-no + local-says-yes → healed push carries fav:true ✓; repo agrees → zero
   writes ✓.
-- NEXT → add entry 142 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 142 tag_blur — no page edit) Tag-while-keyboard-up still glitched on iOS even with
+  preventScroll (136), so add_moment now does exactly what Paul prescribed: if a moment
+  name currently holds the keyboard, blur it FIRST (keyboard released), then create the
+  row, then hand focus to the new empty name inside the same tap (keyboard returns on the
+  new field). Playwright: type in row 1, tag again → 2 rows, first name kept, focus on the
+  new row, page unscrolled ✓.
+- NEXT → add entry 143 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

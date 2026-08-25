@@ -365,6 +365,13 @@
 
   // ---- moments list: grows with every tag; names are editable and ship with the session ----
   function add_moment() {
+    // keyboard already up (naming the previous moment)? put it away FIRST —
+    // Safari misbehaves when focus hops between fields mid-keyboard — then
+    // create the row and hand the keyboard straight to the new name below.
+    var act = document.activeElement;
+    if (act && act.blur && act.classList && act.classList.contains('mom_name')) {
+      act.blur();
+    }
     var sec = Math.round(elapsed() * 10) / 10;
     var row = document.createElement('div');
     row.className = 'mom_row';
