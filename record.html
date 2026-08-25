@@ -118,7 +118,8 @@
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   var d0 = new Date();
   var ISO = d0.getFullYear() + '-' + pad(d0.getMonth() + 1) + '-' + pad(d0.getDate());
-  var TS  = pad(d0.getHours()) + ':' + pad(d0.getMinutes()) + ':' + pad(d0.getSeconds());
+  var h24 = d0.getHours();
+  var TS  = ((h24 % 12) || 12) + ':' + pad(d0.getMinutes()) + ':' + pad(d0.getSeconds()) + (h24 < 12 ? 'a' : 'p');
   var DEFT = ISO + ' ' + TS;           // date + local time, hh:mm:ss
   nameIn.value = DEFT;
   function size_name() { nameIn.style.width = Math.max(3, nameIn.value.length + 1) + 'ch'; }
@@ -267,6 +268,12 @@
       list = list.filter(function (e2) { return e2 && e2.page !== page; });
       list.push({ page: page, name: label, date: ISO, dur: recDur, count: tags.length });
       await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
+      // everything landed: flip this device's marker to done so the list stops
+      // saying syncing… immediately (other devices catch up on their next poll)
+      try {
+        localStorage.setItem('vampjam_pending_session',
+          JSON.stringify({ page: page, name: label, date: ISO, dur: recDur, count: tags.length, ts: Date.now(), done: true }));
+      } catch (e4) {}
 
       status.innerHTML = 'Session ready &#10003; <a href="' + page + '">open ' +
         (label || id) + '</a>' +

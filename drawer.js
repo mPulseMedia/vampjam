@@ -75,9 +75,12 @@
     // oldest first by date so the drawer keeps newest at the bottom
     var all = window.VAMPJAM_SESSIONS.concat(window.VAMPJAM_SESSIONS_AUTO || []);
     var pend = pending_get();
+    var pendDone = (pend && pend.done) ? pend.page : null;
     if (pend) {
-      if (all.some(function (s2) { return s2.page === pend.page; })) { pending_clear(); pend = null; }
-      else all = all.concat([Object.assign({}, pend, { _pending: true })]);
+      var hit = null;
+      all.forEach(function (s2) { if (s2.page === pend.page) hit = s2; });
+      if (hit && !hit.pending) { pending_clear(); pend = null; pendDone = null; }
+      else if (!hit) all = all.concat([Object.assign({}, pend, pend.done ? {} : { _pending: true })]);
     }
     all = all.slice().sort(function (x, y) { return x.date < y.date ? -1 : x.date > y.date ? 1 : 0; });
     var rows = ['<div class="jam_item jam_admin"><a class="jam_link" href="admin.html">'
@@ -89,7 +92,7 @@
       try { var ov = localStorage.getItem('vampjam_dur_' + s.page); if (ov) dur = parseInt(ov, 10); } catch (e) {}
       var right = fmt_dur(dur);
       if (s.count) right += ' <span class="jam_count">' + s.count + '</span>';
-      if (s._pending || s.pending) right = '<span class="jam_sync">syncing…</span>';
+      if ((s._pending || s.pending) && s.page !== pendDone) right = '<span class="jam_sync">syncing…</span>';
       // naming convention: date first, then the time (default recordings) or the
       // venue name — and the row shows exactly the session's title
       var disp = (s.name && String(s.name).indexOf(s.date) >= 0) ? s.name : (s.date + ' ' + s.name);
@@ -317,7 +320,8 @@
     if (!pend && !registryPending) return;
     if (auto_retry < 40) {
       auto_retry++;
-      setTimeout(fetch_auto_sessions, 20000);
+      // first checks come quickly, then settle down
+      setTimeout(fetch_auto_sessions, auto_retry < 6 ? 8000 : 20000);
     }
   }
   function boot() {

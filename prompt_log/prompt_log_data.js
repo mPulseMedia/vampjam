@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "120 name_order",
+        id: "121 sync_done",
         expanded: true,
+        nodes: [
+          { text: "121 sync_done", children: [
+            { text: "prompt_restate", children: [
+              { text: "Syncing… stays on longer than needed after the upload finishes." },
+              { text: "Switch times to 12-hour with lowercase a/p." },
+              { text: "The Test session row has no delete button." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "It seems like the sinking, which is great stays on longer than is necessary meaning the file actually ends up being uploaded and yet the session list still says sinking sinking also let\u2019s change the time format from the 24 hour to the 12 hour with the lowercase, P or lowercase a. And the session that leads to this page on the session list, it doesn\u2019t have a delete button on that row. https://vampsf.com/2026_08_25_test.html" }
+            ]},
+            { text: "response", children: [
+              { text: "sync_done", children: [
+                { text: "the phone that uploaded now knows the moment everything lands, so syncing… clears right away on it" },
+                { text: "other devices check faster in the first minute too" }
+              ]},
+              { text: "time_12h", children: [
+                { text: "times are now 12-hour with a/p: 2026-08-25 1:05:09p" }
+              ]},
+              { text: "test_delete", children: [
+                { text: "that row had no trash because Test was an old-style built-in page" },
+                { text: "converted it to a regular recording session — it now has the trash button like the rest" },
+                { text: "its link changed to the regular session address (below); the old address is retired" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: reload, open Sessions — Test row now shows the trash can" },
+                { text: "record something — syncing… should clear as soon as Session ready appears" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "120 name_order",
+        expanded: false,
         nodes: [
           { text: "120 name_order", children: [
             { text: "prompt_restate", children: [

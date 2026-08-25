@@ -263,7 +263,17 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   '2026-08-25 San Francisco', and an edited name that lacks the date gets it prefixed at
   upload ('Sound Union' → '2026-08-25 Sound Union'). drawer.js?v=120. Playwright: h1/title/
   rows all date-first ✓, city default ✓, typed-venue normalization in json label + registry ✓.
-- NEXT → add entry 121 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 121 sync_done — no page edit) three parts. sync_done: the uploading device now flips
+  its pending marker to done the moment everything lands, which suppresses the syncing… row
+  immediately (raw CDN lag no longer keeps it breathing); other devices poll faster at first
+  (8s x5, then 20s). time_12h: default names now use 12-hour time with lowercase a/p —
+  '2026-08-25 1:05:09p' (rec_id slug follows). test_delete: the Test session's row had no
+  trash because it was a STATIC page; converted it to an auto session — 2026_08_25_test.html
+  moved to claude_trash/, sessions.js entry removed, sessions_auto.json (now also tracked in
+  the repo working copy) gained session.html?p=2026_08_25_test, json label '2026-08-25 Test'.
+  Its URL changed accordingly; the old page link is dead. drawer.js?v=121. Playwright: done
+  marker suppresses syncing ✓, Test row has trash ✓, 12h format ✓.
+- NEXT → add entry 122 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
