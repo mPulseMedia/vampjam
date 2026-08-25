@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "102 section_size",
+        id: "103 section_10min",
         expanded: true,
+        nodes: [
+          { text: "103 section_10min", children: [
+            { text: "prompt_restate", children: [
+              { text: "Yes — try 10-minute sections; test." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "yes, let's try every 10 min and test" }
+            ]},
+            { text: "response", children: [
+              { text: "section_10min", children: [
+                { text: "sections now target 10 min (evenly fitted)" },
+                { text: "08-07 -> 15 sections of ~9.7 min; 01-17 -> 5" },
+                { text: "width math property-checked up to 40 sections" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, reload: more, narrower sections + numbers" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "102 section_size",
+        expanded: false,
         nodes: [
           { text: "102 section_size", children: [
             { text: "prompt_restate", children: [

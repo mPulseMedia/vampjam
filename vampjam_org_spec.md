@@ -151,7 +151,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   player in the left column, .tag_list right column with its own scroll; drawer pull-down
   drops only the left half (drawer.js ignores gestures starting in .tag_list when the
   split media query matches: landscape + coarse pointer + height <= 520).
-- NEXT → add entry 102 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 102 section_size — question) sections are 1/10 of the session, widths-only fisheye.
+- (log 103 section_10min — no page edit) sections now target 10 minutes: fish_n() =
+  round(dur/600) clamped 2..40 replaces the fixed 10; min-width scales so many sections
+  still sum to 1 (math property-checked in node for n=5..40).
+- NEXT → add entry 104 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
