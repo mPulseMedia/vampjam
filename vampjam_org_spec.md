@@ -157,7 +157,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   still sum to 1 (math property-checked in node for n=5..40).
 - (log 104 seg_gap — no page edit) the segment gaps (bar ticks) and active band still read
   player.duration — NaN before play since bar_preload, so they vanished; both now eff_dur().
-- NEXT → add entry 105 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 105 land_drawer — no page edit) landscape: the drawer now opens as a fixed sheet over
+  the LEFT half (width 50vw, z 95, shadow, 88vh) via caret tap or pull-down; the old
+  full-bleed sticky_player margins (pre-split media rule) are zeroed inside the split so
+  they stop stretching across the right column.
+- NEXT → add entry 106 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "104 seg_gap",
+        id: "105 land_drawer",
         expanded: true,
+        nodes: [
+          { text: "105 land_drawer", children: [
+            { text: "prompt_restate", children: [
+              { text: "Mobile landscape does not show the session list; make it work with the current UI, following common interface patterns." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "on mobile landscape, it does not show me the session list. figure out some whay to make that happen based on the current ui but that follows common ui interface" }
+            ]},
+            { text: "response", children: [
+              { text: "land_drawer", children: [
+                { text: "found a clash: an older landscape rule stretched" },
+                { text: "the player across both halves, burying the drawer" },
+                { text: "list now opens as a sheet over the left half only" },
+                { text: "same two ways in: the top-left caret, or pull down" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, rotate, tap the caret: sheet on the left" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "104 seg_gap",
+        expanded: false,
         nodes: [
           { text: "104 seg_gap", children: [
             { text: "prompt_restate", children: [
