@@ -1,1 +1,1 @@
-admin_trim
+auto_commit
