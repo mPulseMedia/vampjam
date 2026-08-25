@@ -303,7 +303,18 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   like record.html are untouched). Also learned: the device bridge cannot repair git itself
   (unlink blocked), and my stray index.lock is cleared by the robot's own rm -f preamble.
   Standing rule reaffirmed: never ship sessions_auto.json in a batch again.
-- NEXT → add entry 125 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 125 rec_polish — no page edit) record.html: vampSF wordmark now sits centered up top
+  (same Sacramento + SF treatment as playback; Back stays top-left); the six seek buttons
+  are display:none (hidden, not dimmed); moment NUMBERS render above the bar at each dot's
+  position; a time row below reads cur / dur — both the same number while recording, kept
+  for consistency with playback. Moment rows lost their placeholder text, and a new moment
+  drops the caret straight into its empty name field synchronously inside the tap (phone
+  keyboard opens; desktop gets the blinking beam) + scrolls the row into view. Playback
+  pages (7 + session.html): the 'tag' placeholder removed from highlight rows — add_tag
+  already focused the new row's field, unchanged. Playwright: wordmark ✓, buttons hidden ✓,
+  focus lands + typed 'sweet solo' persists ✓, numbers strip ✓, cur/dur pair ✓, playback
+  placeholder gone ✓.
+- NEXT → add entry 126 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

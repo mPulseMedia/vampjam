@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>vampsf — Record</title>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 <script src="theme.js"></script>
 <style>
   * { box-sizing: border-box; }
@@ -13,7 +14,17 @@
     display: flex; flex-direction: column; align-items: center;
     padding: max(10px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
   }
-  .top_bar { width: 100%; max-width: 560px; display: flex; align-items: center; min-height: 44px; }
+  .top_bar { width: 100%; max-width: 560px; position: relative; text-align: center; min-height: 44px; margin-top: 4px; }
+  .top_bar .back_btn { position: absolute; left: 0; top: 8px; }
+  .wordmark {
+    font-family: 'Sacramento', cursive;
+    font-size: 58px; line-height: 1; color: var(--fg);
+    display: inline-block; margin: 0;
+  }
+  .wordmark_sf {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 29px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
+  }
   .back_btn {
     display: flex; align-items: center; gap: 4px;
     background: none; border: none; padding: 8px 12px 8px 0; margin-left: -4px;
@@ -46,7 +57,7 @@
     background: var(--panel_2); color: var(--accent);
     font: inherit; font-size: 13px; font-weight: 600;
     display: flex; align-items: center; justify-content: center;
-    opacity: 0.3; pointer-events: none;   /* no seeking while recording */
+    display: none;   /* nothing to seek while recording */
   }
   .rec_btn {
     width: 92px; height: 92px; border-radius: 50%;
@@ -72,6 +83,10 @@
   /* the growing time bar — same bones as the playback page, but it charts the
      recording so far: 10-minute segments, hour marks, moment dots. No playhead. */
   .bar_wrap { width: 100%; display: none; }
+  .num_strip { position: relative; height: 13px; margin-bottom: 3px; width: 100%; }
+  .mom_no { position: absolute; transform: translateX(-50%); font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .time_row .now { color: var(--accent); font-weight: 600; }
   .rec_bar {
     width: 100%; height: 6px; background: var(--panel_3); border-radius: 3px;
     position: relative; pointer-events: none;
@@ -119,6 +134,7 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
     <span>Back</span>
   </button>
+  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
 </div>
 
 <div class="name_row">
@@ -141,8 +157,10 @@
   <div class="rec_state" id="rec_state"><span class="rec_dot"></span><span id="rec_time">0:00</span></div>
   <button class="tag_btn" id="tag_btn" disabled>Tag the moment</button>
   <div class="bar_wrap" id="bar_wrap">
+    <div class="num_strip" id="num_strip"></div>
     <div class="rec_bar" id="rec_bar"></div>
     <div class="mark_strip" id="mark_strip"></div>
+    <div class="time_row"><span class="now" id="cur_time">0:00</span><span>/</span><span id="dur_time">0:00</span></div>
   </div>
   <div class="mom_list" id="mom_list"></div>
   <div class="status" id="status"></div>
@@ -164,6 +182,9 @@
       tagBtn  = document.getElementById('tag_btn'),
       barWrap = document.getElementById('bar_wrap'),
       recBar  = document.getElementById('rec_bar'),
+      numStrip = document.getElementById('num_strip'),
+      curTimeEl = document.getElementById('cur_time'),
+      durTimeEl = document.getElementById('dur_time'),
       markStrip = document.getElementById('mark_strip'),
       momList = document.getElementById('mom_list'),
       status  = document.getElementById('status');
@@ -241,11 +262,18 @@
               '<div class="hour_lbl" style="left:' + x + '%">' + (h / 3600) + 'h</div>';
     }
     recBar.innerHTML = html;
-    var marks = '';
+    var marks = '', nums = '';
     liveTags.forEach(function (lt, i) {
-      marks += '<div class="mom_dot" data-i="' + i + '" style="left:' + (lt.t / t * 100) + '%" title="moment ' + (i + 1) + ' @ ' + fmt(lt.t) + '"></div>';
+      var x = (lt.t / t * 100);
+      marks += '<div class="mom_dot" data-i="' + i + '" style="left:' + x + '%" title="moment ' + (i + 1) + ' @ ' + fmt(lt.t) + '"></div>';
+      nums += '<div class="mom_no" style="left:' + x + '%">' + (i + 1) + '</div>';
     });
     markStrip.innerHTML = marks;
+    numStrip.innerHTML = nums;
+    // while recording, the current time IS the duration — shown as a pair anyway
+    // so the bar reads like the playback page
+    curTimeEl.textContent = fmt(t);
+    durTimeEl.textContent = fmt(t);
   }
   // a dot doesn't move any playhead (there is none) — it scrolls to its row
   markStrip.addEventListener('click', function (e) {
@@ -265,12 +293,20 @@
     row.className = 'mom_row';
     var n = liveTags.length + 1;
     row.innerHTML = '<span class="mom_num">' + n + '</span>' +
-      '<input class="mom_name" type="text" placeholder="name this moment" autocomplete="off">' +
+      '<input class="mom_name" type="text" autocomplete="off" autocapitalize="sentences" inputmode="text">' +
       '<span class="mom_time">' + fmt(sec) + '</span>';
     momList.appendChild(row);
     momList.style.display = 'block';
     liveTags.push({ t: sec, row: row });
     render_bar();
+    // caret straight into the empty name — synchronously, inside the tap
+    // gesture, so the phone keyboard opens (desktop just gets the blinking beam)
+    var inp = row.querySelector('.mom_name');
+    if (inp) {
+      inp.focus();
+      try { inp.setSelectionRange(0, 0); } catch (e) {}
+      setTimeout(function () { row.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 0);
+    }
   }
 
   async function start() {

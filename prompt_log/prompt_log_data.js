@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "124 git_heal",
+        id: "125 rec_polish",
         expanded: true,
+        nodes: [
+          { text: "125 rec_polish", children: [
+            { text: "prompt_restate", children: [
+              { text: "Record screen: keep the vampSF logo in place; hide the seek buttons entirely; add moment numbers above the timeline; show time and duration (same number, for consistency); remove placeholder text from moment rows everywhere; on tag creation put the caret in the empty field and open the phone keyboard (desktop: just the blinking beam)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On the records screen keep the vamp SF logo in the same place hide altogether the forward and backward +2-2 buns don\u2019t just dim them out hide them all together. Include the numbers on the moments that the numbers that appear above and below that timeline show also The time and duration, but those are always going to be the same number. Whatever the duration is is the current time but so it just for consistency and in the app I wanna remove the place Holder text that says tag or name the moment I don\u2019t think I wanna have any text in the in that any placeholder text in that moment row and while I\u2019m creating the moments whether it\u2019s a live or a moment in the recording, bring up the when I created put the Ibeam in the text field, that is empty and bring up the Mobile keyboard. On the desktop, there\u2019s no keyboard to bring up, but still put the Blinky Ibeam in the appropriate moment, Txt field." }
+            ]},
+            { text: "response", children: [
+              { text: "rec_polish", children: [
+                { text: "vampSF wordmark now tops the record screen, same as playback" },
+                { text: "the seek buttons are gone entirely, not dimmed" },
+                { text: "moment numbers sit above the bar at each dot; time / duration shows below (same number while recording, on purpose)" },
+                { text: "no more placeholder text in moment rows — here or on the playback pages" },
+                { text: "tagging a moment drops the blinking beam straight into the empty name and opens the phone keyboard" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Record — logo up top, no seek buttons" },
+                { text: "start, tag — keyboard opens on the empty name; number appears above the bar" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "124 git_heal",
+        expanded: false,
         nodes: [
           { text: "124 git_heal", children: [
             { text: "prompt_restate", children: [
