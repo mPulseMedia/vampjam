@@ -1,1 +1,1 @@
-record_link
+auto_commit
