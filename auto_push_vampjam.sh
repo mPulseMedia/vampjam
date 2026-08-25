@@ -1,7 +1,10 @@
 #!/bin/bash
 # auto_push_vampjam.sh — commit and push vampjam when files settle
 # triggered by launchd WatchPaths; debounces 15s before committing
-# note: fetch+merge before push because Worker writes directly to origin
+# note: fetch+merge before push because Worker writes directly to origin.
+# merge uses -X theirs so a conflict (both sides touched e.g.
+# sessions_auto.json) resolves to origin's copy — the Worker is the source
+# of truth for the files it writes; local-only files are untouched by this.
 
 REPO="$HOME/claude_cowork/vampjam"
 LOG="/tmp/autopush_vampjam.log"
@@ -14,7 +17,7 @@ if [[ ! -d "$REPO/.git" ]]; then
 fi
 
 cd "$REPO" || exit 1
-rm -f "$REPO/.git/index.lock" "$REPO/.git/HEAD.lock"
+rm -f "$REPO/.git/index.lock" "$REPO/.git/HEAD.lock" "$REPO/.git/ORIG_HEAD.lock"
 
 STATUS1=$(git status --porcelain 2>/dev/null)
 if [[ -n "$STATUS1" ]]; then
@@ -59,8 +62,8 @@ fi
 git fetch origin main >> "$LOG" 2>&1
 BEHIND=$(git rev-list --count HEAD..origin/main 2>/dev/null)
 if [[ -n "$BEHIND" && "$BEHIND" -gt 0 ]]; then
-  if git merge --no-edit origin/main >> "$LOG" 2>&1; then
-    echo "$(date): merged origin/main ($BEHIND commits)" >> "$LOG"
+  if git merge -X theirs --no-edit origin/main >> "$LOG" 2>&1; then
+    echo "$(date): merged origin/main ($BEHIND commits, -X theirs)" >> "$LOG"
   else
     git merge --abort 2>/dev/null
     echo "$(date): merge FAILED — needs manual fix" >> "$LOG"
