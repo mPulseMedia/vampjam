@@ -1,12 +1,5 @@
 [
   {
-    "page": "session.html?p=rec_2026_08_25_1219",
-    "name": "Recording",
-    "date": "2026-08-25",
-    "dur": 46,
-    "count": 2
-  },
-  {
     "page": "session.html?p=2026_08_25_1242",
     "name": "Recording",
     "date": "2026-08-25",
@@ -25,13 +18,6 @@
     "name": "13:03:33",
     "date": "2026-08-25",
     "dur": 10,
-    "count": 1
-  },
-  {
-    "page": "session.html?p=2026_08_25_13_28_07",
-    "name": "2026-08-25 13:28:07",
-    "date": "2026-08-25",
-    "dur": 20,
     "count": 1
   }
 ]
