@@ -140,7 +140,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   pushed, origin at 80460a9); added the missing half: plain playback crossing a region
   boundary now starts the same 1 s glide (lastFishSeg watch in timeupdate); +2m jumps
   already glide via nudge()->seek_to.
-- NEXT → add entry 100 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 100 seg_remain — no page edit) 2px accent strip along the seek bar's bottom from
+  playhead to current-section end (how much is left). Found why he never SAW the expansion:
+  zoom_band was rgba(255,255,255,.09) and fish_tick var(--bg) — both invisible on the white
+  minimal theme; now row_active band + panel_3 ticks, visible in all three themes.
+- NEXT → add entry 101 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,36 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "99 play_glide",
+        id: "100 seg_remain",
         expanded: true,
+        nodes: [
+          { text: "100 seg_remain", children: [
+            { text: "prompt_restate", children: [
+              { text: "Inside the current segment the light blue bar shows progress, but not how much of the segment is LEFT — wants a light blue line along the very bottom of the rest of the section. And he still is not seeing the sections expanding around the playhead." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Within the current segment, you're showing where the play has is because there's a light colored blue bar that progresses what's not clear to me is how much of the Current section is left it's almost like I need to see that light blue line appear, but only along the very bottom of the rest of the section so I can see kind of how close I'm getting. And by the way, I still am not seeing the sections where the play is kind of sub expanding." }
+            ]},
+            { text: "response", children: [
+              { text: "seg_remain", children: [
+                { text: "thin blue strip: playhead -> end of current section" },
+                { text: "rides the bar's bottom edge, shrinks as you close in" }
+              ]},
+              { text: "fish_visible", children: [
+                { text: "found it: the expansion visuals were WHITE on white" },
+                { text: "band + section ticks now show in all three themes" },
+                { text: "the widening was happening; you just couldn't see it" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, reload: blue band around playhead + strip" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "99 play_glide",
+        expanded: false,
         nodes: [
           { text: "99 play_glide", children: [
             { text: "prompt_restate", children: [

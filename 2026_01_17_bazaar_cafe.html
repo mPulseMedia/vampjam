@@ -93,6 +93,7 @@
   .ctrl_row { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 14px; }
   .seek_bar { width: 100%; height: 6px; background: var(--panel_3); border-radius: 3px; position: relative; cursor: pointer; margin: 0; }
   .seek_fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; pointer-events: none; }
+  .seg_remain { position: absolute; bottom: 0; height: 2px; background: var(--accent); opacity: 0.45; border-radius: 1px; pointer-events: none; }
   .tag_numbers { position: relative; height: 13px; margin-bottom: 3px; }
   .tag_num_lbl { position: absolute; transform: translateX(-50%); top: 0; font-size: 11px; line-height: 13px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; }
   .tag_num { flex: 0 0 auto; min-width: 18px; text-align: right; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
@@ -114,8 +115,8 @@
   .jam_confirm_cancel { background: var(--panel_3); color: var(--fg); }
   .jam_confirm_yes { background: var(--danger); color: #fff; }
   .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
-  .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: rgba(255,255,255,0.09); pointer-events: none; z-index: 0; }
-  .fish_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
+  .zoom_band { position: absolute; top: 0; bottom: 0; border-radius: 7px; background: var(--row_active); pointer-events: none; z-index: 0; }
+  .fish_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--panel_3); pointer-events: none; transform: translateX(-50%); }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
   .time_row #now_time { color: var(--accent); font-weight: 600; }
   .ctrl_btn {
@@ -438,7 +439,7 @@
   </div>
   <button class="tag_btn_big" id="tag_btn">Tag the moment</button>
   <div class="tag_numbers" id="tag_numbers"></div>
-  <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div></div>
+  <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div><div class="seg_remain" id="seg_remain"></div></div>
   <div class="tag_markers" id="tag_markers"></div>
   <div class="time_row">
     <span id="now_time">0:00</span>
@@ -991,10 +992,26 @@
       tk.style.left = (fish_x(parseFloat(tk.dataset.f) * player.duration) * 100) + '%';
     });
   }
+  // seg_remain — a light strip along the seek bar's bottom edge from the
+  // playhead to the end of the CURRENT section: how much of it is left.
+  function update_seg_remain() {
+    var el = document.getElementById('seg_remain');
+    if (!el) return;
+    var d = player.duration;
+    if (!isFinite(d) || d <= 0 || !fish_active()) { el.style.display = 'none'; return; }
+    var endT = (fish_seg() + 1) * (d / FISH_TICK_N);
+    var x0 = fish_x(player.currentTime || 0);
+    var x1 = fish_x(Math.min(endT, d));
+    el.style.display = 'block';
+    el.style.left = (x0 * 100) + '%';
+    el.style.width = (Math.max(0, x1 - x0) * 100) + '%';
+  }
+
   function update_fisheye() {
     if (!tagMarkers) return;
     render_zoom_band();
     render_fish_ticks();
+    update_seg_remain();
     Array.from(tagMarkers.querySelectorAll('.tag_marker')).forEach(function (m) {
       m.style.left = (fish_x(parseFloat(m.dataset.t)) * 100) + '%';
     });
@@ -1069,6 +1086,7 @@
     render_zoom_band();
     render_fish_ticks();
     render_tag_numbers();
+    update_seg_remain();
   }
 
   function fetch_repo_data() {
