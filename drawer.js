@@ -365,7 +365,7 @@
                          dur: m.dur || 0, count: (m.tags || []).length, _local: true, cloudPage: m.cloudPage || null };
               });
             window.VAMPJAM_SESSIONS_LOCAL = arr;
-            if (arr.length) { build_menu(); wire_links(); }
+            if (arr.length) { build_menu(); wire_links(); reconcile_locals(); }
           };
         } catch (e) {}
       };
@@ -386,6 +386,37 @@
     } catch (e) { done(); }
   }
 
+  // if a row still says local but the cloud already has that recording,
+  // clear the device copy and let the plain cloud row stand
+  var reconciled = {};
+  function reconcile_locals() {
+    var autos = window.VAMPJAM_SESSIONS_AUTO || [];
+    var locals = window.VAMPJAM_SESSIONS_LOCAL || [];
+    locals.forEach(function (L) {
+      if (!L.cloudPage) return;
+      var locId = (L.page.split('local=')[1] || '');
+      var recId = (L.cloudPage.split('p=')[1] || '');
+      function clear_it() {
+        idb_delete_local(locId, function () {
+          window.VAMPJAM_SESSIONS_LOCAL = (window.VAMPJAM_SESSIONS_LOCAL || []).filter(function (s2) { return s2.page !== L.page; });
+          build_menu(); wire_links();
+        });
+      }
+      var twin = null;
+      autos.forEach(function (a2) { if (a2.page === L.cloudPage) twin = a2; });
+      if (twin && !twin.pending) { clear_it(); return; }
+      if (!recId || reconciled[L.page]) return;
+      reconciled[L.page] = true;   // the direct json check runs once per load
+      fetch('https://raw.githubusercontent.com/mPulseMedia/vampjam/main/' + recId + '.json?v=' + Date.now(), { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          // only clear when the cloud PROVABLY has the audio
+          if (j && !j.deleted && j.audio && j.audio.url) clear_it();
+        })
+        .catch(function () {});
+    });
+  }
+
   function fetch_auto_sessions() {
     fetch('https://raw.githubusercontent.com/mPulseMedia/vampjam/main/sessions_auto.json?v=' + Date.now(),
           { cache: 'no-store' })
@@ -395,6 +426,7 @@
           window.VAMPJAM_SESSIONS_AUTO = arr;
           build_menu(); wire_links();
           heal_registry(arr);
+          reconcile_locals();
         }
         retry_if_pending();
       })

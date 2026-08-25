@@ -371,7 +371,16 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   copy is still deleted ONLY after the cloud registration confirms — the 2.5-hour-session
   guarantee stands. Playwright: placeholder+local → 1 local row ✓, registered → 1 plain
   row ✓, 40-min ghost → no syncing ✓.
-- NEXT → add entry 133 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 133 local_clear — no page edit) a row that still says local self-heals on page
+  load: reconcile_locals (drawer v126) checks each local rec's cloudPage against the
+  registry — a registered (non-pending) twin proves the cloud has it, so the device copy
+  is deleted and the plain cloud row stands; if the registry doesn't show it, ONE direct
+  raw check of <id>.json runs per load, and only a json with a real audio.url (and not
+  deleted) clears the local copy. Nothing is cleared without cloud proof. Debug chase: the
+  first cut's reconciled guard sat ABOVE the twin check, so a json-404 first pass blocked
+  the later registry pass — guard moved to the json path only. Playwright: registered twin
+  → IDB cleared + plain row ✓, json-only proof → cleared ✓, no cloud proof → local kept ✓.
+- NEXT → add entry 134 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

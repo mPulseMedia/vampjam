@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "132 row_one",
+        id: "133 local_clear",
         expanded: true,
+        nodes: [
+          { text: "133 local_clear", children: [
+            { text: "prompt_restate", children: [
+              { text: "If a row still says local when the page loads, check the cloud — if the recording is up there, clear the local mark and just show the normal row." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "It seems pretty great. It seems like the local icon should go away and maybe if the page is loaded and it still says local it should check if the thing is up in the cloud and if it\u2019s in the cloud, then clear it clear the local icon and just use the cloud icon and that\u2019s that." }
+            ]},
+            { text: "response", children: [
+              { text: "local_clear", children: [
+                { text: "every page load now double-checks lingering local rows against the cloud" },
+                { text: "if the cloud provably has the recording, the phone copy is cleared and the row turns plain" },
+                { text: "no proof, no clearing — a recording only on your phone stays safely marked local" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: if any row still says local from earlier, reload once — it should turn plain" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "132 row_one",
+        expanded: false,
         nodes: [
           { text: "132 row_one", children: [
             { text: "prompt_restate", children: [
