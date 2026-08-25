@@ -42,6 +42,12 @@
   var ICO_SHARE = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
   var ICO_NEW = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>';
   var HERE = (location.pathname.split('/').pop() || '');
+  // On the generic session page (session.html?p=<id>) the identity includes the
+  // recording id, so duration cache + current-row detection stay per-recording.
+  var PKEY = (function () {
+    var m = /[?&]p=([A-Za-z0-9_\-]+)/.exec(location.search);
+    return m ? HERE + '?p=' + m[1] : HERE;
+  })();
 
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function fmt_dur(s) { s = Math.round(s || 0); if (!s) return ''; var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60); return h > 0 ? h + ':' + pad(m) : m + 'm'; }
@@ -50,11 +56,15 @@
   function build_menu() {
     var menu = document.querySelector('.session_drawer .jam_menu');
     if (!menu || !window.VAMPJAM_SESSIONS) return;   // no manifest -> keep static markup
+    // merge the static manifest with auto-registered recordings (sessions_auto.json),
+    // oldest first by date so the drawer keeps newest at the bottom
+    var all = window.VAMPJAM_SESSIONS.concat(window.VAMPJAM_SESSIONS_AUTO || []);
+    all = all.slice().sort(function (x, y) { return x.date < y.date ? -1 : x.date > y.date ? 1 : 0; });
     var rows = ['<div class="jam_item jam_admin"><a class="jam_link" href="admin.html">'
       + '<span class="jam_left"><span class="jam_ico">' + ICO_GEAR + '</span><span class="jam_name">Admin</span></span>'
       + '<span class="menu_sub">setup</span></a></div>'];
-    window.VAMPJAM_SESSIONS.forEach(function (s) {
-      var cur = (s.page === HERE) ? ' current' : '';
+    all.forEach(function (s) {
+      var cur = (s.page === PKEY) ? ' current' : '';
       var dur = s.dur;
       try { var ov = localStorage.getItem('vampjam_dur_' + s.page); if (ov) dur = parseInt(ov, 10); } catch (e) {}
       var right = fmt_dur(dur);
@@ -71,13 +81,13 @@
   }
 
   // remember this session for the index; cache its duration going forward
-  try { localStorage.setItem('vampjam_last_session', HERE); } catch (e) {}
+  try { localStorage.setItem('vampjam_last_session', PKEY); } catch (e) {}
   function capture_dur() {
     var pl = document.getElementById('player');
     if (!pl) return;
     pl.addEventListener('loadedmetadata', function () {
       if (isFinite(pl.duration) && pl.duration > 0) {
-        try { localStorage.setItem('vampjam_dur_' + HERE, Math.round(pl.duration)); } catch (e) {}
+        try { localStorage.setItem('vampjam_dur_' + PKEY, Math.round(pl.duration)); } catch (e) {}
       }
     });
   }
@@ -200,7 +210,18 @@
   window.addEventListener('touchend', onEnd, { passive: true });
   window.addEventListener('touchcancel', onEnd, { passive: true });
 
-  function boot() { build_menu(); wire_links(); capture_dur(); }
+  function fetch_auto_sessions() {
+    fetch('https://raw.githubusercontent.com/mPulseMedia/vampjam/main/sessions_auto.json?v=' + Date.now(),
+          { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (arr) {
+        if (!Array.isArray(arr) || !arr.length) return;
+        window.VAMPJAM_SESSIONS_AUTO = arr;
+        build_menu(); wire_links();
+      })
+      .catch(function () {});
+  }
+  function boot() { build_menu(); wire_links(); capture_dur(); fetch_auto_sessions(); }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
   } else {

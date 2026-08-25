@@ -9,8 +9,50 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "112 test_session",
+        id: "113 rec_auto",
         expanded: true,
+        nodes: [
+          { text: "113 rec_auto", children: [
+            { text: "prompt_restate", children: [
+              { text: "Mark each whole hour on the timeline with a small vertical bar and its number." },
+              { text: "Make the upload create everything automatically — no copy-pasting the URL into Claude." },
+              { text: "While recording, give me a button to tag moments live; carry them into the session." },
+              { text: "(follow-up) If paste were still needed I would need a way back to the URL later — is it needed?" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "put some kind of a mark at the beginning of our one an hour or two I'm imagining I guess a vertical bar that goes a little bit above and a little bit below the main bar and the numbers that are pure above and below and. Also, is there a way that when I've made a recording it I don't have to cut and paste into claude can it automatically upload to that our two server or wherever it g and the third thing is while recording? I'd like to see a button that I can tap to mark a moment in the live recording that's happening and then have that data moved over with the recording to to be its initial set of highlights." },
+              { text: "Or I guess it is uploaded when I click the upload our 2 button and the part I need to copy and paste into claude is the HTTPS://pub – 33 a big long number.M4A with the instructions to tell claude is that something that I can happen that can happen automatically whatever needs to go to claude when I click that upload button and that's one question another question is I guess that's it right now" },
+              { text: "Oh, I noticed that once I uploaded you give me a link to give to claude and if it turns out that this cutting paste step is gonna be necessary I think it's the let's say I've upload the thing and then you give me the URL and then I leave and I come back into the Record something new but I never pasted it into claude. This means that we gotta give a way to get back to that uploaded URL somehow later if I don't finish the task right after I've uploaded it so how do I get to that that that would be the next task if we need that cut and paste to make this happen if we don't need the cut and paste then I don't think I'm gonna need this ability to go back to get the published URL" }
+            ]},
+            { text: "response", children: [
+              { text: "hour_mark", children: [
+                { text: "a small vertical bar now sits at each whole hour, poking above and below the timeline" },
+                { text: "a tiny 1h / 2h number hangs under each bar" },
+                { text: "they stretch and slide with the sections like everything else" }
+              ]},
+              { text: "auto_session", children: [
+                { text: "no more copy-paste — ever. Upload to R2 now finishes the whole job" },
+                { text: "it binds the audio, builds the session, and adds it to the Sessions list on every page" },
+                { text: "when it is done you get a direct link to the new session right there" },
+                { text: "so no need for a way back to old URLs — the session list IS the way back" }
+              ]},
+              { text: "live_tag", children: [
+                { text: "while recording, a big Tag the moment button appears under the timer" },
+                { text: "every tap marks that second; the count shows below" },
+                { text: "on upload those become the session's first moments" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open any session — hour bars on the timeline" },
+                { text: "then Admin: record a few seconds, tap Tag twice, stop, Upload to R2" },
+                { text: "wait for Session ready ✓ and tap the link — your moments are there" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "112 test_session",
+        expanded: false,
         nodes: [
           { text: "112 test_session", children: [
             { text: "prompt_restate", children: [

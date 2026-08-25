@@ -117,6 +117,8 @@
     <div class="rec_time" id="rec_time">0:00</div>
     <div class="rec_hint" id="rec_hint">tap to start recording</div>
   </div>
+  <button id="rec_tag" style="display:none;width:100%;margin-top:14px;padding:16px;font:inherit;font-size:19px;font-weight:600;border:none;border-radius:12px;background:var(--accent);color:var(--on_accent,#fff);cursor:pointer;">Tag the moment</button>
+  <div id="rec_tag_count" style="display:none;margin-top:8px;text-align:center;color:var(--muted);font-size:14px;"></div>
   <audio id="rec_preview" controls style="display:none;width:100%;margin-top:14px;"></audio>
   <div id="rec_after" style="display:none;margin-top:14px;">
     <input id="rec_name" type="text" class="rec_input" placeholder="file name (no spaces)">
@@ -190,6 +192,8 @@
   // ==== CONFIG — fill these in after deploying r2_upload_worker.js ====
   var WORKER_UPLOAD_URL = 'https://vampjam-upload.crimson-dust-a18d.workers.dev/';   // live upload worker
   var UPLOAD_SECRET     = '';   // must match the Worker's UPLOAD_SECRET
+  var WORKER_SYNC_URL   = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';   // writes *.json to the repo
+  var RAW_BASE          = 'https://raw.githubusercontent.com/mPulseMedia/vampjam/main/';
   // ===================================================================
 
   var recBtn = document.getElementById('rec_btn'),
@@ -199,9 +203,24 @@
       after  = document.getElementById('rec_after'),
       nameIn = document.getElementById('rec_name'),
       upBtn  = document.getElementById('rec_upload'),
-      result = document.getElementById('rec_result');
+      result = document.getElementById('rec_result'),
+      tagBtn = document.getElementById('rec_tag'),
+      tagCnt = document.getElementById('rec_tag_count');
 
   var mediaRec = null, chunks = [], startT = 0, timer = null, blob = null, mime = '', ext = 'm4a';
+  var liveTags = [], recDur = 0;   // live_tag: seconds-into-recording marks; duration at stop
+
+  function show_tag_count() {
+    tagCnt.style.display = 'block';
+    tagCnt.textContent = liveTags.length
+      ? liveTags.length + ' moment' + (liveTags.length === 1 ? '' : 's') + ' tagged'
+      : 'tap while playing to mark a moment';
+  }
+  tagBtn.addEventListener('click', function () {
+    if (!mediaRec || mediaRec.state !== 'recording') return;
+    liveTags.push(Math.round(((Date.now() - startT) / 1000) * 10) / 10);
+    show_tag_count();
+  });
 
   function pickMime() {
     var c = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'];
@@ -231,13 +250,17 @@
         stream.getTracks().forEach(function (t) { t.stop(); });
       };
       mediaRec.start();
+      liveTags = []; recDur = 0;
+      tagBtn.style.display = 'block'; show_tag_count();
       startT = Date.now(); timer = setInterval(tick, 250); tick();
       recBtn.classList.add('recording'); recBtn.innerHTML = '&#9632;'; hint.textContent = 'recording… tap to stop';
     } catch (err) { hint.textContent = 'microphone blocked: ' + (err && err.message ? err.message : err); }
   }
   function stop() {
+    recDur = Math.round((Date.now() - startT) / 1000);
     if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
     clearInterval(timer);
+    tagBtn.style.display = 'none';
     recBtn.classList.remove('recording'); recBtn.innerHTML = '&#9679;'; hint.textContent = 'tap to record again';
   }
   recBtn.addEventListener('click', function () {
@@ -260,12 +283,57 @@
       });
       var j = await r.json();
       if (j.ok) {
-        result.innerHTML = 'Uploaded &#10003; <a href="' + j.url + '" target="_blank">' + j.url + '</a>' +
-          '<br>Tell Claude this URL + the session date to build the page.';
+        result.textContent = 'Uploaded ✓ — creating the session page…';
+        try {
+          var page = await auto_session(j.url);
+          result.innerHTML = 'Session ready ✓ <a href="' + page + '">' + page + '</a>' +
+            (liveTags.length ? '<br>' + liveTags.length + ' live moment' + (liveTags.length === 1 ? '' : 's') + ' carried over.' : '');
+        } catch (err2) {
+          result.innerHTML = 'Uploaded ✓ <a href="' + j.url + '" target="_blank">' + j.url + '</a>' +
+            '<br>Auto page failed (' + (err2 && err2.message ? err2.message : err2) + ') — tell Claude this URL.';
+        }
       } else { result.textContent = 'Upload failed: ' + (j.error || r.status); }
     } catch (err) { result.textContent = 'Upload error: ' + (err && err.message ? err.message : err); }
     upBtn.disabled = false;
   });
+
+  // auto_session — the Upload button finishes the whole job: bind the audio to
+  // a session json (with any live-tagged moments) and register it in
+  // sessions_auto.json so it appears in every page's Sessions list. No Claude step.
+  function sync_write(path, content, message) {
+    return fetch(WORKER_SYNC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: path, content: content, message: message })
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error('sync ' + r.status + ': ' + t.slice(0, 80)); });
+      return r.json();
+    });
+  }
+  async function auto_session(audioUrl) {
+    var id = (nameIn.value || ('rec.' + ext)).replace(/\.[a-z0-9]+$/i, '').replace(/[^a-zA-Z0-9_\-]/g, '_');
+    var d = new Date(), p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+    var iso = d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate());
+    var label = 'Recording — ' + iso;
+    var now = Date.now();
+    var tags = liveTags.map(function (t, i) {
+      return { id: 't_' + now + '_lt' + (i + 1), t: t, label: '' };
+    });
+    await sync_write(id + '.json', JSON.stringify({
+      audio: { label: label, url: audioUrl, kind: 'url' },
+      tags: tags
+    }, null, 2), 'auto session ' + id);
+    var page = 'session.html?p=' + id;
+    var list = [];
+    try {
+      var lr = await fetch(RAW_BASE + 'sessions_auto.json?v=' + Date.now(), { cache: 'no-store' });
+      if (lr.ok) { var lj = await lr.json(); if (Array.isArray(lj)) list = lj; }
+    } catch (e) {}
+    list = list.filter(function (e2) { return e2 && e2.page !== page; });
+    list.push({ page: page, name: 'Recording', date: iso, dur: recDur, count: tags.length });
+    await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
+    return page;
+  }
 })();
 </script>
 

@@ -190,7 +190,18 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   08-07 page, 2026_08_25_test.json binds the R2 url, sessions.js entry added (name Test,
   dur/count 0 until first play caches it). Page JSON loads from raw.githubusercontent, so it
   binds only after the robot pushes. Playwright local: title/h1/menu row all correct.
-- NEXT → add entry 113 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 113 rec_auto — no page edit) three features, one batch. hour_mark: fisheye-aware
+  vertical bar + tiny 'Nh' label at each whole hour on all 8 session pages (renders inside
+  render_fish_ticks so every glide/update repositions it). auto_session: Admin's Upload-to-R2
+  now finishes the whole job — writes <rec_id>.json (audio + live tags) and registers the
+  session in sessions_auto.json via the sync worker; NO copy-paste to Claude anymore. New
+  generic session.html?p=<rec_id> page binds <rec_id>.json (title follows the label; ?t=
+  keeps ?p=; share links keep ?p=). drawer.js merges sessions_auto.json into the Sessions
+  list (PKEY identity so per-recording duration cache + current-row work). live_tag: big
+  'Tag the moment' button while recording on Admin; taps become the session's initial
+  moments. Playwright (routed workers + raw): hour marks 1h/2h ✓, session.html binds ✓,
+  admin record→2 live tags→upload posts rec json + sessions_auto ✓.
+- NEXT → add entry 114 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

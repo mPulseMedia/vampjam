@@ -94,6 +94,10 @@
   .seek_bar { width: 100%; height: 6px; background: var(--panel_3); border-radius: 3px; position: relative; cursor: pointer; margin: 0; }
   .seek_fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; pointer-events: none; }
   .seg_remain { position: absolute; bottom: 0; height: 2px; background: var(--accent); opacity: 0.45; border-radius: 1px; pointer-events: none; }
+  /* hour_mark — a vertical bar at each whole hour, poking above and below the
+     seek bar, with a small hour number hanging beneath. Rides the fisheye. */
+  .hour_mark { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--muted); opacity: 0.7; border-radius: 1px; pointer-events: none; z-index: 1; transform: translateX(-50%); }
+  .hour_lbl { position: absolute; top: calc(100% + 6px); transform: translateX(-50%); font-size: 9px; line-height: 1; color: var(--muted); pointer-events: none; z-index: 3; }
   .tag_numbers { position: relative; height: 13px; margin-bottom: 3px; }
   .tag_num_lbl { position: absolute; transform: translateX(-50%); top: 0; font-size: 11px; line-height: 13px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; }
   .tag_num { flex: 0 0 auto; min-width: 18px; text-align: right; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
@@ -1010,8 +1014,33 @@
     band.style.width = (FISH_E * 100) + '%';
   }
 
+  // hour_mark — one bar + label per whole hour (1h, 2h, ...), fisheye-aware.
+  function render_hour_marks() {
+    if (!seekBar) return;
+    var dur = eff_dur();
+    var marks = Array.prototype.slice.call(seekBar.querySelectorAll('.hour_mark'));
+    var lbls  = Array.prototype.slice.call(seekBar.querySelectorAll('.hour_lbl'));
+    var n = (dur && isFinite(dur) && dur > 0) ? Math.floor((dur - 1) / 3600) : 0;
+    if (marks.length !== n) {
+      marks.forEach(function (m) { m.remove(); });
+      lbls.forEach(function (l) { l.remove(); });
+      marks = []; lbls = [];
+      for (var h = 1; h <= n; h++) {
+        var m = document.createElement('div');
+        m.className = 'hour_mark'; m.dataset.h = h;
+        seekBar.appendChild(m); marks.push(m);
+        var l = document.createElement('div');
+        l.className = 'hour_lbl'; l.dataset.h = h; l.textContent = h + 'h';
+        seekBar.appendChild(l); lbls.push(l);
+      }
+    }
+    marks.concat(lbls).forEach(function (el) {
+      el.style.left = (fish_x(parseFloat(el.dataset.h) * 3600) * 100) + '%';
+    });
+  }
   function render_fish_ticks() {
     if (!seekBar) return;
+    render_hour_marks();
     var ticks = Array.from(seekBar.querySelectorAll('.fish_tick'));
     if (!fish_active()) { ticks.forEach(function (t) { t.remove(); }); return; }
     var n = fish_n() - 1;
