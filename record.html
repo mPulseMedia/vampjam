@@ -205,6 +205,12 @@
     if (id.indexOf(t6) < 0) id += '_' + t6;    // keep ids unique without doubling the time
     return id;
   }
+  function not_deleted(list) {
+    // never re-write rows this device has deleted (registry reads can be stale)
+    var dead = [];
+    try { dead = (JSON.parse(localStorage.getItem('vampjam_deleted_pages') || '[]') || []).map(function (t) { return t.page; }); } catch (e) {}
+    return list.filter(function (e2) { return e2 && dead.indexOf(e2.page) < 0; });
+  }
   function sync_write(path, content, message) {
     return fetch(WORKER_SYNC_URL, {
       method: 'POST',
@@ -231,7 +237,7 @@
         var pr = await fetch(RAW_BASE + 'sessions_auto.json?v=' + Date.now(), { cache: 'no-store' });
         if (pr.ok) { var pj = await pr.json(); if (Array.isArray(pj)) pre = pj; }
       } catch (e0) {}
-      pre = pre.filter(function (e2) { return e2 && e2.page !== page; });
+      pre = not_deleted(pre.filter(function (e2) { return e2 && e2.page !== page; }));
       pre.push({ page: page, name: label, date: ISO, dur: recDur, count: liveTags.length, pending: true });
       await sync_write('sessions_auto.json', JSON.stringify(pre, null, 2), 'placeholder ' + id);
       try {
@@ -265,7 +271,7 @@
         var lr = await fetch(RAW_BASE + 'sessions_auto.json?v=' + Date.now(), { cache: 'no-store' });
         if (lr.ok) { var lj = await lr.json(); if (Array.isArray(lj)) list = lj; }
       } catch (e) {}
-      list = list.filter(function (e2) { return e2 && e2.page !== page; });
+      list = not_deleted(list.filter(function (e2) { return e2 && e2.page !== page; }));
       list.push({ page: page, name: label, date: ISO, dur: recDur, count: tags.length });
       await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
       // everything landed: flip this device's marker to done so the list stops

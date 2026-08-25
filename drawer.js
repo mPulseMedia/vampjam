@@ -54,6 +54,29 @@
   }
   function pending_clear() { try { localStorage.removeItem(PENDING_KEY); } catch (e) {} }
 
+  // deleted_pages — pages this device deleted. Registry reads can be minutes
+  // stale (CDN), so every display AND every registry write filters against
+  // this list; otherwise a delete based on a stale read resurrects rows.
+  var DELETED_KEY = 'vampjam_deleted_pages';
+  function deleted_get() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(DELETED_KEY) || '[]');
+      if (!Array.isArray(arr)) return [];
+      var cut = Date.now() - 7 * 24 * 3600 * 1000;
+      return arr.filter(function (t) { return t && t.page && t.ts > cut; }).slice(-50);
+    } catch (e) { return []; }
+  }
+  function deleted_has(page) {
+    return deleted_get().some(function (t) { return t.page === page; });
+  }
+  function deleted_add(page) {
+    try {
+      var arr = deleted_get();
+      if (!arr.some(function (t) { return t.page === page; })) arr.push({ page: page, ts: Date.now() });
+      localStorage.setItem(DELETED_KEY, JSON.stringify(arr));
+    } catch (e) {}
+  }
+
   var ICO_NEW = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>';
   var ICO_TRASH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4.8A0.8 0.8 0 0 1 9.8 4h4.4a0.8 0.8 0 0 1 0.8 0.8V7"/><path d="M6.5 7l0.9 12.2A1.6 1.6 0 0 0 9 20.6h6a1.6 1.6 0 0 0 1.6-1.4L17.5 7"/><path d="M10 11v6M14 11v6"/></svg>';
   var HERE = (location.pathname.split('/').pop() || '');
@@ -74,6 +97,7 @@
     // merge the static manifest with auto-registered recordings (sessions_auto.json),
     // oldest first by date so the drawer keeps newest at the bottom
     var all = window.VAMPJAM_SESSIONS.concat(window.VAMPJAM_SESSIONS_AUTO || []);
+    all = all.filter(function (s2) { return !deleted_has(s2.page); });
     var pend = pending_get();
     var pendDone = (pend && pend.done) ? pend.page : null;
     if (pend) {
@@ -270,6 +294,7 @@
         if (Array.isArray(arr) && arr.length) {
           window.VAMPJAM_SESSIONS_AUTO = arr;
           build_menu(); wire_links();
+          heal_registry(arr);
         }
         retry_if_pending();
       })
@@ -284,6 +309,7 @@
   }
   function delete_session(page, name) {
     if (!window.confirm('Delete "' + name + '"?\n\nThis removes it from the session list everywhere. Its moments go with it.')) return;
+    deleted_add(page);   // remember locally FIRST — stale registry reads can't bring it back
     var id = (page.split('p=')[1] || '').replace(/[^A-Za-z0-9_\-]/g, '');
     // freshest registry first, so we don't resurrect someone else's new entry
     fetch('https://raw.githubusercontent.com/mPulseMedia/vampjam/main/sessions_auto.json?v=' + Date.now(), { cache: 'no-store' })
@@ -291,7 +317,7 @@
       .catch(function () { return window.VAMPJAM_SESSIONS_AUTO || []; })
       .then(function (list) {
         if (!Array.isArray(list)) list = [];
-        list = list.filter(function (s2) { return s2 && s2.page !== page; });
+        list = list.filter(function (s2) { return s2 && s2.page !== page && !deleted_has(s2.page); });
         return sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'delete ' + id)
           .then(function () {
             if (id) return sync_write(id + '.json', JSON.stringify({ deleted: true, tags: [] }, null, 2), 'tombstone ' + id);
@@ -308,6 +334,21 @@
         if (typeof window.toast === 'function') window.toast('Delete failed — try again');
         else window.alert('Delete failed — try again');
       });
+  }
+  // if the shared registry still lists something this device deleted (a stale
+  // read got written over the delete), push a purged copy once per page load
+  var healed = false;
+  function heal_registry(arr) {
+    if (healed) return;
+    var dead = deleted_get();
+    if (!dead.length) return;
+    var newest = dead.reduce(function (m, t) { return Math.max(m, t.ts); }, 0);
+    if (Date.now() - newest < 60000) return;   // give the delete's own write time to land
+    if (!arr.some(function (s2) { return deleted_has(s2.page); })) return;
+    healed = true;
+    var purged = arr.filter(function (s2) { return !deleted_has(s2.page); });
+    sync_write('sessions_auto.json', JSON.stringify(purged, null, 2), 'purge deleted rows')
+      .catch(function () { healed = false; });
   }
   // while a pending recording hasn't appeared in the registry, keep checking
   function retry_if_pending() {

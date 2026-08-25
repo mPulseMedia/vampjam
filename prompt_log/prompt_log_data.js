@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "121 sync_done",
+        id: "122 delete_stick",
         expanded: true,
+        nodes: [
+          { text: "122 delete_stick", children: [
+            { text: "prompt_restate", children: [
+              { text: "Deleted sessions still show in the session list; opening one gives the play screen with no duration." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I delete some sessions, it seems like the underlying file might be deleted, but the session list still includes what I just deleted. If I click on it, it brings up the play screen, but file is clearly not loaded. Well, there\u2019s no duration shown." }
+            ]},
+            { text: "response", children: [
+              { text: "delete_stick", children: [
+                { text: "confirmed: your deletes DID work — all six sessions were really deleted" },
+                { text: "but the list file kept getting rebuilt from a stale copy, which brought rows back" },
+                { text: "your phone now remembers what it deleted: rows vanish instantly and can never be resurrected by a stale copy" },
+                { text: "the app also quietly repairs the shared list when it notices a ghost row" },
+                { text: "cleaned the list down to empty just now — the ghosts are gone" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: reload, open Sessions — only the 7 real sessions remain" },
+                { text: "record a test, delete it — the row should go and STAY gone" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "121 sync_done",
+        expanded: false,
         nodes: [
           { text: "121 sync_done", children: [
             { text: "prompt_restate", children: [

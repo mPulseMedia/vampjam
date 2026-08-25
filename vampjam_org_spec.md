@@ -273,7 +273,17 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   the repo working copy) gained session.html?p=2026_08_25_test, json label '2026-08-25 Test'.
   Its URL changed accordingly; the old page link is dead. drawer.js?v=121. Playwright: done
   marker suppresses syncing ✓, Test row has trash ✓, 12h format ✓.
-- NEXT → add entry 122 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 122 delete_stick — no page edit) deletes were not sticking: every registry write
+  (delete, record placeholder, final register) bases itself on a raw-CDN read that can be
+  minutes stale, so a later write resurrected already-deleted rows (diagnosis: ALL 6 session
+  jsons tombstoned, registry still listed 5). Fix: vampjam_deleted_pages tombstone list in
+  localStorage (7-day expiry, cap 50) — delete records it FIRST; the drawer filters display
+  AND all registry writes against it; record.html filters its two writes too; and a
+  once-per-load heal pushes a purged registry when a fetched copy still lists a locally
+  deleted page (>60s after the delete). Registry healed to [] now (repo write; Chrome
+  bridge was down). Note: sessions_auto.json should normally flow through the worker only —
+  repo writes of it risk clobbering (that contributed here). drawer.js?v=122.
+- NEXT → add entry 123 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
