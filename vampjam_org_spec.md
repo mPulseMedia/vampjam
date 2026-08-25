@@ -439,7 +439,15 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   and applies overrides to the source copy before write-back, so a stale fetched json can
   never clobber this device's recent flips. Playwright vs permanently-stale raw: heart on
   session → appears in Favorites ✓, un-heart from Favorites → session shows it off ✓.
-- NEXT → add entry 141 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 141 fav_push — no page edit) Paul's principle confirmed and closed: local overrides
+  must still land in the shared files. They already did (the heart tap writes the json
+  immediately); what was missing was self-healing when that write is lost or clobbered.
+  Now every merge compares the repo copy against this device's recent flips — if they
+  disagree, the page queues one 'push fav flips' save that writes the corrected tags up;
+  when they agree, no write fires. Handled both page variants (mapped/merged). Playwright:
+  repo-says-no + local-says-yes → healed push carries fav:true ✓; repo agrees → zero
+  writes ✓.
+- NEXT → add entry 142 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

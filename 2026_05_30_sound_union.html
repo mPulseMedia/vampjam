@@ -1212,6 +1212,7 @@
       if (arr && !local_edits_in_progress()) {
         // REPLACE local tags with repo — repo is the single source of truth.
         // No tombstone filtering: if it's in the repo, show it.
+        var ovFlipped = false;
         var mapped = arr
           .filter(function (t) { return t && t.id && typeof t.t === 'number'; })
           .map(function (t, i) {
@@ -1220,7 +1221,7 @@
             if (t.owner)   cp.owner = t.owner;
             if (t.fav) cp.fav = true;
             var ov = fav_over_all()[t.id];
-            if (ov) cp.fav = ov.v;               // this device's recent flip wins over a stale read
+            if (ov && !!cp.fav !== ov.v) { cp.fav = ov.v; ovFlipped = true; }   // recent local flip wins
             if (cp.fav) { try { localStorage.setItem('vampjam_fav_seen', '1'); } catch (eF) {} }
             else delete cp.fav;
             return cp;
@@ -1236,6 +1237,9 @@
         // Clear stale tombstones since repo is authoritative
         try { localStorage.removeItem(STORAGE_TOMBS); } catch (e) {}
         save_tags();
+        // the shared file disagrees with this device's recent flips: push them
+        // up so the cloud copy converges (a lost or clobbered save heals itself)
+        if (ovFlipped) queue_save_data_to_repo('push fav flips');
         // Only rebuild the list DOM when the repo actually differs — no periodic flash.
         var sig = JSON.stringify(tags);
         if (sig !== lastTagsSig) {

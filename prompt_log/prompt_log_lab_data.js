@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "140 fav_global",
+        id: "141 fav_push",
         expanded: true,
+        nodes: [
+          { text: "141 fav_push", children: [
+            { text: "prompt_restate", children: [
+              { text: "The local-memory changes should still move up into the shared files." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "But then the changes will be moved from the local memory global up to the shared files. I think that should still happen." }
+            ]},
+            { text: "response", children: [
+              { text: "fav_push", children: [
+                { text: "they already were — every heart tap writes the shared file right away; the local memory only covers the slow read-back" },
+                { text: "new: if that write ever gets lost, the page notices the shared file disagrees with your recent flips and pushes them up until the cloud matches" },
+                { text: "when they agree, nothing extra is written" }
+              ]},
+              { text: "verify", children: [
+                { text: "nothing to do — cloud and phone now converge on their own" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "140 fav_global",
+        expanded: false,
         nodes: [
           { text: "140 fav_global", children: [
             { text: "prompt_restate", children: [
