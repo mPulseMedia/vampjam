@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "138 fav_stick",
+        id: "139 push_lag",
         expanded: true,
+        nodes: [
+          { text: "139 push_lag", children: [
+            { text: "prompt_restate", children: [
+              { text: "Still not seeing the heart survive a reload." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I'm still not seeing the heart save on the page when I reload it" }
+            ]},
+            { text: "response", children: [
+              { text: "push_lag", children: [
+                { text: "you tested before the fix had left your Mac — the push robot was a few minutes behind; I gave it a nudge and it's on the server now" },
+                { text: "proof your heart saved: it's sitting in the session's file right now" },
+                { text: "the page itself can be cached up to ~10 minutes — force-reload once (or wait) and hearts will hold" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, then a hard reload of the session page" },
+                { text: "heart something, reload — lit; un-heart, reload — out" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "138 fav_stick",
+        expanded: false,
         nodes: [
           { text: "138 fav_stick", children: [
             { text: "prompt_restate", children: [

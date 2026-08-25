@@ -424,7 +424,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   heart + quick reload no longer races the 3s debounce). Playwright vs permanently-stale
   raw: tap → on ✓, hide-flush posts fav:true ✓, reload → still on ✓, unfav + reload →
   stays off ✓.
-- NEXT → add entry 139 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 139 push_lag — no page edit) Paul retested before fav_stick had left the Mac: the
+  robot had committed+merged but its push lagged a few minutes (ahead 2); a commit_msg
+  touch re-fired it and origin now carries _favov (confirmed via git show on main). His
+  earlier heart DID persist — 2026_08_07_sound_union.json holds "fav": true — the loss was
+  purely the stale-read display bug fav_stick fixes. Remaining lag is GH Pages HTML cache
+  (max-age 600): a hard reload or ~10 min.
+- NEXT → add entry 140 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
