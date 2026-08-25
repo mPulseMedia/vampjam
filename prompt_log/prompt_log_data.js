@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "101 split_land",
+        id: "102 section_size",
         expanded: true,
+        nodes: [
+          { text: "102 section_size", children: [
+            { text: "prompt_restate", children: [
+              { text: "How many minutes are the sections shown right now — or is it a percentage of the overall time?" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "How many minutes are the sections that are shown right now or is it done in a percentage of the overall time?" }
+            ]},
+            { text: "response", children: [
+              { text: "section_size", children: [
+                { text: "percentage: always 10 sections, each 1/10 of time" },
+                { text: "08-07 session (2:26) -> about 14.6 min per section" },
+                { text: "shortest, 01-17 (53m) -> about 5.3 min per section" },
+                { text: "only their on-screen WIDTH changes near the playhead" },
+                { text: "want fixed minutes (say, 10) instead? one small change" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "101 split_land",
+        expanded: false,
         nodes: [
           { text: "101 split_land", children: [
             { text: "prompt_restate", children: [
