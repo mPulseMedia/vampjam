@@ -330,7 +330,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   row) now sits in place from page load — empty light gray — instead of appearing when
   recording starts, so nothing new pops in. render_bar's empty state clears ticks/numbers
   and pins the times at 0:00. Playwright: bar visible pre-record, 6px, 0:00/0:00 ✓.
-- NEXT → add entry 129 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 129 delete_spin — no page edit) delete now shows its work: on confirm the row stays
+  put but grays to 0.45 (link inert) and the trash swaps for a small red ring spinner
+  (0.8s loop) while the two registry writes run; the row leaves only when they land. If the
+  write fails, the row and its trash button come back (local tombstone reverted) with a
+  'Delete failed' toast. drawer.js?v=123. Playwright (900ms-slow sync route): mid-delete
+  row grayed + spinner + no trash ✓, gone after writes ✓.
+- NEXT → add entry 130 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

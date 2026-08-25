@@ -76,6 +76,14 @@
       localStorage.setItem(DELETED_KEY, JSON.stringify(arr));
     } catch (e) {}
   }
+  function deleted_remove(page) {
+    try {
+      localStorage.setItem(DELETED_KEY, JSON.stringify(
+        deleted_get().filter(function (t) { return t.page !== page; })));
+    } catch (e) {}
+  }
+  // pages whose delete is mid-flight: still rendered, grayed, with a red spinner
+  var deleting = {};
 
   var ICO_NEW = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>';
   var ICO_TRASH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4.8A0.8 0.8 0 0 1 9.8 4h4.4a0.8 0.8 0 0 1 0.8 0.8V7"/><path d="M6.5 7l0.9 12.2A1.6 1.6 0 0 0 9 20.6h6a1.6 1.6 0 0 0 1.6-1.4L17.5 7"/><path d="M10 11v6M14 11v6"/></svg>';
@@ -97,7 +105,7 @@
     // merge the static manifest with auto-registered recordings (sessions_auto.json),
     // oldest first by date so the drawer keeps newest at the bottom
     var all = window.VAMPJAM_SESSIONS.concat(window.VAMPJAM_SESSIONS_AUTO || []);
-    all = all.filter(function (s2) { return !deleted_has(s2.page); });
+    all = all.filter(function (s2) { return !deleted_has(s2.page) || deleting[s2.page]; });
     var pend = pending_get();
     var pendDone = (pend && pend.done) ? pend.page : null;
     if (pend) {
@@ -121,10 +129,13 @@
       // venue name — and the row shows exactly the session's title
       var disp = (s.name && String(s.name).indexOf(s.date) >= 0) ? s.name : (s.date + ' ' + s.name);
       var isAuto = s.page.indexOf('session.html?p=') === 0;
-      var del = isAuto
-        ? '<button class="jam_del" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this session">' + ICO_TRASH + '</button>'
-        : '';
-      rows.push('<div class="jam_item' + cur + '"><a class="jam_link' + cur + '" href="' + s.page + '">'
+      var isDel = !!deleting[s.page];
+      var del = isDel
+        ? '<span class="jam_spin" aria-label="Deleting…"></span>'
+        : (isAuto
+          ? '<button class="jam_del" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this session">' + ICO_TRASH + '</button>'
+          : '');
+      rows.push('<div class="jam_item' + cur + (isDel ? ' jam_deleting' : '') + '"><a class="jam_link' + cur + '" href="' + s.page + '">'
         + '<span class="jam_left"><span class="jam_ico">' + ICO_CASS + '</span>'
         + '<span class="jam_name">' + esc(disp) + '</span></span>'
         + '<span class="menu_sub">' + right + '</span></a>'
@@ -281,7 +292,13 @@
       '.jam_sync{animation:jam_sync_pulse 1.6s ease-in-out infinite;font-size:13px;}' +
       '.jam_del{flex:0 0 auto;background:none;border:none;color:var(--muted);opacity:0.5;' +
         'padding:6px;margin-left:2px;min-height:32px;cursor:pointer;line-height:0;}' +
-      '.jam_del:hover{opacity:1;color:var(--danger,#c75450);}';
+      '.jam_del:hover{opacity:1;color:var(--danger,#c75450);}' +
+      '.jam_item.jam_deleting{opacity:0.45;}' +
+      '.jam_item.jam_deleting .jam_link{pointer-events:none;}' +
+      '@keyframes jam_spin_rot{to{transform:rotate(360deg)}}' +
+      '.jam_spin{flex:0 0 auto;width:15px;height:15px;margin:6px 8px 6px 8px;border-radius:50%;' +
+        'border:2px solid rgba(215,0,21,0.25);border-top-color:#d70015;' +
+        'display:inline-block;animation:jam_spin_rot 0.8s linear infinite;}';
     document.head.appendChild(st);
   })();
 
@@ -310,6 +327,8 @@
   function delete_session(page, name) {
     if (!window.confirm('Delete "' + name + '"?\n\nThis removes it from the session list everywhere. Its moments go with it.')) return;
     deleted_add(page);   // remember locally FIRST — stale registry reads can't bring it back
+    deleting[page] = true;
+    build_menu(); wire_links();   // row stays, grayed, trash -> red spinner
     var id = (page.split('p=')[1] || '').replace(/[^A-Za-z0-9_\-]/g, '');
     // freshest registry first, so we don't resurrect someone else's new entry
     fetch('https://raw.githubusercontent.com/mPulseMedia/vampjam/main/sessions_auto.json?v=' + Date.now(), { cache: 'no-store' })
@@ -324,6 +343,7 @@
           });
       })
       .then(function () {
+        delete deleting[page];
         window.VAMPJAM_SESSIONS_AUTO = (window.VAMPJAM_SESSIONS_AUTO || []).filter(function (s2) { return s2.page !== page; });
         var pend = pending_get();
         if (pend && pend.page === page) pending_clear();
@@ -331,6 +351,10 @@
         if (typeof window.toast === 'function') window.toast('Deleted ' + name);
       })
       .catch(function () {
+        // the delete didn't land: restore the row and its trash button
+        delete deleting[page];
+        deleted_remove(page);
+        build_menu(); wire_links();
         if (typeof window.toast === 'function') window.toast('Delete failed — try again');
         else window.alert('Delete failed — try again');
       });

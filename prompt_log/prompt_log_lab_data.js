@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "128 bar_early",
+        id: "129 delete_spin",
         expanded: true,
+        nodes: [
+          { text: "129 delete_spin", children: [
+            { text: "prompt_restate", children: [
+              { text: "When deleting a session, gray the row out and replace the trash with a red looping animation to show it is being processed." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I delete a session show it grayed out the row show the row kind of gray out like a darker color or grey to indicate it seem to be deleted maybe put in the trashcan icon not the red trashcan but a red looping animation that just shows dots or something looping around indicating that things are being processed" }
+            ]},
+            { text: "response", children: [
+              { text: "delete_spin", children: [
+                { text: "confirming a delete now grays the row and swaps the trash for a small red ring looping around" },
+                { text: "the row leaves only once the delete has really gone through" },
+                { text: "if it fails, the row comes back with its trash button and a note to try again" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: delete a test recording — watch it dim, spin, then go" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "128 bar_early",
+        expanded: false,
         nodes: [
           { text: "128 bar_early", children: [
             { text: "prompt_restate", children: [
