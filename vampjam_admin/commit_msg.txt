@@ -1,1 +1,1 @@
-split_land
+auto_commit
