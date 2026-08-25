@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "106 url_time",
+        id: "107 gap_big",
         expanded: true,
+        nodes: [
+          { text: "107 gap_big", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the gaps to the right of the playhead bigger — no gap visible there now." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make the gaps to the right of the playuhead bigger. I see no gap now" }
+            ]},
+            { text: "response", children: [
+              { text: "gap_big", children: [
+                { text: "my fault: I'd painted the gaps the same gray" },
+                { text: "as the unplayed bar - invisible on the right" },
+                { text: "gaps are page-background again, and wider (9px)" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, reload: clear cuts both sides of playhead" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "106 url_time",
+        expanded: false,
         nodes: [
           { text: "106 url_time", children: [
             { text: "prompt_restate", children: [

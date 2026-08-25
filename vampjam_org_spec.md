@@ -164,7 +164,10 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - (log 106 url_time — no page edit) every deliberate jump (highlight, number, marker, bar
   tap, +/- nudge) replaceState's ?t=<sec> into the URL inside seek_to, so reload resumes at
   the last jump; rides the existing ?t deep-link loader.
-- NEXT → add entry 107 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 107 gap_big — no page edit) my seg-tick recolor (panel_3) matched the unfilled bar —
+  gaps invisible right of the playhead. Ticks back to var(--bg) (contrasts fill AND bar in
+  all themes) and widened 5px → 9px.
+- NEXT → add entry 108 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
