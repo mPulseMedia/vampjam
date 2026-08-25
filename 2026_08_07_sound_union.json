@@ -8,8 +8,7 @@
     {
       "id": "t_1786400000001_hl01",
       "t": 317,
-      "label": "I See (~radio head)",
-      "fav": true
+      "label": "I See (~radio head)"
     },
     {
       "id": "t_1786400000002_hl02",
@@ -34,7 +33,8 @@
     {
       "id": "t_1786400000005_hl05",
       "t": 747,
-      "label": "Shelton’s song"
+      "label": "Shelton’s song",
+      "fav": true
     },
     {
       "id": "t_1786400000006_hl06",
