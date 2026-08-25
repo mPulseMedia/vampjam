@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "137 batch_land",
+        id: "138 fav_stick",
         expanded: true,
+        nodes: [
+          { text: "138 fav_stick", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tapping the heart doesn't stick — reload the page and the heart is gone." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "It seems like when I tap the heart to make something a favorite. It doesn\u2019t save that. If I reload the page the Heart\u2019s gone." }
+            ]},
+            { text: "response", children: [
+              { text: "fav_stick", children: [
+                { text: "the heart WAS saving — but the reload read back a stale copy and wiped it, same disease the deletes once had" },
+                { text: "your phone now remembers recent heart flips and lays them over any stale read, both on and off" },
+                { text: "and leaving the page fires any not-yet-sent save immediately, so a quick reload can't outrun it" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: heart a moment, reload — it stays lit" },
+                { text: "un-heart it, reload — it stays out" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "137 batch_land",
+        expanded: false,
         nodes: [
           { text: "137 batch_land", children: [
             { text: "prompt_restate", children: [

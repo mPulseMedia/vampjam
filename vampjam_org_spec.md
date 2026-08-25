@@ -415,7 +415,16 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   was missing because the Mac was closed, so batches 134-136 had never landed. On
   reconnect the queued files committed as focus_guard and the robot pushed within seconds
   — favorites.html, drawer v127, and the fixes confirmed live on origin.
-- NEXT → add entry 138 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 138 fav_stick — no page edit) hearts vanished on reload for the same reason deletes
+  once did: the save works but the raw CDN serves a minutes-stale json right back, and the
+  merge (repo-authoritative) wiped the flag. Fix on all 8 playback pages: recent heart
+  flips are stored per-device (STORAGE_TAGS + '_favov', 10-min expiry) and overlaid on
+  every merge — this device's recent flip beats a stale read in BOTH directions; plus a
+  visibilitychange flush fires any pending debounced save the moment the page hides (a
+  heart + quick reload no longer races the 3s debounce). Playwright vs permanently-stale
+  raw: tap → on ✓, hide-flush posts fav:true ✓, reload → still on ✓, unfav + reload →
+  stays off ✓.
+- NEXT → add entry 139 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
