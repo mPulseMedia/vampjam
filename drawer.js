@@ -183,6 +183,18 @@
     drag = null;
   }
 
+  // land_drawer: in the landscape split the sheet covers the Sessions button,
+  // so a tap OUTSIDE the open sheet (e.g. the right half) closes it.
+  var SPLIT_MQ = '(orientation: landscape) and (pointer: coarse) and (max-height: 520px)';
+  document.addEventListener('click', function (e) {
+    var d = drawer();
+    if (!d || !d.classList.contains('open')) return;
+    if (!window.matchMedia(SPLIT_MQ).matches) return;
+    if (d.contains(e.target)) return;
+    var c = caret(); if (c && c.contains(e.target)) return;
+    set_open(false);
+  }, true);
+
   window.addEventListener('touchstart', onStart, { passive: true });
   window.addEventListener('touchmove', onMove, { passive: false });
   window.addEventListener('touchend', onEnd, { passive: true });

@@ -9,8 +9,34 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "109 gap_small",
+        id: "110 land_fix",
         expanded: true,
+        nodes: [
+          { text: "110 land_fix", children: [
+            { text: "prompt_restate", children: [
+              { text: "On mobile (landscape) the caret tap and the swipe do nothing — the session list never opens." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On mobile when I click the cart or swipe, nothing happens nothing changes" }
+            ]},
+            { text: "response", children: [
+              { text: "land_fix", children: [
+                { text: "found it: the landscape styling was being overruled by later rules in the same file" },
+                { text: "moved the landscape drawer rules so they win; the list now opens as a sheet over the left half" },
+                { text: "new: tap anywhere on the right half to close the sheet" },
+                { text: "portrait untouched" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, phone landscape: tap Sessions or pull down — list should slide over the left half" },
+                { text: "tap the highlights side to dismiss it" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "109 gap_small",
+        expanded: false,
         nodes: [
           { text: "109 gap_small", children: [
             { text: "prompt_restate", children: [

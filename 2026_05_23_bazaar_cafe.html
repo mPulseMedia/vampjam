@@ -201,12 +201,7 @@
     body > * { grid-column: 1; min-width: 0; }
     .tag_list { grid-column: 2; grid-row: 1 / span 30; height: calc(100vh - 12px);
                 overflow-y: auto; margin: 6px 0; -webkit-overflow-scrolling: touch; }
-    /* land_drawer: session list opens as a sheet over the LEFT half only —
-       caret tap or pull-down; the right half never moves */
     .sticky_player { margin-left: 0; margin-right: 0; }
-    .session_drawer { position: fixed; top: 0; left: 0; width: 50vw; z-index: 95;
-                      box-shadow: 0 10px 26px rgba(0,0,0,0.3); border-radius: 0 0 14px 0; }
-    .session_drawer.open { max-height: 88vh; }
   }
   .tag_row {
     display: flex; align-items: center; gap: 5px;
@@ -387,6 +382,14 @@
   }
   #drawer_toggle { transition: none; }
   .drawer_caret { transition: transform 0.3s ease; }
+  /* land_drawer — placed AFTER the base .session_drawer rules so it wins:
+     in landscape split the session list opens as a sheet over the LEFT half
+     only (caret tap or pull-down); the right half never moves */
+  @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
+    .session_drawer { position: fixed; top: 0; left: 0; width: 50vw; z-index: 95;
+                      box-shadow: 0 10px 26px rgba(0,0,0,0.3); border-radius: 0 0 14px 0; }
+    .session_drawer.open { max-height: 88vh; }
+  }
   #drawer_toggle.open .drawer_caret { transform: rotate(180deg); }
   /* mobile landscape: let the sticky player background + shadow reach the screen edges */
   @media (orientation: landscape) and (pointer: coarse) {

@@ -172,7 +172,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   gestures unchanged.
 - (log 109 gap_small — no page edit) gaps back to 5px; the real fix was the color (var(--bg)),
   which stays.
-- NEXT → add entry 110 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 110 land_fix — no page edit) landscape drawer dead: the split-media .session_drawer
+  rules sat EARLIER in the stylesheet than the base rules, so position:fixed/88vh lost the
+  cascade (computed pos stayed relative, maxH 72vh→0 collapse in grid). Moved the land_drawer
+  block AFTER the base drawer rules on all 7 pages; drawer.js gained outside-tap-to-close for
+  the landscape sheet (it covers the Sessions button). Playwright: land tap open 343px /
+  outside-tap close / swipe open; portrait unchanged (510px).
+- NEXT → add entry 111 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
