@@ -29,8 +29,12 @@ window.prompt_log_data = [
                 { text: "band + section ticks now show in all three themes" },
                 { text: "the widening was happening; you just couldn't see it" }
               ]},
+              { text: "bar_preload", children: [
+                { text: "live check: the bar drew NOTHING until audio loaded" },
+                { text: "now it draws from the remembered session length" }
+              ]},
               { text: "verify", children: [
-                { text: "~2 min, reload: blue band around playhead + strip" }
+                { text: "~2 min, reload: full bar + band + strip before play" }
               ]}
             ]}
           ]}

@@ -144,6 +144,9 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   playhead to current-section end (how much is left). Found why he never SAW the expansion:
   zoom_band was rgba(255,255,255,.09) and fish_tick var(--bg) — both invisible on the white
   minimal theme; now row_active band + panel_3 ticks, visible in all three themes.
+- (100b bar_preload, same prompt) live check showed the whole bar waits for audio metadata —
+  blank on reload until play (worst on iPhone). eff_dur(): layout math falls back to the
+  drawer's cached session length, so markers/numbers/band/strips draw at load.
 - NEXT → add entry 101 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)

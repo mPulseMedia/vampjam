@@ -867,12 +867,24 @@
   var FISH_TICK_N = 10;   // number of equal time regions
   var FISH_E = 0.40;      // width fraction given to the expanded region
   var FISH_FALL = 0.7;    // width falloff per step away from the active region
+  // bar_preload — layout math falls back to the cached session length so the
+  // bar (markers, numbers, sections, strips) is fully drawn on load, before
+  // the audio itself has reported a duration.
+  function eff_dur() {
+    if (isFinite(player.duration) && player.duration > 0) return player.duration;
+    try {
+      var c = parseInt(localStorage.getItem('vampjam_dur_' + (location.pathname.split('/').pop() || '')), 10);
+      if (c > 0) return c;
+    } catch (e) {}
+    return NaN;
+  }
   function fish_active() {
-    return isFinite(player.duration) && player.duration > 300;
+    var d = eff_dur();
+    return isFinite(d) && d > 300;
   }
   function fish_seg() {
     var n = FISH_TICK_N;
-    return Math.min(n - 1, Math.floor((player.currentTime || 0) / (player.duration / n)));
+    return Math.min(n - 1, Math.floor((player.currentTime || 0) / (eff_dur() / n)));
   }
   var FISH_MIN = 0.045;   // no segment narrower than this fraction of the bar
   function fish_widths_at(a) {
@@ -932,7 +944,7 @@
     if (fishAnim) requestAnimationFrame(fish_anim_tick);
   }
   function fish_x(t) {
-    var d = player.duration;
+    var d = eff_dur();
     if (!fish_active()) return t / d;
     var n = FISH_TICK_N;
     var seg = Math.min(n - 1, Math.floor(t / (d / n)));
@@ -943,7 +955,7 @@
     return before + f * ws[seg];
   }
   function fish_x_inv(x) {
-    var d = player.duration;
+    var d = eff_dur();
     if (!isFinite(d) || d <= 0) return 0;
     if (!fish_active()) return x * d;
     var n = FISH_TICK_N;
@@ -997,7 +1009,7 @@
   function update_seg_remain() {
     var el = document.getElementById('seg_remain');
     if (!el) return;
-    var d = player.duration;
+    var d = eff_dur();
     if (!isFinite(d) || d <= 0 || !fish_active()) { el.style.display = 'none'; return; }
     var endT = (fish_seg() + 1) * (d / FISH_TICK_N);
     var x0 = fish_x(player.currentTime || 0);
@@ -1043,7 +1055,7 @@
     var wrap = document.getElementById('tag_numbers');
     if (!wrap) return;
     wrap.innerHTML = '';
-    if (!isFinite(player.duration) || player.duration <= 0) return;
+    if (!isFinite(eff_dur()) || eff_dur() <= 0) return;
     var nums = tag_number_map();
     tags.slice().sort(function (a, b) { return a.t - b.t; }).forEach(function (t) {
       var el = document.createElement('span');
@@ -1066,7 +1078,7 @@
   function render_tag_markers() {
     if (!tagMarkers) return;
     tagMarkers.innerHTML = '';
-    if (!isFinite(player.duration) || player.duration <= 0) return;
+    if (!isFinite(eff_dur()) || eff_dur() <= 0) return;
     tags.forEach(function (t) {
       var m = document.createElement('div');
       m.className = 'tag_marker' + (t.id === activeTagId ? ' active' : '');
