@@ -326,7 +326,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   radius 14 — same as Record's. Playwright: record 0 dots / 1 number / tap flashes row ✓,
   playback markers hidden + 2 number labels ✓, widths 354 vs 358 (same cap, different
   gutters) ✓.
-- NEXT → add entry 128 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 128 bar_early — no page edit) record.html: the time bar (with its 0:00 / 0:00 time
+  row) now sits in place from page load — empty light gray — instead of appearing when
+  recording starts, so nothing new pops in. render_bar's empty state clears ticks/numbers
+  and pins the times at 0:00. Playwright: bar visible pre-record, 6px, 0:00/0:00 ✓.
+- NEXT → add entry 129 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -82,7 +82,7 @@
 
   /* the growing time bar — same bones as the playback page, but it charts the
      recording so far: 10-minute segments, hour marks, moment dots. No playhead. */
-  .bar_wrap { width: 100%; display: none; }
+  .bar_wrap { width: 100%; }   /* visible from load — the bar waits in place */
   .num_strip { position: relative; height: 13px; margin-bottom: 3px; width: 100%; }
   .mom_no { position: absolute; transform: translateX(-50%); font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; padding: 2px 5px; }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-top: 2px; }
@@ -242,8 +242,12 @@
   // ---- the growing bar: segments, hour marks, moment dots (no playhead) ----
   function render_bar() {
     var t = elapsed();
-    if (t <= 0) { barWrap.style.display = 'none'; return; }
-    barWrap.style.display = 'block';
+    if (t <= 0) {
+      // not recording yet: the empty light-gray bar sits where it will live
+      recBar.innerHTML = ''; numStrip.innerHTML = '';
+      curTimeEl.textContent = '0:00'; durTimeEl.textContent = '0:00';
+      return;
+    }
     var html = '';
     for (var k = SEG; k < t; k += SEG) {
       html += '<div class="seg_tick" style="left:' + (k / t * 100) + '%"></div>';
@@ -306,7 +310,7 @@
       mediaRec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
       chunks = []; liveTags = []; recDur = 0; blob = null;
       momList.innerHTML = ''; momList.style.display = 'none';
-      recBar.innerHTML = ''; numStrip.innerHTML = ''; barWrap.style.display = 'none';
+      recBar.innerHTML = ''; numStrip.innerHTML = '';
       mediaRec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
       mediaRec.onstop = function () {
         blob = new Blob(chunks, { type: mime || 'audio/mp4' });
@@ -442,6 +446,8 @@
       if (rl) rl.addEventListener('click', function (e) { e.preventDefault(); upload(); });
     }
   }
+
+  render_bar();   // the bar shows from page load, empty and light gray
 
   // test hook: lets an automated check render the bar at any elapsed length
   window.__rec_set_elapsed = function (sec) { debugT = sec; render_bar(); };

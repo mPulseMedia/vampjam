@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "127 circle_gone",
+        id: "128 bar_early",
         expanded: true,
+        nodes: [
+          { text: "128 bar_early", children: [
+            { text: "prompt_restate", children: [
+              { text: "Show the time bar on the record screen before recording starts — all light gray, already in place." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On the record screen, even before you\u2019ve started recording place the time bar there, but just make it all light gray as that\u2019s where it will appear so it\u2019s not a new item once things start recording" }
+            ]},
+            { text: "response", children: [
+              { text: "bar_early", children: [
+                { text: "the bar now waits in place from the moment the page opens — light gray, 0:00 / 0:00" },
+                { text: "nothing new appears when you hit record; it just starts filling in" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Record — gray bar already sitting under the timer" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "127 circle_gone",
+        expanded: false,
         nodes: [
           { text: "127 circle_gone", children: [
             { text: "prompt_restate", children: [
