@@ -1,1 +1,1 @@
-local_keep
+auto_commit
