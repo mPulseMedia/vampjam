@@ -7,9 +7,8 @@
 <script src="theme.js"></script>
 <style>
   * { box-sizing: border-box; }
-  html, body { height: 100%; }
   body {
-    margin: 0; background: var(--bg); color: var(--fg);
+    margin: 0; background: var(--bg); color: var(--fg); min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     display: flex; flex-direction: column; align-items: center;
     padding: max(10px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
@@ -23,11 +22,11 @@
   .back_btn svg { width: 20px; height: 20px; }
   .name_row {
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: 100%; max-width: 560px; margin-top: 4vh;
+    width: 100%; max-width: 560px; margin-top: 6px;
   }
   #name_in {
     background: none; border: none; outline: none; text-align: center;
-    color: var(--muted); font: inherit; font-size: 21px; font-weight: 500;
+    color: var(--muted); font: inherit; font-size: 20px; font-weight: 500;
     width: auto; min-width: 40px; max-width: 80%;
     border-bottom: 1px dashed transparent; padding: 2px 4px;
   }
@@ -37,28 +36,79 @@
     color: var(--muted); opacity: 0.7; display: flex;
   }
   .pencil_btn svg { width: 17px; height: 17px; }
-  .stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; width: 100%; max-width: 560px; }
+
+  .stage { width: 100%; max-width: 560px; display: flex; flex-direction: column; align-items: center; gap: 16px; margin-top: 14px; }
+
+  /* control row mirrors the playback page — side buttons present but inert */
+  .ctrl_row { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+  .ctrl_btn {
+    width: 48px; height: 48px; border-radius: 50%; border: none;
+    background: var(--panel_2); color: var(--accent);
+    font: inherit; font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.3; pointer-events: none;   /* no seeking while recording */
+  }
   .rec_btn {
-    width: 108px; height: 108px; border-radius: 50%;
-    border: none; cursor: pointer; font-size: 44px; line-height: 1;
-    background: var(--panel_2); color: #d70015;
+    width: 92px; height: 92px; border-radius: 50%;
+    border: none; cursor: pointer; font-size: 38px; line-height: 1;
+    background: var(--panel_2); color: #d70015; flex: 0 0 auto;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 4px 18px rgba(0,0,0,0.18);
   }
   .rec_btn.recording { background: #d70015; color: #fff; animation: rec_pulse 1.2s ease-in-out infinite; }
-  @keyframes rec_pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(215,0,21,0.45); } 50% { box-shadow: 0 0 0 16px rgba(215,0,21,0); } }
+  @keyframes rec_pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(215,0,21,0.45); } 50% { box-shadow: 0 0 0 14px rgba(215,0,21,0); } }
   .rec_state { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 17px; min-height: 24px; font-variant-numeric: tabular-nums; }
   .rec_dot { width: 10px; height: 10px; border-radius: 50%; background: #d70015; opacity: 0; }
   .rec_state.on .rec_dot { opacity: 1; animation: dot_blink 1.2s ease-in-out infinite; }
   .rec_state.on { color: var(--fg); }
   @keyframes dot_blink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
   .tag_btn {
-    width: 100%; max-width: 420px; padding: 22px; border: none; border-radius: 14px;
+    width: 100%; max-width: 420px; padding: 20px; border: none; border-radius: 14px;
     background: var(--accent); color: var(--on_accent, #fff);
-    font: inherit; font-size: 21px; font-weight: 600; cursor: pointer;
+    font: inherit; font-size: 20px; font-weight: 600; cursor: pointer;
   }
   .tag_btn:disabled { opacity: 0.35; cursor: default; }
-  .status { min-height: 44px; text-align: center; color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 480px; word-break: break-word; }
+
+  /* the growing time bar — same bones as the playback page, but it charts the
+     recording so far: 10-minute segments, hour marks, moment dots. No playhead. */
+  .bar_wrap { width: 100%; display: none; }
+  .rec_bar {
+    width: 100%; height: 6px; background: var(--panel_3); border-radius: 3px;
+    position: relative; pointer-events: none;
+  }
+  .seg_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); transform: translateX(-50%); }
+  .hour_mark { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--muted); opacity: 0.7; border-radius: 1px; transform: translateX(-50%); z-index: 1; }
+  .hour_lbl { position: absolute; top: calc(100% + 5px); transform: translateX(-50%); font-size: 9px; line-height: 1; color: var(--muted); }
+  .mark_strip { position: relative; height: 16px; margin-top: 4px; width: 100%; }
+  .mom_dot {
+    position: absolute; top: 3px; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--marker, #98989d); border: 1.5px solid var(--bg);
+    transform: translateX(-50%); cursor: pointer;
+  }
+  .mom_dot::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; border-radius: 50%; }
+
+  /* moments list — same shape as the playback page's highlight list */
+  .mom_list {
+    width: 100%; background: var(--panel); border-radius: 14px; overflow: hidden;
+    padding: 4px 0 8px; display: none;
+    box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20);
+  }
+  .mom_row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 14px; min-height: 50px;
+  }
+  .mom_row.flash { background: var(--row_active); transition: background 0.25s; }
+  .mom_num { flex: 0 0 auto; color: var(--muted); font-size: 13px; min-width: 18px; text-align: right; font-variant-numeric: tabular-nums; }
+  .mom_name {
+    flex: 1 1 60px; min-width: 0; background: transparent; border: none; outline: none;
+    color: var(--fg); font: inherit; font-size: 17px; padding: 4px 2px;
+    border-bottom: 1px dashed transparent;
+  }
+  .mom_name:focus { border-bottom-color: var(--panel_3); }
+  .mom_name::placeholder { color: var(--muted); opacity: 0.6; }
+  .mom_time { flex: 0 0 auto; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+
+  .status { min-height: 40px; text-align: center; color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 480px; word-break: break-word; }
   .status a { color: var(--accent); font-weight: 600; }
 </style>
 </head>
@@ -79,9 +129,22 @@
 </div>
 
 <div class="stage">
-  <button class="rec_btn" id="rec_btn" aria-label="Record">&#9679;</button>
+  <div class="ctrl_row">
+    <button class="ctrl_btn" tabindex="-1">&minus;2m</button>
+    <button class="ctrl_btn" tabindex="-1">&minus;15s</button>
+    <button class="ctrl_btn" tabindex="-1">&minus;5s</button>
+    <button class="rec_btn" id="rec_btn" aria-label="Record">&#9679;</button>
+    <button class="ctrl_btn" tabindex="-1">+5s</button>
+    <button class="ctrl_btn" tabindex="-1">+15s</button>
+    <button class="ctrl_btn" tabindex="-1">+2m</button>
+  </div>
   <div class="rec_state" id="rec_state"><span class="rec_dot"></span><span id="rec_time">0:00</span></div>
   <button class="tag_btn" id="tag_btn" disabled>Tag the moment</button>
+  <div class="bar_wrap" id="bar_wrap">
+    <div class="rec_bar" id="rec_bar"></div>
+    <div class="mark_strip" id="mark_strip"></div>
+  </div>
+  <div class="mom_list" id="mom_list"></div>
   <div class="status" id="status"></div>
 </div>
 
@@ -90,6 +153,7 @@
   var WORKER_UPLOAD_URL = 'https://vampjam-upload.crimson-dust-a18d.workers.dev/';
   var WORKER_SYNC_URL   = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
   var RAW_BASE          = 'https://raw.githubusercontent.com/mPulseMedia/vampjam/main/';
+  var SEG = 600;   // the bar breaks into 10-minute segments, like playback
 
   var backBtn = document.getElementById('back_btn'),
       nameIn  = document.getElementById('name_in'),
@@ -98,6 +162,10 @@
       recState= document.getElementById('rec_state'),
       timeEl  = document.getElementById('rec_time'),
       tagBtn  = document.getElementById('tag_btn'),
+      barWrap = document.getElementById('bar_wrap'),
+      recBar  = document.getElementById('rec_bar'),
+      markStrip = document.getElementById('mark_strip'),
+      momList = document.getElementById('mom_list'),
       status  = document.getElementById('status');
 
   // Back always returns to the session list. Mid-recording it behaves like
@@ -114,13 +182,13 @@
   });
   pencil.addEventListener('click', function () { nameIn.focus(); nameIn.select(); });
 
-  // ---- session name: date by default; city prefixed when location is known ----
+  // ---- session name: date + local time by default; date + city with location ----
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   var d0 = new Date();
   var ISO = d0.getFullYear() + '-' + pad(d0.getMonth() + 1) + '-' + pad(d0.getDate());
   var h24 = d0.getHours();
   var TS  = ((h24 % 12) || 12) + ':' + pad(d0.getMinutes()) + ':' + pad(d0.getSeconds()) + (h24 < 12 ? 'a' : 'p');
-  var DEFT = ISO + ' ' + TS;           // date + local time, hh:mm:ss
+  var DEFT = ISO + ' ' + TS;
   nameIn.value = DEFT;
   function size_name() { nameIn.style.width = Math.max(3, nameIn.value.length + 1) + 'ch'; }
   nameIn.addEventListener('input', size_name); size_name();
@@ -140,7 +208,8 @@
 
   // ---- recording ----
   var mediaRec = null, chunks = [], startT = 0, timer = null, blob = null, mime = '', ext = 'm4a';
-  var liveTags = [], recDur = 0;
+  var liveTags = [], recDur = 0;   // liveTags: [{ t: seconds, row: element }]
+  var debugT = null;               // test hook: overrides elapsed for bar rendering
 
   function pickMime() {
     var c = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'];
@@ -149,8 +218,60 @@
     }
     return '';
   }
-  function fmt(s) { var m = Math.floor(s / 60), ss = Math.floor(s % 60); return m + ':' + pad(ss); }
-  function tick() { timeEl.textContent = fmt((Date.now() - startT) / 1000); }
+  function fmt(s) { s = Math.floor(s); var m = Math.floor(s / 60), ss = s % 60; return m + ':' + pad(ss); }
+  function elapsed() {
+    if (debugT !== null) return debugT;
+    if (mediaRec && mediaRec.state === 'recording') return (Date.now() - startT) / 1000;
+    return recDur;
+  }
+  function tick() { timeEl.textContent = fmt(elapsed()); render_bar(); }
+
+  // ---- the growing bar: segments, hour marks, moment dots (no playhead) ----
+  function render_bar() {
+    var t = elapsed();
+    if (t <= 0) { barWrap.style.display = 'none'; return; }
+    barWrap.style.display = 'block';
+    var html = '';
+    for (var k = SEG; k < t; k += SEG) {
+      html += '<div class="seg_tick" style="left:' + (k / t * 100) + '%"></div>';
+    }
+    for (var h = 3600; h < t; h += 3600) {
+      var x = h / t * 100;
+      html += '<div class="hour_mark" style="left:' + x + '%"></div>' +
+              '<div class="hour_lbl" style="left:' + x + '%">' + (h / 3600) + 'h</div>';
+    }
+    recBar.innerHTML = html;
+    var marks = '';
+    liveTags.forEach(function (lt, i) {
+      marks += '<div class="mom_dot" data-i="' + i + '" style="left:' + (lt.t / t * 100) + '%" title="moment ' + (i + 1) + ' @ ' + fmt(lt.t) + '"></div>';
+    });
+    markStrip.innerHTML = marks;
+  }
+  // a dot doesn't move any playhead (there is none) — it scrolls to its row
+  markStrip.addEventListener('click', function (e) {
+    var d = e.target.closest ? e.target.closest('.mom_dot') : null;
+    if (!d) return;
+    var lt = liveTags[parseInt(d.getAttribute('data-i'), 10)];
+    if (!lt || !lt.row) return;
+    lt.row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    lt.row.classList.add('flash');
+    setTimeout(function () { lt.row.classList.remove('flash'); }, 900);
+  });
+
+  // ---- moments list: grows with every tag; names are editable and ship with the session ----
+  function add_moment() {
+    var sec = Math.round(elapsed() * 10) / 10;
+    var row = document.createElement('div');
+    row.className = 'mom_row';
+    var n = liveTags.length + 1;
+    row.innerHTML = '<span class="mom_num">' + n + '</span>' +
+      '<input class="mom_name" type="text" placeholder="name this moment" autocomplete="off">' +
+      '<span class="mom_time">' + fmt(sec) + '</span>';
+    momList.appendChild(row);
+    momList.style.display = 'block';
+    liveTags.push({ t: sec, row: row });
+    render_bar();
+  }
 
   async function start() {
     try {
@@ -158,6 +279,8 @@
       mime = pickMime(); ext = mime.indexOf('webm') >= 0 ? 'webm' : 'm4a';
       mediaRec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
       chunks = []; liveTags = []; recDur = 0; blob = null;
+      momList.innerHTML = ''; momList.style.display = 'none';
+      recBar.innerHTML = ''; markStrip.innerHTML = ''; barWrap.style.display = 'none';
       mediaRec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
       mediaRec.onstop = function () {
         blob = new Blob(chunks, { type: mime || 'audio/mp4' });
@@ -181,6 +304,7 @@
     recBtn.classList.remove('recording'); recBtn.innerHTML = '&#9679;';
     recState.classList.remove('on');
     tagBtn.disabled = true;
+    render_bar();
   }
   recBtn.addEventListener('click', function () {
     if (mediaRec && mediaRec.state === 'recording') stop(); else start();
@@ -188,8 +312,7 @@
 
   tagBtn.addEventListener('click', function () {
     if (!mediaRec || mediaRec.state !== 'recording') return;
-    liveTags.push(Math.round(((Date.now() - startT) / 1000) * 10) / 10);
-    status.textContent = liveTags.length + ' moment' + (liveTags.length === 1 ? '' : 's') + ' tagged';
+    add_moment();
   });
 
   // ---- upload + auto session (stop -> straight to a ready session) ----
@@ -201,12 +324,11 @@
   function rec_id() {
     var id = slug(nameIn.value) || 'rec';
     if (!/\d{4}_\d{2}_\d{2}/.test(id)) id += '_' + ISO.replace(/-/g, '_');
-    var t6 = TS.replace(/:/g, '_');            // 12_38_05
-    if (id.indexOf(t6) < 0) id += '_' + t6;    // keep ids unique without doubling the time
+    var t6 = TS.replace(/:/g, '_');
+    if (id.indexOf(t6) < 0) id += '_' + t6;
     return id;
   }
   function not_deleted(list) {
-    // never re-write rows this device has deleted (registry reads can be stale)
     var dead = [];
     try { dead = (JSON.parse(localStorage.getItem('vampjam_deleted_pages') || '[]') || []).map(function (t) { return t.page; }); } catch (e) {}
     return list.filter(function (e2) { return e2 && dead.indexOf(e2.page) < 0; });
@@ -227,10 +349,8 @@
     var id = rec_id();
     var page = 'session.html?p=' + id;
     var label = nameIn.value || DEFT;
-    // new convention: date first — '2026-08-25 12:38:05' or '2026-08-25 Sound Union'
     if (label.indexOf(ISO) < 0) label = ISO + ' ' + label;
     // placeholder first: every device's session list shows a syncing… row
-    // for this recording while the upload is still in flight
     try {
       var pre = [];
       try {
@@ -244,7 +364,7 @@
         localStorage.setItem('vampjam_pending_session',
           JSON.stringify({ page: page, name: label, date: ISO, dur: recDur, count: liveTags.length, ts: Date.now() }));
       } catch (e3) {}
-    } catch (ePre) {}   // placeholder is best-effort; the upload still proceeds
+    } catch (ePre) {}
     try {
       var r = await fetch(WORKER_UPLOAD_URL, {
         method: 'POST',
@@ -259,8 +379,10 @@
       if (!j.ok) throw new Error('upload ' + (j.error || r.status));
       status.textContent = 'Creating the session…';
       var now = Date.now();
-      var tags = liveTags.map(function (t, i) {
-        return { id: 't_' + now + '_lt' + (i + 1), t: t, label: '' };
+      var tags = liveTags.map(function (lt, i) {
+        var nm = '';
+        try { nm = (lt.row.querySelector('.mom_name').value || '').trim(); } catch (e) {}
+        return { id: 't_' + now + '_lt' + (i + 1), t: lt.t, label: nm };
       });
       await sync_write(id + '.json', JSON.stringify({
         audio: { label: label, url: j.url, kind: 'url' },
@@ -274,8 +396,6 @@
       list = not_deleted(list.filter(function (e2) { return e2 && e2.page !== page; }));
       list.push({ page: page, name: label, date: ISO, dur: recDur, count: tags.length });
       await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
-      // everything landed: flip this device's marker to done so the list stops
-      // saying syncing… immediately (other devices catch up on their next poll)
       try {
         localStorage.setItem('vampjam_pending_session',
           JSON.stringify({ page: page, name: label, date: ISO, dur: recDur, count: tags.length, ts: Date.now(), done: true }));
@@ -289,13 +409,16 @@
         setTimeout(function () { window.location.href = 'index.html#sessions'; }, 900);
       }
     } catch (err) {
-      pendingBack = false;   // stay here so the retry link works
+      pendingBack = false;
       status.innerHTML = 'Something went wrong (' + (err && err.message ? err.message : err) + ') — ' +
         '<a href="#" id="retry_link">try again</a>';
       var rl = document.getElementById('retry_link');
       if (rl) rl.addEventListener('click', function (e) { e.preventDefault(); upload(); });
     }
   }
+
+  // test hook: lets an automated check render the bar at any elapsed length
+  window.__rec_set_elapsed = function (sec) { debugT = sec; render_bar(); };
 })();
 </script>
 

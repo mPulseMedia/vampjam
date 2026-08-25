@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "122 delete_stick",
+        id: "123 rec_live",
         expanded: true,
+        nodes: [
+          { text: "123 rec_live", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the record page carry the playback page's elements: big record button in place of play, inert seek buttons, a time bar that grows as it records (10-minute increments, hour markers), moments appearing below as I tag them, dots on the bar in the right places — non-interactive except maybe scrolling to the moment (no playhead exists)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, this is working really nicely. Now I wanna make the record page Carie many of the elements of the playback page. Now instead of play the big play button there\u2019s a big record button and the plus or -22 minutes the side buttons don\u2019t work and as far as the time bar that\u2019s gonna be, I\u2019d like you to kind of create that as the file is being created well first let me describe that when I hit the tag a new moment and that layout looks similar to the regular replay screen. That tag tag the moment button. I do want to see the moons down below that are created when I\u2019ve hit to tag and so that will grow overtime and I want the playback bar the time bar to grow overtime incrementally adding you know the duration as it continues to record incrementally in a breaking and breaking into those increments that\u2019s 10 minute increments with the hour marker and also when I create a moment, adding the the little circle in the right place and this circle in the bars will be non-interactive I mean maybe if I hit the circles it will scroll to the right tag button, but it won\u2019t change the head because there isn\u2019t actually a play head being recorded" }
+            ]},
+            { text: "response", children: [
+              { text: "rec_live", children: [
+                { text: "the record screen now looks like the playback screen mid-session" },
+                { text: "big record button sits where play sits; the six seek buttons are there but dimmed and inert" },
+                { text: "the time bar appears when you start and grows live — 10-minute breaks form as they accrue, hour bars with 1h 2h labels" },
+                { text: "every Tag adds a dot on the bar AND a row below — number, a name you can type right there, and its time" },
+                { text: "names you type during the jam ship with the session as the moments' names" },
+                { text: "tapping a dot scrolls to its row and flashes it — no playhead to move" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Record, start, tag a few moments, type a name on one" },
+                { text: "watch the bar grow; tap a dot — its row flashes" },
+                { text: "stop; open the session — your typed names are on the moments" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "122 delete_stick",
+        expanded: false,
         nodes: [
           { text: "122 delete_stick", children: [
             { text: "prompt_restate", children: [

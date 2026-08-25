@@ -283,7 +283,18 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   deleted page (>60s after the delete). Registry healed to [] now (repo write; Chrome
   bridge was down). Note: sessions_auto.json should normally flow through the worker only —
   repo writes of it risk clobbering (that contributed here). drawer.js?v=122.
-- NEXT → add entry 123 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 123 rec_live — no page edit) record.html now mirrors the playback page while
+  recording. Control row with the big record button where play sits and the six seek buttons
+  present but inert (0.3 opacity, pointer-events none — nothing to seek). A growing time
+  bar appears once recording starts: it re-proportions every 250ms tick, breaking into
+  10-minute segments (5px bg gaps) as they accrue, hour bars + 'Nh' labels, and a dot strip
+  below with one dot per tagged moment (positions shift as total time grows). No playhead —
+  tapping a dot scrolls to and flashes its row instead. Below, a playback-style moments
+  list grows with each Tag: number, EDITABLE name field ('name this moment'), time. Names
+  typed live ship as the tags' labels in the session json. window.__rec_set_elapsed test
+  hook. Playwright: 2 tags → 2 rows + 2 dots ✓, 4000s render → 6 seg ticks + 1h@90% ✓, dot
+  click flashes row ✓, typed name 'killer riff' arrives in the uploaded tags ✓.
+- NEXT → add entry 124 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
