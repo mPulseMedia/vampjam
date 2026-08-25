@@ -874,8 +874,8 @@
     return Math.min(n - 1, Math.floor((player.currentTime || 0) / (player.duration / n)));
   }
   var FISH_MIN = 0.045;   // no segment narrower than this fraction of the bar
-  function fish_widths() {
-    var n = FISH_TICK_N, a = fish_seg(), i;
+  function fish_widths_at(a) {
+    var n = FISH_TICK_N, i;
     var raw = new Array(n);
     for (i = 0; i < n; i++) {
       if (i !== a) raw[i] = Math.pow(FISH_FALL, Math.abs(i - a) - 1);
@@ -904,6 +904,30 @@
     flex.forEach(function (j) { sumRaw2 += raw[j]; });
     flex.forEach(function (j) { ws[j] = raw[j] * remaining / sumRaw2; });
     return ws;
+  }
+
+  // seek_glide — a jump animates the section widths from their initial
+  // to their ending layout over FISH_ANIM_MS (smooth, ease-in-out).
+  var FISH_ANIM_MS = 1000;
+  var fishAnim = null;   // {from:[], to:[], t0}
+  function fish_widths() {
+    var target = fish_widths_at(fish_seg());
+    if (!fishAnim) return target;
+    var p = (performance.now() - fishAnim.t0) / FISH_ANIM_MS;
+    if (p >= 1) { fishAnim = null; return target; }
+    var e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+    var out = new Array(fishAnim.to.length);
+    for (var i = 0; i < out.length; i++) {
+      out[i] = fishAnim.from[i] + (fishAnim.to[i] - fishAnim.from[i]) * e;
+    }
+    return out;
+  }
+  function fish_anim_tick() {
+    update_fisheye();
+    if (isFinite(player.duration) && player.duration > 0) {
+      seekFill.style.width = (fish_x(player.currentTime) * 100) + '%';
+    }
+    if (fishAnim) requestAnimationFrame(fish_anim_tick);
   }
   function fish_x(t) {
     var d = player.duration;
@@ -1183,7 +1207,18 @@
   function seek_to(sec){
     try {
       var d = isFinite(player.duration) ? player.duration : Infinity;
+      var from = fish_active() ? fish_widths() : null;  // display widths BEFORE the jump
       player.currentTime = Math.max(0, Math.min(sec, d));
+      if (from) {
+        var to = fish_widths_at(fish_seg());
+        for (var i = 0; i < to.length; i++) {
+          if (Math.abs(to[i] - from[i]) > 0.001) {
+            fishAnim = { from: from, to: to, t0: performance.now() };
+            requestAnimationFrame(fish_anim_tick);
+            break;
+          }
+        }
+      }
     } catch (e) {}
   }
   function nudge(d) { seek_to((player.currentTime || 0) + d); }

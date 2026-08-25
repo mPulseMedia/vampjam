@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "97 moment_number",
+        id: "98 seek_glide",
         expanded: true,
+        nodes: [
+          { text: "98 seek_glide", children: [
+            { text: "prompt_restate", children: [
+              { text: "A playhead jump should be a one-second transition: the section widths animate smoothly from their initial to their ending layout — smooth but quick." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When you jump from one part of the play head to another part of the play head do that as a one second transition, and during that transition change the width of the sections between their initial point and their ending point make it smooth but quick enough" }
+            ]},
+            { text: "response", children: [
+              { text: "seek_glide", children: [
+                { text: "jumps now glide: sections re-widen over 1 s" },
+                { text: "markers, numbers, ticks, fill move together" },
+                { text: "eased start/end; a jump mid-glide re-aims" },
+                { text: "every jump path gets it: taps, numbers, +/-" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, reload: tap a far moment, watch the bar" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "97 moment_number",
+        expanded: false,
         nodes: [
           { text: "97 moment_number", children: [
             { text: "prompt_restate", children: [

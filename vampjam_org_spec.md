@@ -132,7 +132,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   above the seek bar at each separator (labels closer than 16px hide; the fisheye keeps
   current+adjacent readable — his fallback idea), number beside each name in the list,
   numbers click-to-seek. His timecode idea dropped per his own correction: number only.
-- NEXT → add entry 98 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 98 seek_glide — no page edit) playhead jumps animate the fisheye section widths from
+  initial to ending layout over 1 s (ease-in-out cubic, FISH_ANIM_MS): fish_widths split
+  into fish_widths_at(seg) + blending fish_widths(); seek_to captures display widths
+  before the jump and runs a rAF loop moving markers, numbers, ticks, band, fill together.
+- NEXT → add entry 99 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
