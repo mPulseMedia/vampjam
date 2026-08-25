@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "114 rec_screen",
+        id: "115 record_link",
         expanded: true,
+        nodes: [
+          { text: "115 record_link", children: [
+            { text: "prompt_restate", children: [
+              { text: "Still seeing the old record page (screenshot of admin.html)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I still see the old record page." }
+            ]},
+            { text: "response", children: [
+              { text: "record_link", children: [
+                { text: "that screenshot is the Admin page — it stays as the setup page" },
+                { text: "the new simple screen is its own page: vampsf.com/record.html" },
+                { text: "checked the repo: both the new page and the new menu link are live" }
+              ]},
+              { text: "verify", children: [
+                { text: "open vampsf.com/record.html directly" },
+                { text: "or reload any session once, then Sessions > New recording" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "114 rec_screen",
+        expanded: false,
         nodes: [
           { text: "114 rec_screen", children: [
             { text: "prompt_restate", children: [

@@ -211,7 +211,12 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   recording' row now opens record.html. admin.html left as the setup/instructions page.
   Playwright (fake mic + geo, routed workers): name 'San Francisco — 2026-08-25', 2 live
   tags, stop → 'Session ready ✓' with correct json + registry posts.
-- NEXT → add entry 115 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 115 record_link — no page edit) Paul saw the old Record-a-jam block and thought the
+  ship missed: he was on admin.html, which stays alive as the setup page. record.html and the
+  repointed drawer are confirmed live in the repo (raw checks). Answer: the new screen is
+  vampsf.com/record.html; reload any session page once so the cached drawer.js picks up the
+  New-recording link.
+- NEXT → add entry 116 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
