@@ -1,1 +1,1 @@
-push_lag
+auto_commit
