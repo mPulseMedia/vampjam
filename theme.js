@@ -19,7 +19,8 @@
         '--accent_2_hover': '#e0bb6e', '--accent_2_active': '#b88e3d',
         '--playhead': '#ffd84a',
         '--marker': '#ffffff',
-        '--row_active': '#7a4f2a'
+        '--row_active': '#7a4f2a',
+        '--edit_bg': '#ffffff'
       }
     },
     minimal: {
@@ -34,11 +35,28 @@
         '--accent_2_hover': '#48484a', '--accent_2_active': '#2c2c2e',
         '--playhead': '#0071e3',
         '--marker': '#98989d',
-        '--row_active': '#e3edfc'
+        '--row_active': '#e3edfc',
+        '--edit_bg': '#ffffff'
+      }
+    },
+    night: {
+      name: 'Night',
+      vars: {
+        '--bg': '#16181c', '--panel': '#1f2228', '--panel_2': '#262a31', '--panel_3': '#333842',
+        '--fg': '#e8e8ea', '--muted': '#9a9aa2',
+        '--accent': '#4c9eff', '--accent_2': '#a7abb3',
+        '--danger': '#ff6b64', '--warn': '#e5c078',
+        '--on_accent': '#0b0d0f',
+        '--accent_hover': '#6cb0ff', '--accent_active': '#3a8ae6',
+        '--accent_2_hover': '#c2c6cd', '--accent_2_active': '#8f939b',
+        '--playhead': '#4c9eff',
+        '--marker': '#6b6f78',
+        '--row_active': '#24303f',
+        '--edit_bg': '#22262d'
       }
     }
   };
-  var ORDER = ['yellow', 'minimal'];
+  var ORDER = ['yellow', 'minimal', 'night'];
 
   function saved() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
   function current() { var s = saved(); return THEMES[s] ? s : 'minimal'; }

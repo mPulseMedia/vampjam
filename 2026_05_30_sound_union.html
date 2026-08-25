@@ -261,7 +261,7 @@
     flex: 1 1 40px; min-width: 0;
     touch-action: manipulation;   /* block double-tap zoom without preventDefault (keeps iOS keyboard) */
   }
-  .tag_label:focus { outline: none; background: #ffffff; box-shadow: inset 0 0 0 1px var(--panel_3); }
+  .tag_label:focus { outline: none; background: var(--edit_bg, #ffffff); box-shadow: inset 0 0 0 1px var(--panel_3); }
   .tag_label[readonly] { cursor: pointer; }
   .tag_actions { display: flex; gap: 2px; }
   .empty { color: var(--muted); padding: 14px; text-align: center; font-size: 13px; }
@@ -796,8 +796,8 @@
     var existing = tagList.querySelector('.playhead_line');
     if (existing) existing.remove();
     if (sortMode !== 'time') return;          // only meaningful in time-sorted view
-    if (!isFinite(player.duration)) return;
     if (!tags.length) return;
+    // no duration guard: the line shows from the moment the page loads (t=0)
     var ct = player.currentTime || 0;
     var sorted = tags.slice().sort(function (a, b) { return a.t - b.t; });
     var nextIdx = sorted.findIndex(function (t) { return t.t > ct; });
@@ -1555,6 +1555,7 @@
       tagList.appendChild(row);
     });
     render_tag_markers();
+    render_playhead_line();   // the line is ALWAYS visible among the moments
   }
 
   // ---- drag-to-reorder (pointer events) ----

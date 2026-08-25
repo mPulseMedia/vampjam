@@ -9,8 +9,57 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "94 dur_swipe",
+        id: "96 playhead_always",
         expanded: true,
+        nodes: [
+          { text: "96 playhead_always", children: [
+            { text: "prompt_restate", children: [
+              { text: "On page load — and at all times — the dark blue horizontal playhead line should be visible among the moments, below the moment being played." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Loading a page, and at all times there should always be the dark blue horizontal line which represents where the play head is among the moments listed below the moment being" }
+            ]},
+            { text: "response", children: [
+              { text: "playhead_always", children: [
+                { text: "line draws at load (0:00 = above first moment)" },
+                { text: "cause: waited for audio duration; guard removed" },
+                { text: "every list redraw now re-places the line" }
+              ]},
+              { text: "theme_night", children: [
+                { text: "interrupted mid-ship earlier — shipped now" },
+                { text: "Admin -> Theme -> Night: dark gray, blue accent" },
+                { text: "rename field got a dark background too" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: reload a session, line sits in the list" },
+                { text: "Admin -> Night; every page follows" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "95 theme_night",
+        expanded: false,
+        nodes: [
+          { text: "95 theme_night", children: [
+            { text: "prompt_restate", children: [
+              { text: "Add a night mode as the third selectable style; take it all the way to live." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Add a night mode as the third style that I can choose and do your best, taking it all the way to live" }
+            ]},
+            { text: "response", children: [
+              { text: "Night theme added to theme.js (bg #16181c, fg #e8e8ea, accent #4c9eff, matching hovers/playhead/row-highlight); switch on Admin shows it automatically." },
+              { text: "New --edit_bg var: the rename field was hard-coded white and would have been unreadable in Night; all three themes set it (white / white / #22262d)." },
+              { text: "Ship was interrupted by the next prompt at 6:35p; rode to the Mac with 96 in the night_playhead commit." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "94 dur_swipe",
+        expanded: false,
         nodes: [
           { text: "94 dur_swipe", children: [
             { text: "prompt_restate", children: [
