@@ -1,1 +1,1 @@
-fav_stick_push
+auto_commit
