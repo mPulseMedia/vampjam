@@ -479,6 +479,23 @@
     var id = rec_id_from(label, o.dateIso, o.ts);
     var page = 'session.html?p=' + id;
     var ISO2 = o.dateIso, recDur2 = o.dur || 0;
+    // remember which cloud page this local copy becomes, so the session list
+    // shows ONE row that flips local -> syncing -> normal (never two)
+    if (o.locId) {
+      try {
+        var db0 = await rec_db();
+        await new Promise(function (res) {
+          var tx = db0.transaction('recs', 'readwrite');
+          var st0 = tx.objectStore('recs');
+          var g0 = st0.get(o.locId);
+          g0.onsuccess = function () {
+            var mm = g0.result;
+            if (mm) { mm.cloudPage = page; st0.put(mm); }
+          };
+          tx.oncomplete = res; tx.onerror = res;
+        });
+      } catch (eCp) {}
+    }
     // placeholder first: every device's session list shows a syncing… row
     try {
       var pre = [];
@@ -487,7 +504,7 @@
         if (pr.ok) { var pj = await pr.json(); if (Array.isArray(pj)) pre = pj; }
       } catch (e0) {}
       pre = not_deleted(pre.filter(function (e2) { return e2 && e2.page !== page; }));
-      pre.push({ page: page, name: label, date: ISO2, dur: recDur2, count: o.tags.length, pending: true });
+      pre.push({ page: page, name: label, date: ISO2, dur: recDur2, count: o.tags.length, pending: true, ts: Date.now() });
       await sync_write('sessions_auto.json', JSON.stringify(pre, null, 2), 'placeholder ' + id);
       try {
         localStorage.setItem('vampjam_pending_session',

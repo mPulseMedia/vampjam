@@ -104,8 +104,28 @@
     if (!menu || !window.VAMPJAM_SESSIONS) return;   // no manifest -> keep static markup
     // merge the static manifest with auto-registered recordings (sessions_auto.json),
     // oldest first by date so the drawer keeps newest at the bottom
-    var all = window.VAMPJAM_SESSIONS.concat(window.VAMPJAM_SESSIONS_AUTO || [])
-      .concat(window.VAMPJAM_SESSIONS_LOCAL || []);
+    var autos = (window.VAMPJAM_SESSIONS_AUTO || []).slice();
+    var locals = (window.VAMPJAM_SESSIONS_LOCAL || []).slice();
+    // one row per recording: if the cloud row for a local copy is fully
+    // registered, the cloud row wins; while it's only a placeholder (or
+    // absent), the local row wins and its placeholder twin is hidden
+    var autoByPage = {};
+    autos.forEach(function (a2) { autoByPage[a2.page] = a2; });
+    locals = locals.filter(function (L) {
+      var twin = L.cloudPage && autoByPage[L.cloudPage];
+      return !(twin && !twin.pending);
+    });
+    var localCloud = {};
+    locals.forEach(function (L) { if (L.cloudPage) localCloud[L.cloudPage] = true; });
+    autos = autos.filter(function (a2) { return !(a2.pending && localCloud[a2.page]); });
+    // a placeholder that never resolved stops breathing after 30 min
+    autos = autos.map(function (a2) {
+      if (a2.pending && a2.ts && (Date.now() - a2.ts) > 30 * 60 * 1000) {
+        a2 = Object.assign({}, a2); delete a2.pending;
+      }
+      return a2;
+    });
+    var all = window.VAMPJAM_SESSIONS.concat(autos).concat(locals);
     all = all.filter(function (s2) { return !deleted_has(s2.page) || deleting[s2.page]; });
     var pend = pending_get();
     var pendDone = (pend && pend.done) ? pend.page : null;
@@ -342,7 +362,7 @@
               .filter(function (m) { return m && m.state && m.state !== 'uploaded'; })
               .map(function (m) {
                 return { page: 'session.html?local=' + m.id, name: m.label || m.date, date: m.date,
-                         dur: m.dur || 0, count: (m.tags || []).length, _local: true };
+                         dur: m.dur || 0, count: (m.tags || []).length, _local: true, cloudPage: m.cloudPage || null };
               });
             window.VAMPJAM_SESSIONS_LOCAL = arr;
             if (arr.length) { build_menu(); wire_links(); }

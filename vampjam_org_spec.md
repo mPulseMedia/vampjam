@@ -361,7 +361,17 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   wrecked record page still leaves a listed, recoverable, auto-uploading local recording
   (recovery flow from 130 already retries it). Playwright: bar 9px, band gone, both label
   sizes 13px, meta present 0.5s after start ✓.
-- NEXT → add entry 132 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 132 row_one — no page edit) the duplicate rows in Paul's screenshot were the local
+  IDB row and its unlinked cloud placeholder. Now linked: upload_core stamps the local
+  meta with cloudPage the moment the upload starts; drawer (v125) dedupes to ONE row per
+  recording — local row wins while the cloud side is absent or still a placeholder (its
+  pending twin hidden); the registered cloud row wins once real (local twin hidden until
+  its cleanup catches up). Placeholder entries now carry ts and stop showing syncing…
+  after 30 min (stale ghosts stay visible + deletable, just not breathing). The local
+  copy is still deleted ONLY after the cloud registration confirms — the 2.5-hour-session
+  guarantee stands. Playwright: placeholder+local → 1 local row ✓, registered → 1 plain
+  row ✓, 40-min ghost → no syncing ✓.
+- NEXT → add entry 133 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

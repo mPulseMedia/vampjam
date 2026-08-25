@@ -9,8 +9,34 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "131 bar_tune",
+        id: "132 row_one",
         expanded: true,
+        nodes: [
+          { text: "132 row_one", children: [
+            { text: "prompt_restate", children: [
+              { text: "One recording is showing two rows (local + syncing). Keep one row that flips from local to cloud (cloud needs no mark). Keep the belt-and-suspenders: never lose a 2.5-hour recording; delete the local copy only once the cloud upload is confirmed." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Seems like maybe it creates two rows I like that I see one that says local and I\u2019m expecting that it would flip from local to cloud it doesn\u2019t have to show me cloud. The default is cloud, but I don\u2019t know it seem like other rows that still seems a little messy this kind of redundant backup extra careful belt, and suspenders approach to creating files and trying to make sure that you don\u2019t lose the file cause the main things you don\u2019t want to record 2 1/2 hours of a session and then run into some little glitch that makes you lose the whole recording especially if you still have it saved locally somehow and it\u2019s only deleted locally once it confirmed to be uploaded to the cloud here\u2019s a picture" }
+            ]},
+            { text: "response", children: [
+              { text: "row_one", children: [
+                { text: "the local copy and its cloud row are now linked — one row per recording, always" },
+                { text: "it reads local while the file is only on your phone, then flips to a plain row once the cloud has it" },
+                { text: "old stuck syncing… rows calm down after 30 minutes (still there, still deletable)" },
+                { text: "and the guarantee stands: the phone copy is deleted ONLY after the cloud confirms the whole session arrived" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: record a short take — one row, local, then flips clean" },
+                { text: "the ghost rows from the screenshot: give them 30 min or trash them" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "131 bar_tune",
+        expanded: false,
         nodes: [
           { text: "131 bar_tune", children: [
             { text: "prompt_restate", children: [
