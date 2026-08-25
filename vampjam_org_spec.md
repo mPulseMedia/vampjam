@@ -136,7 +136,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   initial to ending layout over 1 s (ease-in-out cubic, FISH_ANIM_MS): fish_widths split
   into fish_widths_at(seg) + blending fish_widths(); seek_to captures display widths
   before the jump and runs a rAF loop moving markers, numbers, ticks, band, fill together.
-- NEXT → add entry 99 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 99 play_glide — no page edit) his test predated the deploy (seek_glide confirmed
+  pushed, origin at 80460a9); added the missing half: plain playback crossing a region
+  boundary now starts the same 1 s glide (lastFishSeg watch in timeupdate); +2m jumps
+  already glide via nudge()->seek_to.
+- NEXT → add entry 100 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

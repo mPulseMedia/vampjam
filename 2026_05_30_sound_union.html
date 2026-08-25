@@ -900,6 +900,7 @@
   // to their ending layout over FISH_ANIM_MS (smooth, ease-in-out).
   var FISH_ANIM_MS = 1000;
   var fishAnim = null;   // {from:[], to:[], t0}
+  var lastFishSeg = -1;  // play_glide: last region the playhead was in
   function fish_widths() {
     var target = fish_widths_at(fish_seg());
     if (!fishAnim) return target;
@@ -1260,6 +1261,16 @@
   });
   player.addEventListener('timeupdate', function () {
     nowTime.textContent = fmt_time(player.currentTime);
+    // play_glide — plain playback crossing into a new region re-proportions
+    // the sections with the same 1 s glide a jump gets
+    var fs = fish_active() ? fish_seg() : -1;
+    if (fs !== lastFishSeg) {
+      if (lastFishSeg >= 0 && fs >= 0 && !fishAnim) {
+        fishAnim = { from: fish_widths_at(lastFishSeg), to: fish_widths_at(fs), t0: performance.now() };
+        requestAnimationFrame(fish_anim_tick);
+      }
+      lastFishSeg = fs;
+    }
     if (isFinite(player.duration) && player.duration > 0) {
       seekFill.style.width = (fish_x(player.currentTime) * 100) + '%';
     }

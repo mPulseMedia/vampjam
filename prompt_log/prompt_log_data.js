@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "98 seek_glide",
+        id: "99 play_glide",
         expanded: true,
+        nodes: [
+          { text: "99 play_glide", children: [
+            { text: "prompt_restate", children: [
+              { text: "Reload, play, jump +2m repeatedly: the segment widths should re-focus so the playhead is front and center — and during plain playback the proportions should periodically update too." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "So when I go to the app and I reload the page and then I hit play, and I jump forward two minutes at a time I am expecting because I moved the play head the dimensions of the segments to change such that the widest focus of the of the elements, one or two of them or a proportional stretch of each you know are expanded such an in such a way that the play hat is front and center, and even when I'm just playing it, it should periodically update the proportions of" }
+            ]},
+            { text: "response", children: [
+              { text: "play_glide", children: [
+                { text: "your test likely beat the deploy: +2m glide was live" },
+                { text: "hard-refresh once; iPhone caches the old page" },
+                { text: "new: plain playback re-focuses with the same glide" },
+                { text: "focus region stays widest wherever the playhead is" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, reload: play across a boundary, watch it" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "98 seek_glide",
+        expanded: false,
         nodes: [
           { text: "98 seek_glide", children: [
             { text: "prompt_restate", children: [
