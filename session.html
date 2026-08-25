@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 <script src="theme.js"></script>
 <script src="sessions.js?v=117"></script>
-<script src="drawer.js?v=118"></script>
+<script src="drawer.js?v=119"></script>
 <style>
   :root {
     --bg: #4a2a0e;
@@ -1163,6 +1163,11 @@
       if (!r.ok) return null;
       return r.json().catch(function () { return null; });
     }).then(function (data) {
+      if (data && data.deleted) {
+        audio = null; render_audio_label();
+        if (audioLabelEl) audioLabelEl.textContent = 'This recording was deleted.';
+        return;
+      }
       if (!data) {
         audio = null; render_audio_label();
         // a just-created recording can take a minute to land on GitHub — say so and retry
@@ -1308,7 +1313,13 @@
   // ============ player controls ============
   function safe_play()  { try { player.play().catch(function(){}); } catch (e) {} }
   function safe_pause() { try { player.pause(); } catch (e) {} }
-  function toggle_play(){ if (player.paused) safe_play(); else safe_pause(); }
+  function toggle_play(){
+    if (!audio && REC_ID) {
+      window.alert('This recording is still uploading — give it a moment and try again.');
+      return;
+    }
+    if (player.paused) safe_play(); else safe_pause();
+  }
   function seek_to(sec){
     try {
       var d = isFinite(player.duration) ? player.duration : Infinity;

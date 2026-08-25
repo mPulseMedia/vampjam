@@ -242,7 +242,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   recording — it needs a moment to land…' and retries every 5s (40 tries). drawer.js?v=118.
   Playwright: pending row + syncing… while absent ✓, cleared + normal row once present ✓,
   session page syncing label then binds on the next retry ✓.
-- NEXT → add entry 119 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 119 row_delete — no page edit) four parts. name_same: registry name is now the FULL
+  session title (no more time-only rows); the drawer appends the date only when the title
+  doesn't already carry it, so list row == session title exactly. placeholder_file: exactly
+  what Paul suggested — record.html writes the entry into sessions_auto.json with
+  pending:true BEFORE the R2 upload starts, so every device's list shows the breathing
+  syncing… row while the file is still in flight; the final registry write clears the flag
+  (drawer polls while any registry row is pending). play_alert: on session.html, Play while
+  the audio isn't bound yet raises a native alert ('still uploading — give it a moment').
+  row_delete: trash button far right on auto-session rows (recordings only — the static
+  pages would need a repo edit), native confirm, then: entry removed from sessions_auto.json
+  + <id>.json tombstoned {deleted:true} (session page then says 'This recording was
+  deleted.'). The R2 audio file itself stays in the bucket — deleting it needs an
+  upload-worker change (future). drawer.js?v=119. Playwright: placeholder→json→final
+  sequence ✓, exact-title rows ✓, confirm+delete posts+row gone ✓, play alert ✓, tombstone ✓.
+- NEXT → add entry 120 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

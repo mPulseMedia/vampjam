@@ -42,6 +42,7 @@
   var ICO_SHARE = '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
   // pending_session — a recording that was just created on this device but may
   // not have landed in sessions_auto.json yet (GitHub can take a minute).
+  var SYNC_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
   var PENDING_KEY = 'vampjam_pending_session';
   function pending_get() {
     try {
@@ -54,6 +55,7 @@
   function pending_clear() { try { localStorage.removeItem(PENDING_KEY); } catch (e) {} }
 
   var ICO_NEW = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>';
+  var ICO_TRASH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4.8A0.8 0.8 0 0 1 9.8 4h4.4a0.8 0.8 0 0 1 0.8 0.8V7"/><path d="M6.5 7l0.9 12.2A1.6 1.6 0 0 0 9 20.6h6a1.6 1.6 0 0 0 1.6-1.4L17.5 7"/><path d="M10 11v6M14 11v6"/></svg>';
   var HERE = (location.pathname.split('/').pop() || '');
   // On the generic session page (session.html?p=<id>) the identity includes the
   // recording id, so duration cache + current-row detection stay per-recording.
@@ -87,12 +89,19 @@
       try { var ov = localStorage.getItem('vampjam_dur_' + s.page); if (ov) dur = parseInt(ov, 10); } catch (e) {}
       var right = fmt_dur(dur);
       if (s.count) right += ' <span class="jam_count">' + s.count + '</span>';
-      if (s._pending) right = '<span class="jam_sync">syncing…</span>';
+      if (s._pending || s.pending) right = '<span class="jam_sync">syncing…</span>';
+      // the row shows the session's own title; the date is appended only when
+      // the title doesn't already carry it (so list name == session title)
+      var disp = (s.name && String(s.name).indexOf(s.date) >= 0) ? s.name : (s.name + ' — ' + s.date);
+      var isAuto = s.page.indexOf('session.html?p=') === 0;
+      var del = isAuto
+        ? '<button class="jam_del" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this session">' + ICO_TRASH + '</button>'
+        : '';
       rows.push('<div class="jam_item' + cur + '"><a class="jam_link' + cur + '" href="' + s.page + '">'
         + '<span class="jam_left"><span class="jam_ico">' + ICO_CASS + '</span>'
-        + '<span class="jam_name">' + esc(s.name + ' — ' + s.date) + '</span></span>'
+        + '<span class="jam_name">' + esc(disp) + '</span></span>'
         + '<span class="menu_sub">' + right + '</span></a>'
-        + '<button class="jam_share" data-href="' + s.page + '" aria-label="Copy link to this session">' + ICO_SHARE + '</button></div>');
+        + '<button class="jam_share" data-href="' + s.page + '" aria-label="Copy link to this session">' + ICO_SHARE + '</button>' + del + '</div>');
     });
     rows.push('<div class="jam_item jam_new"><a class="jam_link" href="record.html">'
       + '<span class="jam_left"><span class="jam_ico">' + ICO_NEW + '</span><span class="jam_name">New recording</span></span></a></div>');
@@ -121,6 +130,15 @@
         if (!href || href.charAt(0) === '#') return;
         e.preventDefault();
         close_then(function () { window.location.href = href; });
+      });
+    });
+    // delete button (auto sessions only): native confirm, then remove from the
+    // shared registry and tombstone the session json. The audio file stays in
+    // the R2 bucket for now (removing it needs an upload-worker change).
+    Array.prototype.forEach.call(menu.querySelectorAll('.jam_del'), function (b) {
+      b.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        delete_session(b.getAttribute('data-page'), b.getAttribute('data-name'));
       });
     });
     // share button on each session row: copy that session's page link (no timestamp)
@@ -233,7 +251,10 @@
   (function () {
     var st = document.createElement('style');
     st.textContent = '@keyframes jam_sync_pulse{0%,100%{opacity:0.35}50%{opacity:0.9}}' +
-      '.jam_sync{animation:jam_sync_pulse 1.6s ease-in-out infinite;font-size:13px;}';
+      '.jam_sync{animation:jam_sync_pulse 1.6s ease-in-out infinite;font-size:13px;}' +
+      '.jam_del{flex:0 0 auto;background:none;border:none;color:var(--muted);opacity:0.5;' +
+        'padding:6px;margin-left:2px;min-height:32px;cursor:pointer;line-height:0;}' +
+      '.jam_del:hover{opacity:1;color:var(--danger,#c75450);}';
     document.head.appendChild(st);
   })();
 
@@ -251,14 +272,49 @@
       })
       .catch(function () { retry_if_pending(); });
   }
+  function sync_write(path, content, message) {
+    return fetch(SYNC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: path, content: content, message: message })
+    }).then(function (r) { if (!r.ok) throw new Error('sync ' + r.status); return r.json(); });
+  }
+  function delete_session(page, name) {
+    if (!window.confirm('Delete "' + name + '"?\n\nThis removes it from the session list everywhere. Its moments go with it.')) return;
+    var id = (page.split('p=')[1] || '').replace(/[^A-Za-z0-9_\-]/g, '');
+    // freshest registry first, so we don't resurrect someone else's new entry
+    fetch('https://raw.githubusercontent.com/mPulseMedia/vampjam/main/sessions_auto.json?v=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .catch(function () { return window.VAMPJAM_SESSIONS_AUTO || []; })
+      .then(function (list) {
+        if (!Array.isArray(list)) list = [];
+        list = list.filter(function (s2) { return s2 && s2.page !== page; });
+        return sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'delete ' + id)
+          .then(function () {
+            if (id) return sync_write(id + '.json', JSON.stringify({ deleted: true, tags: [] }, null, 2), 'tombstone ' + id);
+          });
+      })
+      .then(function () {
+        window.VAMPJAM_SESSIONS_AUTO = (window.VAMPJAM_SESSIONS_AUTO || []).filter(function (s2) { return s2.page !== page; });
+        var pend = pending_get();
+        if (pend && pend.page === page) pending_clear();
+        build_menu(); wire_links();
+        if (typeof window.toast === 'function') window.toast('Deleted ' + name);
+      })
+      .catch(function () {
+        if (typeof window.toast === 'function') window.toast('Delete failed — try again');
+        else window.alert('Delete failed — try again');
+      });
+  }
   // while a pending recording hasn't appeared in the registry, keep checking
   function retry_if_pending() {
     var pend = pending_get();
-    if (!pend) return;
     var autos = window.VAMPJAM_SESSIONS_AUTO || [];
-    if (autos.some(function (s2) { return s2.page === pend.page; })) {
-      pending_clear(); build_menu(); wire_links(); return;
+    var registryPending = autos.some(function (s2) { return s2 && s2.pending; });
+    if (pend && autos.some(function (s2) { return s2.page === pend.page && !s2.pending; })) {
+      pending_clear(); build_menu(); wire_links(); pend = null;
     }
+    if (!pend && !registryPending) return;
     if (auto_retry < 40) {
       auto_retry++;
       setTimeout(fetch_auto_sessions, 20000);

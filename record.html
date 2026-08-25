@@ -218,6 +218,24 @@
     if (!blob) return;
     status.textContent = 'Uploading…';
     var id = rec_id();
+    var page = 'session.html?p=' + id;
+    var label = nameIn.value || ('Recording — ' + DEFT);
+    // placeholder first: every device's session list shows a syncing… row
+    // for this recording while the upload is still in flight
+    try {
+      var pre = [];
+      try {
+        var pr = await fetch(RAW_BASE + 'sessions_auto.json?v=' + Date.now(), { cache: 'no-store' });
+        if (pr.ok) { var pj = await pr.json(); if (Array.isArray(pj)) pre = pj; }
+      } catch (e0) {}
+      pre = pre.filter(function (e2) { return e2 && e2.page !== page; });
+      pre.push({ page: page, name: label, date: ISO, dur: recDur, count: liveTags.length, pending: true });
+      await sync_write('sessions_auto.json', JSON.stringify(pre, null, 2), 'placeholder ' + id);
+      try {
+        localStorage.setItem('vampjam_pending_session',
+          JSON.stringify({ page: page, name: label, date: ISO, dur: recDur, count: liveTags.length, ts: Date.now() }));
+      } catch (e3) {}
+    } catch (ePre) {}   // placeholder is best-effort; the upload still proceeds
     try {
       var r = await fetch(WORKER_UPLOAD_URL, {
         method: 'POST',
@@ -231,7 +249,6 @@
       var j = await r.json();
       if (!j.ok) throw new Error('upload ' + (j.error || r.status));
       status.textContent = 'Creating the session…';
-      var label = nameIn.value || ('Recording — ' + DEFT);
       var now = Date.now();
       var tags = liveTags.map(function (t, i) {
         return { id: 't_' + now + '_lt' + (i + 1), t: t, label: '' };
@@ -240,20 +257,15 @@
         audio: { label: label, url: j.url, kind: 'url' },
         tags: tags
       }, null, 2), 'auto session ' + id);
-      var page = 'session.html?p=' + id;
       var list = [];
       try {
         var lr = await fetch(RAW_BASE + 'sessions_auto.json?v=' + Date.now(), { cache: 'no-store' });
         if (lr.ok) { var lj = await lr.json(); if (Array.isArray(lj)) list = lj; }
       } catch (e) {}
       list = list.filter(function (e2) { return e2 && e2.page !== page; });
-      var regName = (label === DEFT) ? TS : label.replace(' — ' + DEFT, '').replace(' — ' + ISO, '').replace(' ' + TS, '');
-      list.push({ page: page, name: regName, date: ISO, dur: recDur, count: tags.length });
+      list.push({ page: page, name: label, date: ISO, dur: recDur, count: tags.length });
       await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
-      try {
-        localStorage.setItem('vampjam_pending_session',
-          JSON.stringify({ page: page, name: regName, date: ISO, dur: recDur, count: tags.length, ts: Date.now() }));
-      } catch (e3) {}
+
       status.innerHTML = 'Session ready &#10003; <a href="' + page + '">open ' +
         (label || id) + '</a>' +
         '<br>saved as ' + id + '.' + ext +

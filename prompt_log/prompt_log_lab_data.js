@@ -9,8 +9,48 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "118 sync_hint",
+        id: "119 row_delete",
         expanded: true,
+        nodes: [
+          { text: "119 row_delete", children: [
+            { text: "prompt_restate", children: [
+              { text: "The list name should be the same as the session title." },
+              { text: "Show a placeholder row while a recording is still uploading — maybe via a file written during upload." },
+              { text: "If I open a not-yet-finished session and hit play, give me an alert." },
+              { text: "Add a delete button far right on session rows, with the native double-check, and clean up whatever it needs to." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, so it looks like you changed the name for the session title I think the session title should be the same and I\u2019m really trying to find the way to indicate that there is a file that\u2019s coming. I don\u2019t know if it\u2019s still uploading or why the session list can\u2019t list the placeholder for where that session will go seems possible. Maybe it\u2019s another file that needs to get written to or added to as part of that uploading process, but I do think that\u2019s gonna make a difference and then if I click the click the session row and I float that session and hit play in the upload, it isn\u2019t finished yet then you give me an alert of some kind but what else I wanna create a delete button far to the right on the session list Rose and it should do the double check with the native pop-up and I don\u2019t know what it all needs to do to clean up" }
+            ]},
+            { text: "response", children: [
+              { text: "name_same", children: [
+                { text: "the list row now shows exactly the session title — no more reworded names" }
+              ]},
+              { text: "placeholder_file", children: [
+                { text: "your idea, built: the list file gets the entry BEFORE the upload starts, marked as in-flight" },
+                { text: "so every device shows the syncing… row while the audio is still traveling" },
+                { text: "it flips to a normal row the moment everything lands" }
+              ]},
+              { text: "play_alert", children: [
+                { text: "hitting play on a not-yet-landed session pops the native alert instead of silence" }
+              ]},
+              { text: "row_delete", children: [
+                { text: "trash button far right on every recording row, with the native are-you-sure" },
+                { text: "delete removes it from the list everywhere and marks the session deleted" },
+                { text: "one honest note: the audio file itself stays in the bucket for now — freeing that space needs a worker change we can do later" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: record something, watch the syncing… row appear instantly" },
+                { text: "open it early and hit play — you get the alert" },
+                { text: "then trash a test recording — confirm pop-up, row gone" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "118 sync_hint",
+        expanded: false,
         nodes: [
           { text: "118 sync_hint", children: [
             { text: "prompt_restate", children: [
