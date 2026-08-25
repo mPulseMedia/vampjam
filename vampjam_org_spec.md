@@ -351,7 +351,17 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   (→ record.html?up=<id>). Playwright end-to-end: fail→ready meta w/ typed tag ✓, drawer
   local row+chip+trash ✓, local page blob playback + banner + tag label ✓, ?up recovery
   uploads, registers, cleans IDB ✓.
-- NEXT → add entry 131 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 131 bar_tune — no page edit) timeline polish + instant local row. Playback pages
+  (7 + session.html): zoom_band (light section highlight under the bar) display:none;
+  seek_bar 6px → 9px thick (radius 4); tag numbers 11px → 13px (strip 13 → 16px, z-index 4
+  so nothing blocks them); hour labels 9px → 13px — same size as the tag numbers. Record
+  page matches (rec_bar 9px, mom_no + hour_lbl 13px). local_keep hardening per Paul's ask:
+  save_meta('recording') now fires the instant recording starts — the local session (row +
+  pointer to the device file) exists from second zero, before the first 5s chunk, so a
+  wrecked record page still leaves a listed, recoverable, auto-uploading local recording
+  (recovery flow from 130 already retries it). Playwright: bar 9px, band gone, both label
+  sizes 13px, meta present 0.5s after start ✓.
+- NEXT → add entry 132 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

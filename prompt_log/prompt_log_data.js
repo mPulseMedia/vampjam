@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "130 local_keep",
+        id: "131 bar_tune",
         expanded: true,
+        nodes: [
+          { text: "131 bar_tune", children: [
+            { text: "prompt_restate", children: [
+              { text: "Remove the light blue partial bar under the timeline; make the timeline a little thicker; keep the numbers below the bar from being blocked; make 1h/2h the same font size as the tag numbers and a little bigger." },
+              { text: "For the local safety net: create the session data the moment recording starts, pointing at the local file, so a wrecked record page still leaves something recoverable that uploads." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Remove the light blue partial bar under the timeline. Make the timeline a little thicker. Numbers below the bar are sometimes blocked by other things so careful. Make the font size of the 1H2H be the same as the font size of the tag number and make that a little bigger.  Also, in order to support this local thing, it may require that as soon as I start recording, it should create that session data for that session row even inserted and even you know point to where the local file is, you know just immediately so that if the Paige doesn\u2019t the record page gets messed up, I might still be able to point the local file and then still be able to upload that somehow or he may already have stuff that tries to upload it, but let\u2019s put that stuff in" }
+            ]},
+            { text: "response", children: [
+              { text: "bar_tune", children: [
+                { text: "the light blue section band is gone" },
+                { text: "the timeline is thicker now (9px, both screens)" },
+                { text: "tag numbers and 1h/2h are the same size and bigger (13px), layered so nothing covers them" }
+              ]},
+              { text: "local_zero", children: [
+                { text: "the local session row now exists the INSTANT you hit record — before the first audio chunk" },
+                { text: "so even if the record page dies immediately, the recording is listed, points at the device file, and the auto-upload from last round picks it up" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open a session — thicker bar, no light band, bigger numbers" },
+                { text: "start recording, immediately check Sessions on another tab — the local row is already there" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "130 local_keep",
+        expanded: false,
         nodes: [
           { text: "130 local_keep", children: [
             { text: "prompt_restate", children: [

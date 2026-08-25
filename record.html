@@ -83,17 +83,17 @@
   /* the growing time bar — same bones as the playback page, but it charts the
      recording so far: 10-minute segments, hour marks, moment dots. No playhead. */
   .bar_wrap { width: 100%; }   /* visible from load — the bar waits in place */
-  .num_strip { position: relative; height: 13px; margin-bottom: 3px; width: 100%; }
-  .mom_no { position: absolute; transform: translateX(-50%); font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; padding: 2px 5px; }
+  .num_strip { position: relative; height: 16px; margin-bottom: 3px; width: 100%; }
+  .mom_no { position: absolute; transform: translateX(-50%); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; padding: 2px 5px; z-index: 4; }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-top: 2px; }
   .time_row .now { color: var(--accent); font-weight: 600; }
   .rec_bar {
-    width: 100%; height: 6px; background: var(--panel_3); border-radius: 3px;
+    width: 100%; height: 9px; background: var(--panel_3); border-radius: 4px;
     position: relative; pointer-events: none;
   }
   .seg_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); transform: translateX(-50%); }
   .hour_mark { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--muted); opacity: 0.7; border-radius: 1px; transform: translateX(-50%); z-index: 1; }
-  .hour_lbl { position: absolute; top: calc(100% + 5px); transform: translateX(-50%); font-size: 9px; line-height: 1; color: var(--muted); }
+  .hour_lbl { position: absolute; top: calc(100% + 5px); transform: translateX(-50%); font-size: 13px; line-height: 1; color: var(--muted); }
 
 
   /* moments list — same shape as the playback page's highlight list */
@@ -383,6 +383,7 @@
       chunks = []; liveTags = []; recDur = 0; blob = null;
       LOC_ID = 'loc_' + Date.now(); chunkSeq = 0;
       momList.innerHTML = ''; momList.style.display = 'none';
+      save_meta('recording');   // the local session row exists from second zero
       recBar.innerHTML = ''; numStrip.innerHTML = '';
       mediaRec.ondataavailable = function (e) {
         if (e.data && e.data.size) {
