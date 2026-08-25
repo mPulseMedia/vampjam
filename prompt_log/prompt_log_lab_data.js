@@ -9,8 +9,93 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "133 local_clear",
+        id: "136 focus_guard",
         expanded: true,
+        nodes: [
+          { text: "136 focus_guard", children: [
+            { text: "prompt_restate", children: [
+              { text: "While recording: tag a moment (keyboard up), tag again — a dark shelf slides up from under the keyboard and presents a whole black screen." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, this is a peculiar one so I\u2019m recording a new thing. I create a new moment. It brings up the keyboard and then I click tag a moment again and what happens is the lack of a better term shelf that is below the that is a layer beneath the keys of the keyboard whose top edge has Ramp SF written on it like this drawing that slides up and presents a whole black screen, I\u2019ll show a picture of that also and I don\u2019t know why that happens" }
+            ]},
+            { text: "response", children: [
+              { text: "focus_guard", children: [
+                { text: "found it: when the second moment grabbed the cursor with the keyboard already up, Safari shoved the whole page into the dark area past its edge — that is the black shelf" },
+                { text: "the cursor now moves without letting Safari scroll anything, and the page pins itself whenever the keyboard shifts" },
+                { text: "fixed on the record screen and on every session page" }
+              ]},
+              { text: "verify", children: [
+                { text: "after the batch lands: record, tag, tag again with the keyboard up — no shelf, the new row just appears above the keys" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "135 tag_juicy",
+        expanded: false,
+        nodes: [
+          { text: "135 tag_juicy", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the Tag the moment button narrower and juicier." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Make the tag the moment button not as wide and make it look more juicy" }
+            ]},
+            { text: "response", children: [
+              { text: "tag_juicy", children: [
+                { text: "narrower now, and properly juicy: a glossy pill with a gradient, a soft glow, and a satisfying squish when you press it" },
+                { text: "same treatment on the record screen and every session page" }
+              ]},
+              { text: "verify", children: [
+                { text: "once your computer reconnects and the batch lands: reload any session — the button should look good enough to eat" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "134 fav_heart",
+        expanded: false,
+        nodes: [
+          { text: "134 fav_heart", children: [
+            { text: "prompt_restate", children: [
+              { text: "When recording starts, make the timeline all blue, segmenting into 10-minute pieces as it grows." },
+              { text: "Add an empty gray heart on each moment row that turns accent when favorited; when favorites exist, add a Favorites row to the session list; the Favorites view lists all favorites (heart to un-favorite), tapping one loads its timeline, jumps to the point, and the title above reads Favorites; edits propagate to the original — the view is derived." },
+              { text: "While tagging during recording, don't scroll the page — the moments list itself scrolls so the relevant row stays visible above the keyboard." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "So here\u2019s another thing when it starts recording make the timeline all blue and just start to segment that in 10 minute segments as it grows" },
+              { text: "Hi, this is gonna crowd up the tag Rose but I wanna put a heart icon that is a empty gray heart but then when I click it it adds that moment as a favorite and the icon turns I guess blue or whatever the corresponding color is for that mode and if there are any favorites, create a new role in the session list it\u2019s just called favorites and if I click on that, then show me all the favorites with the heart button so that I can turn a favor off from the favorite screen and when I click it when I click a favorite, I want to see the list of all the favorites and when I click a favorite to play, I wanna load it timeline and jump to the right point and change the name of the playlist that\u2019s displayed up above so this will be just for favorites and if I editor change anything about that moment, it should change it in the original playlist and what I\u2019m seeing should just be derived by extracting the favorites from across all the playlists." },
+              { text: "OK, another thing during the recording. I want as I add more favorites. I actually don\u2019t wanna scroll down the page, but I want that lower highlight list to scroll knowing that the keyboard is probably presenting therefore it is scrolled up sufficiently above the keyboard to give the row of relevance visibility above the keyboard and below that record and tag a moments and timeline top of the page" }
+            ]},
+            { text: "response", children: [
+              { text: "rec_blue", children: [
+                { text: "the bar goes solid blue the moment you record, breaking into 10-minute pieces as it grows" }
+              ]},
+              { text: "fav_heart", children: [
+                { text: "every moment row now has a gray heart — tap it and it turns blue" },
+                { text: "once anything is hearted, a Favorites row appears at the top of the Sessions list" },
+                { text: "the Favorites screen gathers every favorite across all sessions" },
+                { text: "tap one: its session's audio loads and jumps right to the moment — the title above stays Favorites" },
+                { text: "rename or un-heart there and the ORIGINAL session updates — favorites are always derived, never copies" }
+              ]},
+              { text: "key_scroll", children: [
+                { text: "while tagging, the page no longer scrolls — the moments list scrolls itself, keeping the newest row visible above the keyboard" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: heart a moment on any session, open Sessions — Favorites row is there" },
+                { text: "open it, tap play on a favorite — it jumps straight to the moment" },
+                { text: "record + tag a few — the page holds still, the list scrolls" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "133 local_clear",
+        expanded: false,
         nodes: [
           { text: "133 local_clear", children: [
             { text: "prompt_restate", children: [

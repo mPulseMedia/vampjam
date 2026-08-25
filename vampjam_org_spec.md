@@ -380,7 +380,38 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   first cut's reconciled guard sat ABOVE the twin check, so a json-404 first pass blocked
   the later registry pass — guard moved to the json path only. Playwright: registered twin
   → IDB cleared + plain row ✓, json-only proof → cleared ✓, no cloud proof → local kept ✓.
-- NEXT → add entry 134 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 134 fav_heart — no page edit) three features. rec_blue: the record bar turns full
+  accent the moment recording starts (recorded audio = blue), still segmenting into 10-min
+  gaps as it grows; pre-record stays gray. fav_heart: every playback moment row has a gray
+  outline heart → accent when favorited; fav:true rides the tag through the session json,
+  the repo sync (both directions), and local-mode IDB saves; localStorage vampjam_fav_seen
+  flips on first sight of any favorite; the drawer (v127, rebuilt fresh on every open)
+  gains a Favorites row (heart icon, above the sessions) once seen. New favorites.html:
+  DERIVED view — fetches every session json (static + auto registry), lists every fav
+  moment (session name date-first + editable name + time + filled heart), tapping play
+  loads THAT session's audio, jumps to the moment (title stays Favorites, session name
+  shows under it), plain seek bar + click-to-seek; unfav and renames write back to the
+  SOURCE json via the sync worker, so every view agrees. key_scroll: on the record screen
+  the moments list now scrolls ITSELF (page holds still) — visualViewport-sized max-height
+  keeps the newest row visible above the phone keyboard, re-fitted when the keyboard
+  animates in. Playwright: hearts render/toggle + fav in sync payload ✓, Favorites row on
+  drawer open ✓, favorites page aggregates/plays/unfavs with write-back ✓, blue bar while
+  recording ✓, list overflow auto ✓.
+- (log 135 tag_juicy — no page edit) Tag-the-moment slimmed to max-width 300px and made
+  juicy on both screens: pill shape (999px), vertical accent gradient (hover→accent→active
+  tokens so every theme works), soft glow shadow in the accent color + inner top highlight,
+  brightness lift on hover, squish-and-settle press (scale 0.96 + reduced shadow). Disabled
+  state drops the shadow. NOTE: shipped together with fav_heart in one commit — the Mac
+  bridge was offline when 134 finished, so both batches land on reconnect under this
+  commit_msg (tag_juicy); spec/log carry both entries.
+- (log 136 focus_guard — no page edit) the 'black shelf' Paul filmed is iOS Safari
+  force-scrolling the page into the void when focus jumps to a NEW input while the
+  keyboard is already up (second Tag in a row). Fix: every programmatic tag-name focus is
+  now focus({ preventScroll: true }) with a plain-focus fallback — record.html add_moment
+  AND all 8 playback pages' add_tag — and record.html's visualViewport resize handler
+  pins window.scrollTo(0,0) so the keyboard can never strand the page. Playwright: two
+  Tags back-to-back → scrollY 0, both rows, focus on the newest ✓.
+- NEXT → add entry 137 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

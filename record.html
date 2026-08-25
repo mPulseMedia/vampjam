@@ -74,11 +74,19 @@
   .rec_state.on { color: var(--fg); }
   @keyframes dot_blink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
   .tag_btn {
-    width: 100%; max-width: 420px; padding: 20px; border: none; border-radius: 14px;
-    background: var(--accent); color: var(--on_accent, #fff);
-    font: inherit; font-size: 20px; font-weight: 600; cursor: pointer;
+    width: 100%; max-width: 300px; padding: 18px 20px; border: none; border-radius: 999px;
+    background: linear-gradient(180deg, var(--accent_hover, #339cff) 0%, var(--accent) 55%, var(--accent_active, #0062c4) 100%);
+    color: var(--on_accent, #fff);
+    font: inherit; font-size: 20px; font-weight: 700; letter-spacing: 0.01em; cursor: pointer;
+    box-shadow: 0 10px 22px -8px var(--accent), 0 3px 8px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.28);
+    transition: transform 0.08s ease, box-shadow 0.15s ease, filter 0.15s ease;
   }
-  .tag_btn:disabled { opacity: 0.35; cursor: default; }
+  .tag_btn:hover { filter: brightness(1.06); }
+  .tag_btn:active {
+    transform: scale(0.96) translateY(1px); filter: brightness(0.96);
+    box-shadow: 0 5px 12px -6px var(--accent), 0 2px 4px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+  .tag_btn:disabled { opacity: 0.35; cursor: default; box-shadow: none; }
 
   /* the growing time bar — same bones as the playback page, but it charts the
      recording so far: 10-minute segments, hour marks, moment dots. No playhead. */
@@ -91,6 +99,7 @@
     width: 100%; height: 9px; background: var(--panel_3); border-radius: 4px;
     position: relative; pointer-events: none;
   }
+  .rec_bar.filled { background: var(--accent); }   /* recording: the whole bar is recorded audio */
   .seg_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); transform: translateX(-50%); }
   .hour_mark { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--muted); opacity: 0.7; border-radius: 1px; transform: translateX(-50%); z-index: 1; }
   .hour_lbl { position: absolute; top: calc(100% + 5px); transform: translateX(-50%); font-size: 13px; line-height: 1; color: var(--muted); }
@@ -98,7 +107,8 @@
 
   /* moments list — same shape as the playback page's highlight list */
   .mom_list {
-    width: 100%; background: var(--panel); border-radius: 14px; overflow: hidden;
+    width: 100%; background: var(--panel); border-radius: 14px;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
     padding: 4px 0 8px; display: none;
     box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20);
   }
@@ -314,6 +324,7 @@
   // ---- the growing bar: segments, hour marks, moment dots (no playhead) ----
   function render_bar() {
     var t = elapsed();
+    recBar.classList.toggle('filled', t > 0);
     if (t <= 0) {
       // not recording yet: the empty light-gray bar sits where it will live
       recBar.innerHTML = ''; numStrip.innerHTML = '';
@@ -369,9 +380,21 @@
     // gesture, so the phone keyboard opens (desktop just gets the blinking beam)
     var inp = row.querySelector('.mom_name');
     if (inp) {
-      inp.focus();
+      // preventScroll: iOS otherwise scrolls the page into the void ("black
+      // shelf") when focus moves between inputs while the keyboard is up
+      try { inp.focus({ preventScroll: true }); } catch (eF) { inp.focus(); }
       try { inp.setSelectionRange(0, 0); } catch (e) {}
-      setTimeout(function () { row.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 0);
+      // the page stays put; the LIST scrolls the new row into view above the keyboard
+      setTimeout(function () {
+        window.scrollTo(0, 0);
+        fit_mom_list();
+        momList.scrollTop = momList.scrollHeight;
+      }, 0);
+      setTimeout(function () {
+        window.scrollTo(0, 0);
+        fit_mom_list();
+        momList.scrollTop = momList.scrollHeight;
+      }, 350);   // again after the keyboard finishes animating in
     }
   }
 
@@ -595,6 +618,24 @@
       }
     } catch (e) {}
   })();
+
+  // keep the moments list sized to the visible viewport (keyboard-aware):
+  // everything above stays on screen; the list itself scrolls
+  function fit_mom_list() {
+    var vv = window.visualViewport;
+    var vh = vv ? (vv.height + vv.offsetTop) : window.innerHeight;
+    var top = momList.getBoundingClientRect().top + (window.scrollY || 0);
+    var h = vh - top - 10;
+    momList.style.maxHeight = (h > 90 ? h : 90) + 'px';
+  }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function () {
+      window.scrollTo(0, 0);   // never let the keyboard leave the page stranded
+      fit_mom_list();
+      momList.scrollTop = momList.scrollHeight;
+    });
+  }
+  window.addEventListener('resize', fit_mom_list);
 
   render_bar();   // the bar shows from page load, empty and light gray
 

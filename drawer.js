@@ -28,7 +28,9 @@
   window.addEventListener('resize', update_sess_overflow);
   function toggle() {
     var d = drawer(); if (!d) return;
-    set_open(!d.classList.contains('open'));
+    var opening = !d.classList.contains('open');
+    if (opening) { build_menu(); wire_links(); }   // fresh rows (e.g. Favorites) on every open
+    set_open(opening);
   }
   function close_then(go) {
     set_open(false);
@@ -86,6 +88,7 @@
   var deleting = {};
 
   var ICO_NEW = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>';
+  var ICO_HEART_M = '<svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.2-1.1C6.2 15.1 3.2 12.4 3.2 9.1c0-2.6 2-4.6 4.6-4.6 1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.6 2 4.6 4.6 0 3.3-3 6-7.6 10.1L12 20.3z"/></svg>';
   var ICO_TRASH = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4.8A0.8 0.8 0 0 1 9.8 4h4.4a0.8 0.8 0 0 1 0.8 0.8V7"/><path d="M6.5 7l0.9 12.2A1.6 1.6 0 0 0 9 20.6h6a1.6 1.6 0 0 0 1.6-1.4L17.5 7"/><path d="M10 11v6M14 11v6"/></svg>';
   var HERE = (location.pathname.split('/').pop() || '');
   // On the generic session page (session.html?p=<id>) the identity includes the
@@ -139,6 +142,14 @@
     var rows = ['<div class="jam_item jam_admin"><a class="jam_link" href="admin.html">'
       + '<span class="jam_left"><span class="jam_ico">' + ICO_GEAR + '</span><span class="jam_name">Admin</span></span>'
       + '<span class="menu_sub">setup</span></a></div>'];
+    // favorites live above the sessions once any moment has been hearted
+    var favSeen = false;
+    try { favSeen = localStorage.getItem('vampjam_fav_seen') === '1'; } catch (eF) {}
+    if (favSeen) {
+      var favCur = (PKEY === 'favorites.html') ? ' current' : '';
+      rows.push('<div class="jam_item' + favCur + '"><a class="jam_link' + favCur + '" href="favorites.html">'
+        + '<span class="jam_left"><span class="jam_ico">' + ICO_HEART_M + '</span><span class="jam_name">Favorites</span></span></a></div>');
+    }
     all.forEach(function (s) {
       var cur = (s.page === PKEY) ? ' current' : '';
       var dur = s.dur;
