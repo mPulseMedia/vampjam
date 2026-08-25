@@ -1,1 +1,1 @@
-sync_done
+auto_commit
