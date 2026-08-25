@@ -1,1 +1,1 @@
-delete_spin
+auto_commit
