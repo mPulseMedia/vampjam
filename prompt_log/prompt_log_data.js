@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "103 section_10min",
+        id: "104 seg_gap",
         expanded: true,
+        nodes: [
+          { text: "104 seg_gap", children: [
+            { text: "prompt_restate", children: [
+              { text: "Keep the gaps between the segments." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "please keep  gaps between the segments" }
+            ]},
+            { text: "response", children: [
+              { text: "seg_gap", children: [
+                { text: "the gaps were casualties of the pre-play fix" },
+                { text: "they measured off the audio, blank until play" },
+                { text: "now they use the remembered length: gaps at load" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min, reload: gap cuts across the bar, pre-play" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "103 section_10min",
+        expanded: false,
         nodes: [
           { text: "103 section_10min", children: [
             { text: "prompt_restate", children: [

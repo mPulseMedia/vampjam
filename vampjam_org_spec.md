@@ -155,7 +155,9 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - (log 103 section_10min — no page edit) sections now target 10 minutes: fish_n() =
   round(dur/600) clamped 2..40 replaces the fixed 10; min-width scales so many sections
   still sum to 1 (math property-checked in node for n=5..40).
-- NEXT → add entry 104 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 104 seg_gap — no page edit) the segment gaps (bar ticks) and active band still read
+  player.duration — NaN before play since bar_preload, so they vanished; both now eff_dur().
+- NEXT → add entry 105 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

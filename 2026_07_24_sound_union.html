@@ -985,7 +985,7 @@
       tagMarkers.insertBefore(band, tagMarkers.firstChild);
     }
     var a = fish_seg();
-    band.style.left  = (fish_x(a * (player.duration / fish_n())) * 100) + '%';
+    band.style.left  = (fish_x(a * (eff_dur() / fish_n())) * 100) + '%';
     band.style.width = (FISH_E * 100) + '%';
   }
 
@@ -1006,7 +1006,7 @@
       }
     }
     ticks.forEach(function (tk) {
-      tk.style.left = (fish_x(parseFloat(tk.dataset.f) * player.duration) * 100) + '%';
+      tk.style.left = (fish_x(parseFloat(tk.dataset.f) * eff_dur()) * 100) + '%';
     });
   }
   // seg_remain — a light strip along the seek bar's bottom edge from the
