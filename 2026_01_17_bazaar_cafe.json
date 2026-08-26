@@ -8,7 +8,8 @@
     {
       "id": "t_1786699867943_fhak",
       "t": 1197.9384670233471,
-      "label": "Pretty piano song"
+      "label": "Pretty piano song",
+      "fav": true
     },
     {
       "id": "t_url_1600_dgs",
@@ -18,7 +19,8 @@
     {
       "id": "t_1787712162913_76ol",
       "t": 1952.78973,
-      "label": "Soft tune"
+      "label": "Soft tune",
+      "fav": true
     },
     {
       "id": "t_1787712272047_2f9s",
