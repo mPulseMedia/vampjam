@@ -1,1 +1,1 @@
-dur_hide
+auto_commit
