@@ -6,7 +6,8 @@
 // If you are not at the top, a downward swipe is just a normal scroll.
 // Clicking a session collapses the drawer (page slides back up) before nav.
 (function () {
-  var OPEN_FRACTION = 0.72;                 // matches .session_drawer.open max-height: 72vh
+  var OPEN_FRACTION = 0.80;                 // matches .session_drawer.open max-height: 80dvh
+                                            // (the lower 20% stays with the play_deck)
   var SETTLE_MS = 350;                      // rest-at-top time required before a pull reveals
   function drawer() { return document.getElementById('session_drawer'); }
   function caret()  { return document.getElementById('drawer_toggle'); }
@@ -20,6 +21,9 @@
   function set_open(on) {
     var d = drawer(); if (!d) return;
     d.classList.toggle('open', on);
+    // play_deck — while the session list is open, pages that have a
+    // transport panel dock it into the bottom fifth of the viewport
+    try { document.body.classList.toggle('drawer_open', on); } catch (eB) {}
     var c = caret(); if (c) c.classList.toggle('open', on);
     // newest-first: the panel always opens scrolled to the top
     if (on) { setTimeout(function () { update_sess_overflow(); d.scrollTop = 0; }, 250); }
@@ -86,6 +90,51 @@
   }
   // pages whose delete is mid-flight: still rendered, grayed, with a red spinner
   var deleting = {};
+
+  // my_recs — recordings this device successfully registered. Registry writes
+  // built on a stale CDN read used to drop earlier rows (each new recording
+  // overwrote the list with whatever the lagging CDN showed). Every display
+  // AND every registry write unions this roster back in, so a recording that
+  // reached the cloud can never silently leave the session list again.
+  var MY_KEY = 'vampjam_my_recs';
+  function my_recs_get() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(MY_KEY) || '[]');
+      if (!Array.isArray(arr)) return [];
+      return arr.filter(function (m) { return m && m.page; }).slice(-40);
+    } catch (e) { return []; }
+  }
+  function my_recs_remove(page) {
+    try {
+      localStorage.setItem(MY_KEY, JSON.stringify(
+        my_recs_get().filter(function (m) { return m.page !== page; })));
+    } catch (e) {}
+  }
+  function reg_union(list) {
+    var have = {};
+    list.forEach(function (s2) { if (s2 && s2.page) have[s2.page] = true; });
+    my_recs_get().forEach(function (m) {
+      if (!have[m.page] && !deleted_has(m.page)) {
+        list.push({ page: m.page, name: m.name, date: m.date, dur: m.dur || 0, count: m.count || 0 });
+      }
+    });
+    return list;
+  }
+  // freshest possible registry — the GitHub API sees a commit instantly while
+  // the raw CDN can lag minutes. Used before every registry WRITE only (the
+  // API is rate-limited); plain display reads stay on the raw CDN.
+  function reg_fresh() {
+    return fetch('https://api.github.com/repos/mPulseMedia/vampjam/contents/sessions_auto.json?ref=main&t=' + Date.now(),
+      { headers: { Accept: 'application/vnd.github.raw+json' }, cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('api ' + r.status); return r.json(); })
+      .then(function (j) { if (!Array.isArray(j)) throw new Error('api shape'); return j; })
+      .catch(function () {
+        return fetch('https://raw.githubusercontent.com/mPulseMedia/vampjam/main/sessions_auto.json?v=' + Date.now(), { cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : []; })
+          .then(function (j) { return Array.isArray(j) ? j : []; })
+          .catch(function () { return []; });
+      });
+  }
 
   var ICO_NEW = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>';
   var ICO_HEART_M = '<svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.2-1.1C6.2 15.1 3.2 12.4 3.2 9.1c0-2.6 2-4.6 4.6-4.6 1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.6 2 4.6 4.6 0 3.3-3 6-7.6 10.1L12 20.3z"/></svg>';
@@ -155,8 +204,10 @@
       var cur = (s.page === PKEY) ? ' current' : '';
       var dur = s.dur;
       try { var ov = localStorage.getItem('vampjam_dur_' + s.page); if (ov) dur = parseInt(ov, 10); } catch (e) {}
-      var right = fmt_dur(dur);
-      if (s.count) right += ' <span class="jam_count">' + s.count + '</span>';
+      // dur_align: duration and moment count are two fixed right-aligned
+      // columns, so every duration lines up regardless of the count's width
+      var right = '<span class="jam_dur">' + fmt_dur(dur) + '</span>'
+                + '<span class="jam_count">' + (s.count || '') + '</span>';
       if ((s._pending || s.pending) && s.page !== pendDone) right = '<span class="jam_sync">syncing…</span>';
       // naming convention: date first, then the time (default recordings) or the
       // venue name — and the row shows exactly the session's title
@@ -171,7 +222,9 @@
           ? '<button class="jam_del" data-local="' + s.page.split('local=')[1] + '" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this local recording">' + ICO_TRASH + '</button>'
           : (isAuto
             ? '<button class="jam_del" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this session">' + ICO_TRASH + '</button>'
-            : ''));
+            // dur_align: rows without a trash can reserve its slot, so every
+            // row's duration column ends on the same right edge
+            : '<span class="jam_del_sp"></span>'));
       rows.push('<div class="jam_item' + cur + (isDel ? ' jam_deleting' : '') + '"><a class="jam_link' + cur + '" href="' + s.page + '">'
         + '<span class="jam_left"><span class="jam_ico">' + ICO_CASS + '</span>'
         + '<span class="jam_name">' + esc(disp) + '</span></span>'
@@ -347,6 +400,9 @@
       '.jam_del:hover{opacity:1;color:var(--danger,#c75450);}' +
       '.jam_item .menu_sub{min-width:84px;display:inline-flex;justify-content:flex-end;text-align:right;' +
         'font-variant-numeric:tabular-nums;}' +
+      '.jam_item .menu_sub .jam_dur{display:inline-block;min-width:48px;text-align:right;}' +
+      '.jam_item .menu_sub .jam_count{display:inline-block;min-width:26px;text-align:right;margin-left:0;}' +
+      '.jam_del_sp{flex:0 0 auto;width:30px;}' +
       '.jam_localb{background:rgba(232,180,84,0.22);color:var(--warn,#8a6d1a);border-radius:999px;' +
         'padding:2px 8px;font-size:11px;font-weight:600;margin-left:4px;}' +
       '.jam_item.jam_deleting{opacity:0.45;}' +
@@ -437,10 +493,13 @@
           { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (arr) {
-        if (Array.isArray(arr) && arr.length) {
+        if (!Array.isArray(arr)) arr = [];
+        var raw = arr.slice();               // what the shared registry really shows
+        arr = reg_union(arr);                // + this device's own recordings
+        if (arr.length) {
           window.VAMPJAM_SESSIONS_AUTO = arr;
           build_menu(); wire_links();
-          heal_registry(arr);
+          heal_registry(raw);
           reconcile_locals();
         }
         retry_if_pending();
@@ -456,17 +515,16 @@
   }
   function delete_session(page, name) {
     if (!window.confirm('Delete "' + name + '"?\n\nThis removes it from the session list everywhere. Its moments go with it.')) return;
-    deleted_add(page);   // remember locally FIRST — stale registry reads can't bring it back
+    deleted_add(page);      // remember locally FIRST — stale registry reads can't bring it back
+    my_recs_remove(page);   // and this device stops vouching for it
     deleting[page] = true;
     build_menu(); wire_links();   // row stays, grayed, trash -> red spinner
     var id = (page.split('p=')[1] || '').replace(/[^A-Za-z0-9_\-]/g, '');
-    // freshest registry first, so we don't resurrect someone else's new entry
-    fetch('https://raw.githubusercontent.com/mPulseMedia/vampjam/main/sessions_auto.json?v=' + Date.now(), { cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.json() : []; })
-      .catch(function () { return window.VAMPJAM_SESSIONS_AUTO || []; })
+    // freshest registry first (GitHub API), so we don't resurrect or drop
+    // someone else's new entry
+    reg_fresh()
       .then(function (list) {
-        if (!Array.isArray(list)) list = [];
-        list = list.filter(function (s2) { return s2 && s2.page !== page && !deleted_has(s2.page); });
+        list = reg_union(list).filter(function (s2) { return s2 && s2.page !== page && !deleted_has(s2.page); });
         return sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'delete ' + id)
           .then(function () {
             if (id) return sync_write(id + '.json', JSON.stringify({ deleted: true, tags: [] }, null, 2), 'tombstone ' + id);
@@ -489,19 +547,32 @@
         else window.alert('Delete failed — try again');
       });
   }
-  // if the shared registry still lists something this device deleted (a stale
-  // read got written over the delete), push a purged copy once per page load
+  // registry heal — one write per page load, only when the shared registry
+  // visibly disagrees with this device: it still lists something we deleted,
+  // or it LOST a recording this device registered (a stale-read write from
+  // another upload clobbered it). The write starts from the freshest copy
+  // (GitHub API), unions this device's roster in, and drops tombstoned rows.
   var healed = false;
   function heal_registry(arr) {
     if (healed) return;
-    var dead = deleted_get();
-    if (!dead.length) return;
-    var newest = dead.reduce(function (m, t) { return Math.max(m, t.ts); }, 0);
-    if (Date.now() - newest < 60000) return;   // give the delete's own write time to land
-    if (!arr.some(function (s2) { return deleted_has(s2.page); })) return;
+    var needPurge = arr.some(function (s2) { return s2 && deleted_has(s2.page); });
+    var missing = my_recs_get().filter(function (m) {
+      return !deleted_has(m.page)
+        && !(m.ts && Date.now() - m.ts < 90000)   // its own register write may still be landing
+        && !arr.some(function (s2) { return s2 && s2.page === m.page; });
+    });
+    if (!needPurge && !missing.length) return;
+    if (needPurge && !missing.length) {
+      var dead = deleted_get();
+      var newest = dead.reduce(function (m2, t) { return Math.max(m2, t.ts); }, 0);
+      if (Date.now() - newest < 60000) return;   // give the delete's own write time to land
+    }
     healed = true;
-    var purged = arr.filter(function (s2) { return !deleted_has(s2.page); });
-    sync_write('sessions_auto.json', JSON.stringify(purged, null, 2), 'purge deleted rows')
+    reg_fresh()
+      .then(function (fresh) {
+        var out = reg_union(fresh).filter(function (s2) { return s2 && !deleted_has(s2.page); });
+        return sync_write('sessions_auto.json', JSON.stringify(out, null, 2), 'heal registry');
+      })
       .catch(function () { healed = false; });
   }
   // while a pending recording hasn't appeared in the registry, keep checking

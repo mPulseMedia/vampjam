@@ -496,6 +496,50 @@
       return r.json();
     });
   }
+  // my_recs — roster of recordings this device registered (shared with
+  // drawer.js). Registry writes built on a stale CDN read used to drop
+  // earlier rows; every write unions this roster back in.
+  var MY_KEY = 'vampjam_my_recs';
+  function my_recs_get() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(MY_KEY) || '[]');
+      if (!Array.isArray(arr)) return [];
+      return arr.filter(function (m) { return m && m.page; }).slice(-40);
+    } catch (e) { return []; }
+  }
+  function my_recs_put(entry) {
+    try {
+      var arr = my_recs_get().filter(function (m) { return m.page !== entry.page; });
+      arr.push(entry);
+      localStorage.setItem(MY_KEY, JSON.stringify(arr.slice(-40)));
+    } catch (e) {}
+  }
+  function reg_union(list) {
+    var dead = [];
+    try { dead = (JSON.parse(localStorage.getItem('vampjam_deleted_pages') || '[]') || []).map(function (t) { return t.page; }); } catch (e) {}
+    var have = {};
+    list.forEach(function (s2) { if (s2 && s2.page) have[s2.page] = true; });
+    my_recs_get().forEach(function (m) {
+      if (!have[m.page] && dead.indexOf(m.page) < 0) {
+        list.push({ page: m.page, name: m.name, date: m.date, dur: m.dur || 0, count: m.count || 0 });
+      }
+    });
+    return list;
+  }
+  // freshest possible registry — the GitHub API sees a commit instantly while
+  // the raw CDN can lag minutes; every registry WRITE starts from this
+  function reg_fresh() {
+    return fetch('https://api.github.com/repos/mPulseMedia/vampjam/contents/sessions_auto.json?ref=main&t=' + Date.now(),
+      { headers: { Accept: 'application/vnd.github.raw+json' }, cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('api ' + r.status); return r.json(); })
+      .then(function (j) { if (!Array.isArray(j)) throw new Error('api shape'); return j; })
+      .catch(function () {
+        return fetch(RAW_BASE + 'sessions_auto.json?v=' + Date.now(), { cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : []; })
+          .then(function (j) { return Array.isArray(j) ? j : []; })
+          .catch(function () { return []; });
+      });
+  }
   function rec_id_from(label, dateIso, ts) {
     var id = slug(label) || 'rec';
     if (!/\d{4}_\d{2}_\d{2}/.test(id)) id += '_' + dateIso.replace(/-/g, '_');
@@ -537,14 +581,12 @@
         });
       } catch (eCp) {}
     }
-    // placeholder first: every device's session list shows a syncing… row
+    // placeholder first: every device's session list shows a syncing… row.
+    // The write starts from the freshest registry (GitHub API, not the
+    // lagging CDN) + this device's roster, so it can't clobber earlier rows.
     try {
-      var pre = [];
-      try {
-        var pr = await fetch(RAW_BASE + 'sessions_auto.json?v=' + Date.now(), { cache: 'no-store' });
-        if (pr.ok) { var pj = await pr.json(); if (Array.isArray(pj)) pre = pj; }
-      } catch (e0) {}
-      pre = not_deleted(pre.filter(function (e2) { return e2 && e2.page !== page; }));
+      var pre = await reg_fresh();
+      pre = not_deleted(reg_union(pre).filter(function (e2) { return e2 && e2.page !== page; }));
       pre.push({ page: page, name: label, date: ISO2, dur: recDur2, count: o.tags.length, pending: true, ts: Date.now() });
       await sync_write('sessions_auto.json', JSON.stringify(pre, null, 2), 'placeholder ' + id);
       try {
@@ -573,14 +615,12 @@
         audio: { label: label, url: j.url, kind: 'url' },
         tags: tags
       }, null, 2), 'auto session ' + id);
-      var list = [];
-      try {
-        var lr = await fetch(RAW_BASE + 'sessions_auto.json?v=' + Date.now(), { cache: 'no-store' });
-        if (lr.ok) { var lj = await lr.json(); if (Array.isArray(lj)) list = lj; }
-      } catch (e) {}
-      list = not_deleted(list.filter(function (e2) { return e2 && e2.page !== page; }));
+      var list = await reg_fresh();
+      list = not_deleted(reg_union(list).filter(function (e2) { return e2 && e2.page !== page; }));
       list.push({ page: page, name: label, date: ISO2, dur: recDur2, count: tags.length });
       await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
+      // roster: from now on every registry write vouches for this recording
+      my_recs_put({ page: page, name: label, date: ISO2, dur: recDur2, count: tags.length, ts: Date.now() });
       try {
         localStorage.setItem('vampjam_pending_session',
           JSON.stringify({ page: page, name: label, date: ISO2, dur: recDur2, count: tags.length, ts: Date.now(), done: true }));

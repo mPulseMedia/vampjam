@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 <script src="theme.js"></script>
 <script src="sessions.js?v=128"></script>
-<script src="drawer.js?v=128"></script>
+<script src="drawer.js?v=129"></script>
 <style>
   :root {
     --bg: #4a2a0e;
@@ -393,10 +393,21 @@
     max-height: 0; overflow-y: auto; background: var(--bg);
     transition: max-height 0.18s ease; position: relative; z-index: 90;
   }
-  .session_drawer.open { max-height: 72vh; }
+  .session_drawer.open { max-height: 80vh; max-height: 80dvh; }
   /* session list tucks under the white control layer below it: shadow on the
      darker card's bottom edge, only when the list overflows the drawer */
   .session_drawer.open.sess_overflow { box-shadow: inset 0 -16px 13px -11px rgba(0,0,0,0.22); }
+  /* play_deck — the transport panel (jump back / play / jump forward).
+     While the session list is open it docks into the lower 20% of the
+     viewport: the list gets the top 80%, the controls stay in reach. */
+  body.drawer_open .ctrl_row {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
+    height: 20vh; height: 20dvh; margin: 0;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: var(--bg);
+    padding: 0 10px env(safe-area-inset-bottom, 0px);
+    box-shadow: 0 -8px 20px rgba(0,0,0,0.18);
+  }
   .session_drawer.dragging { transition: none; }
   .session_drawer .jam_menu {
     position: static; top: auto; left: auto; min-width: 0;
@@ -415,6 +426,10 @@
     .session_drawer { position: fixed; top: 0; left: 0; width: 50vw; z-index: 95;
                       box-shadow: 0 10px 26px rgba(0,0,0,0.3); border-radius: 0 0 14px 0; }
     .session_drawer.open { max-height: 88vh; }
+    /* split landscape keeps its own layout: no docked play_deck there */
+    body.drawer_open .ctrl_row { position: static; height: auto; margin-bottom: 14px;
+                                 background: none; box-shadow: none; padding: 0;
+                                 justify-content: space-between; gap: 4px; }
   }
   #drawer_toggle.open .drawer_caret { transform: rotate(180deg); }
   /* tall landscape (no split): let the sticky player background + shadow reach
@@ -480,7 +495,7 @@
 <div class="sticky_player">
 <div class="player_card">
   <audio id="player" preload="metadata"></audio>
-  <div class="ctrl_row">
+  <div class="ctrl_row" id="play_deck">
     <button class="ctrl_btn" id="back_120" title="Back 2 min"><span class="cu">−</span><span class="cn">2</span><span class="cu">m</span></button>
     <button class="ctrl_btn" id="back_15"  title="Back 15 sec"><span class="cu">−</span><span class="cn">15</span><span class="cu">s</span></button>
     <button class="ctrl_btn small" id="back_5" title="Back 5 sec"><span class="cu">−</span><span class="cn">5</span><span class="cu">s</span></button>

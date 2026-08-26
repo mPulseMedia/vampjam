@@ -513,7 +513,27 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - (log 154 admin_slim — no page edit) admin.html loses the 'Add a new session' heading,
   the 'Recording happens on its own page now.' line, and the Record-a-session button.
   Admin is now: wordmark, back link, theme switch, and the bucket button.
-- NEXT → add entry 155 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 155 registry_heal — no page edit) the session list stops losing recordings. Root
+  cause: every registry write started from a raw-CDN read that lags minutes, so each new
+  recording's placeholder/register (and every 'purge deleted rows') overwrote rows the
+  CDN hadn't shown yet — uploads 'succeeded', then vanished from the list. Fix: (a) every
+  registry WRITE now starts from the GitHub contents API (sees commits instantly; the raw
+  CDN stays for display reads only), (b) vampjam_my_recs roster — each device remembers
+  what it registered, unions it into every registry write AND into the displayed list,
+  and heal_registry re-adds lost rows (one write per load, 90s grace for in-flight
+  writes), (c) one-time restore — the 9 orphaned recordings (live json + audio, never
+  deleted) rebuilt into sessions_auto.json from the repo jsons, durations estimated from
+  each recording's last tag; deliberate one-shot exception to the never-ship-
+  sessions_auto rule, race-checked after push. Also play_deck (drawer v129): the
+  transport panel (.ctrl_row, now id=play_deck) docks into the lower 20dvh of the
+  viewport while the session list is open — the list gets 80dvh (was 72vh) — and
+  split-landscape keeps its own layout. And dur_align: duration + moment count are two
+  fixed right-aligned columns (48/26px) and rows without a trash can reserve its 30px
+  slot, so every duration ends on the same right edge. Playwright: deck fixed, bottom 0,
+  20% of viewport ✓; drawer 80% ✓; roster row displayed + heal write unions
+  fresh+roster ✓; record flow keeps stale+fresh+roster+new in both writes ✓; duration
+  right edges all equal ✓.
+- NEXT → add entry 156 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

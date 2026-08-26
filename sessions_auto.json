@@ -1,5 +1,61 @@
 [
   {
+    "page": "session.html?p=2026_08_25_2_24_20p",
+    "name": "2026-08-25 2:24:20p",
+    "date": "2026-08-25",
+    "dur": 71,
+    "count": 3
+  },
+  {
+    "page": "session.html?p=2026_08_25_2_40_41p",
+    "name": "2026-08-25 2:40:41p",
+    "date": "2026-08-25",
+    "dur": 39,
+    "count": 2
+  },
+  {
+    "page": "session.html?p=2026_08_25_2_51_32p",
+    "name": "2026-08-25 2:51:32p",
+    "date": "2026-08-25",
+    "dur": 26,
+    "count": 2
+  },
+  {
+    "page": "session.html?p=2026_08_25_3_32_53p",
+    "name": "2026-08-25 3:32:53p",
+    "date": "2026-08-25",
+    "dur": 175,
+    "count": 19
+  },
+  {
+    "page": "session.html?p=2026_08_25_3_48_03p",
+    "name": "2026-08-25 3:48:03p",
+    "date": "2026-08-25",
+    "dur": 38,
+    "count": 4
+  },
+  {
+    "page": "session.html?p=2026_08_26_san_francisco_10_31_32a",
+    "name": "2026-08-26 San Francisco",
+    "date": "2026-08-26",
+    "dur": 11,
+    "count": 2
+  },
+  {
+    "page": "session.html?p=2026_08_26_san_francisco_10_32_05a",
+    "name": "2026-08-26 San Francisco",
+    "date": "2026-08-26",
+    "dur": 12,
+    "count": 2
+  },
+  {
+    "page": "session.html?p=2026_08_26_san_francisco_10_33_03a",
+    "name": "2026-08-26 San Fran",
+    "date": "2026-08-26",
+    "dur": 0,
+    "count": 0
+  },
+  {
     "page": "session.html?p=2026_08_26_san_francisco_10_34_10a",
     "name": "2026-08-26 San Francisco",
     "date": "2026-08-26",

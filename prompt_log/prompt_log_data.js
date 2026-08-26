@@ -9,8 +9,41 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "154 admin_slim",
+        id: "155 registry_heal",
         expanded: true,
+        nodes: [
+          { text: "155 registry_heal", children: [
+            { text: "prompt_restate", children: [
+              { text: "New sessions are not landing on the session list even after a successful upload — fix it, and recover the past recordings that got lost." },
+              { text: "While the session list is showing, the lower ~20% of the viewport should be the panel with the play / jump-forward / jump-back controls — and that panel needs a name." },
+              { text: "Right-align the duration on the session rows (the moment count already is)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "It doesn't seem to be adding new sessions to the session list even when it tells me it's uploaded the files and even given me a link of where to go so please fix that. Also, when displaying the session list have the Lauer call it 20% of the viewport B the panel that contains the vbasically the play jump forward jump back stuff. I gotta name that thing so that I can always easily scroll that up and see if you can find the past recordings that I have created, but that we're not added to the session list. And finally the duration on the session list the duration number is not right aligned right now The the number of moments is right aligned, but not the duration." }
+            ]},
+            { text: "response", children: [
+              { text: "registry_heal", children: [
+                { text: "found it: every registry write started from a cloud copy that lags minutes behind, so each new recording overwrote the rows it could not yet see — that is why uploads succeeded but the list forgot them" },
+                { text: "writes now start from the instant copy (GitHub API), and each device keeps a roster of what it recorded and puts those rows back into every list and every write" },
+                { text: "recovered: all 9 lost recordings are back on the session list (5 from 08-25, 4 from 08-26)" }
+              ]},
+              { text: "play_deck", children: [
+                { text: "the transport panel is hereby named play_deck" },
+                { text: "while the session list is open, play_deck docks into the bottom 20% of the screen; the list gets the top 80%" }
+              ]},
+              { text: "dur_align", children: [
+                { text: "durations sit in their own right-aligned column now — every row ends on the same edge" }
+              ]},
+              { text: "verify", children: [
+                { text: "~3 min: open Sessions — the lost recordings are back, durations line up, play deck sits along the bottom" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "154 admin_slim",
+        expanded: false,
         nodes: [
           { text: "154 admin_slim", children: [
             { text: "prompt_restate", children: [
