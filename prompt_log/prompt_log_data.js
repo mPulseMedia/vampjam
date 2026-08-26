@@ -9,8 +9,28 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "149 one_size",
+        id: "150 size_confirm",
         expanded: true,
+        nodes: [
+          { text: "150 size_confirm", children: [
+            { text: "prompt_restate", children: [
+              { text: "Use the highlight title's text size as the one size." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Use the size of the text that is the highlight title" }
+            ]},
+            { text: "response", children: [
+              { text: "size_confirm", children: [
+                { text: "already so — the one size I standardized on IS the highlight title's size (17px)" },
+                { text: "nothing needed changing; the whole app matches it" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "149 one_size",
+        expanded: false,
         nodes: [
           { text: "149 one_size", children: [
             { text: "prompt_restate", children: [

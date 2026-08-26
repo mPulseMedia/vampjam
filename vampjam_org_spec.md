@@ -490,7 +490,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   (.play_btn, .rec_btn, .fav_play — those aren't text). Number/hour strips bumped to 20px
   height so 17px digits don't clip. Playwright: h1, tag button, bar numbers, hour labels,
   times, row names, ctrl labels all 17px; wordmark 68/34, record dot 38 ✓.
-- NEXT → add entry 150 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 150 size_confirm — no page edit) Paul specified which size the one-size should be:
+  the highlight title's. That is the size 149 already standardized on — the highlight list
+  ran at 17px and the app-wide override is 17px — so no change was needed; confirmed and
+  logged.
+- NEXT → add entry 151 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
