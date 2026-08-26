@@ -1,1 +1,1 @@
-control_panel
+auto_commit
