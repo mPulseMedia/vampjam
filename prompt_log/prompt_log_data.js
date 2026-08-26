@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "145 row_time_hide",
+        id: "146 fav_sess_right",
         expanded: true,
+        nodes: [
+          { text: "146 fav_sess_right", children: [
+            { text: "prompt_restate", children: [
+              { text: "On the Favorites page put the session name on the same baseline as the title, right-justified near the heart." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On the favorite favorites, Paige put the name of the session on the same baseline as the title, but right justify it over near the heart" }
+            ]},
+            { text: "response", children: [
+              { text: "fav_sess_right", children: [
+                { text: "done — the session name now sits on the title's line, right-aligned next to the heart" },
+                { text: "long names trim with an ellipsis so the title keeps its room" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Favorites — one line per row, session name by the heart" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "145 row_time_hide",
+        expanded: false,
         nodes: [
           { text: "145 row_time_hide", children: [
             { text: "prompt_restate", children: [

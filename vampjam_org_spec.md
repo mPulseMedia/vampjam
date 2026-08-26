@@ -467,7 +467,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   gone with it, but the row's play button and the bar numbers still seek) and .mom_time on
   the record screen's moment rows. All CSS-only, one line each to restore. Playwright:
   playback + record rows show no times ✓.
-- NEXT → add entry 146 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 146 fav_sess_right — no page edit) favorites.html rows: the session name moved from
+  a small line above the title to the SAME line as it — right-justified, tucked beside the
+  heart (muted 12px, ellipsis past 42% width). Playwright: same line ✓, right of the name
+  ✓, adjacent to the heart ✓.
+- NEXT → add entry 147 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

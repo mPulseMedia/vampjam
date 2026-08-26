@@ -134,7 +134,10 @@
   .fav_row.playing { background: var(--row_active); }
   .fav_play_sm { flex: 0 0 auto; background: none; border: none; color: var(--accent); font-size: 17px; padding: 8px; cursor: pointer; line-height: 0; }
   .fav_main { flex: 1 1 60px; min-width: 0; }
-  .fav_sess { color: var(--muted); font-size: 11.5px; line-height: 1.2; }
+  .fav_sess {
+    flex: 0 1 auto; color: var(--muted); font-size: 12px; text-align: right;
+    max-width: 42%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
   .fav_name {
     width: 100%; background: transparent; border: none; outline: none;
     color: var(--fg); font: inherit; font-size: 17px; padding: 2px 0;
@@ -311,9 +314,6 @@
 
       var main = document.createElement('div');
       main.className = 'fav_main';
-      var sess = document.createElement('div');
-      sess.className = 'fav_sess';
-      sess.textContent = f.src.name;
       var name = document.createElement('input');
       name.className = 'fav_name';
       name.type = 'text';
@@ -324,8 +324,14 @@
           .then(function () { toast('Saved'); })
           .catch(function () { toast('Save failed — try again'); });
       });
-      main.appendChild(sess); main.appendChild(name);
+      main.appendChild(name);
       row.appendChild(main);
+
+      // session name rides the same line as the title, tucked in by the heart
+      var sess = document.createElement('span');
+      sess.className = 'fav_sess';
+      sess.textContent = f.src.name;
+      row.appendChild(sess);
 
       var tm = document.createElement('span');
       tm.className = 'fav_time';
