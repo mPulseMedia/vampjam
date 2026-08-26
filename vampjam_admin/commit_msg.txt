@@ -1,1 +1,1 @@
-size_confirm
+auto_commit
