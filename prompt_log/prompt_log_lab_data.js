@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "163 control_panel",
+        id: "164 land_margin",
         expanded: true,
+        nodes: [
+          { text: "164 land_margin", children: [
+            { text: "prompt_restate", children: [
+              { text: "In mobile landscape, widen the left and right panes so the gap at the right edge is much smaller — keep a little margin, not the big one there now." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Inmobile landscape mode I think we can expand the left in the right such that there is not a so large of a gap on the right side of the screen. I\'m not sure if you\'re doing that on purpose, but I want her to be a little margin, but not as big as it is right now." }
+            ]},
+            { text: "response", children: [
+              { text: "land_margin", children: [
+                { text: "not on purpose — iPhone reports the notch clearance on BOTH edges in landscape and the layout was taking all of it, about 60px a side" },
+                { text: "the margin is now capped at 24px, so both panes stretch out toward the edges; the gap between them tightened a little too" },
+                { text: "about 70px of width comes back, and it goes to the highlight titles that were getting cut off" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: turn the phone sideways — thin margins, longer titles" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "163 control_panel",
+        expanded: false,
         nodes: [
           { text: "163 control_panel", children: [
             { text: "prompt_restate", children: [

@@ -618,7 +618,15 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   before the read). Restored from git (ff94455~1) and re-shipped with the v134 bump and
   the control_panel shadow. Guard for next time: never open a file for writing in the same
   expression that reads it.
-- NEXT → add entry 164 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 164 land_margin — 9 pages) his landscape screenshot: ~60px of dead space on each
+  outer edge. Cause: iOS reports the notch inset on BOTH sides in landscape, and the split
+  rule took it whole (max(8px, env(safe-area-inset-*))). Now clamp(8px, env(...), 24px) on
+  the 8 playback pages' split rule and record.html's landscape rule — a real margin, capped
+  at 24, so both panes reach out toward the edges; column-gap 14 → 10. That returns ~72px
+  of width in landscape, which goes to the highlight titles. Playwright (932×430): clamp
+  resolves 59px inset → 24px and no inset → 8px; list right edge 924 of 932 ✓; portrait
+  untouched (the rule lives only in the split query).
+- NEXT → add entry 165 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

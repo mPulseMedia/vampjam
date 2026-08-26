@@ -131,7 +131,7 @@
 
   /* full_width: phone landscape stretches the record screen edge to edge */
   @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
-    body { padding-left: max(8px, env(safe-area-inset-left)); padding-right: max(8px, env(safe-area-inset-right)); }
+    body { padding-left: clamp(8px, env(safe-area-inset-left), 24px); padding-right: clamp(8px, env(safe-area-inset-right), 24px); }   /* land_margin */
     .top_bar, .name_row, .stage { max-width: none; }
   }
   .status a { color: var(--accent); font-weight: 600; }
