@@ -1,29 +1,4 @@
 {
-  "audio": {
-    "label": "2026-08-25 San Francisco",
-    "url": "https://pub-33cfd8558d314eb58642c8550608850b.r2.dev/2026_08_25_san_francisco_9_42_57p.m4a",
-    "kind": "url"
-  },
-  "tags": [
-    {
-      "id": "t_1787719379715_lt1",
-      "t": 21.5,
-      "label": ""
-    },
-    {
-      "id": "t_1787719379715_lt2",
-      "t": 33.1,
-      "label": ""
-    },
-    {
-      "id": "t_1787719379715_lt3",
-      "t": 37.4,
-      "label": ""
-    },
-    {
-      "id": "t_1787719379715_lt4",
-      "t": 42.4,
-      "label": ""
-    }
-  ]
+  "deleted": true,
+  "tags": []
 }
