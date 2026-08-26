@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "144 fav_time_hide",
+        id: "145 row_time_hide",
         expanded: true,
+        nodes: [
+          { text: "145 row_time_hide", children: [
+            { text: "prompt_restate", children: [
+              { text: "Remove the timestamps (the 50:11 and so on) from all highlight rows across all pages." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I meant remove the timestamp the 50 minutes and 11 seconds and so on across all of the highlight Rows across all of the various pages." }
+            ]},
+            { text: "response", children: [
+              { text: "row_time_hide", children: [
+                { text: "timestamps are off every highlight row — all seven sessions, new recordings, the record screen, and Favorites" },
+                { text: "rows now read: number, name, hearts and buttons" },
+                { text: "one line each to bring them back whenever you want" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open any session — no times on the rows" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "144 fav_time_hide",
+        expanded: false,
         nodes: [
           { text: "144 fav_time_hide", children: [
             { text: "prompt_restate", children: [

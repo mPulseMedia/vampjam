@@ -461,7 +461,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   row is hidden (CSS display:none on .fav_time — the element still renders, so restoring
   it later is one line). Read 'highlight bar' as the favorite rows; if Paul meant the
   cur/dur under the timeline instead, flip that on request.
-- NEXT → add entry 145 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 145 row_time_hide — no page edit) clarification of 144: the per-row timestamps
+  (e.g. 50:11) are now hidden on EVERY highlight row across the app — .tag_time
+  display:none on all 8 playback pages (appended override; the tap-to-jump on the time is
+  gone with it, but the row's play button and the bar numbers still seek) and .mom_time on
+  the record screen's moment rows. All CSS-only, one line each to restore. Playwright:
+  playback + record rows show no times ✓.
+- NEXT → add entry 146 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
