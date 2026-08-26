@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "161 list_swipe",
+        id: "162 tag_clamp",
         expanded: true,
+        nodes: [
+          { text: "162 tag_clamp", children: [
+            { text: "prompt_restate", children: [
+              { text: "A stray moment number sitting far off to the right is wrecking the page layout (screenshot: number 21 outside the timeline)." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Look how this stray moment number way off to the right messes up the page." }
+            ]},
+            { text: "response", children: [
+              { text: "tag_clamp", children: [
+                { text: "cause: that moment was tagged past the length the audio file claims, so its number was placed past the end of the bar and stretched the whole page sideways" },
+                { text: "every number, marker and the playhead are now pinned to the bar — an over-length moment lands at the far end instead of off the page" },
+                { text: "numbers also keep their whole glyph on the strip, and the page can no longer scroll sideways at all" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: reopen that session — the layout sits square, no stray 21" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "161 list_swipe",
+        expanded: false,
         nodes: [
           { text: "161 list_swipe", children: [
             { text: "prompt_restate", children: [

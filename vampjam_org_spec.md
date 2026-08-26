@@ -585,7 +585,18 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   min-width 30; .jam_count text-align center). Playwright (touch, 14 rows): mid-list swipe
   up keeps it open and scrolls (0 → 515) ✓, swipe down scrolls back ✓, at-bottom swipe
   closes ✓, wordmark swipe closes ✓, 21 counts share center 317 ✓.
-- NEXT → add entry 162 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 162 tag_clamp — 8 pages) his screenshot: moment 21 sat far off the right edge and
+  squeezed the whole page. Cause: a moment tagged past the duration the audio file reports
+  (t > eff_dur) made fish_x return > 1, so the label was positioned past 100% and widened
+  the document. Fix on all 8 playback pages: fish_x clamps its result to [0,1] (markers,
+  hour labels and the playhead all ride the bar now), place_tag_numbers additionally keeps
+  each label's center within [10, W-10] px so no glyph hangs off the strip, and
+  html/body get overflow-x: clip — clip, not hidden, so the sticky player still sticks.
+  Overrun moments pile at the right end and the existing 16px collision rule shows one of
+  them. Playwright: 21 tags over a 1:54 duration → scrollWidth == clientWidth (was
+  overflowing), every label right edge ≤ the strip's ✓; normal 29-tag page unchanged
+  (13 labels, 21→360 inside a 16→374 strip), sticky position still 'sticky' ✓.
+- NEXT → add entry 163 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
