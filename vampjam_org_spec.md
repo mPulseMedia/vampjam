@@ -483,7 +483,14 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   matching landscape media block: same paddings, and top_bar/name_row/stage lose their
   560px cap so the growing bar spans the screen. Playwright landscape: seek bar starts at
   8px, list ends at 836/844 ✓; record bar 828/844 ✓.
-- NEXT → add entry 149 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 149 one_size — no page edit) one text size app-wide: a global override
+  (`body :not(...) { font-size: 17px !important; }`) appended to every page — 8 playback
+  pages, session.html, record.html, favorites.html, admin.html. Exempt: the vampSF
+  wordmark (and its SF span), and the glyph buttons whose ICONS scale with font-size
+  (.play_btn, .rec_btn, .fav_play — those aren't text). Number/hour strips bumped to 20px
+  height so 17px digits don't clip. Playwright: h1, tag button, bar numbers, hour labels,
+  times, row names, ctrl labels all 17px; wordmark 68/34, record dot 38 ✓.
+- NEXT → add entry 150 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

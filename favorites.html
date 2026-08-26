@@ -149,6 +149,11 @@
   .empty { text-align: center; color: var(--muted); padding: 26px 12px; }
   #toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 9px 16px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity 0.25s; max-width: 86vw; }
   #toast.show { opacity: 0.94; }
+
+  /* one_size: a single text size for the whole app — only the vampSF wordmark
+     (and glyph buttons whose icons scale with font-size) keep their own */
+  body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play) { font-size: 17px !important; }
+  .tag_numbers, .num_strip { height: 20px !important; }
 </style>
 </head>
 <body>

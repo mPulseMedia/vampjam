@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "148 full_width",
+        id: "149 one_size",
         expanded: true,
+        nodes: [
+          { text: "149 one_size", children: [
+            { text: "prompt_restate", children: [
+              { text: "Use only one size for all text — all of it — except the app name." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Use only one size for all text. All text. Except the app name." }
+            ]},
+            { text: "response", children: [
+              { text: "one_size", children: [
+                { text: "every piece of text in the app is now the same size, on every page" },
+                { text: "the vampSF wordmark keeps its size, and icon glyphs (play, record) stay icon-sized" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: browse around — titles, buttons, numbers, times all one size" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "148 full_width",
+        expanded: false,
         nodes: [
           { text: "148 full_width", children: [
             { text: "prompt_restate", children: [

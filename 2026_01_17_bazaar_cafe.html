@@ -426,6 +426,11 @@
       padding-left: calc(50vw - 50%); padding-right: calc(50vw - 50%);
     }
   }
+
+  /* one_size: a single text size for the whole app — only the vampSF wordmark
+     (and glyph buttons whose icons scale with font-size) keep their own */
+  body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play) { font-size: 17px !important; }
+  .tag_numbers, .num_strip { height: 20px !important; }
 </style>
 </head>
 <body>
