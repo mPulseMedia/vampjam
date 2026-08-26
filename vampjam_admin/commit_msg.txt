@@ -1,1 +1,1 @@
-admin_slim
+auto_commit
