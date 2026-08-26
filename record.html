@@ -383,8 +383,8 @@
     // Safari misbehaves when focus hops between fields mid-keyboard — then
     // create the row and hand the keyboard straight to the new name below.
     var act = document.activeElement;
-    if (act && act.blur && act.classList && act.classList.contains('mom_name')) {
-      act.blur();
+    if (act && act.blur && (act.tagName === 'INPUT' || act.tagName === 'TEXTAREA')) {
+      act.blur();   // any field, not just a moment name (the session name counts too)
     }
     var sec = Math.round(elapsed() * 10) / 10;
     var row = document.createElement('div');

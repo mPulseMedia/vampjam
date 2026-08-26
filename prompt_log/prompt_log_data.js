@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "164 land_margin",
+        id: "165 tap_select",
         expanded: true,
+        nodes: [
+          { text: "165 tap_select", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tapping the text of a highlight that is not already selected should just play it, not open editing; only a tap on an already-selected highlight\'s text should edit." },
+              { text: "On the record page, a second Tag while the keyboard is up misbehaves — confirm the keyboard is being put away first, or make it so." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I tap on a highlight and in on the text element itself, if it wasn\'t previously selected, it should just play the highlight and not let me edit the text only once a highlight has been selected and then I tap it on the text region. Should I be able to edit the text. Also, when recording when I create a new highlight, and then create a new, highlight, a second create a new highlight, it brings up the keyboard, and then I create a new second highlight something bad happens because the keyboard was up when I click the second highlight, I asked for this before I\'m not sure why you didn\'t give it to me or maybe it\'s not fixing the problem, but I thought if you cleared the keyboard and then created the second moment it would stop that bad thing from happening if you\'re not doing that now, please do and if you are mark something in the chat with a whole bunch of them with alike star, a rectangle made of stars around it in Txt, that says already temporarily hiding keyboard" }
+            ]},
+            { text: "response", children: [
+              { text: "tap_select", children: [
+                { text: "tap the text of a highlight that is not selected — it just plays and selects; no keyboard, no cursor" },
+                { text: "tap the text of the selected one — the keyboard comes up and you edit" },
+                { text: "the double-tap-to-edit rule is gone" }
+              ]},
+              { text: "kbd_hide_confirm", children: [
+                { text: "already there since batch 142: tapping Tag blurs the open field first, then makes the new moment and hands the keyboard to it" },
+                { text: "widened here to blur ANY focused field, not just a moment name (the session name counted too)" },
+                { text: "if it still misbehaves, tell me what you see — the keyboard is being put away, so the fault is elsewhere and I will chase it" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: tap a highlight title — it plays; tap it again — you can type" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "164 land_margin",
+        expanded: false,
         nodes: [
           { text: "164 land_margin", children: [
             { text: "prompt_restate", children: [

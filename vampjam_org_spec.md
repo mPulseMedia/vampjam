@@ -626,7 +626,20 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   of width in landscape, which goes to the highlight titles. Playwright (932×430): clamp
   resolves 59px inset → 24px and no inset → 8px; list right edge 924 of 932 ✓; portrait
   untouched (the rule lives only in the split query).
-- NEXT → add entry 165 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 165 tap_select — 9 pages) editing a highlight's text is now gated on selection.
+  Was: single tap = play, double tap = edit (a 350ms timer, and the field unlocked on the
+  first tap). Now: a label renders readOnly unless its tag IS activeTagId, so a tap on an
+  UNSELECTED highlight only plays/selects it, and a tap on the SELECTED one is a native
+  tap on an already-editable input (iOS decides the keyboard from the element state at tap
+  start — hence set at render, not on tap). blur keeps the field editable while its row
+  stays selected. The selecting tap can't leak into an edit: labelHandleTap opens a 450ms
+  suppressLabelFocusUntil window; the re-rendered label preventDefaults pointerdown and
+  blurs any focus inside it, which swallows the ghost click that follows a touch.
+  Also, record.html's add_moment blur-first guard (already there since 142) now blurs ANY
+  focused input, not only a .mom_name — the session-name field counted too. Playwright
+  (touch): tap unselected → active, not focused ✓; tap again → focused ✓; type + Enter →
+  saved, still selected and editable ✓; tap another row → it plays, the old one re-locks ✓.
+- NEXT → add entry 166 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

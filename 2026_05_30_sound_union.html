@@ -612,6 +612,10 @@
   var tags         = load_json(STORAGE_TAGS, []);
   var sortMode     = 'time';   // Manual sort removed -- always time-ordered
   var activeTagId  = null;
+  // tap_select: the tap that SELECTS a highlight must not also focus its text.
+  // The re-render swaps in an editable field mid-gesture, and the ghost click
+  // that follows would land on it — this window swallows that focus.
+  var suppressLabelFocusUntil = 0;
   var playingTagId = null;     // tag currently containing currentTime (auto-tracked)
   var autoplayBlocked = false; // true if a play() promise rejected (browser blocked autoplay)
   var dragState    = null;
@@ -1707,41 +1711,28 @@
       var label = document.createElement('input');
       label.className = 'tag_label';
       label.type = 'text';
-      label.readOnly = true;                 // single tap = play; double tap = edit
+      // tap_select: tapping the text of a highlight that is NOT selected just
+      // plays it — no keyboard. The SELECTED highlight's field is left
+      // editable, so the next tap on its text is a native tap on an editable
+      // input and iOS opens the keyboard on its own (the state at tap start is
+      // what iOS goes by, which is why this is set at render, not on tap).
+      label.readOnly = (tag.id !== activeTagId);
       label.setAttribute('inputmode', 'text');
       label.setAttribute('autocapitalize', 'sentences');
       label.value = tag.label || '';
-      // Distinguish single vs double tap. On mobile the keyboard only opens if
-      // focus() runs inside the touch gesture, so the edit path lives in touchend.
-      var labelTapTimer = null;
-      var labelLastTap  = 0;
-      var labelTouched  = false;
+      var labelTouched = false;
       function labelHandleTap() {
-        // Actively editing: let the tap place the cursor.
-        if (!label.readOnly && document.activeElement === label) return;
-        var now = Date.now();
-        if (labelLastTap && now - labelLastTap < 350) {   // second tap -> edit
-          labelLastTap = 0;
-          if (labelTapTimer) { clearTimeout(labelTapTimer); labelTapTimer = null; }
-          // The field was unlocked on the first tap, so this tap lands on an
-          // already-editable input -> iOS raises the keyboard for a real tap.
-          label.focus();
-          try { label.select(); } catch (e) {}
-          return;
-        }
-        labelLastTap = now;
-        // Unlock now (no focus) so a following double-tap is a native tap on an
-        // editable field. iOS decides keyboard by the element state at tap start,
-        // so this first tap stays silent; a lone tap just plays.
-        label.readOnly = false;
-        if (labelTapTimer) clearTimeout(labelTapTimer);
-        labelTapTimer = setTimeout(function () {
-          labelTapTimer = null;
-          if (document.activeElement === label) return;   // user is editing; don't play
-          autoplayBlocked = false;
-          play_from_tag(tag);   // single tap -> play; re-render re-locks the field
-        }, 350);
+        if (!label.readOnly) return;      // selected: the native tap is the edit
+        autoplayBlocked = false;
+        suppressLabelFocusUntil = Date.now() + 450;
+        play_from_tag(tag);               // unselected: select + play (re-render unlocks it)
       }
+      label.addEventListener('pointerdown', function (e) {
+        if (Date.now() < suppressLabelFocusUntil) e.preventDefault();   // no focus from the ghost click
+      });
+      label.addEventListener('focus', function () {
+        if (Date.now() < suppressLabelFocusUntil) { try { label.blur(); } catch (e) {} }
+      });
       label.addEventListener('touchend', function () { if (swipeMoved) return; labelTouched = true; labelHandleTap(); });
       label.addEventListener('click', function () {
         if (labelTouched) { labelTouched = false; return; }  // touch already handled this
@@ -1752,7 +1743,8 @@
         save_tags();
         queue_save_data_to_repo('rename tag');
       });
-      label.addEventListener('blur', function () { label.readOnly = true; });
+      // stay editable while this highlight is the selected one
+      label.addEventListener('blur', function () { label.readOnly = (tag.id !== activeTagId); });
       label.addEventListener('keydown', function (e) { if (e.key === 'Enter') label.blur(); });
       row.appendChild(label);
 
