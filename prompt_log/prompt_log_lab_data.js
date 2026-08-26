@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "147 land_circle",
+        id: "148 full_width",
         expanded: true,
+        nodes: [
+          { text: "148 full_width", children: [
+            { text: "prompt_restate", children: [
+              { text: "Use the full width of the viewport." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Use full width of viewport" }
+            ]},
+            { text: "response", children: [
+              { text: "full_width", children: [
+                { text: "landscape now runs edge to edge on every session page and the record screen" },
+                { text: "only the notch keeps the sliver of clearance it needs" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: rotate to landscape — content reaches both edges" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "147 land_circle",
+        expanded: false,
         nodes: [
           { text: "147 land_circle", children: [
             { text: "prompt_restate", children: [

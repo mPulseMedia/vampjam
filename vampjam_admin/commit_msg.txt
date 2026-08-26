@@ -1,1 +1,1 @@
-auto_commit
+full_width

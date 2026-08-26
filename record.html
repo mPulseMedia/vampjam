@@ -128,6 +128,12 @@
   .mom_time { display: none; }   /* row_time_hide: timestamps off the moment rows for now */
 
   .status { min-height: 40px; text-align: center; color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 480px; word-break: break-word; }
+
+  /* full_width: phone landscape stretches the record screen edge to edge */
+  @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
+    body { padding-left: max(8px, env(safe-area-inset-left)); padding-right: max(8px, env(safe-area-inset-right)); }
+    .top_bar, .name_row, .stage { max-width: none; }
+  }
   .status a { color: var(--accent); font-weight: 600; }
 </style>
 </head>

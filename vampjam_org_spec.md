@@ -477,7 +477,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   (circles can never squash anywhere), and the split media block sizes the row to FIT —
   gap 6px, side buttons 44px, play 68px (row 399px). Playwright: landscape play 68x68,
   all sides 44x44, row 399 ✓; portrait unchanged (76x76) ✓.
-- NEXT → add entry 148 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 148 full_width — no page edit) phone landscape now uses the whole viewport. The 8
+  playback pages' split grid body drops its 16px gutters for max(8px, env(safe-area-inset))
+  each side — edge to edge, with only the notch keeping its clearance. record.html gains a
+  matching landscape media block: same paddings, and top_bar/name_row/stage lose their
+  560px cap so the growing bar spans the screen. Playwright landscape: seek bar starts at
+  8px, list ends at 836/844 ✓; record bar 828/844 ✓.
+- NEXT → add entry 149 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
