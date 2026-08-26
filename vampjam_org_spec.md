@@ -457,7 +457,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   moved from under the Favorites title to between the play/pause circle and the timeline
   bar (margins adjusted). Playwright: play.bottom ≤ name.top ≤ bar.top ✓, shows
   '2026-08-07 Sound Union' ✓.
-- NEXT → add entry 144 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 144 fav_time_hide — no page edit) favorites.html: the timestamp on each favorite
+  row is hidden (CSS display:none on .fav_time — the element still renders, so restoring
+  it later is one line). Read 'highlight bar' as the favorite rows; if Paul meant the
+  cur/dur under the timeline instead, flip that on request.
+- NEXT → add entry 145 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

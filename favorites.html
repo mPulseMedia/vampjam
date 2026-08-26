@@ -141,7 +141,7 @@
     border-bottom: 1px dashed transparent;
   }
   .fav_name:focus { border-bottom-color: var(--panel_3); }
-  .fav_time { flex: 0 0 auto; color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+  .fav_time { display: none; }   /* fav_time_hide: timestamps off the favorite rows for now */
   .fav_heart { flex: 0 0 auto; background: none; border: none; color: var(--accent); padding: 8px; cursor: pointer; line-height: 0; }
   .empty { text-align: center; color: var(--muted); padding: 26px 12px; }
   #toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 9px 16px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity 0.25s; max-width: 86vw; }

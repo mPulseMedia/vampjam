@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "143 fav_name",
+        id: "144 fav_time_hide",
         expanded: true,
+        nodes: [
+          { text: "144 fav_time_hide", children: [
+            { text: "prompt_restate", children: [
+              { text: "For now, remove the timestamp on the highlight bar." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "For the moment, remove the timestamp on the highlight bar" }
+            ]},
+            { text: "response", children: [
+              { text: "fav_time_hide", children: [
+                { text: "the timestamps are off the favorite rows (easy to bring back)" },
+                { text: "if you meant the 0:00 / total under the timeline instead, say the word and I will flip that one" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Favorites — rows show name and heart only" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "143 fav_name",
+        expanded: false,
         nodes: [
           { text: "143 fav_name", children: [
             { text: "prompt_restate", children: [
