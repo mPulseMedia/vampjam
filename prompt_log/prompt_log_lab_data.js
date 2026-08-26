@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "146 fav_sess_right",
+        id: "147 land_circle",
         expanded: true,
+        nodes: [
+          { text: "147 land_circle", children: [
+            { text: "prompt_restate", children: [
+              { text: "Mobile landscape skews proportions — the circle is an oval and things don't use the width properly." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Mobile landscape skews proportions. Circle is oval. Does not go to full width." }
+            ]},
+            { text: "response", children: [
+              { text: "land_circle", children: [
+                { text: "found it: the button row was too wide for the half-screen column, so the browser squeezed the circles into ovals" },
+                { text: "the row is now sized to fit the landscape column — slightly smaller buttons, real circles" },
+                { text: "buttons can never be squashed again, on any screen" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: rotate to landscape — round play button, row fits its half" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "146 fav_sess_right",
+        expanded: false,
         nodes: [
           { text: "146 fav_sess_right", children: [
             { text: "prompt_restate", children: [

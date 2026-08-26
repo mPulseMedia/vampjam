@@ -471,7 +471,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   a small line above the title to the SAME line as it — right-justified, tucked beside the
   heart (muted 12px, ellipsis past 42% width). Playwright: same line ✓, right of the name
   ✓, adjacent to the heart ✓.
-- NEXT → add entry 147 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 147 land_circle — no page edit) the landscape ovals: the control row (6×52 + 84 +
+  gaps ≈ 468px) overflowed the ~408px split column, so flex-shrink squeezed widths while
+  heights held — ovals. Fix on all 8 playback pages: base .ctrl_btn gains flex:0 0 auto
+  (circles can never squash anywhere), and the split media block sizes the row to FIT —
+  gap 6px, side buttons 44px, play 68px (row 399px). Playwright: landscape play 68x68,
+  all sides 44x44, row 399 ✓; portrait unchanged (76x76) ✓.
+- NEXT → add entry 148 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

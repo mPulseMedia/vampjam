@@ -128,7 +128,7 @@
   .ctrl_btn {
     appearance: none; -webkit-appearance: none; border: 0;
     background: var(--panel_2); color: var(--accent); font: inherit; font-weight: 600;
-    border-radius: 50%; width: 52px; height: 52px; cursor: pointer;
+    border-radius: 50%; width: 52px; height: 52px; cursor: pointer; flex: 0 0 auto;
     display: flex; align-items: center; justify-content: center;
     font-size: 12px; line-height: 1; padding: 0; white-space: nowrap;
     transition: background-color 0.12s, transform 0.06s;
@@ -214,6 +214,12 @@
     .tag_list { grid-column: 2; grid-row: 1 / span 30; height: calc(100vh - 12px);
                 overflow-y: auto; margin: 6px 0; -webkit-overflow-scrolling: touch; }
     .sticky_player { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
+    /* land_circle: the control row must FIT the half-width column — otherwise
+       flex squeezes the circles into ovals */
+    .ctrl_row { gap: 6px; }
+    .ctrl_btn { width: 44px; height: 44px; flex: 0 0 auto; }
+    .ctrl_btn.small { width: 44px; height: 44px; }
+    .ctrl_btn.play_btn { width: 68px; height: 68px; font-size: 34px; }
   }
   .tag_row {
     display: flex; align-items: center; gap: 5px;
