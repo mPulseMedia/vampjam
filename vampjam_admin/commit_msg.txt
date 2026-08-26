@@ -1,1 +1,1 @@
-tap_select
+auto_commit
