@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "165 tap_select",
+        id: "166 btn_calm",
         expanded: true,
+        nodes: [
+          { text: "166 btn_calm", children: [
+            { text: "prompt_restate", children: [
+              { text: "Get rid of the brown block around the play button on row 20 — it has shown up before and he dislikes it." },
+              { text: "Stop the Tag-the-moment button from inverting into a washed-out state; it should keep its look except for the split second it is tapped." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "What is this ugly brown thing around the play button on row 20. I\u2019ve seen it before. I dislike it very much. I also don\u2019t like how the tag a moment button inverts to this weird thing I think it should just stay looking the same maybe except for the split moments that I tap it" }
+            ]},
+            { text: "response", children: [
+              { text: "blocked_calm", children: [
+                { text: "that brown block was the browser telling you it had blocked autoplay — the app painted the row\u2019s play button amber and pulsed it" },
+                { text: "gone: the button looks like every other one, and tapping it still starts the audio" }
+              ]},
+              { text: "btn_calm", children: [
+                { text: "the Tag button\u2019s blue lived only in a gradient, and iPhone drops the gradient when the keyboard forces a redraw — hence the pale, inverted look" },
+                { text: "solid blue now sits under the gradient, and the hover style is gone (iPhone leaves hover stuck after a tap)" },
+                { text: "it stays the same except for the press itself: a quick squeeze, nothing else" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: tag a moment with the keyboard up — the button stays blue; no brown block on any row" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "165 tap_select",
+        expanded: false,
         nodes: [
           { text: "165 tap_select", children: [
             { text: "prompt_restate", children: [

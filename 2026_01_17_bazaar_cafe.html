@@ -184,14 +184,19 @@
   .tag_btn_big {
     display: block; width: 100%; max-width: 300px; margin: 2px auto 12px; padding: 18px 20px;
     font-size: 20px; font-weight: 700; letter-spacing: 0.01em;
-    background: linear-gradient(180deg, var(--accent_hover, #339cff) 0%, var(--accent) 55%, var(--accent_active, #0062c4) 100%);
+    /* btn_calm: a SOLID accent underneath the gradient. With the gradient alone,
+       iOS sometimes dropped it (keyboard up, sticky layer re-rasterised) and the
+       button went pale with white text. The colour can no longer fall away. */
+    background-color: var(--accent);
+    background-image: linear-gradient(180deg, var(--accent_hover, #339cff) 0%, var(--accent) 55%, var(--accent_active, #0062c4) 100%);
     color: var(--on_accent, #fff); border-radius: 999px;
     box-shadow: 0 10px 22px -8px var(--accent), 0 3px 8px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.28);
-    transition: transform 0.08s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    transition: transform 0.08s ease, box-shadow 0.15s ease;
   }
-  .tag_btn_big:hover { filter: brightness(1.06); }
+  /* no :hover rule — iOS keeps hover stuck after a tap, so the button drifted
+     to a different look and stayed there. Only the press itself shows. */
   .tag_btn_big:active {
-    transform: scale(0.96) translateY(1px); filter: brightness(0.96);
+    transform: scale(0.96) translateY(1px);
     box-shadow: 0 5px 12px -6px var(--accent), 0 2px 4px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.18);
   }
   .tag_toolbar_spacer {
@@ -255,14 +260,9 @@
     flex: 0 0 auto;
   }
   .tag_row button.add_end:hover { background: var(--warn); color: var(--on_accent, #0b0d0f); }
-  .tag_row button.play_tag.autoplay_blocked {
-    background: var(--warn); color: var(--on_accent, #0b0d0f); font-weight: 700;
-    animation: pulse_warn 1.2s ease-in-out infinite;
-  }
-  @keyframes pulse_warn {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(232,199,148,0.6); }
-    50%      { box-shadow: 0 0 0 6px rgba(232,199,148,0); }
-  }
+  /* blocked_calm: when the browser blocks autoplay the row's play button used
+     to turn into a pulsing amber block — loud and ugly. It now looks like any
+     other play button; tapping it still starts playback. */
   .tag_row:hover { background: var(--row_active); }
   .tag_row.active { background: var(--row_active); }
   .tag_row.active button.ghost { background: transparent; }
@@ -1700,9 +1700,8 @@
       row.appendChild(handle);
 
       var amPlayingThis = isPlaying && !player.paused;
-      var blockedHere   = autoplayBlocked && tag.id === activeTagId;
       var playBtnRow = document.createElement('button');
-      playBtnRow.className = 'play_tag' + (blockedHere ? ' autoplay_blocked' : '');
+      playBtnRow.className = 'play_tag';   // blocked_calm: no amber blocked state
       playBtnRow.title = amPlayingThis ? 'Pause' : 'Play from this tag';
       playBtnRow.innerHTML = amPlayingThis ? ICON_PAUSE : ICON_PLAY;
       playBtnRow.addEventListener('click', function () {

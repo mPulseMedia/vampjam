@@ -639,7 +639,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   focused input, not only a .mom_name — the session-name field counted too. Playwright
   (touch): tap unselected → active, not focused ✓; tap again → focused ✓; type + Enter →
   saved, still selected and editable ✓; tap another row → it plays, the old one re-locks ✓.
-- NEXT → add entry 166 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 166 btn_calm — 9 pages) two visual complaints from his screenshots. blocked_calm:
+  the amber block behind a row's play triangle was the autoplay-blocked state
+  (.play_tag.autoplay_blocked — var(--warn) fill + pulse_warn keyframes, painted whenever
+  a play() promise had been rejected and that row was active). Rule, keyframes and the
+  class assignment are gone; the button looks normal and tapping it still clears the flag
+  and plays. btn_calm: 'Tag the moment' went pale-with-white-text when the keyboard came
+  up — the pill's colour lived ONLY in a background gradient, and iOS drops it when it
+  re-rasterises the sticky layer. Now background-color: var(--accent) sits under the
+  gradient, so the colour cannot fall away; the :hover rule is deleted (iOS leaves hover
+  stuck after a tap, which was the other half of the drift) and filter is out of both the
+  :active state and the transition — the press is a scale + shadow only, so the button
+  looks the same except for the split second it is tapped. Same treatment on record.html's
+  .tag_btn. Playwright: background-color rgb(0,113,227) with the gradient still layered,
+  no filter in the transition, no .autoplay_blocked rule or class anywhere ✓.
+- NEXT → add entry 167 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

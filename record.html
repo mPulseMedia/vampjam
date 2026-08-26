@@ -75,15 +75,16 @@
   @keyframes dot_blink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
   .tag_btn {
     width: 100%; max-width: 300px; padding: 18px 20px; border: none; border-radius: 999px;
-    background: linear-gradient(180deg, var(--accent_hover, #339cff) 0%, var(--accent) 55%, var(--accent_active, #0062c4) 100%);
+    /* btn_calm: solid accent under the gradient; no :hover drift (see session pages) */
+    background-color: var(--accent);
+    background-image: linear-gradient(180deg, var(--accent_hover, #339cff) 0%, var(--accent) 55%, var(--accent_active, #0062c4) 100%);
     color: var(--on_accent, #fff);
     font: inherit; font-size: 20px; font-weight: 700; letter-spacing: 0.01em; cursor: pointer;
     box-shadow: 0 10px 22px -8px var(--accent), 0 3px 8px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.28);
-    transition: transform 0.08s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    transition: transform 0.08s ease, box-shadow 0.15s ease;
   }
-  .tag_btn:hover { filter: brightness(1.06); }
   .tag_btn:active {
-    transform: scale(0.96) translateY(1px); filter: brightness(0.96);
+    transform: scale(0.96) translateY(1px);
     box-shadow: 0 5px 12px -6px var(--accent), 0 2px 4px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.18);
   }
   .tag_btn:disabled { opacity: 0.35; cursor: default; box-shadow: none; }
