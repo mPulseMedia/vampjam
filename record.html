@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>vampsf — Record</title>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<script src="theme.js"></script>
+<script src="theme.js?v=2"></script>
 <style>
   * { box-sizing: border-box; }
+  html { background: var(--bg, #ffffff); }   /* kbd_black: never a transparent canvas */
   body {
-    margin: 0; background: var(--bg); color: var(--fg); min-height: 100vh;
+    margin: 0; background: var(--bg, #ffffff); color: var(--fg, #1d1d1f); min-height: 100vh; min-height: 100dvh;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     display: flex; flex-direction: column; align-items: center;
     padding: max(10px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
@@ -109,7 +110,7 @@
   /* moments list — same shape as the playback page's highlight list */
   .mom_list {
     width: 100%; background: var(--panel); border-radius: 14px;
-    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
     padding: 4px 0 8px; display: none;
     box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20);
   }
@@ -687,11 +688,17 @@
     momList.style.maxHeight = (h > 90 ? h : 90) + 'px';
   }
   if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', function () {
-      window.scrollTo(0, 0);   // never let the keyboard leave the page stranded
+    // kbd_black: the keyboard must never leave the page scrolled past its own
+    // bottom — that gap is the browser's canvas, and it paints black
+    function kbd_guard() {
+      window.scrollTo(0, 0);
+      var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      if (window.scrollY > max + 1) window.scrollTo(0, max);
       fit_mom_list();
       momList.scrollTop = momList.scrollHeight;
-    });
+    }
+    window.visualViewport.addEventListener('resize', kbd_guard);
+    window.visualViewport.addEventListener('scroll', kbd_guard);
   }
   window.addEventListener('resize', fit_mom_list);
 

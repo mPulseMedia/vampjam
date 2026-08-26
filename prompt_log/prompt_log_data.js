@@ -9,8 +9,44 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "166 btn_calm",
+        id: "167 kbd_black",
         expanded: true,
+        nodes: [
+          { text: "167 kbd_black", children: [
+            { text: "prompt_restate", children: [
+              { text: "Another theory for the black screen that covers everything above the keyboard, leaving only the page name at the top — it looks like browser behaviour, but our code has to stop it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, so do you have another idea of why the why that black screen is coming up and covering the entire area above the keyboard and just showing the name of the page at the very top? It\u2019s like a browser functionality that\u2019s been evoked separate from our Code, but we have to change our code to make it stop that from happening." }
+            ]},
+            { text: "response", children: [
+              { text: "kbd_black", children: [
+                { text: "yes — you are right that it is the browser: that black is Safari\u2019s OWN surface showing through, the area outside our page, which it paints with the system dark colour" },
+                { text: "four changes, each killing a known way to expose it" }
+              ]},
+              { text: "canvas_paint", children: [
+                { text: "the page now tells Safari its colour — background on the root, a theme-colour tag, and a light/dark declaration per theme — so anything outside the page paints in the page\u2019s colour instead of black" },
+                { text: "the page also always covers the full screen height" }
+              ]},
+              { text: "momentum_layer", children: [
+                { text: "dropped the old iOS momentum-scrolling flag from the highlight lists — that legacy layer is a known cause of blank and black patches when the keyboard opens; iPhones have scrolled smoothly without it since iOS 13" }
+              ]},
+              { text: "scroll_clamp", children: [
+                { text: "when the keyboard shrinks the window the page could end up scrolled past its own bottom — the gap being exactly that black area; it now snaps back inside and re-centres the field you are typing in" }
+              ]},
+              { text: "ctrl_fit", children: [
+                { text: "found while removing an old guard: the row of round buttons was ~14px wider than the page, so it could be nudged sideways; the row now uses the full width and the page cannot scroll sideways at all" }
+              ]},
+              { text: "verify", children: [
+                { text: "~3 min: tag two moments in a row with the keyboard up — if any black shows, tell me and I will keep going" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "166 btn_calm",
+        expanded: false,
         nodes: [
           { text: "166 btn_calm", children: [
             { text: "prompt_restate", children: [

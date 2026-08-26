@@ -653,7 +653,30 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   looks the same except for the split second it is tapped. Same treatment on record.html's
   .tag_btn. Playwright: background-color rgb(0,113,227) with the gradient still layered,
   no filter in the transition, no .autoplay_blocked rule or class anywhere ✓.
-- NEXT → add entry 167 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 167 kbd_black — 10 pages + theme.js v2) a second theory of the black slab above the
+  keyboard, and four changes that each remove a known WebKit cause. (1) canvas_paint: the
+  black is the BROWSER's own surface, not our page — anything outside the document (the
+  strip the keyboard exposes, the rubber-band area) is painted with the system appearance,
+  black in dark mode. theme.js now sets html.style.background from the theme, a
+  <meta name=theme-color>, and root color-scheme (light for Minimal, dark for Yellow and
+  Night); html/body backgrounds carry literal fallbacks (var(--bg, #ffffff)) so the canvas
+  is never transparent even before theme.js runs, and body gets min-height 100dvh so the
+  painted box always covers the viewport. (2) momentum_layer: every
+  -webkit-overflow-scrolling: touch removed (8 split .tag_list rules + record.html's
+  .mom_list) — the legacy UIScrollView-backed layer is a long-standing cause of blank/black
+  regions when the keyboard opens, and iOS has done momentum scrolling by default since 13.
+  (3) scroll_clamp: a visualViewport resize/scroll guard on all 9 pages — when the layout
+  viewport shrinks, the page can end up scrolled PAST its own bottom, and that gap is the
+  canvas; the guard clamps scrollY back into the document and re-centers the focused field.
+  record.html's existing handler gained the same clamp. (4) The html/body overflow-x: clip
+  from 162 is gone (a clipped root is itself a blank-render trigger); it turned out to be
+  masking a real 14px overflow from the control row, so ctrl_fit gives .ctrl_row the gutter
+  back (negative margins, gap 4 → 3) under 480px and the document no longer scrolls
+  sideways at all. Playwright: html/body painted #ffffff, color-scheme light, theme-color
+  meta present, zero -webkit-overflow-scrolling rules, no clip; viewport shrunk to 380 with
+  the scroll pushed past the end → scrollY clamped back inside ✓; scrollWidth == clientWidth
+  ✓; 163/165 regressions clean.
+- NEXT → add entry 168 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

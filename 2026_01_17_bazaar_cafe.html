@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<script src="theme.js"></script>
+<script src="theme.js?v=2"></script>
 <script src="sessions.js?v=128"></script>
 <script src="drawer.js?v=134"></script>
 <style>
@@ -27,9 +27,12 @@
     --warn: #e8c794;
   }
   * { box-sizing: border-box; }
-  html, body { background: var(--bg); color: var(--fg); margin: 0; padding: 0; }
-  html { overflow-x: clip; }
-  body { overflow-x: clip; font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; --gutter: 16px; padding: 3px var(--gutter) 24px; max-width: 760px; margin: 0 auto; }
+  /* kbd_black: literal fallback so the page is never transparent (a
+     transparent canvas is what iOS paints black), and body always
+     covers the viewport so there is nothing else to show */
+  html, body { background: var(--bg, #ffffff); color: var(--fg, #1d1d1f); margin: 0; padding: 0; }
+  body { min-height: 100vh; min-height: 100dvh; }
+  body { font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; --gutter: 16px; padding: 3px var(--gutter) 24px; max-width: 760px; margin: 0 auto; }
   .brand { text-align: center; margin: 8px 0 6px; }
   .brand .wordmark {
     font-family: 'Sacramento', cursive;
@@ -223,7 +226,7 @@
            padding-right: clamp(8px, env(safe-area-inset-right), 24px); }
     body > * { grid-column: 1; min-width: 0; }
     .tag_list { grid-column: 2; grid-row: 1 / span 30; height: calc(100vh - 12px);
-                overflow-y: auto; margin: 6px 0; -webkit-overflow-scrolling: touch; }
+                overflow-y: auto; margin: 6px 0; }
     .sticky_player { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
     /* land_circle: the control row must FIT the half-width column — otherwise
        flex squeezes the circles into ovals */
@@ -369,7 +372,11 @@
   .sticky_player.scrolled::after { opacity: 1; }
 
   @media (max-width: 480px) {
-    .ctrl_row { justify-content: space-between; gap: 4px; }
+    /* ctrl_fit: seven circles + gaps are a little wider than the page gutter
+       allows, which left the document scrolling sideways by ~14px. The row
+       takes the gutter back instead of the circles getting smaller. */
+    .ctrl_row { justify-content: space-between; gap: 3px;
+                margin-left: calc(var(--gutter) * -1); margin-right: calc(var(--gutter) * -1); }
     .ctrl_btn { width: 48px; height: 48px; }
     .ctrl_btn.small { width: 48px; height: 48px; }
     .ctrl_btn.play_btn { width: 76px; height: 76px; font-size: 48px; }
@@ -2028,6 +2035,31 @@
   render_pat_status();
   render_audio_label();
   fetch_repo_data();
+  // kbd_black — the keyboard used to leave a black slab above it. Two causes,
+  // both browser-side: (1) the page could end up scrolled past its own bottom
+  // when the layout viewport shrank, so what showed was the browser's canvas,
+  // not our page; (2) the old -webkit-overflow-scrolling layer went blank.
+  // This clamps the scroll back inside the document whenever the keyboard
+  // opens or closes, and keeps the field you are typing in on screen.
+  (function () {
+    var vv = window.visualViewport;
+    if (!vv) return;
+    function kbd_guard() {
+      var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      if (window.scrollY > max + 1) window.scrollTo(0, max);
+      var a = document.activeElement;
+      if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) {
+        var r = a.getBoundingClientRect();
+        var vh = vv.height + vv.offsetTop;
+        if (r.top < 0 || r.bottom > vh) {
+          try { a.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+        }
+      }
+    }
+    vv.addEventListener('resize', kbd_guard);
+    vv.addEventListener('scroll', kbd_guard);
+  })();
+
 </script>
 
 </body>

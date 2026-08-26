@@ -61,11 +61,32 @@
   function saved() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
   function current() { var s = saved(); return THEMES[s] ? s : 'minimal'; }
 
+  // kbd_black: tell the browser what colour its OWN surfaces are. Without
+  // this, iOS paints anything outside the document — the strip the keyboard
+  // exposes, the rubber-band area — with the system appearance, which in dark
+  // mode is black. color-scheme also stops Safari re-tinting form controls.
+  function paint_browser(bg, dark) {
+    var root = document.documentElement;
+    try { root.style.colorScheme = dark ? 'dark' : 'light'; } catch (e) {}
+    try {
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (!m) {
+        m = document.createElement('meta');
+        m.setAttribute('name', 'theme-color');
+        (document.head || root).appendChild(m);
+      }
+      m.setAttribute('content', bg);
+    } catch (e2) {}
+  }
+  var DARK = { yellow: true, minimal: false, night: true };
+
   function apply(id) {
     var t = THEMES[id] ? id : 'yellow';
     var vars = THEMES[t].vars, root = document.documentElement;
     for (var k in vars) root.style.setProperty(k, vars[k]);
     root.setAttribute('data-theme', t);
+    root.style.background = vars['--bg'];   // the canvas, painted from the start
+    paint_browser(vars['--bg'], !!DARK[t]);
     try { localStorage.setItem(KEY, t); } catch (e) {}
     render_switch();
   }
