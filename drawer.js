@@ -247,19 +247,16 @@
       + '<span class="jam_left"><span class="jam_ico">' + ICO_NEW + '</span><span class="jam_name">New recording</span></span></a></div>');
     all.forEach(function (s) {
       var cur = (s.page === PKEY) ? ' current' : '';
-      var dur = s.dur;
-      try { var ov = localStorage.getItem('vampjam_dur_' + s.page); if (ov) dur = parseInt(ov, 10); } catch (e) {}
-      // dur_align: duration and moment count are two fixed right-aligned
-      // columns, so every duration lines up regardless of the count's width
-      var right = '<span class="jam_dur">' + fmt_dur(dur) + '</span>'
-                + '<span class="jam_count">' + (s.count || '') + '</span>';
+      // dur_hide: rows show only the moment count — durations stay in the
+      // registry data but are no longer displayed
+      var right = '<span class="jam_count">' + (s.count || '') + '</span>';
       if ((s._pending || s.pending) && s.page !== pendDone) right = '<span class="jam_sync">syncing…</span>';
       // naming convention: date first, then the time (default recordings) or the
       // venue name — and the row shows exactly the session's title
       var disp = (s.name && String(s.name).indexOf(s.date) >= 0) ? s.name : (s.date + ' ' + s.name);
       var isAuto = s.page.indexOf('session.html?p=') === 0;
       var isLocal = !!s._local;
-      if (isLocal) right = fmt_dur(s.dur) + ' <span class="jam_localb">local</span>';
+      if (isLocal) right = '<span class="jam_localb">local</span>';
       var isDel = !!deleting[s.page];
       var del = isDel
         ? '<span class="jam_spin" aria-label="Deleting…"></span>'
@@ -445,10 +442,9 @@
       '.jam_del{flex:0 0 auto;background:none;border:none;color:var(--muted);opacity:0.5;' +
         'padding:6px;margin-left:2px;min-height:32px;cursor:pointer;line-height:0;}' +
       '.jam_del:hover{opacity:1;color:var(--danger,#c75450);}' +
-      '.jam_item .menu_sub{min-width:84px;display:inline-flex;justify-content:flex-end;text-align:right;' +
+      '.jam_item .menu_sub{display:inline-flex;justify-content:flex-end;text-align:right;' +
         'font-variant-numeric:tabular-nums;flex:0 0 auto;color:var(--muted);white-space:nowrap;}' +
-      '.jam_item .menu_sub .jam_dur{display:inline-block;min-width:48px;text-align:right;}' +
-      '.jam_item .menu_sub .jam_count{display:inline-block;min-width:26px;text-align:left;margin-left:8px;}' +
+      '.jam_item .menu_sub .jam_count{display:inline-block;min-width:26px;text-align:left;margin-left:2px;}' +
       '.jam_del_sp{flex:0 0 auto;width:30px;}' +
       '.jamc_overlay{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,0.5);' +
         'backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;}' +

@@ -566,7 +566,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   duration column; menu_sub carries its own color/nowrap now that it lives outside the
   link. Playwright: child order jam_link/jam_share/menu_sub/jam_del ✓, share right edge
   ≤ duration left ✓.
-- NEXT → add entry 160 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 160 dur_hide — no page edit) durations come off the session list rows (drawer
+  v132): rows now read name · share · count · trash; the local badge drops its duration
+  too. Durations stay in the registry data (and keep self-improving via dur_overlay) —
+  they're just not displayed. menu_sub loses its 84px dur column width; counts keep
+  their 26px left-aligned column. Playwright: zero .jam_dur elements, no m/h:mm text in
+  the sub column, counts share one left edge ✓.
+- NEXT → add entry 161 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

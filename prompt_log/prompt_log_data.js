@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "159 share_left",
+        id: "160 dur_hide",
         expanded: true,
+        nodes: [
+          { text: "160 dur_hide", children: [
+            { text: "prompt_restate", children: [
+              { text: "Remove the duration from the session list rows." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Remove duration from the session list Rose" }
+            ]},
+            { text: "response", children: [
+              { text: "dur_hide", children: [
+                { text: "rows now read name, share, count, trash — durations are off the list" },
+                { text: "the numbers stay in the data (and keep improving quietly) in case they come back" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: open Sessions — no durations on the rows" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "159 share_left",
+        expanded: false,
         nodes: [
           { text: "159 share_left", children: [
             { text: "prompt_restate", children: [
