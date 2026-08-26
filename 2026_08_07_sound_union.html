@@ -139,7 +139,7 @@
   .ctrl_btn:active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); transform: scale(0.95); }
   .ctrl_btn.play_btn {
     width: 84px; height: 84px; background: var(--accent); color: var(--on_accent, #0b0d0f);
-    font-size: 44px; box-shadow: 0 4px 14px rgba(106,191,105,0.25);
+    font-size: 56px; box-shadow: 0 4px 14px rgba(106,191,105,0.25);
   }
   .ctrl_btn.play_btn:hover  { background: var(--accent_hover, #f0c97a); }
   .ctrl_btn.play_btn:active { background: var(--accent_active, #c89943); transform: scale(0.95); }
@@ -222,7 +222,7 @@
     .ctrl_row { gap: 6px; }
     .ctrl_btn { width: 44px; height: 44px; flex: 0 0 auto; }
     .ctrl_btn.small { width: 44px; height: 44px; }
-    .ctrl_btn.play_btn { width: 68px; height: 68px; font-size: 34px; }
+    .ctrl_btn.play_btn { width: 68px; height: 68px; font-size: 44px; }
   }
   .tag_row {
     display: flex; align-items: center; gap: 5px;
@@ -364,7 +364,7 @@
     .ctrl_row { justify-content: space-between; gap: 4px; }
     .ctrl_btn { width: 48px; height: 48px; }
     .ctrl_btn.small { width: 48px; height: 48px; }
-    .ctrl_btn.play_btn { width: 76px; height: 76px; font-size: 38px; }
+    .ctrl_btn.play_btn { width: 76px; height: 76px; font-size: 48px; }
   }
 
   /* ---- de-emphasis: make selected chrome less prominent ---- */
@@ -424,7 +424,8 @@
 
   /* one_size: a single text size for the whole app — only the vampSF wordmark
      (and glyph buttons whose icons scale with font-size) keep their own */
-  body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play) { font-size: 17px !important; }
+  body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(svg):not(.play_tag) { font-size: 17px !important; }
+  .play_tag { font-size: 26px !important; }   /* tri_big: bigger row triangles */
   .tag_numbers, .num_strip { height: 20px !important; }
 </style>
 </head>

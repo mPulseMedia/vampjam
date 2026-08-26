@@ -494,7 +494,15 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   the highlight title's. That is the size 149 already standardized on — the highlight list
   ran at 17px and the app-wide override is 17px — so no change was needed; confirmed and
   logged.
-- NEXT → add entry 151 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 151 tri_big — no page edit) bigger play triangles everywhere: the big play glyph
+  56px base (48 on narrow portrait, 44 in the landscape split — buttons unchanged), row
+  triangles (.play_tag) escape the one-size rule at 26px, favorites rows match
+  (.fav_play_sm 26, big circle glyph 38). Also fixed a one_size leak found in testing:
+  the universal 17px rule was hitting the SVG elements themselves (1em resolves against
+  the svg's own font-size), pinning every em-sized icon at 17 — :not(svg) added to the
+  override on all 11 pages, so icons inherit their button's size again. Playwright: big
+  triangle 48, row triangles 26, hearts/text still 17 ✓.
+- NEXT → add entry 152 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

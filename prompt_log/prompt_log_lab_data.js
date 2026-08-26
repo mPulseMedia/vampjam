@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "150 size_confirm",
+        id: "151 tri_big",
         expanded: true,
+        nodes: [
+          { text: "151 tri_big", children: [
+            { text: "prompt_restate", children: [
+              { text: "Increase the triangle inside the play button and the triangles inside each highlight row." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Increase the size of the play button the triangle that\u2019s inside the play button as well as the triangles that are inside each highlight row" }
+            ]},
+            { text: "response", children: [
+              { text: "tri_big", children: [
+                { text: "the big play triangle is noticeably larger now, and each row's triangle grew too" },
+                { text: "also caught a leftover from the one-size change that had been shrinking icons — icons now size to their buttons again" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open a session — fatter triangles in the circle and on every row" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "150 size_confirm",
+        expanded: false,
         nodes: [
           { text: "150 size_confirm", children: [
             { text: "prompt_restate", children: [
