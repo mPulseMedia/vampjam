@@ -9,8 +9,30 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "151 tri_big",
+        id: "152 fav_sort",
         expanded: true,
+        nodes: [
+          { text: "152 fav_sort", children: [
+            { text: "prompt_restate", children: [
+              { text: "Sort favorites with those from the most recent sessions at the top." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "sort favorites with those from most recent sessions at the top" }
+            ]},
+            { text: "response", children: [
+              { text: "fav_sort", children: [
+                { text: "done — newest sessions' favorites first; within a session, moments run in time order" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Favorites — latest session's hearts sit on top" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "151 tri_big",
+        expanded: false,
         nodes: [
           { text: "151 tri_big", children: [
             { text: "prompt_restate", children: [

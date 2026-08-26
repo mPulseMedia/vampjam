@@ -246,7 +246,7 @@
 
   function session_sources() {
     var out = (window.VAMPJAM_SESSIONS || []).map(function (s) {
-      return { jsonPath: s.page.replace(/\.html$/, '.json'), page: s.page, name: s.date + ' ' + s.name };
+      return { jsonPath: s.page.replace(/\.html$/, '.json'), page: s.page, name: s.date + ' ' + s.name, date: s.date };
     });
     return fetch(RAW_BASE + 'sessions_auto.json?v=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : []; })
@@ -254,7 +254,7 @@
       .then(function (arr) {
         (Array.isArray(arr) ? arr : []).forEach(function (a) {
           var id = (a.page.split('p=')[1] || '');
-          if (id) out.push({ jsonPath: id + '.json', page: a.page, name: a.name });
+          if (id) out.push({ jsonPath: id + '.json', page: a.page, name: a.name, date: a.date || '' });
         });
         return out;
       });
@@ -281,8 +281,11 @@
           if (t && t.fav) favs.push({ src: src, tag: t });
         });
       });
+      // newest sessions first; within a session, moments in time order
       favs.sort(function (a, b) {
-        return a.src.name < b.src.name ? -1 : a.src.name > b.src.name ? 1 : a.tag.t - b.tag.t;
+        var da = a.src.date || '', db = b.src.date || '';
+        if (da !== db) return da < db ? 1 : -1;
+        return a.tag.t - b.tag.t;
       });
       render();
     });

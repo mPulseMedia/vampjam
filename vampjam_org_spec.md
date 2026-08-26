@@ -502,7 +502,10 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   the svg's own font-size), pinning every em-sized icon at 17 — :not(svg) added to the
   override on all 11 pages, so icons inherit their button's size again. Playwright: big
   triangle 48, row triangles 26, hearts/text still 17 ✓.
-- NEXT → add entry 152 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 152 fav_sort — no page edit) favorites.html sorts by session date DESC (sources now
+  carry date; autos included), moments within a session stay in time order. Playwright:
+  08-07 favorites above 05-23's, early-before-late within the session ✓.
+- NEXT → add entry 153 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
