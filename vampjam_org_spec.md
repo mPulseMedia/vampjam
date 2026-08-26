@@ -596,7 +596,29 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   them. Playwright: 21 tags over a 1:54 duration → scrollWidth == clientWidth (was
   overflowing), every label right edge ≤ the strip's ✓; normal 29-tag page unchanged
   (13 labels, 21→360 inside a 16→374 strip), sticky position still 'sticky' ✓.
-- NEXT → add entry 163 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 163 control_panel — 9 pages + drawer v134) he named the center panel: control_panel
+  = wordmark · session name · transport · timeline (the codename play_unit/play_deck is
+  retired; the transport row's id is now transport_row, and drawer.js comments follow).
+  control_panel_shadow: .session_drawer::after — a sticky, bottom-pinned strip
+  (width min(760px,100%), height 16, margin-bottom -16 so it adds no scroll height,
+  border-radius 0 0 14 14) painting a linear-gradient that fades upward into the list.
+  Replaces the old inset .sess_overflow shadow: it was conditional on overflow and ran the
+  drawer's full width; this one is row-width and present the whole time the list is open.
+  (First attempt used box-shadow with a -7px spread on a zero-height box — the spread
+  collapses the rect, nothing paints; the gradient is the reliable form.) line_reveal: a
+  tap anywhere on the timeline now scrolls the highlight list so the playhead line — the
+  spot you landed between highlights — is centered in view (reveal_playhead_line, called
+  on both seek-bar branches; it re-renders the line first, then scrollIntoView center on
+  the neighbouring row, since the line itself is zero-height). Playwright: ::after sticky,
+  358px = row width, sits at the drawer's bottom with the brand right below ✓; tap at 72%
+  of the bar → page scrolls 0 → 881 and the line's row lands centered and visible ✓;
+  screenshot confirms the band fades up into the card's rounded bottom.
+  FIX in the same batch: favorites.html had been truncated to 0 bytes in 162 by a
+  read-after-open('w') mistake in the patch script (the open for writing emptied the file
+  before the read). Restored from git (ff94455~1) and re-shipped with the v134 bump and
+  the control_panel shadow. Guard for next time: never open a file for writing in the same
+  expression that reads it.
+- NEXT → add entry 164 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

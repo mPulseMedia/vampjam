@@ -3,13 +3,13 @@
 //   1. tap the caret (top-left),
 //   2. when the page is at rest at the very top, swipe DOWN to pull the surface in,
 //   3. when the surface is open, swipe UP to push it back — either from the
-//      play_unit below it (logo, player, transport), or from inside the list
+//      control_panel below it (logo, player, transport), or from inside the list
 //      once it has been scrolled to its own BOTTOM (list_swipe).
 // If you are not at the top, a downward swipe is just a normal scroll.
 // Clicking a session collapses the drawer (page slides back up) before nav.
 (function () {
   var OPEN_FRACTION = 0.80;                 // matches .session_drawer.open max-height: 80dvh
-                                            // (play_unit — wordmark down through the transport —
+                                            // (control_panel — wordmark down through the transport —
                                             // is pushed down in one solid piece; its top shows
                                             // in the lower 20%)
   var SETTLE_MS = 350;                      // rest-at-top time required before a pull reveals
@@ -25,7 +25,7 @@
   function set_open(on) {
     var d = drawer(); if (!d) return;
     d.classList.toggle('open', on);
-    // play_unit — the page below the open list stays in normal flow, so the
+    // control_panel — the page below the open list stays in normal flow, so the
     // whole player (wordmark through transport) moves as one solid piece;
     // the body class stays available as a styling hook
     try { document.body.classList.toggle('drawer_open', on); } catch (eB) {}
@@ -357,7 +357,7 @@
         e.target && e.target.closest && e.target.closest('.tag_list')) { drag = null; return; }
     if (d.classList.contains('open')) {
       // list_swipe: an upward swipe closes the sheet. Started on the
-      // play_unit below (logo/player/transport) it closes right away;
+      // control_panel below (logo/player/transport) it closes right away;
       // started inside the list it first scrolls the list, and only closes
       // when the list is already at its own bottom and you swipe again.
       var inList = !!(e.target && d.contains(e.target));

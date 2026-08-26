@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "162 tag_clamp",
+        id: "163 control_panel",
         expanded: true,
+        nodes: [
+          { text: "163 control_panel", children: [
+            { text: "prompt_restate", children: [
+              { text: "Name the center panel (vamp SF logo, play, jump forward/back, timeline) the control_panel." },
+              { text: "Give its top edge a drop shadow casting upward into the session list, only the width of the rows, not the full viewport — and show it basically all the time, not locked to the bottom of the rows area." },
+              { text: "Tapping anywhere on the timeline should scroll the highlights so the blue line between them is visible." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Let\'s call that center panel that contains the vamp Jam logo on the play in the fast forward and back up in the timeline. Let\'s call that the control panel. I would like there to be a drop shadow casting upwards from the top edge of the control panel into thesession list and like the top Round2 edge of the session list I don\'t want the drop shadow to go the full width of the viewport, but just the width of the rose and it\'s it\'s only at the only at the top edge of that control panel. And by the way, I see it there, but it is shown as locked to the bottom of the smaller area that contains the session list Rose I think that shadow should be shown there basically all the time. Also, if I tap on the timeline and I tap on a specific, but wherever I tap on the timeline, the highlights below should be scrolled to make the highlight or the location of the blue wine between the highlights should be scrolled to be visible on the view port." }
+            ]},
+            { text: "response", children: [
+              { text: "control_panel", children: [
+                { text: "named — control_panel is the logo, session name, transport and timeline; the old play_unit / play_deck names are retired everywhere" }
+              ]},
+              { text: "control_panel_shadow", children: [
+                { text: "its top edge now casts a soft shadow up into the list, exactly the width of the rows and rounded to match the card" },
+                { text: "it is there the whole time the list is open — no longer only when the list is long enough to scroll" }
+              ]},
+              { text: "line_reveal", children: [
+                { text: "tap anywhere on the timeline and the highlight list scrolls so the blue line you landed on sits in the middle of the screen" }
+              ]},
+              { text: "fav_restore", children: [
+                { text: "my error, caught and fixed here: yesterday\'s batch emptied favorites.html to zero bytes — a bad line in my patch script opened the file for writing before reading it" },
+                { text: "restored from git and re-shipped in this batch; the Favorites page works again" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Sessions — soft shadow under the rows; tap the timeline — the list jumps to the line; open Favorites — it loads" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "162 tag_clamp",
+        expanded: false,
         nodes: [
           { text: "162 tag_clamp", children: [
             { text: "prompt_restate", children: [

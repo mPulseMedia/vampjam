@@ -95,9 +95,15 @@
     transition: max-height 0.18s ease; position: relative; z-index: 90;
   }
   .session_drawer.open { max-height: 80vh; max-height: 80dvh; }
-  /* session list tucks under the white control layer below it: shadow on the
-     darker card's bottom edge, only when the list overflows the drawer */
-  .session_drawer.open.sess_overflow { box-shadow: inset 0 -16px 13px -11px rgba(0,0,0,0.22); }
+  /* control_panel_shadow: the control panel below casts a shadow UP from its
+     top edge into the session list — row width, not full bleed, the whole time
+     the list is open (it rides the bottom of the list's own scrollport). */
+  .session_drawer::after {
+    content: ''; display: block; position: sticky; bottom: 0; z-index: 3;
+    width: min(760px, 100%); margin: 0 auto -16px; height: 16px;
+    border-radius: 0 0 14px 14px; pointer-events: none;
+    background: linear-gradient(to top, rgba(0,0,0,0.22), rgba(0,0,0,0.10) 45%, rgba(0,0,0,0));
+  }
   .session_drawer.dragging { transition: none; }
   .session_drawer .jam_menu {
     position: static; top: auto; left: auto; min-width: 0;
