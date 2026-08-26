@@ -453,7 +453,11 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   row, then hand focus to the new empty name inside the same tap (keyboard returns on the
   new field). Playwright: type in row 1, tag again → 2 rows, first name kept, focus on the
   new row, page unscrolled ✓.
-- NEXT → add entry 143 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 143 fav_name — no page edit) favorites.html: the playing session's name (#now_name)
+  moved from under the Favorites title to between the play/pause circle and the timeline
+  bar (margins adjusted). Playwright: play.bottom ≤ name.top ≤ bar.top ✓, shows
+  '2026-08-07 Sound Union' ✓.
+- NEXT → add entry 144 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

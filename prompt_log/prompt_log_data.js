@@ -9,8 +9,30 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "142 tag_blur",
+        id: "143 fav_name",
         expanded: true,
+        nodes: [
+          { text: "143 fav_name", children: [
+            { text: "prompt_restate", children: [
+              { text: "On the Favorites page put the session name below the play/pause circle and above the timeline." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On the favorites page put the name of the session below the play pause circle, and above the timeline" }
+            ]},
+            { text: "response", children: [
+              { text: "fav_name", children: [
+                { text: "done — the playing session's name now sits between the play circle and the timeline" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Favorites, play one — its session name appears right under the circle" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "142 tag_blur",
+        expanded: false,
         nodes: [
           { text: "142 tag_blur", children: [
             { text: "prompt_restate", children: [
