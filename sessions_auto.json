@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "page": "session.html?p=2026_08_26_san_francisco_10_33_03a",
+    "name": "2026-08-26 San Francisco",
+    "date": "2026-08-26",
+    "dur": 10,
+    "count": 0,
+    "pending": true,
+    "ts": 1787765586445
+  }
+]
