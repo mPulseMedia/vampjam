@@ -9,8 +9,30 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "153 list_order",
+        id: "154 admin_slim",
         expanded: true,
+        nodes: [
+          { text: "154 admin_slim", children: [
+            { text: "prompt_restate", children: [
+              { text: "On Admin remove the Add-a-new-session string, the recording-happens-on-its-own-page string, and the Record a session button." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On the Admin page remove the add a new session string. The recording happens on its own page now string and the record a session button." }
+            ]},
+            { text: "response", children: [
+              { text: "admin_slim", children: [
+                { text: "gone — Admin is down to the theme switch and the bucket button" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Admin — just theme and the bucket" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "153 list_order",
+        expanded: false,
         nodes: [
           { text: "153 list_order", children: [
             { text: "prompt_restate", children: [

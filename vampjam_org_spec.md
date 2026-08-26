@@ -510,7 +510,10 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   now scrolls to the TOP (was bottom, from the oldest-first days). Durations line up in a
   right-aligned tabular column (menu_sub min-width 84, flex-end). Playwright: order
   Favorites/New/08-07…01-17/Admin ✓, scrollTop 0 ✓, all sub right edges 327 ✓.
-- NEXT → add entry 154 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 154 admin_slim — no page edit) admin.html loses the 'Add a new session' heading,
+  the 'Recording happens on its own page now.' line, and the Record-a-session button.
+  Admin is now: wordmark, back link, theme switch, and the bucket button.
+- NEXT → add entry 155 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
