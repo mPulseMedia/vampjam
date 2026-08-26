@@ -21,8 +21,8 @@
     var d = drawer(); if (!d) return;
     d.classList.toggle('open', on);
     var c = caret(); if (c) c.classList.toggle('open', on);
-    // sessions run oldest -> newest, so open scrolled to the bottom (newest)
-    if (on) { setTimeout(function () { update_sess_overflow(); d.scrollTop = d.scrollHeight; }, 250); }
+    // newest-first: the panel always opens scrolled to the top
+    if (on) { setTimeout(function () { update_sess_overflow(); d.scrollTop = 0; }, 250); }
     else { d.classList.remove('sess_overflow'); }
   }
   window.addEventListener('resize', update_sess_overflow);
@@ -138,11 +138,10 @@
       if (hit && !hit.pending) { pending_clear(); pend = null; pendDone = null; }
       else if (!hit) all = all.concat([Object.assign({}, pend, pend.done ? {} : { _pending: true })]);
     }
-    all = all.slice().sort(function (x, y) { return x.date < y.date ? -1 : x.date > y.date ? 1 : 0; });
-    var rows = ['<div class="jam_item jam_admin"><a class="jam_link" href="admin.html">'
-      + '<span class="jam_left"><span class="jam_ico">' + ICO_GEAR + '</span><span class="jam_name">Admin</span></span>'
-      + '<span class="menu_sub">setup</span></a></div>'];
-    // favorites live above the sessions once any moment has been hearted
+    all = all.slice().sort(function (x, y) { return x.date < y.date ? 1 : x.date > y.date ? -1 : 0; });   // newest first
+    // list_order: Favorites on top, then New recording, then sessions
+    // newest-first, with Admin tucked at the bottom
+    var rows = [];
     var favSeen = false;
     try { favSeen = localStorage.getItem('vampjam_fav_seen') === '1'; } catch (eF) {}
     if (favSeen) {
@@ -150,6 +149,8 @@
       rows.push('<div class="jam_item' + favCur + '"><a class="jam_link' + favCur + '" href="favorites.html">'
         + '<span class="jam_left"><span class="jam_ico">' + ICO_HEART_M + '</span><span class="jam_name">Favorites</span></span></a></div>');
     }
+    rows.push('<div class="jam_item jam_new"><a class="jam_link" href="record.html">'
+      + '<span class="jam_left"><span class="jam_ico">' + ICO_NEW + '</span><span class="jam_name">New recording</span></span></a></div>');
     all.forEach(function (s) {
       var cur = (s.page === PKEY) ? ' current' : '';
       var dur = s.dur;
@@ -177,8 +178,9 @@
         + '<span class="menu_sub">' + right + '</span></a>'
         + '<button class="jam_share" data-href="' + s.page + '" aria-label="Copy link to this session">' + ICO_SHARE + '</button>' + del + '</div>');
     });
-    rows.push('<div class="jam_item jam_new"><a class="jam_link" href="record.html">'
-      + '<span class="jam_left"><span class="jam_ico">' + ICO_NEW + '</span><span class="jam_name">New recording</span></span></a></div>');
+    rows.push('<div class="jam_item jam_admin"><a class="jam_link" href="admin.html">'
+      + '<span class="jam_left"><span class="jam_ico">' + ICO_GEAR + '</span><span class="jam_name">Admin</span></span>'
+      + '<span class="menu_sub">setup</span></a></div>');
     menu.innerHTML = rows.join('');
   }
 
@@ -343,6 +345,8 @@
       '.jam_del{flex:0 0 auto;background:none;border:none;color:var(--muted);opacity:0.5;' +
         'padding:6px;margin-left:2px;min-height:32px;cursor:pointer;line-height:0;}' +
       '.jam_del:hover{opacity:1;color:var(--danger,#c75450);}' +
+      '.jam_item .menu_sub{min-width:84px;display:inline-flex;justify-content:flex-end;text-align:right;' +
+        'font-variant-numeric:tabular-nums;}' +
       '.jam_localb{background:rgba(232,180,84,0.22);color:var(--warn,#8a6d1a);border-radius:999px;' +
         'padding:2px 8px;font-size:11px;font-weight:600;margin-left:4px;}' +
       '.jam_item.jam_deleting{opacity:0.45;}' +

@@ -505,7 +505,12 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 - (log 152 fav_sort — no page edit) favorites.html sorts by session date DESC (sources now
   carry date; autos included), moments within a session stay in time order. Playwright:
   08-07 favorites above 05-23's, early-before-late within the session ✓.
-- NEXT → add entry 153 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 153 list_order — no page edit) session list reordered (drawer v128): Favorites on
+  top, New recording next, sessions newest-first, Admin at the bottom; opening the panel
+  now scrolls to the TOP (was bottom, from the oldest-first days). Durations line up in a
+  right-aligned tabular column (menu_sub min-width 84, flex-end). Playwright: order
+  Favorites/New/08-07…01-17/Admin ✓, scrollTop 0 ✓, all sub right edges 327 ✓.
+- NEXT → add entry 154 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

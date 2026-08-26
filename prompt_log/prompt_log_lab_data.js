@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "152 fav_sort",
+        id: "153 list_order",
         expanded: true,
+        nodes: [
+          { text: "153 list_order", children: [
+            { text: "prompt_restate", children: [
+              { text: "Session list: newest sessions on top, New recording above them, Favorites above that, Admin to the bottom; opening the panel starts scrolled to the top; and align the durations on the right of each row." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "For the session list, show the most recent sessions at the top and put new recording row above the most recent session and favorites above that and move Admin to the bottom and when I click on other places when I click on the sessions button have the scroll of the sessions panel be up at the top. Also write a line the duration that are listed on the right row of each session within the session list." }
+            ]},
+            { text: "response", children: [
+              { text: "list_order", children: [
+                { text: "new order: Favorites, New recording, then sessions newest-first, Admin last" },
+                { text: "the panel opens scrolled to the top every time" },
+                { text: "durations now line up in one clean right-aligned column" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Sessions — Favorites and New recording on top, latest session first" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "152 fav_sort",
+        expanded: false,
         nodes: [
           { text: "152 fav_sort", children: [
             { text: "prompt_restate", children: [
