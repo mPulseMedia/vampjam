@@ -1,1 +1,1 @@
-tri_big
+auto_commit
