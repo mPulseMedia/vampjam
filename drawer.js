@@ -2,7 +2,9 @@
 // Open it three ways:
 //   1. tap the caret (top-left),
 //   2. when the page is at rest at the very top, swipe DOWN to pull the surface in,
-//   3. when the surface is open, swipe UP to push it back (page returns to the top).
+//   3. when the surface is open, swipe UP to push it back — either from the
+//      play_unit below it (logo, player, transport), or from inside the list
+//      once it has been scrolled to its own BOTTOM (list_swipe).
 // If you are not at the top, a downward swipe is just a normal scroll.
 // Clicking a session collapses the drawer (page slides back up) before nav.
 (function () {
@@ -354,8 +356,12 @@
     if (window.matchMedia('(orientation: landscape) and (pointer: coarse) and (max-height: 520px)').matches &&
         e.target && e.target.closest && e.target.closest('.tag_list')) { drag = null; return; }
     if (d.classList.contains('open')) {
-      // swipe up to close (only once the list itself is at its own top)
-      drag = { mode: 'close', y0: t.clientY, x0: t.clientX, active: false };
+      // list_swipe: an upward swipe closes the sheet. Started on the
+      // play_unit below (logo/player/transport) it closes right away;
+      // started inside the list it first scrolls the list, and only closes
+      // when the list is already at its own bottom and you swipe again.
+      var inList = !!(e.target && d.contains(e.target));
+      drag = { mode: 'close', y0: t.clientY, x0: t.clientX, active: false, inList: inList };
       return;
     }
     if (window.scrollY > 0) { drag = null; return; }                 // not at top -> plain scroll
@@ -385,7 +391,10 @@
         if (window.scrollY > 0) { drag = null; return; }             // scrolled away since start
       } else { // close
         if (dy >= 0) { drag = null; return; }                        // close needs an upward swipe
-        if (d.scrollTop > 0) { drag = null; return; }                // let the list scroll to its top first
+        if (drag.inList && d.scrollHeight > d.clientHeight + 2 &&
+            d.scrollTop + d.clientHeight < d.scrollHeight - 2) {
+          drag = null; return;                                       // still list to scroll -> plain scroll
+        }
       }
       drag.active = true;
       d.classList.add('dragging');                                   // track finger, no transition
@@ -405,7 +414,7 @@
         var max = maxOpenPx();
         var openIt = (drag.mode === 'open')
           ? cur > Math.min(100, max * 0.3)      // pulled far enough to open?
-          : cur > max * 0.7;                    // released before pulling up ~30% -> stay open
+          : cur > max * 0.82;                   // list_swipe: a ~20% push up is enough to close
         d.classList.remove('dragging');                             // re-enable transition
         d.style.maxHeight = (openIt ? max : 0) + 'px';              // animate to the snap point
         set_open(openIt);                                           // caret + shadow follow
@@ -442,9 +451,9 @@
       '.jam_del{flex:0 0 auto;background:none;border:none;color:var(--muted);opacity:0.5;' +
         'padding:6px;margin-left:2px;min-height:32px;cursor:pointer;line-height:0;}' +
       '.jam_del:hover{opacity:1;color:var(--danger,#c75450);}' +
-      '.jam_item .menu_sub{display:inline-flex;justify-content:flex-end;text-align:right;' +
-        'font-variant-numeric:tabular-nums;flex:0 0 auto;color:var(--muted);white-space:nowrap;}' +
-      '.jam_item .menu_sub .jam_count{display:inline-block;min-width:26px;text-align:left;margin-left:2px;}' +
+      '.jam_item .menu_sub{display:inline-flex;justify-content:center;text-align:center;' +
+        'min-width:30px;font-variant-numeric:tabular-nums;flex:0 0 auto;color:var(--muted);white-space:nowrap;}' +
+      '.jam_item .menu_sub .jam_count{display:inline-block;min-width:26px;text-align:center;margin:0;}' +
       '.jam_del_sp{flex:0 0 auto;width:30px;}' +
       '.jamc_overlay{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,0.5);' +
         'backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;}' +

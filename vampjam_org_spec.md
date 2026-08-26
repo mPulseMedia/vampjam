@@ -572,7 +572,20 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   they're just not displayed. menu_sub loses its 84px dur column width; counts keep
   their 26px left-aligned column. Playwright: zero .jam_dur elements, no m/h:mm text in
   the sub column, counts share one left edge ✓.
-- NEXT → add entry 161 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 161 list_swipe — no page edit) the session list scrolls like a list again (drawer
+  v133). Was: any upward swipe while open closed the sheet, and only from the list's own
+  TOP. Now: a swipe that starts inside the list scrolls it freely up and down, and closes
+  the sheet only when the list is already at its BOTTOM and you swipe again (onStart
+  records drag.inList; the close branch bails to native scroll while
+  scrollTop + clientHeight < scrollHeight - 2, and a non-overflowing list is treated as
+  at-bottom). A swipe that starts on the play_unit below (logo, name, player, timeline,
+  transport) closes immediately, as before. Close snap softened from 30% to ~18% of the
+  open height, so 'swipe some more' is a push, not a haul. count_center: the moment count
+  is centered on one shared axis across every row (menu_sub justify-content center,
+  min-width 30; .jam_count text-align center). Playwright (touch, 14 rows): mid-list swipe
+  up keeps it open and scrolls (0 → 515) ✓, swipe down scrolls back ✓, at-bottom swipe
+  closes ✓, wordmark swipe closes ✓, 21 counts share center 317 ✓.
+- NEXT → add entry 162 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

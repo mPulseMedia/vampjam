@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "160 dur_hide",
+        id: "161 list_swipe",
         expanded: true,
+        nodes: [
+          { text: "161 list_swipe", children: [
+            { text: "prompt_restate", children: [
+              { text: "Swiping up and down inside the session list should scroll the list; only a further swipe once already at the bottom should hide it." },
+              { text: "Swiping the vamp jam logo area upward should also hide the list." },
+              { text: "Center the highlight count across all the rows, on one shared axis." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I\'m viewing the session list, I should be able to swipe up and down the session list and only if I\'ve swiped so I\'m down at the bottom of the list and then I swipe some more. Should it hide the session list? Alternatively, if I swipe the vamp Jam logo and it\'s area upward that should hide the session list. Also on the session list make the highlight count. Be Center aligned not on the row, but just across the rose as the highlights are list, highlight counts are listed across all the rows." }
+            ]},
+            { text: "response", children: [
+              { text: "list_swipe", children: [
+                { text: "the list scrolls like a list now — up and down, as far as you like" },
+                { text: "it hides only when you are already at the bottom and swipe again, or when you swipe the play_unit (logo through transport) upward" },
+                { text: "the closing push is smaller than it was: a nudge, not a haul" }
+              ]},
+              { text: "count_center", children: [
+                { text: "highlight counts line up centered on one axis down the whole list" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Sessions — scroll it freely, then keep swiping at the bottom to close" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "160 dur_hide",
+        expanded: false,
         nodes: [
           { text: "160 dur_hide", children: [
             { text: "prompt_restate", children: [
