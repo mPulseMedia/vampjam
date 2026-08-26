@@ -553,7 +553,20 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   drawer.js (self-contained jamc_* styles injected, white-space:pre-line, works on every
   drawer page incl. favorites), Cancel / red Delete, tap-outside dismisses. Playwright:
   overlay shows, Cancel = no write, Delete = registry write, no native dialog fired ✓.
-- NEXT → add entry 158 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 158 play_unit — no page edit) the docked transport is undone in favor of one solid
+  piece: play_unit = wordmark down through the timeline and transport. With the session
+  list open the page below stays in normal flow, so the whole unit is pushed down
+  together and its top (the vamp sf logo first) shows in the lower 20% — partially
+  visible is fine, detached is not. Removed the body.drawer_open .ctrl_row fixed-dock CSS
+  and its split-landscape override from the 8 session pages (drawer v131); the
+  body.drawer_open class and the play_deck id stay as hooks. Playwright: deck static,
+  wordmark visible right below the open list ✓.
+- (log 159 share_left — no page edit) session rows reorder to name · share · duration ·
+  count · trash: the share button moved out of the row link to sit just left of the
+  duration column; menu_sub carries its own color/nowrap now that it lives outside the
+  link. Playwright: child order jam_link/jam_share/menu_sub/jam_del ✓, share right edge
+  ≤ duration left ✓.
+- NEXT → add entry 160 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

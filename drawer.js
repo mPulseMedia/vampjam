@@ -7,7 +7,9 @@
 // Clicking a session collapses the drawer (page slides back up) before nav.
 (function () {
   var OPEN_FRACTION = 0.80;                 // matches .session_drawer.open max-height: 80dvh
-                                            // (the lower 20% stays with the play_deck)
+                                            // (play_unit — wordmark down through the transport —
+                                            // is pushed down in one solid piece; its top shows
+                                            // in the lower 20%)
   var SETTLE_MS = 350;                      // rest-at-top time required before a pull reveals
   function drawer() { return document.getElementById('session_drawer'); }
   function caret()  { return document.getElementById('drawer_toggle'); }
@@ -21,8 +23,9 @@
   function set_open(on) {
     var d = drawer(); if (!d) return;
     d.classList.toggle('open', on);
-    // play_deck — while the session list is open, pages that have a
-    // transport panel dock it into the bottom fifth of the viewport
+    // play_unit — the page below the open list stays in normal flow, so the
+    // whole player (wordmark through transport) moves as one solid piece;
+    // the body class stays available as a styling hook
     try { document.body.classList.toggle('drawer_open', on); } catch (eB) {}
     var c = caret(); if (c) c.classList.toggle('open', on);
     // newest-first: the panel always opens scrolled to the top
@@ -267,11 +270,12 @@
             // dur_align: rows without a trash can reserve its slot, so every
             // row's duration column ends on the same right edge
             : '<span class="jam_del_sp"></span>'));
+      // share_left: the share button sits just left of the duration column
       rows.push('<div class="jam_item' + cur + (isDel ? ' jam_deleting' : '') + '"><a class="jam_link' + cur + '" href="' + s.page + '">'
         + '<span class="jam_left"><span class="jam_ico">' + ICO_CASS + '</span>'
-        + '<span class="jam_name">' + esc(disp) + '</span></span>'
-        + '<span class="menu_sub">' + right + '</span></a>'
-        + '<button class="jam_share" data-href="' + s.page + '" aria-label="Copy link to this session">' + ICO_SHARE + '</button>' + del + '</div>');
+        + '<span class="jam_name">' + esc(disp) + '</span></span></a>'
+        + '<button class="jam_share" data-href="' + s.page + '" aria-label="Copy link to this session">' + ICO_SHARE + '</button>'
+        + '<span class="menu_sub">' + right + '</span>' + del + '</div>');
     });
     rows.push('<div class="jam_item jam_admin"><a class="jam_link" href="admin.html">'
       + '<span class="jam_left"><span class="jam_ico">' + ICO_GEAR + '</span><span class="jam_name">Admin</span></span>'
@@ -442,7 +446,7 @@
         'padding:6px;margin-left:2px;min-height:32px;cursor:pointer;line-height:0;}' +
       '.jam_del:hover{opacity:1;color:var(--danger,#c75450);}' +
       '.jam_item .menu_sub{min-width:84px;display:inline-flex;justify-content:flex-end;text-align:right;' +
-        'font-variant-numeric:tabular-nums;}' +
+        'font-variant-numeric:tabular-nums;flex:0 0 auto;color:var(--muted);white-space:nowrap;}' +
       '.jam_item .menu_sub .jam_dur{display:inline-block;min-width:48px;text-align:right;}' +
       '.jam_item .menu_sub .jam_count{display:inline-block;min-width:26px;text-align:left;margin-left:8px;}' +
       '.jam_del_sp{flex:0 0 auto;width:30px;}' +

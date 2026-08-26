@@ -9,8 +9,53 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "157 confirm_pop",
+        id: "159 share_left",
         expanded: true,
+        nodes: [
+          { text: "159 share_left", children: [
+            { text: "prompt_restate", children: [
+              { text: "Put the share logo to the left of the duration in the session list rows." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "put share logo on left of duration in session list rtows" }
+            ]},
+            { text: "response", children: [
+              { text: "share_left", children: [
+                { text: "rows now read name, share, duration, count, trash — the share icon sits just left of the duration column" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: open Sessions — share arrow before each duration" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "158 play_unit",
+        expanded: false,
+        nodes: [
+          { text: "158 play_unit", children: [
+            { text: "prompt_restate", children: [
+              { text: "Keep the play panel, the vamp SF logo, and everything in that area together as one unit; when the session list opens, showing only part of that unit is fine, but it must hold together as one solid piece." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I scroll up to look at the session set, you've got the play panel stuck to the bottom, which is great, but I do want to keep the play panel and the vamp SF logo and the other stuff in that whole area together is one unit now when I scroll in order to reveal the session list, I may only see half of that entire session, which includes the Ramp SF logo through to the play buttons and even the timeline. I may only see a portion of that but it should be. It's a solid thing Held all together." }
+            ]},
+            { text: "response", children: [
+              { text: "play_unit", children: [
+                { text: "the unit is named play_unit: logo, session name, play circle, timeline, transport" },
+                { text: "the session list now pushes that whole piece down together — no more detached play panel; whatever fits shows below the list, starting from the logo" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: open Sessions — the logo peeks below the list, all one piece" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "157 confirm_pop",
+        expanded: false,
         nodes: [
           { text: "157 confirm_pop", children: [
             { text: "prompt_restate", children: [
