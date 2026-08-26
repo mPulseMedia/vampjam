@@ -1,1 +1,1 @@
-registry_heal
+auto_commit
