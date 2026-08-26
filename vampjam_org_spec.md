@@ -533,7 +533,27 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   20% of viewport ✓; drawer 80% ✓; roster row displayed + heal write unions
   fresh+roster ✓; record flow keeps stale+fresh+roster+new in both writes ✓; duration
   right edges all equal ✓.
-- NEXT → add entry 156 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 156 orphan_sweep — no page edit) sessions publish themselves, no Claude needed:
+  orphan_sweep (drawer v130) lists the repo's json files via the GitHub API (6h throttle
+  per device), fetches the ones the registry doesn't know, and re-registers any with live
+  audio — displayed immediately, written with the usual fresh+roster union. Durations
+  self-improve: dur_overlay pushes this device's cached real durations (vampjam_dur_,
+  learned on play or probed) into every registry write, and the sweep probes audio
+  metadata for orphans and zero-dur rows (probe_dur, metadata-only, 8s cap); a sweep with
+  only dur corrections writes 'dur refresh'. count_left: the moment count column is now
+  left-justified (26px min-width, 8px gap) after the right-aligned duration. name_time:
+  default AND city session names carry the time as h:mm + a/p after the date
+  ("2026-08-26 6:31p", "2026-08-26 10:31a San Francisco"); rec_id_from strips the
+  minutes-only time from the slug and appends the full h_mm_ss id time, so recordings a
+  minute apart still get distinct files; dead rec_id() removed. Playwright: orphan row
+  appears + 'sweep orphans' write carries it ✓; counts left-aligned at one edge, dur right
+  edges equal ✓; default name h:mm[ap] ✓; upload id has single full time ✓.
+- (log 157 confirm_pop — no page edit) session/local-recording deletes use the same
+  themed pop-up as the highlight delete instead of the native confirm: drawer_confirm in
+  drawer.js (self-contained jamc_* styles injected, white-space:pre-line, works on every
+  drawer page incl. favorites), Cancel / red Delete, tap-outside dismisses. Playwright:
+  overlay shows, Cancel = no write, Delete = registry write, no native dialog fired ✓.
+- NEXT → add entry 158 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

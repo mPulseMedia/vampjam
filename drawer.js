@@ -91,6 +91,34 @@
   // pages whose delete is mid-flight: still rendered, grayed, with a red spinner
   var deleting = {};
 
+  // drawer_confirm — the same themed pop-up the highlight delete uses,
+  // self-contained here so it works on every page that has the drawer
+  function drawer_confirm(msg, yesLabel, onYes) {
+    var ov = document.createElement('div');
+    ov.className = 'jamc_overlay';
+    var card = document.createElement('div');
+    card.className = 'jamc_card';
+    var m = document.createElement('div');
+    m.className = 'jamc_msg';
+    m.textContent = msg;
+    var row = document.createElement('div');
+    row.className = 'jamc_row';
+    var noBtn = document.createElement('button');
+    noBtn.className = 'jamc_cancel';
+    noBtn.textContent = 'Cancel';
+    var yesBtn = document.createElement('button');
+    yesBtn.className = 'jamc_yes';
+    yesBtn.textContent = yesLabel || 'OK';
+    function close() { ov.remove(); }
+    noBtn.addEventListener('click', close);
+    yesBtn.addEventListener('click', function () { close(); onYes(); });
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    row.appendChild(noBtn); row.appendChild(yesBtn);
+    card.appendChild(m); card.appendChild(row);
+    ov.appendChild(card);
+    document.body.appendChild(ov);
+  }
+
   // my_recs — recordings this device successfully registered. Registry writes
   // built on a stale CDN read used to drop earlier rows (each new recording
   // overwrote the list with whatever the lagging CDN showed). Every display
@@ -117,6 +145,20 @@
       if (!have[m.page] && !deleted_has(m.page)) {
         list.push({ page: m.page, name: m.name, date: m.date, dur: m.dur || 0, count: m.count || 0 });
       }
+    });
+    return list;
+  }
+  // dur_overlay — this device caches every real duration it learns (a played
+  // session's metadata, a probed orphan) under vampjam_dur_<page>; every
+  // registry write carries those corrections cloudward, so estimated or
+  // missing durations improve on their own.
+  function dur_overlay(list) {
+    list.forEach(function (s2) {
+      if (!s2 || !s2.page) return;
+      try {
+        var cv = parseInt(localStorage.getItem('vampjam_dur_' + s2.page) || '0', 10);
+        if (cv > 0 && Math.abs(cv - (s2.dur || 0)) > 2) s2.dur = cv;
+      } catch (e) {}
     });
     return list;
   }
@@ -261,8 +303,8 @@
         close_then(function () { window.location.href = href; });
       });
     });
-    // delete button (auto sessions only): native confirm, then remove from the
-    // shared registry and tombstone the session json. The audio file stays in
+    // delete button (auto sessions only): themed confirm pop-up, then remove
+    // from the shared registry and tombstone the session json. The audio file stays in
     // the R2 bucket for now (removing it needs an upload-worker change).
     Array.prototype.forEach.call(menu.querySelectorAll('.jam_del'), function (b) {
       b.addEventListener('click', function (e) {
@@ -270,14 +312,15 @@
         var loc = b.getAttribute('data-local');
         if (loc) {
           var nm = b.getAttribute('data-name');
-          if (!window.confirm('Delete "' + nm + '"?\n\nThis recording only exists on this device — deleting it is final.')) return;
-          var pg = b.getAttribute('data-page');
-          deleting[pg] = true; build_menu(); wire_links();
-          idb_delete_local(loc, function () {
-            delete deleting[pg];
-            window.VAMPJAM_SESSIONS_LOCAL = (window.VAMPJAM_SESSIONS_LOCAL || []).filter(function (s2) { return s2.page !== pg; });
-            build_menu(); wire_links();
-            if (typeof window.toast === 'function') window.toast('Deleted ' + nm);
+          drawer_confirm('Delete "' + nm + '"?\n\nThis recording only exists on this device — deleting it is final.', 'Delete', function () {
+            var pg = b.getAttribute('data-page');
+            deleting[pg] = true; build_menu(); wire_links();
+            idb_delete_local(loc, function () {
+              delete deleting[pg];
+              window.VAMPJAM_SESSIONS_LOCAL = (window.VAMPJAM_SESSIONS_LOCAL || []).filter(function (s2) { return s2.page !== pg; });
+              build_menu(); wire_links();
+              if (typeof window.toast === 'function') window.toast('Deleted ' + nm);
+            });
           });
           return;
         }
@@ -401,8 +444,17 @@
       '.jam_item .menu_sub{min-width:84px;display:inline-flex;justify-content:flex-end;text-align:right;' +
         'font-variant-numeric:tabular-nums;}' +
       '.jam_item .menu_sub .jam_dur{display:inline-block;min-width:48px;text-align:right;}' +
-      '.jam_item .menu_sub .jam_count{display:inline-block;min-width:26px;text-align:right;margin-left:0;}' +
+      '.jam_item .menu_sub .jam_count{display:inline-block;min-width:26px;text-align:left;margin-left:8px;}' +
       '.jam_del_sp{flex:0 0 auto;width:30px;}' +
+      '.jamc_overlay{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,0.5);' +
+        'backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;}' +
+      '.jamc_card{background:var(--panel);color:var(--fg);border-radius:14px;padding:20px 22px;' +
+        'max-width:320px;width:84%;box-shadow:0 12px 40px rgba(0,0,0,0.45);}' +
+      '.jamc_msg{margin-bottom:16px;font-size:16px;white-space:pre-line;}' +
+      '.jamc_row{display:flex;gap:10px;justify-content:flex-end;}' +
+      '.jamc_row button{border:none;border-radius:10px;padding:10px 16px;font-size:15px;cursor:pointer;}' +
+      '.jamc_cancel{background:var(--panel_3);color:var(--fg);}' +
+      '.jamc_yes{background:var(--danger,#c75450);color:#fff;}' +
       '.jam_localb{background:rgba(232,180,84,0.22);color:var(--warn,#8a6d1a);border-radius:999px;' +
         'padding:2px 8px;font-size:11px;font-weight:600;margin-left:4px;}' +
       '.jam_item.jam_deleting{opacity:0.45;}' +
@@ -514,7 +566,11 @@
     }).then(function (r) { if (!r.ok) throw new Error('sync ' + r.status); return r.json(); });
   }
   function delete_session(page, name) {
-    if (!window.confirm('Delete "' + name + '"?\n\nThis removes it from the session list everywhere. Its moments go with it.')) return;
+    // same themed pop-up as the highlight delete, not the native confirm
+    drawer_confirm('Delete "' + name + '"?\n\nThis removes it from the session list everywhere. Its moments go with it.',
+      'Delete', function () { delete_session_go(page, name); });
+  }
+  function delete_session_go(page, name) {
     deleted_add(page);      // remember locally FIRST — stale registry reads can't bring it back
     my_recs_remove(page);   // and this device stops vouching for it
     deleting[page] = true;
@@ -524,7 +580,7 @@
     // someone else's new entry
     reg_fresh()
       .then(function (list) {
-        list = reg_union(list).filter(function (s2) { return s2 && s2.page !== page && !deleted_has(s2.page); });
+        list = dur_overlay(reg_union(list).filter(function (s2) { return s2 && s2.page !== page && !deleted_has(s2.page); }));
         return sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'delete ' + id)
           .then(function () {
             if (id) return sync_write(id + '.json', JSON.stringify({ deleted: true, tags: [] }, null, 2), 'tombstone ' + id);
@@ -570,10 +626,109 @@
     healed = true;
     reg_fresh()
       .then(function (fresh) {
-        var out = reg_union(fresh).filter(function (s2) { return s2 && !deleted_has(s2.page); });
+        var out = dur_overlay(reg_union(fresh).filter(function (s2) { return s2 && !deleted_has(s2.page); }));
         return sync_write('sessions_auto.json', JSON.stringify(out, null, 2), 'heal registry');
       })
       .catch(function () { healed = false; });
+  }
+
+  // orphan_sweep — self-publish. A recording whose json + audio reached the
+  // cloud but whose registry row got lost (or never landed) re-registers
+  // itself: list the repo's json files (GitHub API), fetch the ones the
+  // registry doesn't know, and re-add any that carry live audio. Missing or
+  // zero durations get an approximation by reading just the audio metadata.
+  // Runs at most every 6 hours per device; also pushes cached duration
+  // corrections cloudward when anything else changed.
+  var SWEEP_KEY = 'vampjam_sweep_ts';
+  function probe_dur(url) {
+    return new Promise(function (res) {
+      try {
+        var a = document.createElement('audio');
+        a.preload = 'metadata';
+        var done = false;
+        function fin(v) { if (!done) { done = true; try { a.removeAttribute('src'); a.load(); } catch (e2) {} res(v); } }
+        a.addEventListener('loadedmetadata', function () {
+          fin(isFinite(a.duration) && a.duration > 0 ? Math.round(a.duration) : 0);
+        });
+        a.addEventListener('error', function () { fin(0); });
+        setTimeout(function () { fin(0); }, 8000);
+        a.src = url;
+      } catch (e) { res(0); }
+    });
+  }
+  function orphan_sweep() {
+    try {
+      var last = parseInt(localStorage.getItem(SWEEP_KEY) || '0', 10);
+      if (Date.now() - last < 6 * 3600 * 1000) return;
+      localStorage.setItem(SWEEP_KEY, String(Date.now()));
+    } catch (e) { return; }
+    fetch('https://api.github.com/repos/mPulseMedia/vampjam/contents/?ref=main&t=' + Date.now(),
+          { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (items) {
+        if (!Array.isArray(items)) return;
+        var staticPages = {};
+        (window.VAMPJAM_SESSIONS || []).forEach(function (s2) { staticPages[s2.page] = true; });
+        return reg_fresh().then(function (fresh) {
+          var before = JSON.stringify(fresh);
+          var reg = {};
+          fresh.forEach(function (s2) { if (s2 && s2.page) reg[s2.page] = true; });
+          var cand = items
+            .filter(function (it) { return it && it.type === 'file' && /\.json$/.test(it.name) && it.name !== 'sessions_auto.json'; })
+            .map(function (it) { return it.name.slice(0, -5); })
+            .filter(function (id) { return /^\d{4}_\d{2}_\d{2}/.test(id); })         // session ids start with a date
+            .filter(function (id) { return !staticPages[id + '.html']; })            // static sessions live in sessions.js
+            .filter(function (id) { var pg = 'session.html?p=' + id; return !reg[pg] && !deleted_has(pg); })
+            .slice(0, 12);
+          return Promise.all(cand.map(function (id) {
+            return fetch('https://raw.githubusercontent.com/mPulseMedia/vampjam/main/' + id + '.json?v=' + Date.now(), { cache: 'no-store' })
+              .then(function (r) { return r.ok ? r.json() : null; })
+              .then(function (j) {
+                if (!j || j.deleted || !j.audio || !j.audio.url) return null;
+                return { page: 'session.html?p=' + id, name: (j.audio.label || id),
+                         date: id.slice(0, 10).replace(/_/g, '-'), dur: 0,
+                         count: (j.tags || []).length, _url: j.audio.url };
+              })
+              .catch(function () { return null; });
+          })).then(function (found) {
+            found = found.filter(Boolean);
+            // approximate durations: found orphans + registry rows still at 0
+            var zero = fresh.filter(function (s2) {
+              var pg = s2 && s2.page, id2 = pg && (pg.split('p=')[1] || '');
+              return id2 && !s2.dur && !localStorage.getItem('vampjam_dur_' + pg);
+            }).slice(0, Math.max(0, 6 - found.length));
+            var probes = found.map(function (f) {
+              return probe_dur(f._url).then(function (dv) {
+                if (dv) { f.dur = dv; try { localStorage.setItem('vampjam_dur_' + f.page, String(dv)); } catch (e3) {} }
+                delete f._url; return f;
+              });
+            }).concat(zero.map(function (s2) {
+              var id2 = s2.page.split('p=')[1];
+              return fetch('https://raw.githubusercontent.com/mPulseMedia/vampjam/main/' + id2 + '.json?v=' + Date.now(), { cache: 'no-store' })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (j) { return (j && j.audio && j.audio.url) ? probe_dur(j.audio.url) : 0; })
+                .then(function (dv) { if (dv) { try { localStorage.setItem('vampjam_dur_' + s2.page, String(dv)); } catch (e4) {} } })
+                .catch(function () {});
+            }));
+            return Promise.all(probes).then(function () {
+              var add = found.filter(function (f) { return !deleted_has(f.page); });
+              if (add.length) {
+                var disp = (window.VAMPJAM_SESSIONS_AUTO || []).slice();
+                var have2 = {};
+                disp.forEach(function (s2) { if (s2 && s2.page) have2[s2.page] = true; });
+                add.forEach(function (f) { if (!have2[f.page]) disp.push(f); });
+                window.VAMPJAM_SESSIONS_AUTO = disp;
+                build_menu(); wire_links();
+              }
+              var out = dur_overlay(reg_union(fresh.concat(add)).filter(function (s2) { return s2 && !deleted_has(s2.page); }));
+              if (JSON.stringify(out) === before) return;   // nothing to publish
+              return sync_write('sessions_auto.json', JSON.stringify(out, null, 2),
+                add.length ? 'sweep orphans' : 'dur refresh');
+            });
+          });
+        });
+      })
+      .catch(function () {});
   }
   // while a pending recording hasn't appeared in the registry, keep checking
   function retry_if_pending() {
@@ -592,6 +747,9 @@
   }
   function boot() {
     build_menu(); wire_links(); capture_dur(); fetch_auto_sessions(); fetch_local_recs();
+    // orphan_sweep waits out the first registry paint, then self-publishes
+    // anything the cloud has that the list forgot (6h throttle inside)
+    setTimeout(orphan_sweep, 4000);
     // arriving with #sessions (e.g. Back from the record screen) opens the list
     if (location.hash === '#sessions') {
       setTimeout(function () { set_open(true); }, 150);

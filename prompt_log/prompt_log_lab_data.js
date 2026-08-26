@@ -9,8 +9,67 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "155 registry_heal",
+        id: "157 confirm_pop",
         expanded: true,
+        nodes: [
+          { text: "157 confirm_pop", children: [
+            { text: "prompt_restate", children: [
+              { text: "Replace the native remove-a-session confirmation with a non-native pop-up styled like the delete-a-highlight one." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "In the way that I receive a confirmation that I want to delete a highlight can you use a non-native similar looking pop-up to confirm that I want to remove a session" }
+            ]},
+            { text: "response", children: [
+              { text: "confirm_pop", children: [
+                { text: "session deletes (and local-recording deletes) now raise the same themed card as the highlight delete: message, Cancel, red Delete, tap outside to dismiss" },
+                { text: "works on every page with the session list, favorites included" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: tap a trash can on the session list — themed card, not the browser box" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "156 orphan_sweep",
+        expanded: false,
+        nodes: [
+          { text: "156 orphan_sweep", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make half-published sessions publish themselves automatically, without telling Claude." },
+              { text: "Left-justify the highlight count that follows the duration." },
+              { text: "Improve the durations, even as approximations." },
+              { text: "New session names: after the date include the time as hours:minutes with lowercase a/p." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Is there something we have to do to make those sessions that didn't get all the way to published become published automatically without having to tell Claude. Also, let's left justify the highlight count that follows the duration and is there a way that you can improve the duration, even if it's just an approximationand when creating a new session after the date I think it would be good to have the time even if it's just hours and minutes and lowercase a or lowercase P." }
+            ]},
+            { text: "response", children: [
+              { text: "orphan_sweep", children: [
+                { text: "yes, and it now happens on its own: every ~6 hours the app compares the cloud's session files against the list and re-publishes any recording that has audio but lost its row" },
+                { text: "together with yesterday's roster + heal, a recording that reached the cloud always finds its way back to the list" }
+              ]},
+              { text: "count_left", children: [
+                { text: "moment counts now sit left-justified right after the aligned durations" }
+              ]},
+              { text: "dur_improve", children: [
+                { text: "durations improve themselves: playing a session teaches the app the real length, the sweep measures missing ones from the audio, and corrections ride along on the next cloud write" }
+              ]},
+              { text: "name_time", children: [
+                { text: "new sessions default to date + h:mm + a/p — 2026-08-26 6:31p, or 2026-08-26 10:31a San Francisco with location" },
+                { text: "file names keep the seconds underneath, so two recordings a minute apart stay distinct" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Sessions — counts hug the durations; start a recording — the name reads date h:mma" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "155 registry_heal",
+        expanded: false,
         nodes: [
           { text: "155 registry_heal", children: [
             { text: "prompt_restate", children: [

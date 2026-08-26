@@ -221,8 +221,11 @@
   var d0 = new Date();
   var ISO = d0.getFullYear() + '-' + pad(d0.getMonth() + 1) + '-' + pad(d0.getDate());
   var h24 = d0.getHours();
-  var TS  = ((h24 % 12) || 12) + ':' + pad(d0.getMinutes()) + ':' + pad(d0.getSeconds()) + (h24 < 12 ? 'a' : 'p');
-  var DEFT = ISO + ' ' + TS;
+  // (seconds live only inside rec_id_from now)
+  // name_time: the visible name carries hours:minutes + a/p (seconds stay in
+  // the file id only, where they keep recordings a minute apart distinct)
+  var HM  = ((h24 % 12) || 12) + ':' + pad(d0.getMinutes()) + (h24 < 12 ? 'a' : 'p');
+  var DEFT = ISO + ' ' + HM;
   nameIn.value = DEFT;
   function size_name() { nameIn.style.width = Math.max(3, nameIn.value.length + 1) + 'ch'; }
   nameIn.addEventListener('input', size_name); size_name();
@@ -235,7 +238,7 @@
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (j) {
           var city = j && (j.locality || j.city);
-          if (city && !nameEdited) { nameIn.value = ISO + ' ' + city; size_name(); }
+          if (city && !nameEdited) { nameIn.value = ISO + ' ' + HM + ' ' + city; size_name(); }
         }).catch(function () {});
     }, function () {}, { timeout: 6000, maximumAge: 600000 });
   }
@@ -474,13 +477,6 @@
       .replace(/[—–-]/g, '_').replace(/[^a-z0-9_]+/g, '_')
       .replace(/_+/g, '_').replace(/^_|_$/g, '');
   }
-  function rec_id() {
-    var id = slug(nameIn.value) || 'rec';
-    if (!/\d{4}_\d{2}_\d{2}/.test(id)) id += '_' + ISO.replace(/-/g, '_');
-    var t6 = TS.replace(/:/g, '_');
-    if (id.indexOf(t6) < 0) id += '_' + t6;
-    return id;
-  }
   function not_deleted(list) {
     var dead = [];
     try { dead = (JSON.parse(localStorage.getItem('vampjam_deleted_pages') || '[]') || []).map(function (t) { return t.page; }); } catch (e) {}
@@ -544,6 +540,9 @@
     var id = slug(label) || 'rec';
     if (!/\d{4}_\d{2}_\d{2}/.test(id)) id += '_' + dateIso.replace(/-/g, '_');
     if (!/\d{1,2}_\d{2}_\d{2}[ap]/.test(id)) {
+      // the name's minutes-only time (name_time) gives way to the id's full
+      // h_mm_ss time, so recordings a minute apart never collide
+      id = id.replace(/_\d{1,2}_\d{2}[ap](?=_|$)/, '').replace(/_+/g, '_');
       var d = new Date(ts || Date.now());
       id += '_' + ((d.getHours() % 12) || 12) + '_' + pad(d.getMinutes()) + '_' + pad(d.getSeconds()) + (d.getHours() < 12 ? 'a' : 'p');
     }
