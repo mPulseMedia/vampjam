@@ -1,1 +1,1 @@
-tap_zoom
+auto_commit
