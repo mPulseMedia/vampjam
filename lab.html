@@ -83,11 +83,18 @@
   /* dot_scale — the dot is an object IN the world, so it takes the world's
      scale as well as its position: near the eye it swells with the squares,
      far away it shrinks with them. */
+  /* star_pin — the marker is a star with a real cast shadow, and the shadow says
+     how far above the paper it is: near the paper it is small, sharp, dark and
+     tucked underneath; far away it spreads, softens, fades and slides out.
+     The shadow numbers are divided by the scale before they are set, so the
+     transform below cannot blow them up along with the star. */
   .pin_dot {
-    width: 22px; height: 22px; border-radius: 50%;
-    background: currentColor; box-shadow: 0 2px 6px rgba(0,0,0,0.30);
+    width: 26px; height: 26px;
     transform: rotate(var(--rot, 0deg)) translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
+    filter: drop-shadow(var(--shx, 0px) var(--shy, 8px) var(--shb, 9px) rgba(20,30,45,var(--sho, 0.42)));
   }
+  .pin_dot svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  .pin_dot polygon { fill: #f5b301; stroke: #7c4a03; stroke-width: 1.1; stroke-linejoin: round; }
   /* lab_build: every card wears the same colour, and the colour changes with
      each build — if it looks different from last time, the update landed. */
   .cell { background: transparent; color: #1d1d1f; }
@@ -257,7 +264,7 @@
     <div class="cell cell_2"></div>
     <div class="cell cell_3"></div>
   </div>
-  <span class="pin"><span class="pin_dot"></span></span>
+  <span class="pin"><span class="pin_dot"><svg viewBox="-12 -12 24 24" aria-hidden="true"><polygon points="0.00,-11.00 2.70,-3.72 10.46,-3.40 4.37,1.42 6.47,8.90 0.00,4.60 -6.47,8.90 -4.37,1.42 -10.46,-3.40 -2.70,-3.72"/></svg></span></span>
   <div class="frame_shadow"></div>
 </div>
 
@@ -305,7 +312,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'zero_split', bg: '#166534', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'model_flip', bg: '#0284c7', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -572,6 +579,13 @@
   // pose_scale — 1 cm of hand travel is POSE_SC/100 units in the diagram, an
   // axis arm is AX_LEN units long, and a tick every TICK units marks 5 cm.
   var POSE_SC = 300, AX_LEN = 46, AX_MAX = 44, TICK = 15;
+  // model_flip — the diagram's depiction of travel is reversed on X and Y and
+  // left alone on Z, which he had right already. Drawing and numbers both go
+  // through this, so the picture and the figures can never disagree.
+  var MODEL_INV = { x: -1, y: -1, z: 1 };
+  function model_pos() {
+    return { x: MODEL_INV.x * pos.x, y: MODEL_INV.y * pos.y, z: MODEL_INV.z * pos.z };
+  }
   function draw_pose(mult) {
     if (!poseEl || poseEl.hidden) return;
     var m0 = rel_matrix(); if (!m0) return;
@@ -632,7 +646,8 @@
     // plate_move — the phone carries its travel now; the axes hold still. Each
     // axis is clamped on its own so a big move on one never drags the picture off.
     function clamp_ax(v) { var u = v * POSE_SC; return Math.max(-AX_MAX, Math.min(AX_MAX, u)); }
-    var mv = { x: clamp_ax(pos.x), y: clamp_ax(pos.y), z: clamp_ax(pos.z) };
+    var mp = model_pos();
+    var mv = { x: clamp_ax(mp.x), y: clamp_ax(mp.y), z: clamp_ax(mp.z) };
     var mvp0 = iso(mv);
     // axis_read: a fat coloured bar from the origin to where the phone stands on
     // that axis, a knob at the end of it, and a dashed line joining the knob to
@@ -676,11 +691,11 @@
       return (n < -0.05 ? '\u2212' : '+') + Math.abs(n).toFixed(1);
     }
     document.getElementById('pose_pos').innerHTML =
-      '<tspan fill="#dc2626">X' + cm_txt(pos.x) + '</tspan>' +
+      '<tspan fill="#dc2626">X' + cm_txt(mp.x) + '</tspan>' +
       '<tspan fill="rgba(0,0,0,0.25)">  </tspan>' +
-      '<tspan fill="#16a34a">Y' + cm_txt(pos.y) + '</tspan>' +
+      '<tspan fill="#16a34a">Y' + cm_txt(mp.y) + '</tspan>' +
       '<tspan fill="rgba(0,0,0,0.25)">  </tspan>' +
-      '<tspan fill="#2563eb">Z' + cm_txt(pos.z) + '</tspan>';
+      '<tspan fill="#2563eb">Z' + cm_txt(mp.z) + '</tspan>';
     // pitch / yaw / roll, straight out of the same matrix
     // attitude_name: S is the swirl — the in-plane turn the paper counter-rotates
     // against — and it is signed the same way as that counter-rotation, so the
@@ -843,12 +858,11 @@
   // zero frame, gives the angle straight away: at zero it is world up and the
   // answer is 0. Pitch and yaw are deliberately absent — tipping the phone
   // toward or away, or turning it left and right, still changes nothing.
-  // axis_flip — ONE switch reverses every axis at once: the pan, the swirl and
-  // the depth. Every sign the screen depends on is expressed through it, so the
-  // whole model turns inside out by changing this line and nothing else. The
-  // pose diagram is deliberately left alone — it reports where the phone really
-  // is, and inverting it would make it lie.
-  var INV = -1;
+  // paper_back — the flip belonged to the DIAGRAM, not to the paper. The world
+  // view is back to what it was: pan, swirl and depth all as they were before
+  // axis_flip, which is the behaviour he had called perfect. The reversal now
+  // lives in MODEL_INV below, and touches only the little diagram.
+  var INV = 1;
   function screen_roll() {
     var m = rel_matrix(); if (!m) return 0;
     return Math.atan2(-m[1], m[4]) * 180 / Math.PI;
@@ -879,6 +893,14 @@
     root.setProperty('--sy', sy.toFixed(1) + 'px');
     root.setProperty('--sc', mult.toFixed(3));
     root.setProperty('--rot', v.roll.toFixed(2) + 'deg');
+    // star_lift — how high the star floats above the paper, read off the scale:
+    // ×1 and above is coming in to land, below ×1 it is climbing away.
+    var near = Math.max(-1, Math.min(1, Math.log(mult) / Math.log(8)));
+    var m = Math.max(0.05, mult);
+    root.setProperty('--shx', ((1.5 - near * 1.5) / m).toFixed(2) + 'px');
+    root.setProperty('--shy', ((10 - near * 8) / m).toFixed(2) + 'px');
+    root.setProperty('--shb', ((12 - near * 9) / m).toFixed(2) + 'px');
+    root.setProperty('--sho', (0.42 + near * 0.22).toFixed(2));
     draw_pose(mult);
     requestAnimationFrame(paint_world);
   }

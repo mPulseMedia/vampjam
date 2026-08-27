@@ -1104,7 +1104,28 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   gives x 0 with ×1.00 and pos.z 0 ✓; five equal pull-aways now read 1.36 1.88 2.65 3.80 5.56
   where the old exponent would have reached ×1.72 in total ✓; button geometry ✓; glide_stop,
   gest_small, plate_move, roll_hold and axis_flip regressions all pass; no page errors.
-- NEXT → add entry 200 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 200 model_flip — lab.html, release model_flip / sky) entry 198 flipped the wrong
+  thing. paper_back: INV goes back to +1, so the world view — pan left/right, pan up/down,
+  the depth multiple and the swirl counter-turn — is exactly as it was in roll_hold, which is
+  the behaviour he had called perfect. The graph paper was never what he wanted reversed.
+  model_flip: the reversal moves to the little diagram and to nothing else, as MODEL_INV
+  { x: -1, y: -1, z: +1 } behind a model_pos() helper. X and Y are reversed in the DEPICTION;
+  Z is left alone because he had that right. The plate, the axis bars, the knobs, the tether
+  and the centimetre readout all read model_pos(), so the picture and the figures can never
+  disagree. The plate's attitude (pitch / turn / swirl) is untouched — only the depiction of
+  travel is flipped. star_pin: the marker is a five-point star (gold, dark outline, 26px)
+  instead of a black dot, carrying a real cast shadow whose geometry reports how far above the
+  paper it is: near the paper the shadow is tucked under it, small, sharp and dark (drop 2px,
+  blur 3px, 0.64 alpha at ×8); level it is drop 10 / blur 12 / 0.42; far away it slides out,
+  spreads and fades (drop 18 / blur 21 / 0.20). The four shadow numbers are divided by the
+  scale before they are published as CSS vars, so the star's own scale() transform cannot blow
+  the shadow up with it — at ×39 an undivided blur would have been 400px. Playwright: slide
+  right → +315px, slide up → -181px, toward the eye → ×1.48, swirl +30 → +30° (all four back
+  to the pre-198 signs) ✓; with true pos X+6.2 Y+3.5 Z+2.0 the diagram reads X-6.2 Y-3.5 Z+2.0
+  and the plate draws left and down ✓; star polygon has 10 vertices and the shadow tightens
+  from drop 16.5/blur 19.6/0.38 at ×0.69 to drop 5.8/blur 7.0/0.46 at ×1.48 ✓; three-way
+  visual check far/level/near captured; all prior regressions pass; no page errors.
+- NEXT → add entry 201 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

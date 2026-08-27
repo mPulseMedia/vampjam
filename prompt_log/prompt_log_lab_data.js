@@ -9,8 +9,44 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "199 zero_split",
+        id: "200 model_flip",
         expanded: true,
+        nodes: [
+          { text: "200 model_flip", children: [
+            { text: "prompt_restate", children: [
+              { text: "Keep the flip, but not on the Z axis." },
+              { text: "The axis flip was never meant for the graph paper \u2014 undo that, the rotation was working perfectly." },
+              { text: "Reverse the 3D model in the top right corner instead: every axis except Z." },
+              { text: "Change the dot to a star with a shadow that reacts as it gets close to the paper." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I asked you to flip everything, please keep that but there\u2019s only one direction of vector that I don\u2019t want to invert, and that is the Z axis as you depict it" },
+              { text: "Oh no earlier when I said Axis flip I did not mean to rotate the graph paper. No, I was only talking about the model so please undo the. undo the Axis flip as it relates to rotating the graph paper that was working perfectly. The thing I want you to reverse everything about is the 3-D model that you\u2019re displaying in the top right corner of the screen it is that who I want you to reverse your depiction of motion in this direction equals motion in that direction on the screen I\u2019d like you to invert everyone of them except for the Z Axis you got that right as is and let\u2019s see how that works and let\u2019s change the shot to a star with shadow that when it gets close to the paper" }
+            ]},
+            { text: "response", children: [
+              { text: "paper_back", children: [
+                { text: "the paper is back to exactly what it was before I flipped it \u2014 pan, swirl and depth all as they were" },
+                { text: "my mistake in the last one: I flipped the world when you meant the diagram" }
+              ]},
+              { text: "model_flip", children: [
+                { text: "the little diagram reverses X and Y in its depiction of travel; Z is left alone" },
+                { text: "plate, axis bars, knobs, tether and the centimetre numbers all read the same flipped value, so picture and figures can never disagree" },
+                { text: "the plate\u2019s tilt and swirl are untouched \u2014 only the depiction of travel is flipped" }
+              ]},
+              { text: "star_pin", children: [
+                { text: "the dot is a gold five-point star now" },
+                { text: "its shadow reads the height: tucked under, small and dark near the paper; spread, soft and faint far away" }
+              ]},
+              { text: "verify", children: [
+                { text: "~3m: release model_flip, sky \u2014 all four paper axes back to their old signs; true X+6.2 Y+3.5 Z+2.0 draws as X\u22126.2 Y\u22123.5 Z+2.0; star shadow measured at three heights" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "199 zero_split",
+        expanded: false,
         nodes: [
           { text: "199 zero_split", children: [
             { text: "prompt_restate", children: [
