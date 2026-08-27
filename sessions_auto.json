@@ -1,58 +1,9 @@
 [
   {
-    "page": "session.html?p=2026_08_25_2_40_41p",
-    "name": "2026-08-25 2:40:41p",
-    "date": "2026-08-25",
-    "dur": 39,
-    "count": 2
-  },
-  {
-    "page": "session.html?p=2026_08_25_2_51_32p",
-    "name": "2026-08-25 2:51:32p",
-    "date": "2026-08-25",
-    "dur": 39,
-    "count": 2
-  },
-  {
-    "page": "session.html?p=2026_08_25_3_32_53p",
-    "name": "2026-08-25 3:32:53p",
-    "date": "2026-08-25",
-    "dur": 115,
-    "count": 19
-  },
-  {
-    "page": "session.html?p=2026_08_25_3_48_03p",
-    "name": "2026-08-25 3:48:03p",
-    "date": "2026-08-25",
-    "dur": 54,
-    "count": 4
-  },
-  {
-    "page": "session.html?p=2026_08_26_san_francisco_10_32_05a",
-    "name": "2026-08-26 San Francisco",
-    "date": "2026-08-26",
-    "dur": 15,
-    "count": 2
-  },
-  {
-    "page": "session.html?p=2026_08_26_san_francisco_10_33_03a",
-    "name": "2026-08-26 San Fran",
-    "date": "2026-08-26",
-    "dur": 10,
+    "page": "session.html?p=2026_08_14_sound_union",
+    "name": "2026-08-14 Sound Union",
+    "date": "2026-08-14",
+    "dur": 10552,
     "count": 0
-  },
-  {
-    "page": "session.html?p=2026_08_26_san_francisco_10_34_10a",
-    "name": "2026-08-26 San Francisco",
-    "date": "2026-08-26",
-    "dur": 15,
-    "count": 2
-  },
-  {
-    "page": "session.html?p=2026_08_26_san_francisco_11_28_29a",
-    "name": "2026-08-26 San Francisco",
-    "date": "2026-08-26",
-    "dur": 7,
-    "count": 1
   }
 ]
