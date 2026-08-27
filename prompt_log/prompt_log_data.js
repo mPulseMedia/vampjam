@@ -9,8 +9,53 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "212 tilt_back",
+        id: "213 zero_cal",
         expanded: true,
+        nodes: [
+          { text: "213 zero_cal", children: [
+            { text: "prompt_restate", children: [
+              { text: "When I press Reset the phone is in a known place \u2014 held in front of my face." },
+              { text: "The data from there starts at that reset position." },
+              { text: "Use that knowledge and adjust the maths accordingly." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK and what I\u2019m also realizing now is that when I I move the phone from where it was to the reset position and then I hit the reset position so that you know the data from there is starting at the reset position and my reset I mean where I would have the phone in front of my face because I want to use have you use that knowing the data starts with the phone and when I call the reset position, you would adjust the math accordingly" }
+            ]},
+            { text: "response", children: [
+              { text: "zero_cal", children: [
+                { text: "you are right, and it is worth more than a re-centre \u2014 Reset now measures instead of assuming" },
+                { text: "for the half second after you press it the model holds still and READS the accelerometer" },
+                { text: "whatever a still phone reports is its resting error, and that error is subtracted from everything after" },
+                { text: "it also keeps which way gravity was pointing, as a record of the pose the take was measured from" }
+              ]},
+              { text: "why_it_matters", children: [
+                { text: "this is the drift killed at the source instead of damped later" },
+                { text: "a sensor reading a false 0.45 that I do not know about integrates to about sixteen metres in ten seconds of you holding perfectly still" },
+                { text: "measured at four different false readings, drift after ten seconds is now zero at every one" },
+                { text: "that is the class of fault behind every haywire mark in your long take" }
+              ]},
+              { text: "cal_trust", children: [
+                { text: "if your hand was still moving when you pressed Reset, the reading would be nonsense" },
+                { text: "so it checks, and refuses \u2014 it keeps the last good one and tells you it did" }
+              ]},
+              { text: "hold_still", children: [
+                { text: "one thing to know: after Reset, hold still for half a second" },
+                { text: "the deck says levelling while it is measuring, then tells you the offset it found" }
+              ]},
+              { text: "not_done", children: [
+                { text: "you are also telling me the viewing distance at reset \u2014 arm\u2019s length, face on" },
+                { text: "nothing in the sensors measures that, so it stays an assumption rather than a guess dressed up as a measurement" }
+              ]},
+              { text: "verify", children: [
+                { text: "~5m: release zero_cal, deep green \u2014 offsets measured exactly at 0.05 / 0.18 / 0.30 / 0.45, zero drift over ten seconds at each, a moving hand refused, a real slide still reads right 9 cm" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "212 tilt_back",
+        expanded: false,
         nodes: [
           { text: "212 tilt_back", children: [
             { text: "prompt_restate", children: [

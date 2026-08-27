@@ -1378,7 +1378,37 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   while gamma ±25 still gives ∓42.5 unchanged ✓; the rendered picture at beta +18 now crowds
   toward the bottom where it crowded toward the top ✓; Set zero still clears the lean ✓;
   glide_stop, plate_move, deck_one, paper_tilt and read_split regressions pass; no page errors.
-- NEXT → add entry 213 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 213 zero_cal — lab.html, release zero_cal / deep green) pressing Reset stops being just
+  a re-centre and becomes a measurement. zero_cal: he pointed out that when he presses Reset the
+  phone is in a KNOWN state — held in front of his face, still — and that the maths should use
+  that. It now does. For CAL_MS 450 after every reset the model holds itself still (velocity
+  pinned, no move detection, the display follower still running so the picture stays alive) and
+  READS the accelerometer instead of believing it: whatever a still phone reports IS its resting
+  offset. The mean over that window becomes `bias`, subtracted from every sample afterwards, in
+  the ZERO frame so it is an offset in his axes and not the phone's. The gravity direction at
+  that instant is kept as gZero, a record of the pose the take was measured from.
+  This is the drift killed at the source rather than damped downstream: measured, a sensor
+  reading a false 0.05 / 0.18 / 0.30 / 0.45 m/s^2 at rest is now measured to the millimetre-per-
+  second-squared and produces ZERO drift over ten seconds of stillness at every one of them.
+  Untreated, 0.45 clears the 0.12 deadband by 0.33 and integrates to about SIXTEEN METRES in
+  those ten seconds — which is the class of bug behind every 'it goes haywire' mark in take 11.
+  cal_trust: a reading is only an offset if the phone was really still, so the window also
+  measures the SPREAD about its own mean; above CAL_SD 0.35 m/s^2 the result is thrown away, the
+  previous offset is kept, and the deck says 'moved while levelling — offset kept from before'.
+  Verified: a still hand levels to 0.200, a hand swinging ±2.4 through the window is refused and
+  the good 0.200 survives. The window writes itself onto the judgement track as a `levelled`
+  mark (bias, gravity, spread, sample count) or a `level_failed` mark, right after the `reset`
+  mark — so a take now carries its own calibration record. What is NOT done: he is also telling
+  us the viewing distance at reset (arm's length, face-on), which could personalise D0 0.35 —
+  but nothing in the sensor stream measures it, so it stays an assumption rather than a guess
+  dressed up as a measurement. Playwright: window opens at 0.45s on reset and closes with the
+  offset measured exactly; ten seconds of a still biased phone drifts 0px at four offsets; a
+  real slide still reads 'right 9 cm' at 467px; take carries reset at 250ms and levelled at
+  442ms over 28 samples. Test note: every test that reset and then immediately moved had to
+  learn to wait out the levelling — that is the behaviour, not a bug (hold still after Reset).
+  vj_201/vj_202 also repointed from the retired pose_pos to pose_lbl. Whole lab suite re-run
+  and green; no page errors.
+- NEXT → add entry 214 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

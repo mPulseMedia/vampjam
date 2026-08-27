@@ -377,7 +377,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'tilt_back', bg: '#a16207', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'zero_cal', bg: '#065f46', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -571,6 +571,21 @@
   var moving = false;               // is the phone in a move right now?
   var dir  = { x: 0, y: 0, z: 0 };  // the latched direction of the move in progress
   var lead = { x: 0, y: 0, z: 0 };  // metres of lag compensation currently shown
+  // zero_cal — pressing Reset is a promise: the phone is held in front of your
+  // face, still, in the pose everything after it is measured from. That promise
+  // is worth more than a re-centre. For the first CAL_MS after a reset the model
+  // holds itself still and READS the accelerometer instead of believing it: what
+  // it reports while the phone is not moving is, by definition, its resting
+  // offset. That offset is subtracted from every sample afterwards, so the drift
+  // it used to feed into position is gone at the source rather than damped later.
+  // The gravity direction at that instant is kept too, as a record of the pose
+  // the take was measured from.
+  var CAL_MS  = 450;
+  var calLeft = 0;                              // seconds of levelling left
+  var calSum  = { x: 0, y: 0, z: 0 }, calN = 0, calSq = 0;
+  var CAL_SD  = 0.35;                           // m/s^2: spread above this = not still
+  var bias    = { x: 0, y: 0, z: 0 };           // resting offset, in the zero frame
+  var gZero   = null;                           // gravity at the reset, phone frame
   // smooth_move — the picture does not sit ON the model, it CHASES it through a
   // critically damped spring. Starting from rest the spring is slack, so the
   // world eases in; through the middle it is behind and runs FASTER than the
@@ -863,6 +878,40 @@
     // phone axes -> world -> zero frame: rotation falls out here
     var aw = mul_vec(Rnow, { x: a.x || 0, y: a.y || 0, z: a.z || 0 });
     var az = mul_t_vec(R0, aw);
+    // zero_cal: while levelling, believe nothing and measure everything
+    if (calLeft > 0) {
+      calLeft -= dt;
+      calSum.x += az.x; calSum.y += az.y; calSum.z += az.z; calN++;
+      calSq += az.x * az.x + az.y * az.y + az.z * az.z;
+      var ag = e.accelerationIncludingGravity;
+      if (ag && ag.x != null) {
+        var gm = Math.hypot(ag.x || 0, ag.y || 0, ag.z || 0) || 1;
+        gZero = [ +( (ag.x || 0) / gm ).toFixed(3), +( (ag.y || 0) / gm ).toFixed(3), +( (ag.z || 0) / gm ).toFixed(3) ];
+      }
+      vel.x = vel.y = vel.z = 0; moving = false; quietFor = 0; lastAccel = 0;
+      if (calLeft <= 0 && calN) {
+        var mx = calSum.x / calN, my = calSum.y / calN, mz = calSum.z / calN;
+        // cal_trust: a reading is only an offset if the phone was actually still.
+        // The spread about the mean says whether it was; a hand still moving gives
+        // a wide one, and its 'offset' would be nonsense worth more than no offset
+        // at all — so that one is thrown away and the last good one kept.
+        var sd = Math.sqrt(Math.max(0, calSq / calN - (mx * mx + my * my + mz * mz)));
+        if (sd < CAL_SD) {
+          bias.x = mx; bias.y = my; bias.z = mz;
+          say('sent', 'levelled \u00b7 offset ' + Math.hypot(mx, my, mz).toFixed(3) + ' m/s\u00b2');
+          if (typeof mark_add === 'function') mark_add('levelled', {
+            bias: [+mx.toFixed(4), +my.toFixed(4), +mz.toFixed(4)],
+            gravity: gZero, spread: +sd.toFixed(4), samples: calN });
+        } else {
+          say('warn', 'moved while levelling \u2014 offset kept from before');
+          if (typeof mark_add === 'function') mark_add('level_failed',
+            { spread: +sd.toFixed(4), samples: calN });
+        }
+      }
+      smooth_step(dt);
+      return;
+    }
+    az.x -= bias.x; az.y -= bias.y; az.z -= bias.z;
     var mag = Math.hypot(az.x, az.y, az.z);
     lastAccel = mag;
     movedSign = (Math.abs(az.x) >= Math.abs(az.y) ? (az.x >= 0 ? 1 : -1) : (az.y >= 0 ? 1 : -1));
@@ -918,9 +967,12 @@
       // the quiet timer — this is the 'jump the gun' he asked for
       if (!vel.x && !vel.y && !vel.z && (slowing || quietFor > 0.05)) end_move();
     }
-    // smooth_move: chase the model. Driven off the sensor clock, not the paint
-    // clock, so a burst of samples with no frame between them still shapes the
-    // move the same way.
+    smooth_step(dt);
+  }
+  // smooth_move: chase the model. Driven off the sensor clock, not the paint
+  // clock, so a burst of samples with no frame between them still shapes the
+  // move the same way — and so the levelling window keeps the picture alive.
+  function smooth_step(dt) {
     var sdt = Math.min(0.05, dt);
     ['x', 'y', 'z'].forEach(function (k) {
       var target = pos[k] + lead[k];
@@ -1084,6 +1136,9 @@
     run = { x: 0, y: 0, z: 0 };
     lead = { x: 0, y: 0, z: 0 };
     show = { x: 0, y: 0, z: z }; showV = { x: 0, y: 0, z: 0 };
+    // open the levelling window: hold still, this is the pose we measure from
+    calLeft = CAL_MS / 1000; calSum = { x: 0, y: 0, z: 0 }; calN = 0; calSq = 0;
+    if (motionOn) say('send', 'levelling \u2014 hold still\u2026');
     moving = false; lastMove = ''; quietFor = 0; lockLeft = 0; dir = { x: 0, y: 0, z: 0 };
     if (!keepDepth) document.documentElement.style.setProperty('--sc', '1');
     document.documentElement.style.setProperty('--rot', '0deg');
@@ -1403,6 +1458,9 @@
       return { px: v.ox, py: v.oy, mult: v.mult, dist: v.dist, roll: v.roll, tilt: v.tilt, turn: v.turn,
                moving: moving, held: lastMove, lock: +Math.max(0, lockLeft).toFixed(2),
                show: { x: +show.x.toFixed(4), y: +show.y.toFixed(4), z: +show.z.toFixed(4) },
+               cal: +Math.max(0, calLeft).toFixed(3),
+               bias: { x: +bias.x.toFixed(4), y: +bias.y.toFixed(4), z: +bias.z.toFixed(4) },
+               gravity: gZero,
                showV: { x: +showV.x.toFixed(4), y: +showV.y.toFixed(4), z: +showV.z.toFixed(4) },
                pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) } };
     },
