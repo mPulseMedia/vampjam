@@ -1201,7 +1201,29 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   and the lamp+line report it ✓; all five retired elements still resolve by id so nothing
   throws ✓; glide_stop, plate_move, roll_hold, zero_split, depth_flip and tilt_flip regressions
   all pass; no page errors.
-- NEXT → add entry 205 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 205 swirl_flip — lab.html, release swirl_flip / violet) the diagram drew the in-plane
+  turn backwards. swirl_flip: SWIRL_INV (-1) negates the yaw taken out of the relative matrix
+  in flip_yaw, so the plate turns the way the phone turns, and the same factor is applied to
+  the S readout so the number turns with it. Diagram only — the paper's counter-turn goes
+  through screen_roll()/PAN_INV and is deliberately untouched, which the test asserts: alpha
+  +30 still publishes --rot 30.00deg while the plate now reads S-30. That makes five named
+  sign switches (PAN_INV, DEPTH_INV, MODEL_INV, TILT_INV, SWIRL_INV), which between them is
+  every axis of the diagram now reversed relative to the paper — worth a look next time the
+  diagram is touched, because a single MODEL matrix would express it more honestly than five
+  scattered factors. Playwright: alpha +30 → S-30, -30 → S+30, +60 → S-60 ✓; plate top edge
+  -29.9° vs +29.9° for opposite swirls ✓; paper unchanged ✓; tilt_flip still applies (beta 40
+  → P-40) ✓; glide_stop, plate_move, roll_hold, model_flip and deck_one regressions pass; no
+  page errors.
+  take_read: his 40.6s / 2410-sample take ('these are the positions I went through…') came in
+  on the repo copy but not yet on the Mac's clone. Read from raw.githubusercontent (which the
+  sandbox CAN reach, unlike api.github.com). What it actually contains, against his narration:
+  toward/away 0.9-4.6s ✓, right/left 5.7-9.9s ✓, up/down 11.1-15.1s ✓ — then the order breaks.
+  15.8-18.5s is a -88° and a +85° about GAMMA, rolling the phone edge-over-edge, an axis that
+  is nowhere in his spoken list; 26.8-33.0s is four BETA tips (-53, +54, +57, -73); and only
+  at 33.7-38.5s do the ALPHA in-plane swirls appear, three of them and small (+29, +38, -51),
+  not the quarter turns he described. So the 'new angle' he suspected is the gamma roll, and
+  the swirls he meant to do second-to-last happened last and under-rotated.
+- NEXT → add entry 206 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

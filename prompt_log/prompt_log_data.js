@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "204 deck_one",
+        id: "205 swirl_flip",
         expanded: true,
+        nodes: [
+          { text: "205 swirl_flip", children: [
+            { text: "prompt_restate", children: [
+              { text: "Rotating the phone clockwise or counter-clockwise shows the diagram turning the opposite way. Flip it." },
+              { text: "A long take with many angles was recorded; at the end the order got confused and a new angle may have crept in." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I rotate the phone, either clockwise or counterclockwise, the little 3-D diagram shows the phone moving in the opposite rotational direction. Can you flip that please" },
+              { text: "OK hon, a big long take with a whole bunch of angles. I have to admit at the very end I got confused and I don\u2019t know what I did. I think I went out of order and I think I introduced a new angle anyway." }
+            ]},
+            { text: "response", children: [
+              { text: "swirl_flip", children: [
+                { text: "the diagram\u2019s in-plane turn is reversed \u2014 the plate turns the way the phone turns now" },
+                { text: "the S number flips with it, so picture and figure agree" },
+                { text: "the paper\u2019s counter-turn is untouched \u2014 that one is right" }
+              ]},
+              { text: "take_read", children: [
+                { text: "your 40.6s take arrived \u2014 2410 samples \u2014 and I read it" },
+                { text: "toward/away, right/left, up/down all landed in the order you called them, 0.9s through 15.1s" },
+                { text: "then at 15.8s and 17.7s: two quarter turns about the LONG axis, rolling the phone edge over edge \u2014 that is the angle you introduced, and it is not in your list" },
+                { text: "26.8s to 33.0s: four tips of the top toward and away, not two" },
+                { text: "33.7s to 38.5s: the clockwise / counter-clockwise turns you meant to do earlier, and they came out small \u2014 29, 38 and 51 degrees, not quarter turns" }
+              ]},
+              { text: "five_switch", children: [
+                { text: "that is now five separate sign switches; every axis of the diagram is reversed relative to the paper" },
+                { text: "worth folding into one matrix next time the diagram is opened" }
+              ]},
+              { text: "verify", children: [
+                { text: "~3m: release swirl_flip, violet \u2014 plate turns opposite ways for opposite swirls, paper unchanged at +30, tilt still flipped" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "204 deck_one",
+        expanded: false,
         nodes: [
           { text: "204 deck_one", children: [
             { text: "prompt_restate", children: [

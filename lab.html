@@ -330,7 +330,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'deck_one', bg: '#0f766e', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'swirl_flip', bg: '#9333ea', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -593,10 +593,16 @@
   // and the number can never disagree. It changes the diagram only — the paper
   // has never answered to pitch and still does not.
   var TILT_INV = -1;
+  // swirl_flip — SWIRL_INV reverses the DEPICTED in-plane turn: rotating the
+  // phone clockwise drew the plate turning counter-clockwise. It applies to the
+  // rebuilt plate matrix and to the S readout together, and to the diagram
+  // ONLY — the paper's counter-turn (screen_roll via PAN_INV) is untouched,
+  // because that one is right.
+  var SWIRL_INV = -1;
   function flip_yaw(m) {
     var deg = 180 / Math.PI;
-    var pitch = TILT_INV * Math.asin(Math.max(-1, Math.min(1, m[7]))) * deg;
-    var yaw   = Math.atan2(-m[1], m[4]) * deg;
+    var pitch = TILT_INV  * Math.asin(Math.max(-1, Math.min(1, m[7]))) * deg;
+    var yaw   = SWIRL_INV * Math.atan2(-m[1], m[4]) * deg;
     var roll  = Math.atan2(-m[6], m[8]) * deg;
     return { m: mat_from(-yaw, pitch, roll), pitch: pitch, yaw: -yaw, roll: roll };
   }
@@ -727,7 +733,7 @@
     // T turns it like a door; neither of those changes the surface.
     document.getElementById('pose_lbl').textContent =
       'cm   \u00b7   P' + flipped.pitch.toFixed(0) + '  T' + flipped.roll.toFixed(0) +
-      '  S' + screen_roll().toFixed(0) + '   \u00d7' + mult.toFixed(1);
+      '  S' + (SWIRL_INV * screen_roll()).toFixed(0) + '   \u00d7' + mult.toFixed(1);
   }
 
   // orientation -> rotation matrix (ZXY intrinsic, the W3C convention)
