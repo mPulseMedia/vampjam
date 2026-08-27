@@ -830,7 +830,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   .back_btn and .motion_btn) so recording never flips a card. Playwright: 30 synthetic
   samples captured under the typed name, rel starting at 0/0/0, status 'sent 1 take ✓',
   POST body path lab_gestures.json, and a 96px drag on the bar leaves the page index at 0 ✓.
-- NEXT → add entry 181 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 181 take_clear — lab.html) the recorder now says where it is, in colour and words:
+  say(state,text) drives one of four looks on .gest_bar — idle (grey led), is_rec (red led,
+  pulsing, red bar shadow, the button counting 'recording 1.4s'), is_send (amber led,
+  'sending "name" …'), is_sent (green led + green shadow, '✓ sent N takes — type the next
+  name'); is_warn covers a refused permission, an empty take, or a failed send (which stays
+  on the phone and rides along with the next one). On release the field is cleared and
+  focused SYNCHRONOUSLY inside the touchend gesture — iOS only raises the keyboard from
+  inside a gesture, so the send finishing later can't do it. A chip strip shows the last
+  four takes by name and length. Two robustness fixes found while wiring it: the sensors
+  are wired once and stay wired (asking permission again on every hold made each start a
+  tick late), and a wantRec flag makes a release that lands before permission resolves
+  cancel the start instead of leaving it recording. Playwright: idle → is_rec (name in the
+  message, live timer on the button) → is_send with the field already empty and #g_name
+  focused → is_sent with the chip listed ✓.
+- NEXT → add entry 182 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

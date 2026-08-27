@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "180 gesture_lab",
+        id: "181 take_clear",
         expanded: true,
+        nodes: [
+          { text: "181 take_clear", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make it obvious when a take is sending, when it has finished sending, and when it is ready for another." },
+              { text: "After it saves, clear the name field and bring the keyboard up so the next name can be typed straight away." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Can you make it more obvious when I\u2019m sending when it\u2019s completed being sent when it\u2019s ready for a new one so that I can record a different name like maybe after it as saved it it clears the field and brings up my keyboard so that I can see I can type in the what I just did" }
+            ]},
+            { text: "response", children: [
+              { text: "take_clear", children: [
+                { text: "four states you cannot miss: grey and waiting, RED while recording with the seconds counting on the button, amber while sending, green when it has landed" },
+                { text: "green says \u2018sent \u2014 type the next name\u2019" },
+                { text: "the moment you let go the field empties and the keyboard comes up, so you name the next one while the last is still flying" },
+                { text: "the last four takes show as small chips with their name and length" }
+              ]},
+              { text: "also_fixed", children: [
+                { text: "a very quick tap can no longer leave it stuck recording, and holds no longer start a moment late" },
+                { text: "if a send fails it says so and keeps the take, then sends it with the next one" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "180 gesture_lab",
+        expanded: false,
         nodes: [
           { text: "180 gesture_lab", children: [
             { text: "prompt_restate", children: [

@@ -153,7 +153,22 @@
   }
   .g_rec.recording { background: #1d1d1f; animation: g_pulse 1s ease-in-out infinite; }
   @keyframes g_pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.72; } }
-  .g_status { font-size: 12px; color: rgba(0,0,0,0.55); text-align: center; min-height: 15px; }
+  /* take_clear: the bar says which of the four states it is in, in colour and
+     in words — idle, recording, sending, sent-and-ready. */
+  .g_status { font-size: 12px; color: rgba(0,0,0,0.55); text-align: center; min-height: 16px;
+              display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .g_led { width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.22); flex: 0 0 auto; }
+  .gest_bar.is_rec  .g_led { background: #d7263d; animation: g_pulse 1s ease-in-out infinite; }
+  .gest_bar.is_send .g_led { background: #e0a800; animation: g_pulse 0.7s ease-in-out infinite; }
+  .gest_bar.is_sent .g_led { background: #16a34a; }
+  .gest_bar.is_warn .g_led { background: #e0a800; }
+  .gest_bar.is_rec  { box-shadow: 0 6px 20px rgba(215,38,61,0.45); }
+  .gest_bar.is_sent { box-shadow: 0 6px 20px rgba(22,163,74,0.40); }
+  .gest_bar.is_sent #g_msg { color: #16a34a; font-weight: 700; }
+  .gest_bar.is_rec  #g_msg { color: #d7263d; font-weight: 700; }
+  .g_recent { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; min-height: 0; }
+  .g_chip { font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.55);
+            background: rgba(0,0,0,0.06); border-radius: 999px; padding: 3px 8px; }
   .g_row { display: flex; align-items: center; gap: 8px; }
   .g_small {
     flex: 1 1 auto; border: none; border-radius: 9px; padding: 8px;
@@ -182,7 +197,8 @@
   <input id="g_name" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"
          placeholder="name the pair — raise / lower">
   <button id="g_rec" class="g_rec">Hold to record</button>
-  <div class="g_status" id="g_status">hold the button, do the gesture, let go</div>
+  <div class="g_status" id="g_status"><span class="g_led" id="g_led"></span><span id="g_msg">hold the button, do the gesture, let go</span></div>
+  <div class="g_recent" id="g_recent"></div>
   <div class="g_row">
     <button id="g_copy" class="g_small">Copy last take</button>
     <button id="g_send" class="g_small">Send takes</button>
@@ -406,7 +422,26 @@
 
   var gName = document.getElementById('g_name');
   var gRec  = document.getElementById('g_rec');
-  var gStat = document.getElementById('g_status');
+  var gBar  = document.getElementById('gest_bar');
+  var gMsg  = document.getElementById('g_msg');
+  var gRecent = document.getElementById('g_recent');
+  // take_clear: one place decides what the bar looks like and says
+  var gStat = {
+    set textContent(v) { say('idle', v); },
+    get textContent() { return gMsg.textContent; }
+  };
+  function say(state, text) {
+    gBar.classList.remove('is_rec', 'is_send', 'is_sent', 'is_warn');
+    if (state !== 'idle') gBar.classList.add('is_' + state);
+    gMsg.textContent = text;
+  }
+  function paint_recent() {
+    var list = gest_get().slice(-4);
+    gRecent.innerHTML = list.map(function (t2) {
+      return '<span class="g_chip">' + String(t2.name || 'unnamed').replace(/[<>&]/g, '') +
+             ' · ' + (t2.ms / 1000).toFixed(1) + 's</span>';
+    }).join('');
+  }
   var gCopy = document.getElementById('g_copy');
   var gSend = document.getElementById('g_send');
   var gCount= document.getElementById('g_count');
@@ -421,6 +456,7 @@
   function gest_put(list) {
     try { localStorage.setItem(GEST_KEY, JSON.stringify(list.slice(-40))); } catch (e) {}
     if (gCount) gCount.textContent = list.length + ' take' + (list.length === 1 ? '' : 's');
+    if (typeof paint_recent === 'function') paint_recent();
   }
   gest_put(gest_get());
 
@@ -451,10 +487,15 @@
   }
   function ang(d) { while (d > 180) d -= 360; while (d < -180) d += 360; return d; }
 
+  var sensorsWired = false;
   function sensors_live(after) {
+    // once wired, stay wired: asking again would make every later hold start
+    // one tick late (and a very short tap could then start after it ended)
+    if (sensorsWired) { after(true); return; }
     var needO = (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function');
     var needM = (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function');
     function wire() {
+      sensorsWired = true;
       window.addEventListener('deviceorientation', grab_orientation);
       window.addEventListener('devicemotion', grab_motion);
       after(true);
@@ -469,31 +510,52 @@
     }).catch(function () { after(false); });
   }
 
+  var wantRec = false;
   function rec_start() {
     if (recording) return;
+    wantRec = true;
+    say('rec', 'starting…');
     sensors_live(function (ok) {
-      if (!ok) { gStat.textContent = 'motion permission was refused'; return; }
+      if (!ok) { wantRec = false; say('warn', 'motion permission was refused'); return; }
+      if (!wantRec) return;         // released before permission came back
       recording = true; gRef = null;
       take = { name: (gName.value || 'unnamed').trim(), ts: Date.now(), ms: 0, samples: [] };
       gRec.classList.add('recording');
-      gRec.textContent = 'recording…';
-      gStat.textContent = 'do the move, then let go';
+      gRec.textContent = 'recording  0.0s';
+      say('rec', 'recording "' + take.name + '" — do the move, then let go');
+      clearInterval(recTimer);
+      recTimer = setInterval(function () {
+        if (!recording || !take) return;
+        gRec.textContent = 'recording  ' + ((Date.now() - take.ts) / 1000).toFixed(1) + 's';
+      }, 100);
     });
   }
   function rec_stop() {
+    wantRec = false;
     if (!recording) return;
     recording = false;
+    clearInterval(recTimer);
     gRec.classList.remove('recording');
     gRec.textContent = 'Hold to record';
     if (!take) return;
     take.ms = Date.now() - take.ts;
+    var done = take;
     var list = gest_get();
-    list.push(take);
+    list.push(done);
     gest_put(list);
-    gStat.textContent = '"' + take.name + '" · ' + take.samples.length + ' samples · ' + (take.ms / 1000).toFixed(1) + 's';
-    if (!take.samples.length) gStat.textContent += ' — no sensor data came through';
-    send_takes(true);
     take = null;
+    if (!done.samples.length) {
+      say('warn', 'nothing came from the sensors — check motion permission');
+      return;
+    }
+    say('send', 'saving "' + done.name + '" · ' + done.samples.length + ' samples · ' +
+                (done.ms / 1000).toFixed(1) + 's …');
+    // take_clear: clear the field and raise the keyboard NOW, while we are
+    // still inside the touch that released the button — iOS only opens the
+    // keyboard from inside a gesture. The send finishes in the background.
+    gName.value = '';
+    try { gName.focus({ preventScroll: true }); } catch (e) { gName.focus(); }
+    send_takes(true, done);
   }
 
   // hold semantics on touch AND mouse; pointer events would double-fire on iOS
@@ -516,11 +578,12 @@
   // send_takes — park them in the repo (lab_gestures.json) so they can be read
   // from the other side without any copy and paste
   var sending = false;
-  function send_takes(quiet) {
+  var recTimer = 0;
+  function send_takes(quiet, done) {
     var list = gest_get();
     if (!list.length || sending) return;
     sending = true;
-    if (!quiet) gStat.textContent = 'sending…';
+    say('send', done ? ('sending "' + done.name + '" …') : 'sending…');
     fetch(API_URL + '&t=' + Date.now(), { headers: { Accept: 'application/vnd.github.raw+json' }, cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : []; })
       .catch(function () { return []; })
@@ -529,7 +592,7 @@
         var seen = {};
         have.forEach(function (t) { if (t && t.ts) seen[t.ts] = true; });
         var add = list.filter(function (t) { return !seen[t.ts]; });
-        if (!add.length) { sending = false; gStat.textContent = 'already sent'; return; }
+        if (!add.length) { sending = false; say('sent', 'already sent — name the next one'); return; }
         var out = have.concat(add).slice(-60);
         return fetch(SYNC_URL, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -537,13 +600,15 @@
                                  message: 'gesture ' + (add[add.length - 1].name || 'take') })
         }).then(function (r) {
           sending = false;
-          gStat.textContent = r.ok ? ('sent ' + add.length + ' take' + (add.length === 1 ? '' : 's') + ' ✓')
-                                   : 'send failed — takes are safe on this phone';
+          if (r.ok) say('sent', '✓ sent ' + add.length + ' take' + (add.length === 1 ? '' : 's') +
+                                ' — type the next name');
+          else say('warn', 'send failed — kept on this phone, goes with the next one');
         });
       })
-      .catch(function () { sending = false; gStat.textContent = 'send failed — takes are safe on this phone'; });
+      .catch(function () { sending = false; say('warn', 'send failed — kept on this phone, goes with the next one'); });
   }
   gSend.addEventListener('click', function () { send_takes(false); });
+  paint_recent();
 
   // test hook
   window.__lab = {
