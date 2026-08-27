@@ -1176,7 +1176,32 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   tipped ✓; --rot stays 0.00deg through both tips, so the paper is untouched ✓; swirl +30 still
   gives +30 ✓; glide_stop, plate_move, roll_hold, model_flip and depth_flip regressions all
   pass; three-way visual capture (forward / flat / back) taken; no page errors.
-- NEXT → add entry 204 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 204 deck_one — lab.html, release deck_one / teal) every control on the lab page is one
+  panel along the bottom. deck_one: the five floating things — the release stamp in the top-left
+  corner, the Admin button under it, Set zero and Reset all stacked at the right, and the
+  recorder bar in the middle — are gone as separate fixed elements. In their place a single
+  .deck spans the full width at the bottom, 108px tall, in two rows. deck_room: the window's
+  bottom moves up by exactly the deck's height, so the white beneath the window IS the deck and
+  the window's existing 22px bottom corners are where the panel's top edge curves up and carries
+  on round the sides and the top as one continuous frame — no new border, no seam.
+  thumb_order: the right-hand end is where the thumb lands, so Set zero (pressed constantly)
+  is furthest right, Hold to record sits next to it and takes twice the width, and the name
+  field takes what is left on the far left. The quiet row above carries ‹ Admin, the release
+  chip in its own colour, one lamp, one line of status, and Reset. deck_say: the recorder's
+  furniture — the take chips, Copy last, Send and the take count — is hidden but still in the
+  DOM, because the code writes to all of it; `.deck [hidden] { display: none !important }` is
+  needed because a class rule setting display beats the hidden attribute (the .g_recent chips
+  reappeared under the deck until this was added). The status strings were shortened to fit one
+  line ('✓ sent 1 — name the next' rather than '✓ sent 1 take — type the next name'), and the
+  release chip is flex 0 0 auto so the status gives way to it and never the other way round.
+  The whole deck is excluded from the page-flick swipe guard as one element instead of four.
+  Playwright at 390×780: window 14,14 362×644, deck 14,658 362×108, no overlap, window bottom
+  radius still 22px ✓; order left→right name 18 / record 121 / Set zero 276, Reset in the top
+  row at 311 ✓; Reset still hidden until motion is on ✓; a held take still captures 20 samples
+  and the lamp+line report it ✓; all five retired elements still resolve by id so nothing
+  throws ✓; glide_stop, plate_move, roll_hold, zero_split, depth_flip and tilt_flip regressions
+  all pass; no page errors.
+- NEXT → add entry 205 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -27,7 +27,10 @@
     background: #fcfcf8;
     position: fixed;
     top: max(14px, env(safe-area-inset-top));
-    bottom: max(14px, env(safe-area-inset-bottom));
+    /* deck_room — the window stops above the deck, so the white below it is the
+       same white as the frame and its rounded bottom corners are where the
+       panel's top edge curves up into the sides. */
+    bottom: calc(max(14px, env(safe-area-inset-bottom)) + 108px);
     left: max(14px, env(safe-area-inset-left));
     right: max(14px, env(safe-area-inset-right));
     border-radius: 22px;
@@ -108,35 +111,10 @@
   .dot { width: 6px; height: 6px; border-radius: 50%; background: #1d1d1f; opacity: 0.18; }
   .dot.on { opacity: 0.75; }
 
-  .back_btn {
-    position: fixed; z-index: 6;
-    top: max(78px, calc(env(safe-area-inset-top) + 66px));
-    left: max(22px, calc(env(safe-area-inset-left) + 10px));
-    display: inline-flex; align-items: center; gap: 5px;
-    background: rgba(255,255,255,0.86); color: #1d1d1f;
-    border: none; border-radius: 999px; padding: 9px 15px 9px 12px;
-    font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
-    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    touch-action: manipulation;
-  }
-  .back_btn:active { transform: scale(0.96); }
+
   /* lab_release — a solid square in the corner wearing this release's colour,
      with this release's name inside it. New colour + new name every ship. */
-  .build_tag {
-    position: fixed; z-index: 6;
-    top: max(20px, calc(env(safe-area-inset-top) + 10px));
-    left: max(22px, calc(env(safe-area-inset-left) + 10px));
-    /* name_wide: wide and low, so the release name reads on one line */
-    height: 44px; max-width: calc(100vw - 192px); border-radius: 12px;
-    overflow: hidden; text-overflow: ellipsis;
-    background: var(--lab_bg, #1d4ed8); color: var(--lab_fg, #ffffff);
-    display: inline-flex; align-items: center; justify-content: center;
-    padding: 0 18px; font-size: 15px; font-weight: 700; line-height: 1;
-    letter-spacing: 0.01em; white-space: nowrap;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-    pointer-events: none;
-  }
+
   .hint {
     position: fixed; z-index: 6; left: 50%; transform: translateX(-50%);
     bottom: max(26px, calc(env(safe-area-inset-bottom) + 14px));
@@ -148,34 +126,11 @@
   }
   /* thumb_reach: Set zero gets pressed constantly, so it sits low on the right,
      just above the recorder bar, where a right thumb lands without a stretch. */
-  .motion_btn {
-    position: fixed; z-index: 8;
-    bottom: max(173px, calc(env(safe-area-inset-bottom) + 165px));
-    right: max(22px, calc(env(safe-area-inset-right) + 10px));
-    background: rgba(29,29,31,0.86); color: #ffffff;
-    border: none; border-radius: 999px; padding: 15px 22px;
-    font: inherit; font-size: 16px; font-weight: 700; cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
-    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    touch-action: manipulation;
-  }
-  .motion_btn:active { transform: scale(0.96); }
-  .motion_btn.on { background: #3f6212; color: #ffffff; }
+
   /* zero_split: the rarer of the two sits above the one the thumb wants, and is
      quieter — Set zero is pressed constantly, Reset all only when the scale has
      run away. */
-  .reset_btn {
-    position: fixed; z-index: 8;
-    bottom: max(231px, calc(env(safe-area-inset-bottom) + 223px));
-    right: max(22px, calc(env(safe-area-inset-right) + 10px));
-    background: rgba(255,255,255,0.90); color: #1d1d1f;
-    border: 1px solid rgba(0,0,0,0.12); border-radius: 999px; padding: 9px 16px;
-    font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.18);
-    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    touch-action: manipulation;
-  }
-  .reset_btn:active { transform: scale(0.96); }
+
   /* lag_trace — four seconds of history, so what the hand did and what the
      screen did can be compared by eye instead of by adjective.
      grey = how hard the phone is accelerating, purple = where the world is. */
@@ -204,28 +159,10 @@
      is far narrower, the chrome is half the size it was. The one thing that does
      NOT shrink is the hold target itself, which stays a full-height slab because
      it is held down through a whole gesture with the phone in motion. */
-  .gest_bar {
-    position: fixed; z-index: 7; left: 50%; transform: translateX(-50%);
-    bottom: max(16px, calc(env(safe-area-inset-bottom) + 8px));
-    width: min(206px, calc(100vw - 120px));
-    background: rgba(255,255,255,0.92); border-radius: 13px; padding: 7px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.24);
-    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-    display: flex; flex-direction: column; gap: 5px;
-    touch-action: manipulation;
-  }
-  #g_name {
-    width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 7px;
-    padding: 5px 7px; font: inherit; font-size: 12px; color: #1d1d1f;
-    background: #ffffff; outline: none;
-  }
+
+
   #g_name:focus { border-color: #1350c4; }
-  .g_rec {
-    width: 100%; border: none; border-radius: 11px; padding: 17px 10px;
-    font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
-    background: #d7263d; color: #ffffff; touch-action: none;
-    box-shadow: 0 3px 10px rgba(215,38,61,0.35);
-  }
+
   .g_rec.recording { background: #1d1d1f; animation: g_pulse 1s ease-in-out infinite; }
   @keyframes g_pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.72; } }
   /* take_clear: the bar says which of the four states it is in, in colour and
@@ -233,14 +170,6 @@
   .g_status { font-size: 10px; line-height: 1.25; color: rgba(0,0,0,0.55); text-align: center; min-height: 12px;
               display: flex; align-items: center; justify-content: center; gap: 4px; }
   .g_led { width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,0.22); flex: 0 0 auto; }
-  .gest_bar.is_rec  .g_led { background: #d7263d; animation: g_pulse 1s ease-in-out infinite; }
-  .gest_bar.is_send .g_led { background: #e0a800; animation: g_pulse 0.7s ease-in-out infinite; }
-  .gest_bar.is_sent .g_led { background: #16a34a; }
-  .gest_bar.is_warn .g_led { background: #e0a800; }
-  .gest_bar.is_rec  { box-shadow: 0 6px 20px rgba(215,38,61,0.45); }
-  .gest_bar.is_sent { box-shadow: 0 6px 20px rgba(22,163,74,0.40); }
-  .gest_bar.is_sent #g_msg { color: #16a34a; font-weight: 700; }
-  .gest_bar.is_rec  #g_msg { color: #d7263d; font-weight: 700; }
   .g_recent { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; min-height: 0; }
   .g_chip { font-size: 9px; font-weight: 600; color: rgba(0,0,0,0.55);
             background: rgba(0,0,0,0.06); border-radius: 999px; padding: 2px 6px;
@@ -253,6 +182,84 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .g_count { flex: 0 0 auto; font-size: 10px; color: rgba(0,0,0,0.45); min-width: 30px; text-align: right; }
+
+  /* ---- deck_one: the single control panel along the bottom ---- */
+  .deck {
+    position: fixed; z-index: 8;
+    left: max(14px, env(safe-area-inset-left));
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    height: 108px; padding: 6px 4px 0;
+    display: flex; flex-direction: column; gap: 7px;
+    background: transparent;
+    touch-action: manipulation;
+  }
+  .deck_top { display: flex; align-items: center; gap: 7px; min-height: 30px; }
+  /* deck_quiet — the retired recorder furniture stays in the DOM for the code
+     that writes to it, but a class rule that sets display would otherwise beat
+     the hidden attribute, so say so outright. */
+  .deck [hidden] { display: none !important; }
+  .deck_row { display: flex; align-items: stretch; gap: 7px; flex: 1 1 auto; }
+  .deck_back {
+    flex: 0 0 auto; display: inline-flex; align-items: center; height: 30px;
+    padding: 0 12px; border-radius: 999px; text-decoration: none;
+    background: rgba(0,0,0,0.05); color: #1d1d1f;
+    font-size: 13px; font-weight: 600; line-height: 1; white-space: nowrap;
+  }
+  .deck_back:active { transform: scale(0.96); }
+  /* the release stamp lives in the deck now, small and wearing its own colour */
+  .build_tag {
+    /* the release name never gets squeezed — the status line gives way instead */
+    flex: 0 0 auto; max-width: 40%; height: 30px; border-radius: 9px;
+    background: var(--lab_bg, #1d4ed8); color: var(--lab_fg, #ffffff);
+    display: inline-flex; align-items: center; padding: 0 11px;
+    font-size: 13px; font-weight: 700; line-height: 1; letter-spacing: 0.01em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    pointer-events: none;
+  }
+  /* deck_say — the whole of what the recorder has to tell you: one lamp and one
+     line. Everything else it used to show (take chips, copy, send, a count) is
+     still in the DOM for the code that writes to it, but out of sight. */
+  .g_led { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,0,0,0.22); flex: 0 0 auto; }
+  .deck_msg {
+    flex: 1 1 auto; min-width: 0; font-size: 11px; line-height: 1.2;
+    color: rgba(0,0,0,0.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .deck_reset {
+    flex: 0 0 auto; height: 30px; padding: 0 13px; border-radius: 999px;
+    background: rgba(0,0,0,0.05); color: #1d1d1f; border: none;
+    font: inherit; font-size: 13px; font-weight: 700; line-height: 1; cursor: pointer;
+    white-space: nowrap; touch-action: manipulation;
+  }
+  .deck_reset:active { transform: scale(0.96); }
+  #g_name {
+    flex: 1 1 82px; min-width: 60px; border: 1px solid rgba(0,0,0,0.14);
+    border-radius: 11px; padding: 0 10px; font: inherit; font-size: 13px;
+    color: #1d1d1f; background: #ffffff; outline: none;
+  }
+  #g_name:focus { border-color: #1350c4; }
+  /* thumb_order: Set zero furthest right, Hold to record beside it */
+  .g_rec {
+    flex: 2 1 120px; min-width: 96px; border: none; border-radius: 13px; padding: 0 8px;
+    font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    background: #d7263d; color: #ffffff; touch-action: none;
+    box-shadow: 0 3px 10px rgba(215,38,61,0.35);
+  }
+  .motion_btn {
+    flex: 0 0 96px; border: none; border-radius: 13px; padding: 0 8px;
+    background: rgba(29,29,31,0.88); color: #ffffff;
+    font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.22); touch-action: manipulation;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .motion_btn:active, .g_rec:active { transform: scale(0.97); }
+  .motion_btn.on { background: #3f6212; }
+  .deck.is_rec  .g_led { background: #d7263d; animation: g_pulse 1s ease-in-out infinite; }
+  .deck.is_send .g_led { background: #e0a800; animation: g_pulse 0.7s ease-in-out infinite; }
+  .deck.is_sent .g_led { background: #16a34a; }
+  .deck.is_warn .g_led { background: #e0a800; }
+  .deck.is_sent .deck_msg { color: #16a34a; font-weight: 700; }
+  .deck.is_rec  .deck_msg { color: #d7263d; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -269,24 +276,35 @@
 </div>
 
 <div class="dots" id="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
-<button class="back_btn" id="back_btn">&#8249; Admin</button>
-<div class="build_tag" id="build_tag"></div>
 <div class="hint" id="hint">swipe up / down</div>
 
-<div class="gest_bar" id="gest_bar">
-  <input id="g_name" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"
-         placeholder="name it — raise / lower">
-  <button id="g_rec" class="g_rec">Hold to record</button>
-  <div class="g_status" id="g_status"><span class="g_led" id="g_led"></span><span id="g_msg">hold, move, let go</span></div>
-  <div class="g_recent" id="g_recent"></div>
-  <div class="g_row">
-    <button id="g_copy" class="g_small">Copy last</button>
-    <button id="g_send" class="g_small">Send</button>
-    <span class="g_count" id="g_count"></span>
+<!-- deck_one — every control on the page in ONE panel along the bottom. The
+     window above it has rounded bottom corners, so the white curves up out of
+     the deck and carries on round the sides and the top as one frame.
+     thumb_order: the right-hand end is where the thumb lands, so Set zero (the
+     one pressed constantly) is furthest right and Hold to record is next to it.
+     The way back to the app, the release name and everything the recorder has
+     to say live on the quiet row above. -->
+<div class="deck" id="gest_bar">
+  <div class="deck_top">
+    <a class="deck_back" id="back_btn" href="admin.html">&#8249; Admin</a>
+    <span class="build_tag" id="build_tag"></span>
+    <span class="g_led" id="g_led"></span>
+    <span class="deck_msg" id="g_msg">hold, move, let go</span>
+    <button class="deck_reset" id="reset_btn" hidden>Reset</button>
   </div>
+  <div class="deck_row">
+    <input id="g_name" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"
+           placeholder="name it">
+    <button id="g_rec" class="g_rec">Hold to record</button>
+    <button class="motion_btn" id="motion_btn">Set zero</button>
+  </div>
+  <div class="g_status" id="g_status" hidden></div>
+  <div class="g_recent" id="g_recent" hidden></div>
+  <button id="g_copy" class="g_small" hidden>Copy last</button>
+  <button id="g_send" class="g_small" hidden>Send</button>
+  <span class="g_count" id="g_count" hidden></span>
 </div>
-<button class="reset_btn" id="reset_btn" hidden>Reset all</button>
-<button class="motion_btn" id="motion_btn">Set zero</button>
 <svg class="pose" id="pose" viewBox="-72 -74 144 158" hidden aria-hidden="true">
   <!-- pose_arrow: the phone as an object standing in a frame that never moves.
        The axes and the dashed zero rectangle are pinned at the origin; the plate
@@ -312,7 +330,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'tilt_flip', bg: '#ca8a04', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'deck_one', bg: '#0f766e', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -379,7 +397,7 @@
   }
 
   window.addEventListener('touchstart', function (e) {
-    if (e.target.closest && e.target.closest('.back_btn, .motion_btn, .reset_btn, .gest_bar')) return;
+    if (e.target.closest && e.target.closest('.deck')) return;
     if (e.touches.length === 1) start(e.touches[0].clientY);
   }, { passive: true });
   window.addEventListener('touchmove', function (e) {
@@ -391,7 +409,7 @@
   // mouse + keyboard, so the same thing works on a laptop
   var mouseDown = false;
   window.addEventListener('mousedown', function (e) {
-    if (e.target.closest && e.target.closest('.back_btn, .motion_btn, .reset_btn, .gest_bar')) return;
+    if (e.target.closest && e.target.closest('.deck')) return;
     mouseDown = true; start(e.clientY);
   });
   window.addEventListener('mousemove', function (e) { if (mouseDown) move(e.clientY); });
@@ -1086,7 +1104,8 @@
       take = { name: (gName.value || 'unnamed').trim(), ts: Date.now(), ms: 0, samples: [] };
       gRec.classList.add('recording');
       gRec.textContent = 'recording  0.0s';
-      say('rec', 'recording "' + take.name + '" — do the move, then let go');
+      // deck_say: short lines — the deck gives one line and the lamp carries the state
+      say('rec', 'recording "' + take.name + '"');
       clearInterval(recTimer);
       recTimer = setInterval(function () {
         if (!recording || !take) return;
@@ -1109,11 +1128,11 @@
     gest_put(list);
     take = null;
     if (!done.samples.length) {
-      say('warn', 'nothing came from the sensors — check motion permission');
+      say('warn', 'no sensor data — check motion permission');
       return;
     }
-    say('send', 'saving "' + done.name + '" · ' + done.samples.length + ' samples · ' +
-                (done.ms / 1000).toFixed(1) + 's …');
+    say('send', 'saving · ' + done.samples.length + ' samples · ' +
+                (done.ms / 1000).toFixed(1) + 's');
     // take_clear: clear the field and raise the keyboard NOW, while we are
     // still inside the touch that released the button — iOS only opens the
     // keyboard from inside a gesture. The send finishes in the background.
@@ -1147,7 +1166,7 @@
     var list = gest_get();
     if (!list.length || sending) return;
     sending = true;
-    say('send', done ? ('sending "' + done.name + '" …') : 'sending…');
+    say('send', done ? ('sending "' + done.name + '"') : 'sending…');
     fetch(API_URL + '&t=' + Date.now(), { headers: { Accept: 'application/vnd.github.raw+json' }, cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : []; })
       .catch(function () { return []; })
@@ -1156,7 +1175,7 @@
         var seen = {};
         have.forEach(function (t) { if (t && t.ts) seen[t.ts] = true; });
         var add = list.filter(function (t) { return !seen[t.ts]; });
-        if (!add.length) { sending = false; say('sent', 'already sent — name the next one'); return; }
+        if (!add.length) { sending = false; say('sent', 'already sent — name the next'); return; }
         var out = have.concat(add).slice(-60);
         return fetch(SYNC_URL, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1164,12 +1183,11 @@
                                  message: 'gesture ' + (add[add.length - 1].name || 'take') })
         }).then(function (r) {
           sending = false;
-          if (r.ok) say('sent', '✓ sent ' + add.length + ' take' + (add.length === 1 ? '' : 's') +
-                                ' — type the next name');
-          else say('warn', 'send failed — kept on this phone, goes with the next one');
+          if (r.ok) say('sent', '✓ sent ' + add.length + ' — name the next');
+          else say('warn', 'send failed — kept on this phone');
         });
       })
-      .catch(function () { sending = false; say('warn', 'send failed — kept on this phone, goes with the next one'); });
+      .catch(function () { sending = false; say('warn', 'send failed — kept on this phone'); });
   }
   gSend.addEventListener('click', function () { send_takes(false); });
   paint_recent();

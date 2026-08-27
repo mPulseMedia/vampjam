@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "203 tilt_flip",
+        id: "204 deck_one",
         expanded: true,
+        nodes: [
+          { text: "204 deck_one", children: [
+            { text: "prompt_restate", children: [
+              { text: "Unite every interface element into one panel along the bottom." },
+              { text: "Its top edge curves up into the frame that reaches around the top." },
+              { text: "Keep Reset on the right and keep Hold to record; strip the clutter around it." },
+              { text: "Leave some indication that something happened after a long press." },
+              { text: "The link back to the app goes on the left; the commit name must appear." },
+              { text: "Thumb preference: reset easiest, hold to record second easiest." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Let\u2019s unite all those interface elements into a single panel that is shown along the bottom of the page and the top edge of the panel curves up to the frame that reaches around the top and. I like the reset button on the right I like the hold to record button. I think we can get rid of a little lot of stuff around the hole to record button. I don\u2019t need a ton of it there beyond the button and some indication that something happened after I pressed it there for a long time, but then along the left, there would be the link to return to the rest of the app, but also, and I don\u2019t know where this fits in. I don\u2019t know how it all fits in. There could be changes but terms of thumb preference. I like the reset is the easiest position and the whole to record as the second easiest position, but I do also want to have that commit name appear." }
+            ]},
+            { text: "response", children: [
+              { text: "deck_one", children: [
+                { text: "the five floating controls are now one panel across the bottom" },
+                { text: "the window above it stops exactly at the panel, so its rounded bottom corners ARE the curve up into the frame \u2014 one continuous white surround, no seam" }
+              ]},
+              { text: "thumb_order", children: [
+                { text: "Set zero furthest right where the thumb lands, Hold to record beside it at twice the width" },
+                { text: "the name field takes what is left on the far left" },
+                { text: "the quiet row above: \u2039 Admin, the release name in its colour, a lamp, one line, Reset" }
+              ]},
+              { text: "deck_say", children: [
+                { text: "the take chips, Copy last, Send and the count are gone from sight" },
+                { text: "what is left is a lamp that changes colour and one short line \u2014 \u201c\u2713 sent 1 \u2014 name the next\u201d" }
+              ]},
+              { text: "verify", children: [
+                { text: "~4m: release deck_one, teal \u2014 window and deck measured flush with no overlap, order confirmed left to right, a held take still captures 20 samples" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "203 tilt_flip",
+        expanded: false,
         nodes: [
           { text: "203 tilt_flip", children: [
             { text: "prompt_restate", children: [
