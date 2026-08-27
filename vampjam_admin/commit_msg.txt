@@ -1,1 +1,1 @@
-read_split
+auto_commit
