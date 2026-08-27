@@ -100,8 +100,11 @@
   .seg_remain { position: absolute; bottom: 0; height: 2px; background: var(--accent); opacity: 0.45; border-radius: 1px; pointer-events: none; }
   /* hour_mark — a vertical bar at each whole hour, poking above and below the
      seek bar, with a small hour number hanging beneath. Rides the fisheye. */
-  .hour_mark { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--muted); opacity: 0.7; border-radius: 1px; pointer-events: none; z-index: 1; transform: translateX(-50%); }
-  .hour_lbl { position: absolute; top: calc(100% + 6px); transform: translateX(-50%); font-size: 13px; line-height: 1; color: var(--muted); pointer-events: none; z-index: 3; }
+  /* hour_line: one hairline per whole hour, running from just above the bar
+     down to the baseline of its hour number, with the number set beside it */
+  .hour_mark { position: absolute; top: -5px; bottom: -20px; width: 1px; background: var(--muted); opacity: 0.7; border-radius: 0; pointer-events: none; z-index: 1; }
+  .hour_lbl { position: absolute; top: calc(100% + 6px); margin-left: 4px; font-size: 13px; line-height: 1; color: var(--muted); pointer-events: none; z-index: 3; white-space: nowrap; }
+  .hour_lbl.flip { margin-left: 0; transform: translateX(-100%); padding-right: 4px; }
   .tag_numbers { position: relative; height: 16px; margin-bottom: 3px; }
   .tag_num_lbl { position: absolute; transform: translateX(-50%); top: 0; font-size: 13px; line-height: 16px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; z-index: 4; }
   .tag_num { flex: 0 0 auto; min-width: 18px; text-align: right; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
@@ -126,7 +129,7 @@
   /* circle_gone: the numbers above the bar do this job now (and seek on tap) */
   .tag_marker { display: none; }
   .zoom_band { display: none; }   /* bar_tune: the light section band is retired */
-  .fish_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
+  .fish_tick { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
   .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
   .time_row #now_time { color: var(--accent); font-weight: 600; }
   .ctrl_btn {
@@ -158,8 +161,15 @@
     padding: 8px 12px; border-radius: 8px; min-height: 36px;
     transition: background-color 0.12s, transform 0.06s;
   }
-  button:hover  { background: var(--panel_3); }
+  /* btn_gray: this generic hover paint (specificity beats a plain class) is
+     what turned styled buttons — Tag the moment above all — gray and KEPT them
+     gray, because iOS leaves :hover stuck on the last thing tapped. Pointing
+     devices only now; touch gets the press flash and nothing lingering. */
+  @media (hover: hover) and (pointer: fine) {
+    button:hover { background: var(--panel_3); }
+  }
   button:active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); transform: scale(0.97); }
+  button { -webkit-tap-highlight-color: transparent; }
   button.primary           { background: var(--accent);   color: var(--on_accent, #0b0d0f); font-weight: 600; }
   button.primary:hover     { background: var(--accent_hover, #f0c97a); }
   button.primary:active    { background: var(--accent_active, #c89943); }
@@ -198,7 +208,17 @@
   }
   /* no :hover rule — iOS keeps hover stuck after a tap, so the button drifted
      to a different look and stayed there. Only the press itself shows. */
-  .tag_btn_big:active {
+  /* btn_gray: re-assert the blue at a specificity the generic button rules
+     cannot beat — the press is a squeeze, and it comes straight back */
+  button.tag_btn_big,
+  button.tag_btn_big:hover,
+  button.tag_btn_big:active,
+  button.tag_btn_big:focus {
+    background-color: var(--accent);
+    background-image: linear-gradient(180deg, var(--accent_hover, #339cff) 0%, var(--accent) 55%, var(--accent_active, #0062c4) 100%);
+    color: var(--on_accent, #fff);
+  }
+  button.tag_btn_big:active {
     transform: scale(0.96) translateY(1px);
     box-shadow: 0 5px 12px -6px var(--accent), 0 2px 4px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.18);
   }
@@ -372,14 +392,13 @@
   .sticky_player.scrolled::after { opacity: 1; }
 
   @media (max-width: 480px) {
-    /* ctrl_fit: seven circles + gaps are a little wider than the page gutter
-       allows, which left the document scrolling sideways by ~14px. The row
-       takes the gutter back instead of the circles getting smaller. */
-    .ctrl_row { justify-content: space-between; gap: 3px;
-                margin-left: calc(var(--gutter) * -1); margin-right: calc(var(--gutter) * -1); }
-    .ctrl_btn { width: 48px; height: 48px; }
-    .ctrl_btn.small { width: 48px; height: 48px; }
-    .ctrl_btn.play_btn { width: 76px; height: 76px; font-size: 48px; }
+    /* ctrl_edge: the circles line up with the timeline — same left and right
+       edge as the seek bar — so the row keeps the page gutter and the circles
+       are sized to fit inside it (6 x 44 + 70 + gaps < the bar's width). */
+    .ctrl_row { justify-content: space-between; gap: 3px; margin-left: 0; margin-right: 0; }
+    .ctrl_btn { width: 44px; height: 44px; }
+    .ctrl_btn.small { width: 44px; height: 44px; }
+    .ctrl_btn.play_btn { width: 70px; height: 70px; font-size: 44px; }
   }
 
   /* ---- de-emphasis: make selected chrome less prominent ---- */
@@ -1111,6 +1130,13 @@
     }
     marks.concat(lbls).forEach(function (el) {
       el.style.left = (fish_x(parseFloat(el.dataset.h) * 3600) * 100) + '%';
+    });
+    // hour_line: the number sits to the RIGHT of its hairline, unless that
+    // would push it off the end of the bar — then it flips to the left side
+    var barW = seekBar.clientWidth || 1;
+    lbls.forEach(function (l) {
+      var x = parseFloat(l.style.left) / 100 * barW;
+      l.classList.toggle('flip', x + l.offsetWidth + 6 > barW);
     });
   }
   function render_fish_ticks() {

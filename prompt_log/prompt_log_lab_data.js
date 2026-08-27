@@ -9,8 +9,63 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "170 sess_0814",
+        id: "172 btn_gray",
         expanded: true,
+        nodes: [
+          { text: "172 btn_gray", children: [
+            { text: "prompt_restate", children: [
+              { text: "On a recorded session, tapping Tag the moment turns the button gray and it stays that way; it should stay blue, flash on touch, and be ready again." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I click the tag a moment in the control panel of the not live but already recorded thing it turns gray and I don\u2019t want it to turn gray. I think it should stay blue, so she just flashed when I touch it but return to where it\u2019s ready to be clicked again." }
+            ]},
+            { text: "response", children: [
+              { text: "btn_gray", children: [
+                { text: "found the real cause this time: a catch-all hover style for every button on the page outranked the Tag button\u2019s own blue, and the iPhone leaves hover stuck on whatever you last touched — so it went gray and stayed gray" },
+                { text: "hover styling is now for mice only; on a phone there is nothing left to stick" },
+                { text: "the Tag button holds its blue through touch, press and after — the press is just a quick squeeze that springs back" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: tap Tag the moment a few times — blue every time" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "171 hour_line",
+        expanded: false,
+        nodes: [
+          { text: "171 hour_line", children: [
+            { text: "prompt_restate", children: [
+              { text: "The circles should sit within the same left and right margin as the timeline." },
+              { text: "Make the gaps along the timeline 3 pixels." },
+              { text: "Make the hour marker a single-pixel line, run it down to the 1H / 2H baseline, and put those numbers to the right of the line." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On the control panel, the circles should be arranged such their such that there is a margin on the left and the right that is the same as the margin to the left and the right of the timeline. Also, you can reduce the size of the gaps along the timeline, you can make them three pixels, and then you could make the horizontal line of the hour marker that middle, single pixel, and by the way, I have that vertical line come down to where the current one H and 2H baseline is and slide the 1H and the 2H to the right of that line." }
+            ]},
+            { text: "response", children: [
+              { text: "ctrl_edge", children: [
+                { text: "the circles start and end exactly where the timeline does — the row keeps the page margin now and the circles are sized to fit inside it" }
+              ]},
+              { text: "tick_slim", children: [
+                { text: "the gaps along the bar are 3 pixels" }
+              ]},
+              { text: "hour_line", children: [
+                { text: "the hour marker is a hairline, one pixel, running down to the baseline of its number" },
+                { text: "1h and 2h now sit beside the line rather than centred on it — and flip to its left if they would run off the end" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: look at the timeline — circles flush with the bar, thin hour lines with the numbers beside them" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "170 sess_0814",
+        expanded: false,
         nodes: [
           { text: "170 sess_0814", children: [
             { text: "prompt_restate", children: [

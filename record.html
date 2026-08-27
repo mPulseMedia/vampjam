@@ -102,9 +102,10 @@
     position: relative; pointer-events: none;
   }
   .rec_bar.filled { background: var(--accent); }   /* recording: the whole bar is recorded audio */
-  .seg_tick { position: absolute; top: 0; bottom: 0; width: 5px; background: var(--bg); transform: translateX(-50%); }
-  .hour_mark { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--muted); opacity: 0.7; border-radius: 1px; transform: translateX(-50%); z-index: 1; }
-  .hour_lbl { position: absolute; top: calc(100% + 5px); transform: translateX(-50%); font-size: 13px; line-height: 1; color: var(--muted); }
+  .seg_tick { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--bg); transform: translateX(-50%); }
+  /* hour_line: hairline down to the hour number's baseline, number beside it */
+  .hour_mark { position: absolute; top: -5px; bottom: -19px; width: 1px; background: var(--muted); opacity: 0.7; border-radius: 0; z-index: 1; }
+  .hour_lbl { position: absolute; top: calc(100% + 5px); margin-left: 4px; font-size: 13px; line-height: 1; color: var(--muted); white-space: nowrap; }
 
 
   /* moments list — same shape as the playback page's highlight list */

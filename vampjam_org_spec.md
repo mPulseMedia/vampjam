@@ -712,7 +712,31 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   168 — the Chrome bridge could list his tabs but not read page text, so the bucket
   listing could not be confirmed from here; if the audio 404s it is a one-line url fix in
   the json.
-- NEXT → add entry 171 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 171 hour_line — 9 pages) three timeline asks. ctrl_edge: the transport circles line
+  up with the seek bar — the negative gutter margins from 167 are gone and the circles are
+  sized to fit inside the gutter instead (44 side, 70 play, gap 3), so the row's left and
+  right edges are the bar's exactly (measured 16 → 374 on both). fish_tick 5px → 3px, so
+  the section gaps along the bar are slimmer. hour_line: the hour marker is a 1px hairline
+  (was a 2px rounded bar) that now runs from just above the bar down to its number's
+  baseline (bottom: -20px on the playback pages, -19 on record — the numbers render at
+  17px under one_size, so the baseline sits ~20px below the bar), and the number is set
+  BESIDE the line (margin-left 4, no translateX) instead of centered on it; a .flip class,
+  applied in render_hour_marks when the label would run past the bar's right edge, puts it
+  on the left of the line instead. Playwright: row and bar share edges ✓, tick 3px ✓,
+  1px marks ending at 352 with label baselines at ~352 ✓, no flips needed at 2h ✓, no
+  horizontal overflow ✓.
+- (log 172 btn_gray — shipped inside the 171 commit) the real reason 'Tag the moment'
+  turned gray and STAYED gray, which 166 had only papered over: the generic
+  `button:hover { background: var(--panel_3); }` in the base stylesheet outranks a plain
+  class selector (0,1,1 vs 0,1,0), and iOS leaves :hover stuck on whatever was tapped last
+  — so the shorthand also wiped the gradient. Now that rule lives inside
+  @media (hover: hover) and (pointer: fine), touch devices never get a lingering hover,
+  every button gets -webkit-tap-highlight-color: transparent, and the Tag button re-asserts
+  its blue at button.tag_btn_big{,:hover,:active,:focus} — a specificity the generic rules
+  cannot beat. Press is a scale-down that springs back. Playwright (touch context):
+  background rgb(0,113,227) with its gradient before the tap, after the tap, and with the
+  pointer parked on it ✓.
+- NEXT → add entry 173 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
