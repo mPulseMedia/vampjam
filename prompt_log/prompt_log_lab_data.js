@@ -9,8 +9,58 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "215 red_reset",
+        id: "216 iso_true",
         expanded: true,
+        nodes: [
+          { text: "216 iso_true", children: [
+            { text: "prompt_restate", children: [
+              { text: "Lane view is gorgeous but it is crashing the browser \u2014 reduce the demand." },
+              { text: "Make the display less accurate if needed, but do not compromise the capture." },
+              { text: "Isometric drawing: the up axis straight up and down, the other two at 30 and 60." },
+              { text: "Turning the phone (right edge away, left edge away) \u2014 flip that effect on the paper." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OKOK Lane view is gorgeous. That\u2019s amazing. It\u2019s so good. It\u2019s really nice. It is crashing the browser so let\u2019s figure out how to reduce the demand. We can probably make the not the capture but the display of the lanes if that\u2019s what those are the data we can make the display of the data less accurate, but I don\u2019t wanna compromise the capturing of the data. We could lower the frame more right lower the frame right rate" },
+              { text: "OK for the isometric drawing, I want the wide access to be straight up and down and then I want the other two accesses to be at I think it\u2019s 30 and 60\u00b0. I\u2019m not certain but classic asymmetric depiction." },
+              { text: "When I rotate the phone meaning, pushing the right edge further away and rotate the other way by pushing the left edge further away, can you invert the control your having on the graph paper so flip the effect" }
+            ]},
+            { text: "response", children: [
+              { text: "found_it", children: [
+                { text: "the crash was not the lanes \u2014 it was the fade I put on the paper last time" },
+                { text: "a fade like that makes the browser allocate a buffer the size of the thing being faded, and the paper was sixteen times the screen, tilted in 3D and blown up to 39 times" },
+                { text: "the fade is its own screen-sized layer now, and the paper is a quarter of the size it was" }
+              ]},
+              { text: "less_drawing", children: [
+                { text: "the lanes still take in every frame \u2014 nothing about the capture changed, and the recorder was never involved" },
+                { text: "they just draw eight times a second instead of sixty, from every third point" },
+                { text: "the little 3D diagram was rebuilding itself sixty times a second too; fifteen is plenty" }
+              ]},
+              { text: "measured", children: [
+                { text: "before: 10 frames a second with quarter-second stalls" },
+                { text: "after: 56 to 61 frames a second, at every zoom from smallest to largest" }
+              ]},
+              { text: "one_cost", children: [
+                { text: "the smallest zoom is now 0.45 rather than 0.09 \u2014 below that the smaller paper pulls its own edge into view" },
+                { text: "the big end is untouched, which is the end you care about" }
+              ]},
+              { text: "iso_true", children: [
+                { text: "the up axis is dead vertical now and the other two run 30 degrees below the horizon, one each side" },
+                { text: "the near axis goes down-left, which is how depth reads in a proper isometric drawing" }
+              ]},
+              { text: "turn_flip", children: [
+                { text: "pushing the right edge away throws the vanishing point the other way now" },
+                { text: "side axis only \u2014 the top/bottom lean and its 45-degree ground pose are untouched" }
+              ]},
+              { text: "verify", children: [
+                { text: "~8m: release iso_true, teal \u2014 frame rate measured at six zoom levels under load, arms measured at 30 / -90 / 150, turn measured flipped, tilt still exactly 45 at rest" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "215 red_reset",
+        expanded: false,
         nodes: [
           { text: "215 red_reset", children: [
             { text: "prompt_restate", children: [

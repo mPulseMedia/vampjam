@@ -1459,7 +1459,38 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   while recording, green/motion_btn/reset_btn all absent ✓; red takes the world from 315px to
   0px ✓; tap vs hold recorded as above ✓; whole lab suite re-run and green (vj_200, vj_205,
   vj_212 and vj_213 repointed from the deleted buttons to the red lamp); no page errors.
-- NEXT → add entry 216 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 216 iso_true — lab.html, release iso_true / teal) the lane view was crashing the browser.
+  Found and fixed, plus two direction changes. haze_cheap: the far-distance fade was a
+  `mask-image` ON THE PAPER, and a mask forces an offscreen buffer the size of the masked
+  element — which was 1600% of the viewport, 3D-transformed, and scaled by up to 39. That is the
+  crash. The fade moves to .haze, one viewport big, a plain radial gradient in the paper's own
+  colour sitting over it; the paper is a painted element again with no mask and no buffer.
+  paper_small: the paper goes 1600% → 400%. It shrinks with the zoom rather than growing, so the
+  size only ever has to cover what the 45-degree lean brings into view, and 400% does; the haze
+  covers the rim. paper_floor follows: MULT_MIN 0.09 → 0.45, because below that the paper drags
+  its own edge in — and the small-scale end is also the expensive one to paint (a big element
+  full of small squares is thousands of lines), so the floor buys frames as well as coverage.
+  MULT_MAX 39 is untouched. lane_slow + pose_slow: the ring is still fed EVERY frame — nothing
+  about the capture changes, and the recorder's own sampling was never involved — but the
+  drawing is rationed. Lanes redraw at 8/s from every third point (86,000 path segments a second
+  → about 4,000); the pose diagram, which rebuilds four groups of SVG from strings, redraws at
+  15/s instead of 60. Canvas backing store 356×456 → 178×228. star_cap: the star's scale is
+  clamped at 6, or at ×39 it fills the window. Measured, headless, under load (leaning, turning,
+  moving, at each end of the zoom): BEFORE 10.3 fps with a 218ms worst frame; AFTER 56-61 fps
+  with worst frames of 21-58ms, at ×0.45, ×1, ×2, ×3, ×4.6 and ×39 alike.
+  Tried and rejected: panning and zooming through background-position/background-size on a
+  fixed element instead of a transform — it is FOUR TIMES SLOWER (14 fps), because a background
+  change repaints the whole element where a transform change only recomposites it. Worth
+  recording so it is not tried again.
+  iso_true: the diagram becomes the textbook isometric — the up axis dead vertical, the other two
+  30 degrees below the horizon, one to each side. IX (0.866, 0.500), IY (0, -1), IZ (-0.866,
+  0.500); measured on the rendered arms as 30°, -90°, 150°. Z now goes down-LEFT, which is how
+  depth reads in an isometric drawing and is the first time its screen direction has moved.
+  turn_flip: TURN_INV -1 → +1, so pushing the right edge away throws the vanishing point the
+  other way. Side axis only — the top/bottom lean and its 45-degree ground base are untouched,
+  which the test asserts (tilt still exactly 45 at rest). Whole lab suite re-run and green; no
+  page errors.
+- NEXT → add entry 217 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

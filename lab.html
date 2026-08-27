@@ -81,28 +81,47 @@
      lines, so there are no layers to see through. Sized 800% so even at the
      small end of the scale, panned to its limit, no edge comes into view. */
   .grid {
-    /* far_haze — leaning the paper 45 degrees pushes its far edge into view as a
-       hard diagonal cut. It is twice the size it was, and it fades out toward
-       its own rim, so the distance dissolves into the background the way real
-       distance does instead of ending at a line. */
-    position: absolute; left: -750%; top: -750%; width: 1600%; height: 1600%;
-    -webkit-mask-image: radial-gradient(closest-side, #000 42%, rgba(0,0,0,0.55) 68%, transparent 88%);
-    mask-image: radial-gradient(closest-side, #000 42%, rgba(0,0,0,0.55) 68%, transparent 88%);
+    /* haze_cheap — the fade used to be a mask ON THIS ELEMENT, and that was the
+       crash: a mask forces the browser to allocate an offscreen buffer the size
+       of the masked element, and this element is a thousand percent of the
+       viewport with a 3D transform and a scale of up to 39 on top. The fade now
+       lives on .haze, one viewport big, sitting over the paper. The paper itself
+       is a plain painted element again — no mask, no buffer — and smaller. */
+    /* paper_paint — the paper no longer MOVES or SCALES; only its pattern does.
+       Panning is background-position and zooming is background-size, both of
+       which are a repaint of one fixed element. The transform is left carrying
+       nothing but the three rotations, so it changes only when the phone turns.
+       Before this the element was a thousand-plus percent of the viewport being
+       re-rasterised on every frame at every scale, which is what took the
+       browser down. 400% is what the 45-degree lean needs to cover; nothing
+       about the size has to grow with the zoom any more. */
+    position: absolute; left: -150%; top: -150%; width: 400%; height: 400%;
     pointer-events: none; z-index: 0; transform-origin: 50% 50%;
     /* roll_hold: the rotation comes FIRST, so the offset that follows is measured
        along the world's own axes rather than the screen's. Swirl the phone in
        front of your face and the paper turns the other way by the same amount,
        which is what makes it look like the paper never moved. */
-    /* the two leans come after the swirl, so they tip about the phone's own
-       axes, and before the pan, so the pan runs along the paper's surface
-       rather than across the glass. --tilt lays the top away; --turn lays the
-       right-hand side away. */
+    /* the swirl first, then the two leans, which tip about the phone's own axes,
+       then the pan and the zoom — so the pan runs along the paper's surface
+       rather than across the glass. (Panning and zooming through
+       background-position / background-size instead was tried and is four times
+       SLOWER: a background change repaints the whole element, where a transform
+       change only recomposites it.) */
     transform: rotate(var(--rot, 0deg)) rotateX(var(--tilt, 0deg)) rotateY(var(--turn, 0deg))
                translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
     background-color: #fcfcf8;
     background-image:
-      repeating-linear-gradient(to bottom, rgba(38,86,140,0.30) 0 1px, transparent 1px 30px),
-      repeating-linear-gradient(to right,  rgba(38,86,140,0.30) 0 1px, transparent 1px 30px);
+      repeating-linear-gradient(to bottom, rgba(38,86,140,0.32) 0 1px, transparent 1px 30px),
+      repeating-linear-gradient(to right,  rgba(38,86,140,0.32) 0 1px, transparent 1px 30px);
+  }
+  /* the distance dissolving into the background: one screen-sized overlay in
+     the paper's own colour, cheap to paint and independent of the paper's size */
+  .haze {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(ellipse 78% 62% at 50% 56%,
+                                rgba(252,252,248,0) 0%,
+                                rgba(252,252,248,0.55) 62%,
+                                rgba(252,252,248,0.96) 100%);
   }
   .pin { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2; }
   /* dot_scale — the dot is an object IN the world, so it takes the world's
@@ -115,7 +134,11 @@
      transform below cannot blow them up along with the star. */
   .pin_dot {
     width: 26px; height: 26px;
-    transform: rotate(var(--rot, 0deg)) translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
+    /* star_cap — the star grows with the paper, but not without limit: at the top
+       of the range the paper is 39 times life size and an unclamped star fills
+       the whole window. Six is as big as it gets. */
+    transform: rotate(var(--rot, 0deg)) translate3d(var(--sx, 0px), var(--sy, 0px), 0)
+               scale(min(var(--sc, 1), 6));
     filter: drop-shadow(var(--shx, 0px) var(--shy, 8px) var(--shb, 9px) rgba(20,30,45,var(--sho, 0.42)));
   }
   .pin_dot svg { display: block; width: 100%; height: 100%; overflow: visible; }
@@ -323,6 +346,7 @@
     <div class="cell cell_2"></div>
     <div class="cell cell_3"></div>
   </div>
+  <div class="haze"></div>
   <span class="pin"><span class="pin_dot"><svg viewBox="-12 -12 24 24" aria-hidden="true"><polygon points="0.00,-11.00 2.70,-3.72 10.46,-3.40 4.37,1.42 6.47,8.90 0.00,4.60 -6.47,8.90 -4.37,1.42 -10.46,-3.40 -2.70,-3.72"/></svg></span></span>
   <div class="frame_shadow"></div>
 </div>
@@ -382,12 +406,12 @@
   <g id="pose_read" font-family="-apple-system, sans-serif"></g>
   <text id="pose_lbl" font-size="0.01" fill="none"></text>
 </svg>
-<canvas class="trace" id="trace" width="356" height="456" hidden></canvas>
+<canvas class="trace" id="trace" width="178" height="228" hidden></canvas>
 
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'red_reset', bg: '#991b1b', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'iso_true', bg: '#0e7490', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -525,7 +549,13 @@
   // went 2.2 -> 6.6, and the ceiling and floor opened up to match, so a hand's
   // width of toward-and-away covers the whole range instead of a slice of it.
   var Z_POWER    = 6.6;
-  var MULT_MIN   = 0.09, MULT_MAX = 39;
+  // paper_floor — the paper is a fixed 400% that SHRINKS with the zoom, so the
+  // bottom of the range is set by coverage now: 0.45 still leaves 180% of the
+  // window covered when it is leaning. It is also the cheapest end to paint —
+  // a big element full of small squares is a lot of lines — so the floor buys
+  // frames as well as coverage. The ceiling is unchanged: that is the end he
+  // cares about.
+  var MULT_MIN   = 0.45, MULT_MAX = 39;
   var DEAD       = 0.12;     // m/s^2 ignored: the noise floor at rest (from his takes)
   // hold_still: a move ends where it ends. There is no position leak any more —
   // the world used to ease back to centre after every gesture, which read as
@@ -657,9 +687,13 @@
   // upper right — but X now falls slightly, Y leans slightly, and Z is a proper
   // diagonal at nearly twice its old length, which is what makes the frame read
   // as depth instead of as a nudge.
-  var IX = { x:  0.960, y:  0.150 };
-  var IY = { x:  0.130, y: -0.970 };
-  var IZ = { x:  0.560, y: -0.480 };
+  // iso_true — the textbook isometric: the up axis is dead vertical, and the
+  // other two run 30 degrees below the horizon, one to each side. X goes down to
+  // the right, Z (toward you) goes down to the left, which is how depth reads in
+  // an isometric drawing. cos30 = 0.866, sin30 = 0.500.
+  var IX = { x:  0.866, y:  0.500 };
+  var IY = { x:  0.000, y: -1.000 };
+  var IZ = { x: -0.866, y:  0.500 };
   function iso(v) {
     return { x: v.x * IX.x + v.y * IY.x + v.z * IZ.x,
              y: v.x * IX.y + v.y * IY.y + v.z * IZ.y };
@@ -713,8 +747,14 @@
   function model_pos() {
     return { x: MODEL_INV.x * pos.x, y: MODEL_INV.y * pos.y, z: MODEL_INV.z * pos.z };
   }
-  function draw_pose(mult) {
+  // pose_slow — the diagram rebuilds four groups of SVG from strings; at sixty
+  // frames a second that is thousands of elements parsed per second for a
+  // picture the eye reads at fifteen. Same rationing as the lanes.
+  var POSE_MS = 66, poseLast = 0;
+  function draw_pose(mult, now) {
     if (!poseEl || poseEl.hidden) return;
+    if (now && now - poseLast < POSE_MS) return;
+    poseLast = now || 0;
     var m0 = rel_matrix(); if (!m0) return;
     var flipped = flip_yaw(m0);
     var m = flipped.m;
@@ -1013,8 +1053,19 @@
     trace[traceAt] = v;
     traceAt = (traceAt + 1) % TRACE_N;
   }
-  function trace_draw() {
+  // lane_slow — the ring is still fed EVERY frame, so nothing about the capture
+  // changes; only the drawing is rationed. Six lanes of 240 points redrawn 60
+  // times a second is 86,000 path segments a second on top of a 3D-transformed
+  // paper, and that is what was taking the browser down. Drawing 8 times a
+  // second from every third point is 1/22nd of the work and looks the same,
+  // because these are solid blocks, not fine lines.
+  var LANE_MS   = 125;      // ms between redraws
+  var LANE_STEP = 3;        // draw every Nth point
+  var laneLast  = 0;
+  function trace_draw(now) {
     if (!traceCtx) return;
+    if (now && now - laneLast < LANE_MS) return;
+    laneLast = now || 0;
     var W = traceEl.width, H = traceEl.height;
     traceCtx.clearRect(0, 0, W, H);
     var n = LANES.length;
@@ -1025,7 +1076,7 @@
     // from turning noise into a mountain.
     var floors = [0.03, 0.03, 0.03, 12, 12, 12];
     var maxv = floors.slice();
-    for (var i = 0; i < TRACE_N; i++) {
+    for (var i = 0; i < TRACE_N; i += LANE_STEP) {
       var s2 = trace[(traceAt + i) % TRACE_N];
       if (!s2) continue;
       for (var k = 0; k < n; k++) if (Math.abs(s2[k]) > maxv[k]) maxv[k] = Math.abs(s2[k]);
@@ -1039,7 +1090,7 @@
       traceCtx.beginPath();
       traceCtx.moveTo(0, mid);
       var last = 0;
-      for (var i = 0; i < TRACE_N; i++) {
+      for (var i = 0; i < TRACE_N; i += LANE_STEP) {
         var s3 = trace[(traceAt + i) % TRACE_N];
         var x = (i / (TRACE_N - 1)) * W;
         var v = s3 ? s3[L.i] : 0;
@@ -1101,7 +1152,10 @@
   // it goes past 45, the bottom crowding and the top running to a vanishing
   // point. PITCH_INV is -1 for that to be the way round it falls.
   var TILT_BASE = 45;
-  var PITCH_INV = -1, TURN_INV = -1;
+  // turn_flip: TURN_INV +1 — pushing the right edge away now throws the paper's
+  // vanishing point the other way. Only the side axis moves; the top/bottom lean
+  // and its 45-degree ground base are untouched.
+  var PITCH_INV = -1, TURN_INV = 1;
   var TILT_GAIN = 1.7;       // a modest tilt of the hand should lay it well down
   var TILT_MAX  = 74;        // deg: never let the plane go edge-on and vanish
   function lean(v, sign) {
@@ -1141,7 +1195,7 @@
     };
   }
 
-  function paint_world() {
+  function paint_world(now) {
     if (!motionOn) return;
     var v = view();
     var w = v.w, dist = v.dist, mult = v.mult;
@@ -1150,7 +1204,7 @@
     // turned about each. Distances in metres, angles in degrees.
     trace_push([v.cam.x, v.cam.y, v.cam.z,
                 v.tilt - TILT_BASE, v.turn, v.roll]);
-    trace_draw();
+    trace_draw(now);
     var root = document.documentElement.style;
     root.setProperty('--sx', sx.toFixed(1) + 'px');
     root.setProperty('--sy', sy.toFixed(1) + 'px');
@@ -1166,7 +1220,7 @@
     root.setProperty('--shy', ((10 - near * 8) / m).toFixed(2) + 'px');
     root.setProperty('--shb', ((12 - near * 9) / m).toFixed(2) + 'px');
     root.setProperty('--sho', (0.42 + near * 0.22).toFixed(2));
-    draw_pose(mult);
+    draw_pose(mult, now);
     requestAnimationFrame(paint_world);
   }
 
