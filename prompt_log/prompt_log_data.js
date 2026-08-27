@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "176 close_light",
+        id: "177 lab_frame",
         expanded: true,
+        nodes: [
+          { text: "177 lab_frame", children: [
+            { text: "prompt_restate", children: [
+              { text: "Add a button on Admin that opens a lab page." },
+              { text: "On it, abstract the swipe feeling: a frame around the edge, a rounded window you see the cell through, white outside it, and a shadow cast from all edges of the white down onto the cell." },
+              { text: "Three pages — 1 red, 2 white, 3 blue — that you swipe up and down between. Include a return button." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, I wanna do a little side development thing so in the on the Admin page give me a button that takes me to a lab page and on that lab page. What I wanna do is based on what I have discovered in making this app which is it\u2019s a cool feeling when you swipe down and the frame moves it seems and what\u2019s in it but the edge what is it is that I don\u2019t know how to describe it, but so we started the control panel and I swipe down, and I see the screen above it in effect which is this sessions list and screen below it in effect which is the highlight list and what I wanted to do is abstract that and have three pages 12 and three that have a frame around their edge what you see of the cell is around it rectangle that\u2019s the region where you see the cell the outside of the Round2 rectangle is white and a shadow is being cast down from all edges of the white onto the cell below it now what is in the cell right now let\u2019s just make one page the top one that is red in the middle one white in the middle one blue or the lowest one blue and give that functionality of being able to swipe down and up between these three pages and I guess what I\u2019m I\u2019ve invented really is pages when I swipe forget the whole frame thing and actually let\u2019s keep the frame thing in there for starters. OK give it a go and give me a return button also." }
+            ]},
+            { text: "response", children: [
+              { text: "lab_frame", children: [
+                { text: "new lab page: white frame, rounded window, shadow falling inward from all four edges onto the cell — heaviest from the top, like the session list edge" },
+                { text: "three cells behind the window — red, white, blue — that follow your finger and snap; they pull back at the two ends so you feel where the stack stops" },
+                { text: "a short push moves a page, same feel as the session list now; wheel and arrow keys work on a laptop too" },
+                { text: "return button top left, position dots on the right" }
+              ]},
+              { text: "how_to_get_there", children: [
+                { text: "Admin \u2192 Open the lab" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: Admin \u2192 Open the lab, then swipe up and down through 1 2 3" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "176 close_light",
+        expanded: false,
         nodes: [
           { text: "176 close_light", children: [
             { text: "prompt_restate", children: [

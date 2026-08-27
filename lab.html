@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>vampsf — lab</title>
+<style>
+  /* lab_frame — a sketch of the feeling the session list gave us: a fixed
+     white frame with a rounded window cut in it, and a stack of full-screen
+     cells that slides behind the window. The frame never moves; the cells do,
+     and the frame's edge casts a shadow down onto whichever cell is showing.
+     Cells: 1 red (top) · 2 white (middle) · 3 blue (bottom). */
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%; background: #ffffff; color: #1d1d1f;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden; overscroll-behavior: none;
+    touch-action: manipulation; color-scheme: light;
+  }
+
+  /* the white frame is simply the page; the window is what is cut out of it */
+  .frame_window {
+    position: fixed;
+    top: max(14px, env(safe-area-inset-top));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    left: max(14px, env(safe-area-inset-left));
+    right: max(14px, env(safe-area-inset-right));
+    border-radius: 22px;
+    overflow: hidden;
+    background: #ffffff;
+  }
+  /* frame_shadow — the white frame casting onto the cell below it: strongest
+     from the top edge, present on all four. It rides ABOVE the cells. */
+  .frame_shadow {
+    position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 3;
+    box-shadow:
+      inset 0 14px 18px -10px rgba(0,0,0,0.45),
+      inset 0 -10px 16px -10px rgba(0,0,0,0.30),
+      inset 12px 0 16px -12px rgba(0,0,0,0.30),
+      inset -12px 0 16px -12px rgba(0,0,0,0.30);
+  }
+
+  .track {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    will-change: transform;
+    transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .track.dragging { transition: none; }
+
+  .cell {
+    flex: 0 0 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 74px; font-weight: 700; letter-spacing: 0.02em;
+    user-select: none; -webkit-user-select: none;
+  }
+  .cell_1 { background: #d7263d; color: #ffffff; }
+  .cell_2 { background: #ffffff; color: #1d1d1f; }
+  .cell_3 { background: #1350c4; color: #ffffff; }
+
+  /* which cell you are on, in the frame itself */
+  .dots {
+    position: fixed; right: max(20px, calc(env(safe-area-inset-right) + 6px));
+    top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 7px; z-index: 6;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #1d1d1f; opacity: 0.18; }
+  .dot.on { opacity: 0.75; }
+
+  .back_btn {
+    position: fixed; z-index: 6;
+    top: max(24px, calc(env(safe-area-inset-top) + 12px));
+    left: max(26px, calc(env(safe-area-inset-left) + 14px));
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.86); color: #1d1d1f;
+    border: none; border-radius: 999px; padding: 9px 15px 9px 12px;
+    font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    touch-action: manipulation;
+  }
+  .back_btn:active { transform: scale(0.96); }
+  .hint {
+    position: fixed; z-index: 6; left: 50%; transform: translateX(-50%);
+    bottom: max(26px, calc(env(safe-area-inset-bottom) + 14px));
+    font-size: 14px; font-weight: 600; color: #1d1d1f;
+    background: rgba(255,255,255,0.86); border-radius: 999px; padding: 7px 14px;
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+    pointer-events: none; transition: opacity 0.4s;
+  }
+</style>
+</head>
+<body>
+
+<div class="frame_window" id="frame">
+  <div class="track" id="track">
+    <div class="cell cell_1">1</div>
+    <div class="cell cell_2">2</div>
+    <div class="cell cell_3">3</div>
+  </div>
+  <div class="frame_shadow"></div>
+</div>
+
+<div class="dots" id="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
+<button class="back_btn" id="back_btn">&#8249; Admin</button>
+<div class="hint" id="hint">swipe up / down</div>
+
+<script>
+  var N = 3;
+  var idx = 0;                 // which cell is showing
+  var track = document.getElementById('track');
+  var frame = document.getElementById('frame');
+  var dots  = document.getElementById('dots');
+  var hint  = document.getElementById('hint');
+
+  function cell_h() { return frame.clientHeight || window.innerHeight; }
+  function paint(px) {
+    track.style.transform = 'translate3d(0,' + px + 'px,0)';
+  }
+  function go(i, animate) {
+    idx = Math.max(0, Math.min(N - 1, i));
+    track.classList.toggle('dragging', !animate);
+    paint(-idx * cell_h());
+    Array.prototype.forEach.call(dots.children, function (d, k) {
+      d.classList.toggle('on', k === idx);
+    });
+    if (idx > 0 && hint) { hint.style.opacity = '0'; }
+  }
+  go(0, false);
+  requestAnimationFrame(function () { track.classList.remove('dragging'); });
+  window.addEventListener('resize', function () { go(idx, false); requestAnimationFrame(function () { track.classList.remove('dragging'); }); });
+
+  // ---- drag: the cells follow the finger, then snap to the nearest page ----
+  // close_light's lesson: a short push is enough — 40px, or 8% of the cell.
+  function snap_px() { return Math.min(40, cell_h() * 0.08); }
+  var drag = null;
+  function start(y) { drag = { y0: y, base: -idx * cell_h(), active: false }; }
+  function move(y) {
+    if (!drag) return false;
+    var dy = y - drag.y0;
+    if (!drag.active) {
+      if (Math.abs(dy) < 5) return false;
+      drag.active = true;
+      track.classList.add('dragging');
+    }
+    var px = drag.base + dy;
+    // rubber-band at the two ends
+    var min = -(N - 1) * cell_h(), max = 0;
+    if (px > max) px = max + (px - max) * 0.35;
+    if (px < min) px = min + (px - min) * 0.35;
+    paint(px);
+    return true;
+  }
+  function end() {
+    if (!drag) return;
+    var wasActive = drag.active;
+    var moved = (parseFloat(track.style.transform.replace(/.*,\s*(-?[\d.]+)px,.*/, '$1')) || 0) - drag.base;
+    drag = null;
+    track.classList.remove('dragging');
+    if (!wasActive) { go(idx, true); return; }
+    if (moved <= -snap_px()) go(idx + 1, true);        // pushed up -> next page
+    else if (moved >= snap_px()) go(idx - 1, true);    // pulled down -> previous
+    else go(idx, true);
+  }
+
+  window.addEventListener('touchstart', function (e) {
+    if (e.target.closest && e.target.closest('.back_btn')) return;
+    if (e.touches.length === 1) start(e.touches[0].clientY);
+  }, { passive: true });
+  window.addEventListener('touchmove', function (e) {
+    if (move(e.touches[0].clientY) && e.cancelable) e.preventDefault();
+  }, { passive: false });
+  window.addEventListener('touchend', end, { passive: true });
+  window.addEventListener('touchcancel', end, { passive: true });
+
+  // mouse + keyboard, so the same thing works on a laptop
+  var mouseDown = false;
+  window.addEventListener('mousedown', function (e) {
+    if (e.target.closest && e.target.closest('.back_btn')) return;
+    mouseDown = true; start(e.clientY);
+  });
+  window.addEventListener('mousemove', function (e) { if (mouseDown) move(e.clientY); });
+  window.addEventListener('mouseup', function () { if (mouseDown) { mouseDown = false; end(); } });
+  var wheelLock = 0;
+  window.addEventListener('wheel', function (e) {
+    var now = Date.now();
+    if (now - wheelLock < 420) return;
+    if (Math.abs(e.deltaY) < 8) return;
+    wheelLock = now;
+    go(idx + (e.deltaY > 0 ? 1 : -1), true);
+  }, { passive: true });
+  window.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); go(idx + 1, true); }
+    if (e.key === 'ArrowUp'   || e.key === 'PageUp')   { e.preventDefault(); go(idx - 1, true); }
+  });
+
+  document.getElementById('back_btn').addEventListener('click', function () {
+    window.location.href = 'admin.html';
+  });
+
+  // test hook
+  window.__lab = { go: go, at: function () { return idx; } };
+</script>
+</body>
+</html>

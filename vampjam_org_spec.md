@@ -769,7 +769,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   out-argue an ordinary scroll, a close does not. Playwright (touch, swipe from the
   control_panel): 20px still open, 40/60/90px close ✓; a 40px downward pull still does NOT
   open ✓.
-- NEXT → add entry 177 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 177 lab_frame — new page + admin button) a side sketch of the feeling the session
+  drawer produced, abstracted. New lab.html: a fixed white frame (the page itself) with a
+  rounded window cut in it (.frame_window, inset max(14px, safe-area), radius 22, overflow
+  hidden) and .frame_shadow — an inset box-shadow on all four edges, heaviest at the top —
+  riding above the cells so the white edge appears to cast down onto whatever is showing.
+  Behind the window a .track of three full-height cells (1 red, 2 white, 3 blue) that
+  translate3d's with the finger and snaps to the nearest page on release; the snap distance
+  borrows close_light (40px or 8% of the cell), with rubber-band resistance at the two ends.
+  Touch, mouse-drag, wheel and arrow keys all drive it; a floating '‹ Admin' pill returns,
+  a three-dot column shows position, and a hint pill fades after the first move.
+  window.__lab = { go, at } is the test hook. Admin gains a second CTA ('Open the lab').
+  Playwright (390x780 touch): frame 14/14/376/766 radius 22 with an inset shadow ✓;
+  swipes 0 → 1 → 2, held at 2 at the end, back down to 1, a 20px nudge does nothing ✓;
+  back button lands on admin.html ✓.
+- NEXT → add entry 178 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
