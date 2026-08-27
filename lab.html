@@ -394,7 +394,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'z_calm', bg: '#1e3a8a', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'axis_one', bg: '#365314', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -600,6 +600,17 @@
   // the turn, and killing its speed there costs half the gesture (measured: a
   // slide fell from 482px to 266px). So shaking has to PERSIST before it counts.
   var TREM_HOLD  = 0.35;     // s of continuous no-net before an axis is silenced
+  // axis_one — why pulling the phone toward you and pushing it away threw the
+  // FOCAL POINT off and not just the scale: the pan is world metres multiplied
+  // by the zoom, so at x6 a three-millimetre sideways error is drawn six times
+  // bigger. A toward-and-away move is made by an arm, and an arm arcs, so there
+  // is always a little sideways in it — and the zoom the move itself creates is
+  // what magnifies it. The fix is not to fight the arithmetic but to notice that
+  // he moves ONE WAY AT A TIME: during a move, an axis carrying less than
+  // ONE_R of the leading axis's drive is not really being pushed, and is not
+  // allowed to move the world. A genuine diagonal, where two axes are
+  // comparable, still passes both.
+  var ONE_R      = 0.45;     // share of the leading axis's drive an axis must carry
   var DWELL_S    = 1.0;      // s of stillness that counts as 'I meant to stop here'
   // reset_run — his shorthand: ONE press of reset means 'I am just re-zeroing',
   // several presses close together mean 'that went disastrously wrong'. So the
@@ -1086,6 +1097,9 @@
         } else {
           trem[k] = 0;
         }
+        // axis_one: is this the axis being pushed, or is it along for the ride?
+        var lead2 = Math.max(Math.abs(aBar.x), Math.abs(aBar.y), Math.abs(aBar.z));
+        if (lead2 > 0.05 && Math.abs(aBar[k]) < ONE_R * lead2) { vel[k] = 0; a = 0; }
         // latch which way this move is going, once it is going anywhere
         if (!dir[k] && Math.abs(vel[k]) > LATCH_V) {
           dir[k] = vel[k] > 0 ? 1 : -1;

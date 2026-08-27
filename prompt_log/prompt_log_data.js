@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "223 z_calm",
+        id: "224 axis_one",
         expanded: true,
+        nodes: [
+          { text: "224 axis_one", children: [
+            { text: "prompt_restate", children: [
+              { text: "Pulling the phone toward me and pushing it away does not return well." },
+              { text: "It gets way off almost immediately \u2014 the focal point especially." },
+              { text: "The scale might be fine; the focus definitely is not." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "There seems to be a problem when I pull the phone toward me and then push it away from me. It doesn\u2019t reset well like in the returning to the reset position. It\u2019s gets way off pretty immediately in terms of both really the focus. The scale might be OK I\u2019m not sure but definitely the focal point. I\u2019ve gotten way off." }
+            ]},
+            { text: "found_it", children: [
+              { text: "the pan is measured in real distance and then multiplied by the zoom" },
+              { text: "so at six times magnification, three millimetres of sideways error is drawn six times bigger" },
+              { text: "and a toward-and-away move is made by an arm, and an arm arcs \u2014 there is always a little sideways in it" },
+              { text: "the zoom your own move creates is what magnifies the error it also creates, which is why it went off immediately" }
+            ]},
+            { text: "axis_one", children: [
+              { text: "you move one way at a time \u2014 you have said so, and your whole grading protocol is built on it" },
+              { text: "so during a move, an axis that is not really being pushed is not allowed to move the world" },
+              { text: "a genuine diagonal still moves both" }
+            ]},
+            { text: "measured", children: [
+              { text: "same gesture, same sideways bleed: the focal point was 171px off at the near end, and is now 0" },
+              { text: "the scale is identical either way, so nothing about the depth response was traded for it" },
+              { text: "and a plain slide sideways now leaves the zoom at exactly \u00d71, where it used to nudge it" }
+            ]},
+            { text: "verify", children: [
+              { text: "~4m: release axis_one, olive \u2014 measured with the gate disabled and enabled back to back; whole suite green" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "223 z_calm",
+        expanded: false,
         nodes: [
           { text: "223 z_calm", children: [
             { text: "prompt_restate", children: [

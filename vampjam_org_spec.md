@@ -1640,7 +1640,26 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   minute doing only near/far — reset, push toward, hold a second, pull back, hold a second,
   double-tap reset whenever it goes wrong — would let the next pass be measured against his
   grading rather than guessed. Whole lab suite re-run and green; no page errors.
-- NEXT → add entry 224 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 224 axis_one — lab.html, release axis_one / olive) found why pulling the phone toward
+  him and pushing it away threw the FOCAL POINT off while the scale looked fine. The pan is
+  world metres multiplied by the zoom — ox = cam.x * (w/PHONE_W) * mult — so at ×6 a
+  three-millimetre sideways error is drawn six times bigger. A toward-and-away move is made by
+  an arm, an arm arcs, so there is always a little sideways in it, and the zoom the move itself
+  creates is exactly what magnifies it. The two errors multiply, which is why it went off 'pretty
+  immediately' and why the scale could look right while the focus did not.
+  axis_one: the fix is not to fight the arithmetic but to notice that he moves ONE WAY AT A TIME
+  — he has said so himself, and his whole grading protocol is built on it. During a move, an
+  axis carrying less than ONE_R 0.45 of the LEADING axis's smoothed net drive is not really
+  being pushed, so its velocity is zeroed and its drive dropped. It rides on aBar, the same
+  short signed average the shake test already keeps, so it costs nothing new. A genuine diagonal,
+  where two axes are comparable, still passes both. Measured against the same gesture with a
+  0.30 m/s^2 sideways bleed: WITHOUT the gate the focal point sat 171px off at the near end;
+  WITH it, 0px — and the scale is identical either way (×3.07 there, ×1.01 back), so nothing
+  about the depth response was traded for it. A plain slide right is unchanged at right 9 cm /
+  482px and now leaves the scale at exactly ×1.00, where a lateral move used to disturb the zoom
+  a little as well. An equal push on x and z still moves both (3.5 cm and 6.0 cm). Whole lab
+  suite re-run and green; no page errors.
+- NEXT → add entry 225 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
