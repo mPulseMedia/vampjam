@@ -1568,7 +1568,23 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   / swirl) ✓; whole lab suite re-run and green; no page errors.
   test_note: the local http.server had died between runs — restarted on 8901. Worth checking
   first when a suite fails with ERR_CONNECTION_REFUSED rather than debugging the page.
-- NEXT → add entry 220 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 220 diag_flip — lab.html, release diag_flip / fuchsia) two switches, both diagram-only.
+  TILT_INV -1 → +1 reverses the depicted tilt, which flows to the plate matrix AND the red tilt
+  arc together because both read flipped.pitch. MODEL_INV.z +1 → -1 reverses the depicted
+  near/far travel, which flows to the plate's position, the blue guide bar, its knob and the
+  tether together because all of them read model_pos(). With this, all three of the diagram's
+  travel axes are reversed against the world, and the Z exception that had stood since
+  model_flip is gone. The paper is untouched, which the test asserts rather than assumes: its
+  lean still reads exactly 45 at rest (PITCH_INV, a different switch) and a push toward the eye
+  still enlarges it (DEPTH_INV, another). Playwright: beta +30 now reads tilt top +30 (was -30)
+  and -30 reads -30, each still drawing its red arc; a push toward the eye measures true z
+  +0.0241 m and ×1.6 on the paper while the diagram reads near/far -2.4 cm (was +2.0) ✓; whole
+  lab suite re-run and green; no page errors.
+  switch_count: seven named sign switches now — PAN_INV, DEPTH_INV, PITCH_INV, TURN_INV for the
+  paper; MODEL_INV, TILT_INV, SWIRL_INV for the diagram. Every one has been flipped at least
+  once and several more than that, which is the argument for having named them rather than
+  burying minus signs in the maths.
+- NEXT → add entry 221 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

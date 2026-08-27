@@ -394,7 +394,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'spin_arc', bg: '#4c1d95', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'diag_flip', bg: '#86198f', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -737,7 +737,9 @@
   // the rebuilt plate matrix and the P readout go through it, so the drawing
   // and the number can never disagree. It changes the diagram only — the paper
   // has never answered to pitch and still does not.
-  var TILT_INV = -1;
+  // diag_flip: TILT_INV +1 — the depicted tilt reverses. Diagram only; the
+  // paper's own lean runs off PITCH_INV and is untouched.
+  var TILT_INV = 1;
   // swirl_flip — SWIRL_INV reverses the DEPICTED in-plane turn: rotating the
   // phone clockwise drew the plate turning counter-clockwise. It applies to the
   // rebuilt plate matrix and to the S readout together, and to the diagram
@@ -757,7 +759,9 @@
   // model_flip — the diagram's depiction of travel is reversed on X and Y and
   // left alone on Z, which he had right already. Drawing and numbers both go
   // through this, so the picture and the figures can never disagree.
-  var MODEL_INV = { x: -1, y: -1, z: 1 };
+  // diag_flip: MODEL_INV.z -1 — the depicted near/far travel reverses too, so
+  // all three of the diagram's travel axes are now reversed against the world.
+  var MODEL_INV = { x: -1, y: -1, z: -1 };
   function model_pos() {
     return { x: MODEL_INV.x * pos.x, y: MODEL_INV.y * pos.y, z: MODEL_INV.z * pos.z };
   }

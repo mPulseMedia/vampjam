@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "219 spin_arc",
+        id: "220 diag_flip",
         expanded: true,
+        nodes: [
+          { text: "220 diag_flip", children: [
+            { text: "prompt_restate", children: [
+              { text: "In the little diagram, flip the tilt." },
+              { text: "And flip the Z mapping." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "In a little diagram, flip the tilt and flip the Z mapping" }
+            ]},
+            { text: "diag_flip", children: [
+              { text: "the depicted tilt is reversed \u2014 the plate and its red arc turn together, since they read the same value" },
+              { text: "the depicted near/far travel is reversed too" },
+              { text: "all three of the diagram\u2019s travel axes are now reversed against the world; the Z exception is gone" }
+            ]},
+            { text: "paper_safe", children: [
+              { text: "the paper is untouched \u2014 its lean still starts at exactly 45 and toward the eye still enlarges it" },
+              { text: "those run off different switches, and the test checks it rather than assuming" }
+            ]},
+            { text: "verify", children: [
+              { text: "~2m: release diag_flip, fuchsia \u2014 beta +30 now reads +30 where it read -30; a push toward the eye measures +2.4 cm true and draws as -2.4; whole suite green" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "219 spin_arc",
+        expanded: false,
         nodes: [
           { text: "219 spin_arc", children: [
             { text: "prompt_restate", children: [
