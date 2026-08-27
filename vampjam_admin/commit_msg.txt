@@ -1,1 +1,1 @@
-lag_trace
+auto_commit
