@@ -1436,7 +1436,30 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   but the X Y Z letters ✓; lanes 178×228 painting in all three colours ✓; the lean table above ✓;
   Reset returns the lean to exactly 45.00deg ✓; whole lab suite re-run and green (vj_207 and
   vj_208c updated for the new resting lean); no page errors.
-- NEXT → add entry 215 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 215 red_reset — lab.html, release red_reset / dark red) the spotlight comes back, in a
+  better shape. red_reset: the lamps live in the deck row ALL the time now, not only while the
+  tape is running, so the judgement is always one thumb away. Green is gone — there is nothing
+  worth saying when it is working. Amber says it is getting a little off. Red says it has gone
+  away altogether AND is the reset, because the moment you would reach for it is the moment you
+  want to start again: one press, not two. The separate Reset button is therefore deleted, and
+  with it the last thumb button — the red lamp also carries the motion-permission flow that
+  lived on it (motion_on(), with its failure messages moved off a button label and into the
+  deck line). Row is now name 18+95, amber 120+46, red 173+46, Record 226+146. Record changes
+  from red to blue: the lamps own red and amber, and nothing should compete with the red one.
+  hold_read: a press is timed on both lamps — mousedown/touchstart to mouseup/touchend — and
+  the mark carries `hold` in ms and `long` (>= 600ms), so a tap ('this') and a lean ('this,
+  badly') are different data instead of the same mark with the difference living only in his
+  head. The lamp swells while held, so the hold is visible as it happens. Red resets on the
+  way DOWN (that is what reaching for it is for) and files its mark on release once the length
+  is known — which is why a red press writes `reset` and `way_off` a couple of ms apart.
+  Measured in a bench take: a_little_off held 1ms (tap), a_little_off held 853ms (long), then
+  reset + way_off, then the levelling mark 400ms later.
+  take_read: no new trace this round — the file still ends at take 11, the 62.8s one already
+  read and already acted on in read_split's rot_tight. Playwright: both lamps shown at rest and
+  while recording, green/motion_btn/reset_btn all absent ✓; red takes the world from 315px to
+  0px ✓; tap vs hold recorded as above ✓; whole lab suite re-run and green (vj_200, vj_205,
+  vj_212 and vj_213 repointed from the deleted buttons to the red lamp); no page errors.
+- NEXT → add entry 216 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,48 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "214 lane_view",
+        id: "215 red_reset",
         expanded: true,
+        nodes: [
+          { text: "215 red_reset", children: [
+            { text: "prompt_restate", children: [
+              { text: "Bring the traffic-light buttons back and keep them visible." },
+              { text: "Red doubles as the reset and as \u201cthe data went way off\u201d." },
+              { text: "Yellow for when it is getting a little off. No green." },
+              { text: "See whether tap-and-hold is useful and put it in the data." },
+              { text: "Say in the last sentence whether new traces were processed." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "What happened to the traffic stop triple buttons I\u2019d like that to appear and to have the Read, of the traffic stop which will function as a reset button and also an indication that the data went way off and I also wanna have Yellow for when it\u2019s getting a little off, I don\u2019t wanna have green and I can wanna see if I can actually tap and hold things any useful way or include that in the data that gets sent in processed to each and every time you are processing it every time if you wouldn\u2019t mind responding with the last sentence in the chat with a brief thing saying either yes I process the new traces every time" }
+            ]},
+            { text: "response", children: [
+              { text: "red_reset", children: [
+                { text: "both lamps sit in the row all the time now, not just while recording" },
+                { text: "green is gone \u2014 there is nothing worth saying when it is working" },
+                { text: "red is the reset AND the way-off mark: one press, not two" },
+                { text: "the separate Reset button is deleted; red carries the motion permission too" },
+                { text: "Record went blue so nothing competes with the red lamp" }
+              ]},
+              { text: "hold_read", children: [
+                { text: "yes, hold is useful, and it is in the data now" },
+                { text: "every press is timed \u2014 a tap says \u201cthis\u201d, a long press says \u201cthis, badly\u201d" },
+                { text: "the lamp swells while you hold it, so you can see the length as you give it" },
+                { text: "red resets the instant it goes down and files its mark when you let go" }
+              ]},
+              { text: "take_read", children: [
+                { text: "no new trace this round \u2014 the file still ends at your 62.8 second one" },
+                { text: "that one is already read, and its lesson is already in the maths" }
+              ]},
+              { text: "verify", children: [
+                { text: "~4m: release red_reset, dark red \u2014 red took the world from 315px to 0, tap recorded at 1ms and a hold at 853ms, whole suite green" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "214 lane_view",
+        expanded: false,
         nodes: [
           { text: "214 lane_view", children: [
             { text: "prompt_restate", children: [

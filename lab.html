@@ -270,43 +270,42 @@
   .g_rec {
     flex: 2 1 120px; min-width: 96px; border: none; border-radius: 13px; padding: 0 8px;
     font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
-    background: #d7263d; color: #ffffff; touch-action: none;
-    box-shadow: 0 3px 10px rgba(215,38,61,0.35);
+    /* the lamps own red and amber now, so Record takes blue — it is an action,
+       not a warning, and nothing should compete with the red lamp */
+    background: #1350c4; color: #ffffff; touch-action: none;
+    box-shadow: 0 3px 10px rgba(19,80,196,0.32);
   }
-  .motion_btn {
-    flex: 0 0 96px; border: none; border-radius: 13px; padding: 0 8px;
-    background: rgba(29,29,31,0.88); color: #ffffff;
-    font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.22); touch-action: manipulation;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
+
   /* mark_live — the two judgement buttons: one for 'a little off', one for
      'haywire'. Symbols only, because they are pressed mid-gesture without
      looking. Hidden until the tape is running; the name field steps aside. */
   /* light_mark — a three-lamp spotlight. No words: they are pressed mid-gesture
      without looking, so the only thing that has to read is the colour. */
+  /* red_reset — the lamps live in the row all the time now, so the judgement is
+     always one thumb away. Hold_read: a press is timed, and the longer you hold
+     the more the lamp swells, because how long you leant on it is data too. */
   .g_mark {
-    flex: 1 1 0; min-width: 34px; display: none; border: none; border-radius: 13px;
+    flex: 0 0 46px; border: none; border-radius: 13px;
     padding: 0; cursor: pointer; touch-action: manipulation;
     background: rgba(0,0,0,0.06);
     box-shadow: inset 0 0 0 2px rgba(0,0,0,0.06);
+    transition: background 0.15s ease;
   }
   .g_mark::before {
     content: ''; display: block; width: 20px; height: 20px; margin: 0 auto;
     border-radius: 50%; background: currentColor;
     box-shadow: 0 0 0 3px rgba(255,255,255,0.55) inset;
+    transition: transform 0.9s linear, box-shadow 0.15s ease;
   }
-  .g_mark.g_green { color: #16a34a; }
   .g_mark.g_amber { color: #e0a800; }
   .g_mark.g_red   { color: #d7263d; }
   .g_mark:active { transform: scale(0.94); }
+  .g_mark.down::before { transform: scale(1.35); box-shadow: 0 0 0 1px rgba(255,255,255,0.9) inset; }
   .g_mark.hit { background: currentColor; }
   .g_mark.hit::before { box-shadow: 0 0 0 3px rgba(255,255,255,0.95) inset; }
-  .deck.is_rec .g_mark { display: block; }
   .deck.is_rec #g_name { display: none; }
   .g_rec.recording { background: #1d1d1f; }
-  .motion_btn:active, .g_rec:active { transform: scale(0.97); }
-  .motion_btn.on { background: #3f6212; }
+  .g_rec:active { transform: scale(0.97); }
   .deck.is_rec  .g_led { background: #d7263d; animation: g_pulse 1s ease-in-out infinite; }
   .deck.is_send .g_led { background: #e0a800; animation: g_pulse 0.7s ease-in-out infinite; }
   .deck.is_sent .g_led { background: #16a34a; }
@@ -348,15 +347,14 @@
   <div class="deck_row">
     <input id="g_name" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"
            placeholder="name it">
-    <!-- light_mark: a spotlight. These three only exist while the tape is
-         running, and they take the name field's place, because the name is
-         already fixed by then. Green it is working, amber it is off a little,
-         red it is off a whole lot. -->
-    <button id="g_good" class="g_mark g_green" title="working"></button>
-    <button id="g_off"  class="g_mark g_amber" title="off a little"></button>
-    <button id="g_wire" class="g_mark g_red"   title="off a whole lot"></button>
+    <!-- red_reset — two lamps, always there, not only while the tape runs.
+         Amber says it is getting a little off. Red says it has gone away
+         altogether AND is the reset: the moment you would press it is the
+         moment you want to start again, so it is one press, not two. Green is
+         gone — there is nothing to say when it is working. -->
+    <button id="g_off"  class="g_mark g_amber" title="getting a little off"></button>
+    <button id="g_wire" class="g_mark g_red"   title="way off \u2014 reset"></button>
     <button id="g_rec" class="g_rec">Record</button>
-    <button class="motion_btn" id="motion_btn">Reset</button>
   </div>
   <div class="g_status" id="g_status" hidden></div>
   <div class="g_recent" id="g_recent" hidden></div>
@@ -389,7 +387,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'lane_view', bg: '#7e22ce', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'red_reset', bg: '#991b1b', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -645,7 +643,9 @@
     if (big === ay) return (r.y > 0 ? 'up ' : 'down ') + cm + ' cm';
     return (r.z > 0 ? 'closer ' : 'away ') + cm + ' cm';
   }
-  var motionBtn = document.getElementById('motion_btn');
+  // red_reset: the red lamp IS the reset, and it is also how motion gets switched
+  // on the first time — there is no separate button any more.
+  var motionBtn = document.getElementById('g_wire');
   var poseEl    = document.getElementById('pose');
   // pose_arrow — the phone drawn as an object sitting on the zero frame.
   // Isometric projection: a 3D point becomes (x - z)*0.87 across and
@@ -1199,22 +1199,17 @@
     window.addEventListener('deviceorientation', on_orientation);
     window.addEventListener('devicemotion', on_motion);
     motionBtn.classList.add('on');
-    motionBtn.textContent = 'Reset';
     if (poseEl) poseEl.hidden = false;
     if (traceEl) traceEl.hidden = false;
     if (hint) hint.style.opacity = '0';
     requestAnimationFrame(paint_world);
   }
 
-  motionBtn.addEventListener('click', function () {
-    // one_reset — there is only one reset now. The partial one (re-centre but
-    // keep the depth) was never worth its place: a re-centre that leaves the
-    // scale where a drift put it is not a known state to start from.
-    if (motionOn) { mark_zero('reset'); zero_here(false); return; }
+  function motion_on() {
     var needO = (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function');
     var needM = (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function');
     if (!needO && !needM) {
-      if (!window.DeviceOrientationEvent && !window.DeviceMotionEvent) { motionBtn.textContent = 'No sensors here'; return; }
+      if (!window.DeviceOrientationEvent && !window.DeviceMotionEvent) { say('warn', 'no motion sensors here'); return; }
       start_world(); return;
     }
     var asks = [];
@@ -1222,9 +1217,9 @@
     if (needM) asks.push(DeviceMotionEvent.requestPermission());
     Promise.all(asks).then(function (res) {
       if (res.every(function (r) { return r === 'granted'; })) start_world();
-      else motionBtn.textContent = 'Motion blocked';
-    }).catch(function () { motionBtn.textContent = 'Motion blocked'; });
-  });
+      else say('warn', 'motion blocked \u2014 allow it in Settings');
+    }).catch(function () { say('warn', 'motion blocked \u2014 allow it in Settings'); });
+  }
   // the full reset: centre AND put the depth back to \u00d71
 
   // mark_zero — a zero or a reset during a take is itself data: it says 'from
@@ -1252,7 +1247,6 @@
 
   var gName = document.getElementById('g_name');
   var gRec  = document.getElementById('g_rec');
-  var gGood = document.getElementById('g_good');
   var gOff  = document.getElementById('g_off');
   var gWire = document.getElementById('g_wire');
   var gBar  = document.getElementById('gest_bar');
@@ -1386,7 +1380,7 @@
     // drop is_rec first, so the name field is back in the layout before the
     // focus below tries to raise the keyboard on it
     gBar.classList.remove('is_rec');
-    [gGood, gOff, gWire].forEach(function (b) { if (b) b.classList.remove('hit'); });
+    [gOff, gWire].forEach(function (b) { if (b) b.classList.remove('hit', 'down'); });
     if (!take) return;
     take.ms = Date.now() - take.ts;
     var done = take;
@@ -1426,14 +1420,40 @@
     return true;
   }
   window.__lab_mark = mark_add;
-  [[gGood, 'working'], [gOff, 'off_a_little'], [gWire, 'off_a_lot']].forEach(function (p) {
-    if (!p[0]) return;
-    p[0].addEventListener('click', function (e) {
+  // hold_read — a press is timed. A tap says 'this', a long press says 'this,
+  // badly', and the length is carried on the mark so the difference survives
+  // into the data instead of living only in his head. Red resets the moment it
+  // goes down (that is the whole point of reaching for it) and files its mark on
+  // release, once the length is known.
+  [[gOff, 'a_little_off', false], [gWire, 'way_off', true]].forEach(function (p) {
+    var el = p[0], kind = p[1], resets = p[2];
+    if (!el) return;
+    var downAt = 0;
+    function down(e) {
       e.preventDefault();
-      if (!mark_add(p[1])) return;
-      p[0].classList.add('hit');
-      setTimeout(function () { p[0].classList.remove('hit'); }, 260);
-    });
+      downAt = Date.now();
+      el.classList.add('down');
+      if (!resets) return;
+      if (!motionOn) { motion_on(); return; }
+      mark_zero('reset');
+      zero_here(false);
+    }
+    function up(e) {
+      if (!downAt) return;
+      if (e) e.preventDefault();
+      var held = Date.now() - downAt;
+      downAt = 0;
+      el.classList.remove('down');
+      if (mark_add(kind, { hold: held, long: held >= 600 })) {
+        el.classList.add('hit');
+        setTimeout(function () { el.classList.remove('hit'); }, 260);
+      }
+    }
+    el.addEventListener('touchstart', down, { passive: false });
+    el.addEventListener('touchend', up, { passive: false });
+    el.addEventListener('touchcancel', function () { downAt = 0; el.classList.remove('down'); });
+    el.addEventListener('mousedown', down);
+    window.addEventListener('mouseup', up);
   });
 
   gCopy.addEventListener('click', function () {
