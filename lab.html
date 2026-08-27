@@ -69,7 +69,11 @@
   .grid {
     position: absolute; left: -350%; top: -350%; width: 800%; height: 800%;
     pointer-events: none; z-index: 0; transform-origin: 50% 50%;
-    transform: translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
+    /* roll_hold: the rotation comes FIRST, so the offset that follows is measured
+       along the world's own axes rather than the screen's. Swirl the phone in
+       front of your face and the paper turns the other way by the same amount,
+       which is what makes it look like the paper never moved. */
+    transform: rotate(var(--rot, 0deg)) translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
     background-color: #fcfcf8;
     background-image:
       repeating-linear-gradient(to bottom, rgba(38,86,140,0.30) 0 1px, transparent 1px 30px),
@@ -82,7 +86,7 @@
   .pin_dot {
     width: 22px; height: 22px; border-radius: 50%;
     background: currentColor; box-shadow: 0 2px 6px rgba(0,0,0,0.30);
-    transform: translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
+    transform: rotate(var(--rot, 0deg)) translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
   }
   /* lab_build: every card wears the same colour, and the colour changes with
      each build — if it looks different from last time, the update landed. */
@@ -285,7 +289,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'plate_move', bg: '#6d28d9', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'roll_hold', bg: '#b45309', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -654,9 +658,13 @@
       '<tspan fill="rgba(0,0,0,0.25)">  </tspan>' +
       '<tspan fill="#2563eb">Z' + cm_txt(pos.z) + '</tspan>';
     // pitch / yaw / roll, straight out of the same matrix
+    // attitude_name: S is the swirl — the in-plane turn the paper counter-rotates
+    // against — and it is signed the same way as that counter-rotation, so the
+    // number and the picture always agree. P tips it toward or away from you and
+    // T turns it like a door; neither of those changes the surface.
     document.getElementById('pose_lbl').textContent =
-      'cm   \u00b7   P' + flipped.pitch.toFixed(0) + '  Y' + flipped.yaw.toFixed(0) +
-      '  R' + flipped.roll.toFixed(0) + '   \u00d7' + mult.toFixed(1);
+      'cm   \u00b7   P' + flipped.pitch.toFixed(0) + '  T' + flipped.roll.toFixed(0) +
+      '  S' + screen_roll().toFixed(0) + '   \u00d7' + mult.toFixed(1);
   }
 
   // orientation -> rotation matrix (ZXY intrinsic, the W3C convention)
@@ -805,6 +813,15 @@
   //   mult  the magnifier: how much world one phone-width of hand sweeps
   //   ox/oy pixels the world is offset on screen (flip_axes: it travels WITH
   //         the phone)
+  // roll_hold — how far the screen has swirled about the line from your eye,
+  // measured from the zero pose. The phone's own up direction, expressed in the
+  // zero frame, gives the angle straight away: at zero it is world up and the
+  // answer is 0. Pitch and yaw are deliberately absent — tipping the phone
+  // toward or away, or turning it left and right, still changes nothing.
+  function screen_roll() {
+    var m = rel_matrix(); if (!m) return 0;
+    return Math.atan2(-m[1], m[4]) * 180 / Math.PI;
+  }
   function view() {
     var w = frame.clientWidth || 320;
     var cam = { x: pos.x + lead.x, y: pos.y + lead.y, z: pos.z + lead.z };
@@ -813,7 +830,7 @@
     var pxPerM = (w / PHONE_W) * mult;
     var lim = w * 3;
     return {
-      w: w, cam: cam, dist: dist, mult: mult, pxPerM: pxPerM,
+      w: w, cam: cam, dist: dist, mult: mult, pxPerM: pxPerM, roll: screen_roll(),
       ox: Math.max(-lim, Math.min(lim,  cam.x * pxPerM)),
       oy: Math.max(-lim, Math.min(lim, -cam.y * pxPerM))
     };
@@ -830,6 +847,7 @@
     root.setProperty('--sx', sx.toFixed(1) + 'px');
     root.setProperty('--sy', sy.toFixed(1) + 'px');
     root.setProperty('--sc', mult.toFixed(3));
+    root.setProperty('--rot', v.roll.toFixed(2) + 'deg');
     draw_pose(mult);
     requestAnimationFrame(paint_world);
   }
@@ -842,6 +860,7 @@
     lead = { x: 0, y: 0, z: 0 };
     moving = false; lastMove = ''; quietFor = 0; rearm = false; dir = { x: 0, y: 0, z: 0 };
     document.documentElement.style.setProperty('--sc', '1');
+    document.documentElement.style.setProperty('--rot', '0deg');
   }
   function start_world() {
     motionOn = true;
@@ -1104,7 +1123,7 @@
     // what the maths is thinking right now, without waiting for a paint frame
     state: function () {
       var v = view();
-      return { px: v.ox, py: v.oy, mult: v.mult, dist: v.dist,
+      return { px: v.ox, py: v.oy, mult: v.mult, dist: v.dist, roll: v.roll,
                moving: moving, held: lastMove,
                pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) } };
     },
@@ -1112,6 +1131,7 @@
       var st = getComputedStyle(document.documentElement);
       return { sx: st.getPropertyValue('--sx').trim(), sy: st.getPropertyValue('--sy').trim(),
                sc: st.getPropertyValue('--sc').trim(),
+               rot: st.getPropertyValue('--rot').trim(),
                read: (document.getElementById('pose_lbl').textContent || '') };
     },
     takes: function () { return gest_get(); }

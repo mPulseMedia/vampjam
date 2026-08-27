@@ -1050,7 +1050,27 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   guide group populates per moving axis (2 elements one axis, 6 for three) ✓; readouts correct ✓;
   panel 178×194 with the trace clear below it ✓; glide_stop and gest_small regressions still
   pass; no page errors.
-- NEXT → add entry 197 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 197 roll_hold — lab.html, release roll_hold / amber) the surface now counter-rotates
+  against the swirl. roll_hold: hold the phone perpendicular to your nose and turn it in its
+  own plane and the graph paper turns the opposite way by the same angle, so the paper looks
+  like it never moved — the window swirls, the world behind it does not. screen_roll() reads
+  the angle straight out of the relative matrix: the phone's own up direction expressed in the
+  zero frame, atan2(-m[1], m[4]) — 0 at the zero pose by construction. It joins view() as
+  `roll`, so the one law still owns everything the screen shows; paint_world publishes it as
+  --rot and zero_here clears it. transform_order: the grid and the pin dot are now
+  `rotate(var(--rot)) translate3d(--sx,--sy) scale(--sc)` — rotation FIRST, so the travel
+  offset is measured along the world's axes rather than the screen's; a 9.5 cm slide right
+  that reads 482px across at swirl 0 reads 482px DOWN at swirl 90, which is what keeping a
+  world point in place through a quarter turn requires. Pitch and yaw are deliberately still
+  inert — tipping the phone toward or away, or turning it like a door, changes nothing.
+  attitude_name: the diagram's second readout line becomes P (pitch) / T (turn like a door) /
+  S (swirl), with S signed the same way as the counter-rotation so the number and the picture
+  agree; it used to print the swirl as 'Y' with the opposite sign. Playwright: alpha +30 → roll
+  +30 → css rotate(30deg) and the drawn world sits 30° clockwise, counter-balancing a 30°
+  counter-clockwise swirl ✓; alpha -30, 90, 180 all track ✓; beta 40 and gamma 35 both leave
+  --rot at 0.00deg ✓; world offset rotates with the paper (482,0 → 0,482 → -482,0) ✓;
+  glide_stop, gest_small and plate_move regressions all still pass; no page errors.
+- NEXT → add entry 198 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

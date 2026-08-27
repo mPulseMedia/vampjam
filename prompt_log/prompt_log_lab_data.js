@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "196 plate_move",
+        id: "197 roll_hold",
         expanded: true,
+        nodes: [
+          { text: "197 roll_hold", children: [
+            { text: "prompt_restate", children: [
+              { text: "Keep the phone facing your nose and swirl it clockwise / counter-clockwise." },
+              { text: "The graph paper should turn the opposite way by the same amount." },
+              { text: "So the paper looks like it is not rotating \u2014 the screen counterbalances the swirl." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "If I rotate the screen, and by that I mean, keep always the phone perpendicular to my nose, but swirl counterclockwise and clockwise around in front of me that swirl, that\u2019s what I should see in the model wait I\u2019ve come to my senses and I realize what I was saying is that if I rotate the thing in the way that I just clumsily describe there then the graph paper should rotate such that it looks like the graph paper is not rotating because the screen is counterbalancing the motion of the screen with where the image is on the screen" }
+            ]},
+            { text: "response", children: [
+              { text: "roll_hold", children: [
+                { text: "swirl the phone in front of your face and the paper turns the other way by the same angle" },
+                { text: "the paper looks like it never moved \u2014 the window swirls, the world behind it does not" },
+                { text: "the angle comes from the same zero pose you set, so it reads 0 the instant you press Set zero" }
+              ]},
+              { text: "transform_order", children: [
+                { text: "the turn is applied before the travel, so an offset is measured along the world\u2019s axes and not the screen\u2019s" },
+                { text: "a slide right that sits 482px across at rest reads 482px DOWN once you swirl a quarter turn \u2014 the world point stays put" }
+              ]},
+              { text: "still_inert", children: [
+                { text: "tipping the phone toward or away, and turning it like a door, still change nothing" }
+              ]},
+              { text: "attitude_name", children: [
+                { text: "the diagram\u2019s second line reads P (pitch) T (turn) S (swirl) now" },
+                { text: "S is signed the same way as the counter-rotation, so the number and the picture agree" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2m: release roll_hold, amber \u2014 +30 swirl gives a 30\u00b0 counter-turn, tilt and door-turn both give 0, offsets rotate with the paper" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "196 plate_move",
+        expanded: false,
         nodes: [
           { text: "196 plate_move", children: [
             { text: "prompt_restate", children: [
