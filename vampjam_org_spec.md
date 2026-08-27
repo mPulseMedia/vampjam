@@ -1338,7 +1338,35 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   at zero, tilted and spun; plate_move, model_flip, tilt_flip, swirl_flip and tap_rec
   regressions pass (plate centre reads -27.3,-4.3 where it read -28.4,0 — the new camera, not
   a changed law); no page errors.
-- NEXT → add entry 211 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 211 read_split — lab.html, release read_split / deep blue) four changes, one of them
+  driven by his data. read_split: the two crowded rows of initials under the diagram become
+  seven named lines — right/left, up/down, near/far in the axis colours, then tilt top, turn
+  side, swirl flat, scale — label left at 9.5px grey, value right at 11.5px bold, 13px rows
+  starting at y 60 so all seven sit inside the viewBox's 144 floor. Panel 178×194 → 178×268,
+  viewBox -72 -74 144 218, trace strip 228 → 302. pose_pos is gone; pose_lbl survives as a
+  hidden one-line join of the same values, because the state hook reads it.
+  one_reset: the partial reset is deleted outright — a re-centre that leaves the scale wherever
+  a drift put it is not a known state to start from. The surviving thumb button IS the full
+  reset and says Reset; it writes a `reset` mark. #reset_btn and its handler, its unhide and
+  its var are all gone. light_mark: ≈ and ⚡ become a three-lamp spotlight — green working,
+  amber off a little, red off a whole lot — no words at all, since they are pressed mid-gesture
+  without looking; kinds on the judgement track are working / off_a_little / off_a_lot. They
+  flex to share the row, so three fit where two sat.
+  rot_tight: THE REFINEMENT, read out of take 11 (62.8s, 3768 samples, 10 marks). The two
+  seconds before every judgement: 'a little off' at 4.2 and 18.7 deg/s mean with peaks of 13
+  and 60; 'haywire' at 5.5, 12.1 and 36.6 mean with peaks of 22, 85 and 113 — every one of them
+  inside the old fully-trusted band, which began doubting only at 45 deg/s and shut only at 160.
+  That is the leak: 1.3 to 4.7 cm of position accumulated in two seconds of what was mostly
+  turning, with the model calling itself 'moving' 37-77% of the time. ROT_OPEN 45 → 12,
+  ROT_SHUT 160 → 70, so 30 deg/s is now trusted 0.69, 60 deg/s 0.17 and 90 deg/s not at all.
+  The same take shows 0.13-0.41 m/s^2 mean linear acceleration through windows he called wrong,
+  so MOVE_A 0.20 → 0.26 stops noise being called a move. Playwright: seven named rows measured
+  and inside the panel ✓; #reset_btn absent, thumb button reads Reset ✓; three lamps hidden
+  when idle and shown when running, a bench take carrying working / off_a_little / off_a_lot /
+  reset at 350 / 545 / 743 / 940 ms ✓; veto table 10→1, 30→0.69, 60→0.17, 90→0 ✓; every prior
+  lab regression re-run and passing (vj_197, vj_200 and vj_205 updated for the removed
+  elements); no page errors.
+- NEXT → add entry 212 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

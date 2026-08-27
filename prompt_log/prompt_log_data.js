@@ -9,8 +9,53 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "210 axis_iso",
+        id: "211 read_split",
         expanded: true,
+        nodes: [
+          { text: "211 read_split", children: [
+            { text: "prompt_restate", children: [
+              { text: "Spread the overlapping readout out and name each reading for what it is." },
+              { text: "Get rid of the partial reset; keep the one that re-establishes the Z dimension." },
+              { text: "Replace the marker buttons with a green / amber / red spotlight." },
+              { text: "Each run, use the data to refine the maths joining the accelerometer to the position on the page." },
+              { text: "Say at the very end whether the long track arrived." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "The overlapping read out that gives the kind of analog position of the different directions. Can you spread those out separate those and give each the name like it\u2019s one up one up down one right left one tilt one Z or maybe you maybe just give them what it would be why that\u2019s what you\u2019re reading and also get the read out of the reset button and let\u2019s get completely rid of the reset button that is only a partial reset I don\u2019t think that\u2019s very useful. Keep the reset that shutter and reestablishes the Z dimension." },
+              { text: "Let me know by telling me in the very last bit of text that you respond with if you received a pretty long track hopefully you receive that and maybe there\u2019s some signals that you can use I think maybe I should have a like a green yellow and red yeah I should have a green yellow and red like Spotlight and I can tap or hold on any of those and you can get that information about that. It\u2019s working. It\u2019s off a little bit. It\u2019s awful a whole lot and let\u2019s make that each time you run use that data to refine the math that connects the Excel rotameter with the position on the page" }
+            ]},
+            { text: "response", children: [
+              { text: "read_split", children: [
+                { text: "seven named lines now: right / left, up / down, near / far, tilt top, turn side, swirl flat, scale" },
+                { text: "name on the left, number on the right, so the column can be scanned" },
+                { text: "the panel is taller to hold them and the trace strip moved down" }
+              ]},
+              { text: "one_reset", children: [
+                { text: "the partial reset is gone \u2014 a re-centre that leaves the scale wherever a drift put it is not a known state to start from" },
+                { text: "the thumb button IS the full reset now and says Reset" },
+                { text: "it writes itself into the take\u2019s timeline like the lights do" }
+              ]},
+              { text: "light_mark", children: [
+                { text: "green working, amber off a little, red off a whole lot" },
+                { text: "no words \u2014 you press them mid-gesture without looking" }
+              ]},
+              { text: "rot_tight", children: [
+                { text: "this is what your track told me, and it is the clearest signal yet" },
+                { text: "in the two seconds before every mark you made, the phone was TURNING \u2014 13 to 60 deg/s where you said a little off, 22 to 113 where you said haywire" },
+                { text: "all of it was inside the band I was fully trusting: I did not start doubting until 45 and did not stop listening until 160" },
+                { text: "so turning was leaking into position \u2014 1.3 to 4.7 cm of drift in two seconds of what was mostly rotation" },
+                { text: "I now start doubting at 12 and stop listening at 70, and I need a firmer push before calling something a move" }
+              ]},
+              { text: "verify", children: [
+                { text: "~5m: release read_split, deep blue \u2014 seven rows measured inside the panel, the partial reset absent, three lamps recording working / off_a_little / off_a_lot, veto table 10\u21921 30\u21920.69 60\u21920.17 90\u21920" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "210 axis_iso",
+        expanded: false,
         nodes: [
           { text: "210 axis_iso", children: [
             { text: "prompt_restate", children: [

@@ -152,7 +152,7 @@
      grey = how hard the phone is accelerating, purple = where the world is. */
   .trace {
     position: fixed; z-index: 6; right: max(22px, calc(env(safe-area-inset-right) + 10px));
-    top: max(228px, calc(env(safe-area-inset-top) + 216px));
+    top: max(302px, calc(env(safe-area-inset-top) + 290px));
     width: 130px; height: 48px; border-radius: 10px;
     background: rgba(255,255,255,0.86);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
@@ -161,7 +161,7 @@
   .pose {
     position: fixed; z-index: 6; right: max(18px, calc(env(safe-area-inset-right) + 8px));
     top: max(24px, calc(env(safe-area-inset-top) + 12px));
-    width: 178px; height: 194px; border-radius: 14px;
+    width: 178px; height: 268px; border-radius: 14px;
     background: rgba(255,255,255,0.86);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
@@ -271,14 +271,25 @@
   /* mark_live — the two judgement buttons: one for 'a little off', one for
      'haywire'. Symbols only, because they are pressed mid-gesture without
      looking. Hidden until the tape is running; the name field steps aside. */
+  /* light_mark — a three-lamp spotlight. No words: they are pressed mid-gesture
+     without looking, so the only thing that has to read is the colour. */
   .g_mark {
-    flex: 0 0 48px; display: none; border: none; border-radius: 13px; padding: 0;
-    font: inherit; font-size: 21px; line-height: 1; cursor: pointer;
-    background: rgba(0,0,0,0.07); color: #1d1d1f; touch-action: manipulation;
+    flex: 1 1 0; min-width: 34px; display: none; border: none; border-radius: 13px;
+    padding: 0; cursor: pointer; touch-action: manipulation;
+    background: rgba(0,0,0,0.06);
+    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.06);
   }
-  .g_mark.g_wild { background: rgba(224,168,0,0.22); }
+  .g_mark::before {
+    content: ''; display: block; width: 20px; height: 20px; margin: 0 auto;
+    border-radius: 50%; background: currentColor;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.55) inset;
+  }
+  .g_mark.g_green { color: #16a34a; }
+  .g_mark.g_amber { color: #e0a800; }
+  .g_mark.g_red   { color: #d7263d; }
   .g_mark:active { transform: scale(0.94); }
-  .g_mark.hit { background: #1d1d1f; color: #ffffff; }
+  .g_mark.hit { background: currentColor; }
+  .g_mark.hit::before { box-shadow: 0 0 0 3px rgba(255,255,255,0.95) inset; }
   .deck.is_rec .g_mark { display: block; }
   .deck.is_rec #g_name { display: none; }
   .g_rec.recording { background: #1d1d1f; }
@@ -321,17 +332,19 @@
     <span class="build_tag" id="build_tag"></span>
     <span class="g_led" id="g_led"></span>
     <span class="deck_msg" id="g_msg">name it, tap Record</span>
-    <button class="deck_reset" id="reset_btn" hidden>Reset</button>
   </div>
   <div class="deck_row">
     <input id="g_name" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"
            placeholder="name it">
-    <!-- mark_live: these two only exist while the tape is running, and they take
-         the name field's place, because the name is already fixed by then. -->
-    <button id="g_off"  class="g_mark" title="a little off">&#8776;</button>
-    <button id="g_wire" class="g_mark g_wild" title="haywire">&#9889;</button>
+    <!-- light_mark: a spotlight. These three only exist while the tape is
+         running, and they take the name field's place, because the name is
+         already fixed by then. Green it is working, amber it is off a little,
+         red it is off a whole lot. -->
+    <button id="g_good" class="g_mark g_green" title="working"></button>
+    <button id="g_off"  class="g_mark g_amber" title="off a little"></button>
+    <button id="g_wire" class="g_mark g_red"   title="off a whole lot"></button>
     <button id="g_rec" class="g_rec">Record</button>
-    <button class="motion_btn" id="motion_btn">Set zero</button>
+    <button class="motion_btn" id="motion_btn">Reset</button>
   </div>
   <div class="g_status" id="g_status" hidden></div>
   <div class="g_recent" id="g_recent" hidden></div>
@@ -339,7 +352,7 @@
   <button id="g_send" class="g_small" hidden>Send</button>
   <span class="g_count" id="g_count" hidden></span>
 </div>
-<svg class="pose" id="pose" viewBox="-72 -74 144 158" hidden aria-hidden="true">
+<svg class="pose" id="pose" viewBox="-72 -74 144 218" hidden aria-hidden="true">
   <!-- pose_arrow: the phone as an object standing in a frame that never moves.
        The axes and the dashed zero rectangle are pinned at the origin; the plate
        carries BOTH the tilt and the travel, so where the phone is in the picture
@@ -354,17 +367,17 @@
   <polygon id="pose_plate" fill="rgba(109,40,217,0.07)" stroke="rgba(109,40,217,0.55)" stroke-width="1" stroke-linejoin="round"></polygon>
   <line id="pose_top" stroke="rgba(109,40,217,0.8)" stroke-width="1.6" stroke-linecap="round"></line>
   <g id="pose_knob"></g>
-  <text id="pose_pos" x="0" y="64" text-anchor="middle" font-size="12" font-weight="800"
-        font-family="-apple-system, sans-serif"></text>
-  <text id="pose_lbl" x="0" y="78" text-anchor="middle" font-size="10.5" font-weight="700"
-        font-family="-apple-system, sans-serif" fill="rgba(0,0,0,0.62)"></text>
+  <!-- read_split: one named line per thing being read, instead of two crowded
+       rows of initials sitting on top of each other. -->
+  <g id="pose_read" font-family="-apple-system, sans-serif"></g>
+  <text id="pose_lbl" font-size="0.01" fill="none"></text>
 </svg>
 <canvas class="trace" id="trace" width="260" height="96" hidden></canvas>
 
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'axis_iso', bg: '#c2410c', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'read_split', bg: '#1e40af', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -524,7 +537,9 @@
   var VEL_TAU    = 6.0;      // s: barely any leak — a leak makes the braking half
                              // of a move outweigh the pushing half, which dragged
                              // the world back the moment you stopped
-  var MOVE_A     = 0.20;     // m/s^2: above this the phone counts as moving
+  // the same take shows mean linear acceleration of 0.13-0.41 through windows he
+  // called wrong, so 0.20 was calling noise a move; 0.26 clears the quiet ones
+  var MOVE_A     = 0.26;     // m/s^2: above this the phone counts as moving
   // lag_trace: position is the integral of the integral of acceleration, so it
   // always trails the hand. Showing pos + vel*LEAD cancels most of that — while
   // the phone travels at a steady rate the screen sits where the phone WILL be
@@ -536,8 +551,14 @@
   // carried as state: it tracks vel while the move is building, FREEZES the
   // moment that axis starts braking, and is folded into pos when the move ends.
   // The picture therefore only ever eases forward to a stop.
-  var ROT_OPEN   = 45;       // deg/s: below this the sample counts fully
-  var ROT_SHUT   = 160;      // deg/s: above this it is thrown away (a spin, not a slide)
+  // rot_tight — refined from the 62.8s take and its ten marks. Reading the two
+  // seconds before every judgement: 'a little off' sat at 4-19 deg/s mean with
+  // peaks of 13-60, and 'haywire' at 6-37 mean with peaks of 22-113 — ALL of it
+  // inside the old fully-trusted band, which started doubting only at 45 and
+  // only shut at 160. That is why rotation was leaking into position: 1.3 to
+  // 4.7 cm of drift accumulated in two seconds of what was mostly turning.
+  var ROT_OPEN   = 12;       // deg/s: below this the sample counts fully
+  var ROT_SHUT   = 70;       // deg/s: above this it is thrown away (a spin, not a slide)
 
   var motionOn = false;
   var R0 = null;             // zero-pose rotation matrix (world <- phone), transposed use
@@ -598,7 +619,6 @@
     return (r.z > 0 ? 'closer ' : 'away ') + cm + ' cm';
   }
   var motionBtn = document.getElementById('motion_btn');
-  var resetBtn  = document.getElementById('reset_btn');
   var poseEl    = document.getElementById('pose');
   // pose_arrow — the phone drawn as an object sitting on the zero frame.
   // Isometric projection: a 3D point becomes (x - z)*0.87 across and
@@ -768,26 +788,37 @@
     set_line(document.getElementById('pose_top'), iso(corner(-w2, h2)), iso(corner(w2, h2)));
     // a faint tether back to the origin, so the departure reads as a departure
     set_line(document.getElementById('pose_move'), { x: 0, y: 0 }, mvp0);
-    // pos_read: the three positions spelled out in centimetres, in the axis
-    // colours, above the attitude line
+    // read_split — one line per reading, each named for the thing it reads
+    // rather than reduced to an initial. Distances first in the axis colours,
+    // then the three angles, then the scale. Label left, value right, so the
+    // column of numbers can be scanned without hunting.
     function cm_txt(v) {
       var n = v * 100;
-      return (n < -0.05 ? '\u2212' : '+') + Math.abs(n).toFixed(1);
+      return (n < -0.05 ? '\u2212' : '+') + Math.abs(n).toFixed(1) + ' cm';
     }
-    document.getElementById('pose_pos').innerHTML =
-      '<tspan fill="#dc2626">X' + cm_txt(mp.x) + '</tspan>' +
-      '<tspan fill="rgba(0,0,0,0.25)">  </tspan>' +
-      '<tspan fill="#16a34a">Y' + cm_txt(mp.y) + '</tspan>' +
-      '<tspan fill="rgba(0,0,0,0.25)">  </tspan>' +
-      '<tspan fill="#2563eb">Z' + cm_txt(mp.z) + '</tspan>';
-    // pitch / yaw / roll, straight out of the same matrix
-    // attitude_name: S is the swirl — the in-plane turn the paper counter-rotates
-    // against — and it is signed the same way as that counter-rotation, so the
-    // number and the picture always agree. P tips it toward or away from you and
-    // T turns it like a door; neither of those changes the surface.
-    document.getElementById('pose_lbl').textContent =
-      'cm   \u00b7   P' + flipped.pitch.toFixed(0) + '  T' + flipped.roll.toFixed(0) +
-      '  S' + (SWIRL_INV * screen_roll()).toFixed(0) + '   \u00d7' + mult.toFixed(1);
+    function deg_txt(v) {
+      return (v < -0.5 ? '\u2212' : '+') + Math.abs(v).toFixed(0) + '\u00b0';
+    }
+    var lines = [
+      ['right / left', cm_txt(mp.x), '#dc2626'],
+      ['up / down',    cm_txt(mp.y), '#16a34a'],
+      ['near / far',   cm_txt(mp.z), '#2563eb'],
+      ['tilt top',     deg_txt(flipped.pitch),             'rgba(0,0,0,0.68)'],
+      ['turn side',    deg_txt(flipped.roll),              'rgba(0,0,0,0.68)'],
+      ['swirl flat',   deg_txt(SWIRL_INV * screen_roll()), 'rgba(0,0,0,0.68)'],
+      ['scale',        '\u00d7' + mult.toFixed(2),         'rgba(0,0,0,0.68)']
+    ];
+    document.getElementById('pose_read').innerHTML = lines.map(function (L, i) {
+      var y = 60 + i * 13;      // seven rows inside the viewBox's 144 floor
+      return '<text x="-64" y="' + y + '" font-size="9.5" font-weight="600" ' +
+               'fill="rgba(0,0,0,0.42)">' + L[0] + '</text>' +
+             '<text x="64" y="' + y + '" font-size="11.5" font-weight="800" ' +
+               'text-anchor="end" fill="' + L[2] + '">' + L[1] + '</text>';
+    }).join('');
+    // the state hook still reads one flat line out of the diagram
+    document.getElementById('pose_lbl').textContent = lines.map(function (L) {
+      return L[0] + ' ' + L[1];
+    }).join('  \u00b7  ');
   }
 
   // orientation -> rotation matrix (ZXY intrinsic, the W3C convention)
@@ -1066,8 +1097,7 @@
     window.addEventListener('deviceorientation', on_orientation);
     window.addEventListener('devicemotion', on_motion);
     motionBtn.classList.add('on');
-    motionBtn.textContent = 'Set zero';
-    if (resetBtn) resetBtn.hidden = false;
+    motionBtn.textContent = 'Reset';
     if (poseEl) poseEl.hidden = false;
     if (traceEl) traceEl.hidden = false;
     if (hint) hint.style.opacity = '0';
@@ -1075,7 +1105,10 @@
   }
 
   motionBtn.addEventListener('click', function () {
-    if (motionOn) { mark_zero('set_zero'); zero_here(true); return; }   // centre, keep the depth
+    // one_reset — there is only one reset now. The partial one (re-centre but
+    // keep the depth) was never worth its place: a re-centre that leaves the
+    // scale where a drift put it is not a known state to start from.
+    if (motionOn) { mark_zero('reset'); zero_here(false); return; }
     var needO = (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function');
     var needM = (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function');
     if (!needO && !needM) {
@@ -1091,11 +1124,7 @@
     }).catch(function () { motionBtn.textContent = 'Motion blocked'; });
   });
   // the full reset: centre AND put the depth back to \u00d71
-  if (resetBtn) resetBtn.addEventListener('click', function () {
-    if (!motionOn) return;
-    mark_zero('reset_all');
-    zero_here(false);
-  });
+
   // mark_zero — a zero or a reset during a take is itself data: it says 'from
   // here on, read the numbers from a new origin'. Stamped with where the model
   // had drifted to and what the scale was at that instant, so the segment before
@@ -1121,6 +1150,7 @@
 
   var gName = document.getElementById('g_name');
   var gRec  = document.getElementById('g_rec');
+  var gGood = document.getElementById('g_good');
   var gOff  = document.getElementById('g_off');
   var gWire = document.getElementById('g_wire');
   var gBar  = document.getElementById('gest_bar');
@@ -1254,7 +1284,7 @@
     // drop is_rec first, so the name field is back in the layout before the
     // focus below tries to raise the keyboard on it
     gBar.classList.remove('is_rec');
-    [gOff, gWire].forEach(function (b) { if (b) b.classList.remove('hit'); });
+    [gGood, gOff, gWire].forEach(function (b) { if (b) b.classList.remove('hit'); });
     if (!take) return;
     take.ms = Date.now() - take.ts;
     var done = take;
@@ -1294,7 +1324,7 @@
     return true;
   }
   window.__lab_mark = mark_add;
-  [[gOff, 'a_little_off'], [gWire, 'haywire']].forEach(function (p) {
+  [[gGood, 'working'], [gOff, 'off_a_little'], [gWire, 'off_a_lot']].forEach(function (p) {
     if (!p[0]) return;
     p[0].addEventListener('click', function (e) {
       e.preventDefault();
