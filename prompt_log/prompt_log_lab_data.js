@@ -9,8 +9,44 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "221 turn_back",
+        id: "222 mark_line",
         expanded: true,
+        nodes: [
+          { text: "222 mark_line", children: [
+            { text: "prompt_restate", children: [
+              { text: "Show the good and bad/reset presses on the streaming charts \u2014 a green line and a red line for each press." },
+              { text: "New shorthand: several resets in a row means it went disastrously wrong." },
+              { text: "One reset on its own just means I am re-zeroing." },
+              { text: "Take that into account on the traces from now on." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, so on the data charts that update that show the movements in the different directions I also want to show on those all those streaming charts the good and the bad/reset events. You know a horizontal green line and a horizontal red line for each press of the good and bad and what I want to communicate back to the to you if it gets really bad I will click the bad reset button. Well, let\u2019s do this to make it easier, let\u2019s make it. I will hit the reset button multiple times when it\u2019s actually a bad thing and I\u2019ll hit the reset/stop button only once if I\u2019m just resetting it so when it\u2019s when it gets disastrously off course I\u2019ll hit stop/reset multiple times and when I\u2019m just simply resetting it to reset it, I\u2019ll click it just once so please take that into account. Going forward on the data traces that you receive." }
+            ]},
+            { text: "mark_line", children: [
+              { text: "every press now draws a rule across all three charts at the moment it happened, and scrolls away with the data" },
+              { text: "green for good, red for a reset" },
+              { text: "a burst of resets draws thick and solid, so it reads as \u201cthis went wrong\u201d at a glance" }
+            ]},
+            { text: "one_note", children: [
+              { text: "I drew them VERTICALLY, not horizontally" },
+              { text: "the charts run left to right in time, so a press is a moment, and a moment is a vertical line" },
+              { text: "a horizontal line would be a value, and a press does not have one \u2014 say the word if you meant something else" }
+            ]},
+            { text: "reset_run", children: [
+              { text: "taken exactly as you offered it: one press is re-zeroing, two or more close together is a bad grade" },
+              { text: "every reset now carries which press of the burst it was, and whether it was severe" },
+              { text: "the deck says \u201cnoted \u2014 that one went badly\u201d the moment the second press lands" },
+              { text: "the window is 900ms: a double-tap is well inside it, a considered second reset a second later is not" }
+            ]},
+            { text: "verify", children: [
+              { text: "~4m: release mark_line, magenta \u2014 a take carrying good / reset press 1 / reset press 1, 2 SEVERE, 3 SEVERE; the canvas read back showing one green rule, one lone red and a cluster of thick reds" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "221 turn_back",
+        expanded: false,
         nodes: [
           { text: "221 turn_back", children: [
             { text: "prompt_restate", children: [

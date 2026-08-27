@@ -1595,7 +1595,29 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   SWIRL_INV are separate). Whole lab suite re-run and green; no page errors.
   test_note: the local http.server had died again between prompts. Restarting it on 8901 is the
   first thing to try on ERR_CONNECTION_REFUSED — it is not the page.
-- NEXT → add entry 222 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 222 mark_line — lab.html, release mark_line / magenta) the presses now appear on the
+  charts, and a reset carries a grade. mark_line: the trace ring gains a fourth slot holding
+  what was pressed at that frame — 0 nothing, 1 good, 2 a plain reset, 3 a reset inside a burst.
+  A press sets pendEv and the very next frame consumes it, so the rule lands at the moment it
+  happened and then scrolls away with the data it belongs to. trace_draw paints them LAST, as
+  rules spanning all three lanes at once: green for good, red for a reset, and a burst drawn at
+  3px and near-opaque against 1.4px at 0.7 for a single one. NOTE: they are drawn VERTICALLY.
+  He said 'a horizontal green line', but on a chart whose x axis is time a press is a moment,
+  and a moment is a vertical rule; a horizontal line would be a value, which a press does not
+  have. Said plainly in the reply so he can correct it if he meant something else.
+  reset_run: his shorthand, taken exactly as offered — ONE press means 'I am just re-zeroing',
+  several close together mean 'that went disastrously wrong'. Presses are counted against
+  RESET_GAP; every reset mark now carries `run` (which press of the burst this was) and
+  `severe` (two or more), and the deck says 'noted — that one went badly' the moment the second
+  press lands. RESET_GAP is 900ms, not the 1400 first tried: measured, at 1400 a deliberate
+  re-zero followed by another a second later was wrongly read as a burst, while a real
+  double-tap lands well inside 900. This makes a reset a graded act instead of an ambiguous one,
+  and it costs him nothing to say. Playwright: a take carrying good, then reset press 1 (just
+  re-zeroing), then reset press 1 / 2 SEVERE / 3 SEVERE for a burst — each reset also writing
+  its `bad` mark, since red is both ✓; the canvas read back column by column shows one green
+  rule, one lone red, and a tight cluster of thick reds ✓; whole lab suite re-run and green;
+  no page errors.
+- NEXT → add entry 223 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

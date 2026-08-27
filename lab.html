@@ -394,7 +394,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'turn_back', bg: '#7f1d1d', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'mark_line', bg: '#a21caf', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -589,6 +589,17 @@
   // slide fell from 482px to 266px). So shaking has to PERSIST before it counts.
   var TREM_HOLD  = 0.35;     // s of continuous no-net before an axis is silenced
   var DWELL_S    = 1.0;      // s of stillness that counts as 'I meant to stop here'
+  // reset_run — his shorthand: ONE press of reset means 'I am just re-zeroing',
+  // several presses close together mean 'that went disastrously wrong'. So the
+  // presses are counted, every reset mark carries how many it was, and two or
+  // more is flagged severe. It costs him nothing to say and it turns a reset
+  // from an ambiguous act into a graded one.
+  // 900ms: a real double-tap lands well inside this, while a considered second
+  // reset a second later stays a plain one. Measured at 1400 a deliberate
+  // re-zero followed a second later was wrongly read as a burst.
+  var RESET_GAP  = 900;      // ms: presses closer together than this are one burst
+  var resetAt    = 0;        // when the last reset was
+  var resetRun   = 0;        // how many in the current burst
   // lag_trace: position is the integral of the integral of acceleration, so it
   // always trails the hand. Showing pos + vel*LEAD cancels most of that — while
   // the phone travels at a steady rate the screen sits where the phone WILL be
@@ -1137,7 +1148,13 @@
     { i: 1, c: '#16a34a' },   // up / down
     { i: 2, c: '#2563eb' }    // near / far
   ];
+  // mark_line — the ring carries a fourth slot: what was pressed at that frame.
+  // 0 nothing, 1 good, 2 a plain reset, 3 a reset that was part of a burst. The
+  // press sets pendEv and the very next frame consumes it, so a rule lands on
+  // the chart at the moment it happened and then scrolls away with the data.
+  var pendEv = 0;
   function trace_push(v) {
+    v[3] = pendEv; pendEv = 0;
     trace[traceAt] = v;
     traceAt = (traceAt + 1) % TRACE_N;
   }
@@ -1193,6 +1210,22 @@
       traceCtx.fill();
       traceCtx.globalAlpha = 1;
     });
+    // the presses, drawn last so they read across every lane at once: one rule
+    // per press, green for good, red for a reset — and a burst of resets is
+    // drawn thick and solid, because that is him saying it went badly wrong.
+    for (var m = 0; m < TRACE_N; m++) {
+      var sm = trace[(traceAt + m) % TRACE_N];
+      if (!sm || !sm[3]) continue;
+      var mx = (m / (TRACE_N - 1)) * W;
+      traceCtx.strokeStyle = sm[3] === 1 ? '#16a34a' : '#d7263d';
+      traceCtx.lineWidth = sm[3] === 3 ? 3 : 1.4;
+      traceCtx.globalAlpha = sm[3] === 3 ? 0.95 : 0.7;
+      traceCtx.beginPath();
+      traceCtx.moveTo(mx, pad - 4);
+      traceCtx.lineTo(mx, H - pad + 4);
+      traceCtx.stroke();
+    }
+    traceCtx.globalAlpha = 1;
   }
 
   // view — the ONE place that turns where the phone is into what the screen
@@ -1290,7 +1323,7 @@
     var w = v.w, dist = v.dist, mult = v.mult;
     var sx = v.ox, sy = v.oy;
     // three lanes: where the world stands on each axis, in metres
-    trace_push([v.cam.x, v.cam.y, v.cam.z]);
+    trace_push([v.cam.x, v.cam.y, v.cam.z, 0]);
     trace_draw(now);
     var root = document.documentElement.style;
     root.setProperty('--sx', sx.toFixed(1) + 'px');
@@ -1370,9 +1403,17 @@
   // had drifted to and what the scale was at that instant, so the segment before
   // it can still be read on its own terms.
   function mark_zero(kind) {
+    // reset_run: count this press against the last one before anything else, so
+    // the count is right whether or not a take is running
+    var now2 = Date.now();
+    resetRun = (now2 - resetAt < RESET_GAP) ? resetRun + 1 : 1;
+    resetAt = now2;
+    pendEv = resetRun >= 2 ? 3 : 2;
+    if (resetRun === 2) say('warn', 'noted \u2014 that one went badly');
     if (typeof mark_add !== 'function') return;
     var v = view();
-    mark_add(kind, { pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) },
+    mark_add(kind, { run: resetRun, severe: resetRun >= 2,
+                     pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) },
                      mult: +v.mult.toFixed(3), tilt: +v.tilt.toFixed(1), turn: +v.turn.toFixed(1),
                      roll: +v.roll.toFixed(1) });
   }
@@ -1551,6 +1592,7 @@
   // mark_add — one entry on the judgement track. Nothing is recorded when the
   // tape is not running, deliberately: these are notes ABOUT a take.
   function mark_add(kind, extra) {
+    if (kind === 'good') pendEv = 1;
     if (!recording || !take) return false;
     var e = { t: Date.now() - take.ts, kind: kind };
     if (extra) for (var k in extra) e[k] = extra[k];
