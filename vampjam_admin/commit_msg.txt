@@ -1,1 +1,1 @@
-take_clear
+auto_commit
