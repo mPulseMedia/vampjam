@@ -244,7 +244,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'graph_one', bg: '#b45309', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'hold_still', bg: '#166534', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -381,9 +381,17 @@
   var Z_POWER    = 2.2;
   var MULT_MIN   = 0.25, MULT_MAX = 13;
   var DEAD       = 0.12;     // m/s^2 ignored: the noise floor at rest (from his takes)
-  var STILL_MS   = 350;      // quiet for this long -> velocity is zero
-  var VEL_TAU    = 0.9;      // s: velocity leak
-  var POS_TAU    = 2.5;      // s: position leak — the world eases home
+  // hold_still: a move ends where it ends. There is no position leak any more —
+  // the world used to ease back to centre after every gesture, which read as
+  // 'resets instead of holding'. Now the run is integrated while the phone is
+  // actually moving, and the moment it reads still the velocity is killed and
+  // the position simply STAYS. Drift cannot accumulate between moves because
+  // nothing is being integrated between moves.
+  var STILL_MS   = 180;      // quiet for this long -> the move is over
+  var VEL_TAU    = 6.0;      // s: barely any leak — a leak makes the braking half
+                             // of a move outweigh the pushing half, which dragged
+                             // the world back the moment you stopped
+  var MOVE_A     = 0.20;     // m/s^2: above this the phone counts as moving
   var ROT_OPEN   = 45;       // deg/s: below this the sample counts fully
   var ROT_SHUT   = 160;      // deg/s: above this it is thrown away (a spin, not a slide)
 
@@ -394,6 +402,19 @@
   var pos = { x: 0, y: 0, z: 0 };   // metres in the zero frame: x right, y up, z toward the eye
   var quietSince = 0;
   var rotVeto = 1;
+  var moving = false;               // is the phone in a move right now?
+  var run = { x: 0, y: 0, z: 0 };   // distance carried by the move in progress
+  var lastMove = '';                // what the last finished move was
+  // name_move — categorise a finished move by whichever axis carried it
+  function name_move(r) {
+    var ax = Math.abs(r.x), ay = Math.abs(r.y), az2 = Math.abs(r.z);
+    var big = Math.max(ax, ay, az2);
+    if (big < 0.01) return '';       // under a centimetre: not a move
+    var cm = Math.round(big * 100);
+    if (big === ax) return (r.x > 0 ? 'right ' : 'left ') + cm + ' cm';
+    if (big === ay) return (r.y > 0 ? 'up ' : 'down ') + cm + ' cm';
+    return (r.z > 0 ? 'closer ' : 'away ') + cm + ' cm';
+  }
   var motionBtn = document.getElementById('motion_btn');
   var readout   = document.getElementById('readout');
 
@@ -441,19 +462,32 @@
     var az = mul_t_vec(R0, aw);
     var mag = Math.hypot(az.x, az.y, az.z);
     var now = Date.now();
-    if (mag < DEAD && rot < 12) {
+    if (mag < MOVE_A && rot < 20) {
+      // quiet: after a moment of it, the move is over — stop dead and hold
       if (!quietSince) quietSince = now;
-      if (now - quietSince > STILL_MS) { vel.x = vel.y = vel.z = 0; }   // zero-velocity update
-    } else { quietSince = 0; }
+      if (moving && now - quietSince > STILL_MS) {
+        vel.x = vel.y = vel.z = 0;
+        moving = false;
+        lastMove = name_move(run);
+        run = { x: 0, y: 0, z: 0 };
+      }
+    } else {
+      quietSince = 0;
+      if (!moving) { moving = true; run = { x: 0, y: 0, z: 0 }; }
+    }
 
-    var kv = Math.exp(-dt / VEL_TAU), kp = Math.exp(-dt / POS_TAU);
-    ['x', 'y', 'z'].forEach(function (k) {
-      var v = az[k];
-      v = Math.abs(v) < DEAD ? 0 : (v - (v > 0 ? DEAD : -DEAD));
-      v *= rotVeto;
-      vel[k] = (vel[k] + v * dt) * kv;
-      pos[k] = (pos[k] + vel[k] * dt) * kp;
-    });
+    var kv = Math.exp(-dt / VEL_TAU);
+    if (moving) {
+      ['x', 'y', 'z'].forEach(function (k) {
+        var v = az[k];
+        v = Math.abs(v) < DEAD ? 0 : (v - (v > 0 ? DEAD : -DEAD));
+        v *= rotVeto;
+        vel[k] = (vel[k] + v * dt) * kv;
+        var d = vel[k] * dt;
+        pos[k] += d;               // no leak: where it lands is where it stays
+        run[k] += d;               // how far THIS move has carried
+      });
+    }
   }
 
   function paint_world() {
@@ -479,6 +513,7 @@
         '   up  ' + (sy / w >= 0 ? '+' : '') + (sy / w).toFixed(2) +
         '\n' + Math.round(dist * 100) + ' cm   ×' + mult.toFixed(2) +
         '   ' + Math.max(1, Math.round((frame.clientHeight || 700) / (30 * mult))) + ' lines' +
+        '\n' + (moving ? 'moving…' : (lastMove ? 'held · ' + lastMove : 'held')) +
         (rotVeto < 0.5 ? '   (turning — ignored)' : '');
     }
     requestAnimationFrame(paint_world);
@@ -488,7 +523,8 @@
     R0 = Rnow;
     vel = { x: 0, y: 0, z: 0 };
     pos = { x: 0, y: 0, z: 0 };
-    quietSince = 0;
+    run = { x: 0, y: 0, z: 0 };
+    moving = false; lastMove = ''; quietSince = 0;
     document.documentElement.style.setProperty('--sc', '1');
   }
   function start_world() {

@@ -908,7 +908,20 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   moved under Set zero, so the corner is the stamp and nothing overlaps. Playwright:
   1 grid layer, 0 paper layers, 1 dot, transparent cells, square 96×96 at 22,20 in
   rgb(180,83,9) reading 'graph_one', and the close-in view still resolves to 2 lines ✓.
-- NEXT → add entry 187 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 187 hold_still — lab.html, release hold_still / forest) he named the flaw exactly:
+  the move read right, then the world reset. That was the position leak from 183 (2.5s
+  easing home). Gone. The model is now stateful: a move BEGINS when acceleration passes
+  0.20 m/s² (or the phone turns), integration runs only while moving, and 180ms of quiet
+  ENDS it — velocity is killed and the position simply stays where it landed. Nothing is
+  integrated between moves, so drift cannot accumulate while the phone sits. The velocity
+  leak went from 1.5s to 6s: a leak makes the braking half of a gesture outweigh the
+  pushing half, which was itself dragging the world back on every stop. Each finished move
+  is categorised by whichever axis carried it and named in the readout — 'held · right
+  6 cm', 'held · closer 9 cm', 'moving…' while in flight. Set zero still recentres.
+  Playwright: slide right lands at 310.8px and is still at 310.8px after 1.5s of stillness
+  (and through the next unrelated move), closer holds ×1.98 / 13 lines, categories read
+  right/up/closer with the distance ✓.
+- NEXT → add entry 188 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "186 graph_one",
+        id: "187 hold_still",
         expanded: true,
+        nodes: [
+          { text: "187 hold_still", children: [
+            { text: "prompt_restate", children: [
+              { text: "The first part of the reaction to a movement is right, but then it resets instead of holding." },
+              { text: "Work out when a movement is finished, categorise it, do the first part of the reaction \u2014 and then hold still." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, it seems like when I move the screen in any of those dimensions you at first to exactly what I hope but then when I stabilize the screen, you instead of holding still reset so what I\u2019d like you to do is in the processing of various movements once it\u2019s determined the movement is done, then categorize it and do the first part of your reaction but then hold still for the second part" }
+            ]},
+            { text: "response", children: [
+              { text: "hold_still", children: [
+                { text: "the reset is gone \u2014 that was a deliberate ease-back I had put in to fight drift, and you were right that it ruins the effect" },
+                { text: "a move now has a beginning and an end: it starts when the phone actually accelerates and ends after a fifth of a second of stillness, and where it lands is where it stays" },
+                { text: "nothing is measured while the phone sits still, so it cannot creep between moves" },
+                { text: "each finished move gets named in the readout \u2014 held \u00b7 right 6 cm, held \u00b7 closer 9 cm" }
+              ]},
+              { text: "also", children: [
+                { text: "the braking half of a gesture used to count for more than the pushing half, which pulled the world back on every stop; that is evened out now" },
+                { text: "Set zero is how you recentre when the world has wandered somewhere you do not want" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: release hold_still, forest green. Set zero, slide the phone once and let it rest \u2014 it should stay put" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "186 graph_one",
+        expanded: false,
         nodes: [
           { text: "186 graph_one", children: [
             { text: "prompt_restate", children: [
