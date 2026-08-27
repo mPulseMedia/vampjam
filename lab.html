@@ -121,7 +121,9 @@
      exactly as it was. Swap lab_surface.png for any picture. */
   .shot {
     position: absolute; left: 50%; top: 50%;
-    width: 340px; height: auto; transform: translate(-50%, -50%);
+    /* nearly the whole window at x1, so a reset presents the picture rather
+       than a stamp in the middle of a field */
+    width: 352px; height: auto; transform: translate(-50%, -50%);
     border-radius: 3px; background: #ffffff;
     box-shadow: 0 4px 14px rgba(0,0,0,0.28), 0 1px 3px rgba(0,0,0,0.22);
     pointer-events: none; -webkit-user-select: none; user-select: none;
@@ -411,7 +413,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'shot_on', bg: '#831843', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'flat_zero', bg: '#3f6212', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1316,14 +1318,13 @@
   // TURN_INV stays -1, so the side axis keeps its old rule — the edge you bring
   // toward your eye is the edge that lies away. The two are on opposite rules
   // now, deliberately, until he says which one he wants for both.
-  // ground_view — the reset pose is not a sheet held up facing you, it is a
-  // sheet lying on the FLOOR seen from about 45 degrees above it. So the lean
-  // starts at TILT_BASE and the phone moves it from there: tip the phone
-  // forward (top away, screen looking down) and the lean unwinds to nothing —
-  // you are looking straight down at the paper; tip the top back toward you and
-  // it goes past 45, the bottom crowding and the top running to a vanishing
-  // point. PITCH_INV is -1 for that to be the way round it falls.
-  var TILT_BASE = 45;
+  // flat_zero — the reset pose goes back to FLAT. With a picture on the paper,
+  // the moment the page loads is the right one: face on, square to the glass,
+  // filling the screen. Pressing reset used to throw it down onto the floor at
+  // 45 degrees, which is a fine way to look at graph paper and a poor way to
+  // look at a picture. The lean now runs both ways from nothing, so tipping the
+  // phone still lays it down — it just does not start there.
+  var TILT_BASE = 0;
   // turn_back: TURN_INV back to -1 — pulling the right edge toward you or away
   // throws the paper's vanishing point the other way again. The top/bottom lean
   // he likes as it is, so PITCH_INV and the 45-degree ground base are untouched;

@@ -9,8 +9,36 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "225 shot_on",
+        id: "226 flat_zero",
         expanded: true,
+        nodes: [
+          { text: "226 flat_zero", children: [
+            { text: "prompt_restate", children: [
+              { text: "On load the image is face on and flat, then hitting reset moves it to a different orientation." },
+              { text: "Make reset treat that very first position as the reset position." },
+              { text: "So I can zoom and move around, and reset presents it as nearly a full screen image." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When the pages first loaded, the image is presented face on flat to the screen, and then I hit the reset button and it moves to a different orientation like when I hit that reset button for it to consider that very first position as the reset position so I can zoom in and out and move around, and if I hit the reset button, it will be kind of presented as nearly a full screen image" }
+            ]},
+            { text: "flat_zero", children: [
+              { text: "reset is flat and face on now \u2014 exactly what you see when the page loads" },
+              { text: "the two states are identical; measured, the picture is 97% of the window wide and 83% tall" },
+              { text: "tilting still lays it down, both ways from flat \u2014 it just no longer starts lying down" }
+            ]},
+            { text: "reversal", children: [
+              { text: "this undoes the 45-degree ground pose you asked for before the picture existed" },
+              { text: "laying the surface on the floor is a good way to look at graph paper and a poor way to look at a picture" }
+            ]},
+            { text: "verify", children: [
+              { text: "~3m: release flat_zero, moss \u2014 load and post-reset measured identical at 352\u00d7626 with the lean at exactly zero; tilt still reaches \u00b151 at beta \u00b130" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "225 shot_on",
+        expanded: false,
         nodes: [
           { text: "225 shot_on", children: [
             { text: "prompt_restate", children: [

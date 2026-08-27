@@ -1680,7 +1680,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   changed nothing, so it was removed rather than left in costing memory. Playwright: image
   loads at 450×800 and its parent is #grid ✓; three-way capture at rest, closer and slid ✓;
   with the file blocked the image hides and the paper still paints ✓; suite green.
-- NEXT → add entry 226 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 226 flat_zero — lab.html, release flat_zero / moss) TILT_BASE 45 → 0. He noticed that the
+  page LOADS with the picture face on and square to the glass — because motion has not started
+  and --tilt is unset — and that pressing Reset then threw it down onto the floor at 45 degrees.
+  He is right that the load state is the one worth keeping: laying the surface on the ground is
+  a fine way to look at graph paper and a poor way to look at a picture. So the reset pose is
+  flat again, and the lean now runs BOTH ways from nothing rather than from 45 — tipping the
+  phone still lays the surface down, it just does not start there. This reverses ground_view
+  from entry 214, deliberately and for a stated reason. shot_size 340 → 352, so a reset presents
+  the picture rather than a stamp in the middle of a field: measured, 97% of the window wide and
+  83% tall. Playwright: on load 352×626 with the lean never set; after Reset the same 352×626
+  with the lean at exactly 0.00deg — the two states are now identical, which was the whole ask ✓;
+  beta ±30 still leans ±51 ✓; three-way capture (load / after reset / tilted) ✓; vj_207 and
+  vj_208c updated off the retired 45-degree base; whole lab suite re-run and green; no page
+  errors.
+- NEXT → add entry 227 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
