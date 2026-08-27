@@ -312,7 +312,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'model_flip', bg: '#0284c7', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'depth_flip', bg: '#4338ca', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -858,11 +858,15 @@
   // zero frame, gives the angle straight away: at zero it is world up and the
   // answer is 0. Pitch and yaw are deliberately absent — tipping the phone
   // toward or away, or turning it left and right, still changes nothing.
-  // paper_back — the flip belonged to the DIAGRAM, not to the paper. The world
-  // view is back to what it was: pan, swirl and depth all as they were before
-  // axis_flip, which is the behaviour he had called perfect. The reversal now
-  // lives in MODEL_INV below, and touches only the little diagram.
-  var INV = 1;
+  // view_switch — the two directions the paper answers to, each with its own
+  // sign, because they have been reversed independently and will be again.
+  //   PAN_INV    left/right, up/down and the swirl counter-turn
+  //   DEPTH_INV  the magnifier
+  // depth_flip: DEPTH_INV is -1 now — bringing the phone toward the eye makes
+  // the paper SMALLER and taking it away makes it bigger, the opposite of what
+  // it did. Pan and swirl are untouched.
+  var PAN_INV   = 1;
+  var DEPTH_INV = -1;
   function screen_roll() {
     var m = rel_matrix(); if (!m) return 0;
     return Math.atan2(-m[1], m[4]) * 180 / Math.PI;
@@ -870,14 +874,14 @@
   function view() {
     var w = frame.clientWidth || 320;
     var cam = { x: pos.x + lead.x, y: pos.y + lead.y, z: pos.z + lead.z };
-    var dist = Math.max(D_MIN, Math.min(D_MAX, D0 - INV * cam.z));
+    var dist = Math.max(D_MIN, Math.min(D_MAX, D0 - DEPTH_INV * cam.z));
     var mult = Math.max(MULT_MIN, Math.min(MULT_MAX, Math.pow(D0 / dist, Z_POWER)));
     var pxPerM = (w / PHONE_W) * mult;
     var lim = w * 3;
     return {
-      w: w, cam: cam, dist: dist, mult: mult, pxPerM: pxPerM, roll: INV * screen_roll(),
-      ox: Math.max(-lim, Math.min(lim,  INV * cam.x * pxPerM)),
-      oy: Math.max(-lim, Math.min(lim, -INV * cam.y * pxPerM))
+      w: w, cam: cam, dist: dist, mult: mult, pxPerM: pxPerM, roll: PAN_INV * screen_roll(),
+      ox: Math.max(-lim, Math.min(lim,  PAN_INV * cam.x * pxPerM)),
+      oy: Math.max(-lim, Math.min(lim, -PAN_INV * cam.y * pxPerM))
     };
   }
 

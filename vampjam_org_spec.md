@@ -1125,7 +1125,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   and the plate draws left and down ✓; star polygon has 10 vertices and the shadow tightens
   from drop 16.5/blur 19.6/0.38 at ×0.69 to drop 5.8/blur 7.0/0.46 at ×1.48 ✓; three-way
   visual check far/level/near captured; all prior regressions pass; no page errors.
-- NEXT → add entry 201 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 201 depth_flip — lab.html, release depth_flip / indigo) the magnifier alone is
+  reversed. view_switch: the single INV of 198 becomes two independent signs, because these
+  two directions have now been flipped separately twice and will be again — PAN_INV (+1)
+  governs left/right, up/down and the swirl counter-turn, DEPTH_INV (-1) governs the
+  magnifier. depth_flip: bringing the phone toward the eye makes the paper SMALLER and taking
+  it away makes it bigger, the opposite of every build up to here; dist = D0 - DEPTH_INV*cam.z
+  is the only line that changed. Pan and swirl are untouched, and the diagram still reports Z
+  truthfully (MODEL_INV.z stays +1, which he had said was right). The star's shadow keys off
+  the multiple rather than off z, so it stayed correct without a change: a bigger multiple is
+  still 'closer to the paper', it is just reached by moving the phone away now. Playwright: a
+  push toward the eye lands pos.z +0.02 and ×0.69 (was ×1.48), a pull away lands pos.z -0.02
+  and ×1.48 (was ×0.69) ✓; slide right +315px, slide up -181px, swirl +30 → +30° all unmoved ✓;
+  after a move toward the eye the diagram still reads Z+2.0 while the paper reads ×0.7 ✓;
+  the whole suite (195-201) re-run and passing; no page errors.
+- NEXT → add entry 202 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

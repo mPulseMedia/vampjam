@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "200 model_flip",
+        id: "201 depth_flip",
         expanded: true,
+        nodes: [
+          { text: "201 depth_flip", children: [
+            { text: "prompt_restate", children: [
+              { text: "The earlier reversal request did not explicitly cover this." },
+              { text: "Reverse what happens to the scale of the paper when the phone moves toward and away." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I don\u2019t know if my request for reversal in the prior message explicitly called out. I don\u2019t think it did. I don\u2019t know if my request implied that it would be, but I would like to invert how it now when I move it away and toward I would like to reverse what is happening as it relates to the scale of the paper I want to reverse what you did recently" }
+            ]},
+            { text: "response", children: [
+              { text: "depth_flip", children: [
+                { text: "toward the eye makes the paper smaller now; away makes it bigger" },
+                { text: "one line changed \u2014 pan and swirl are untouched" }
+              ]},
+              { text: "view_switch", children: [
+                { text: "the paper now has two separate switches: one for left/right/up/down/swirl, one for the magnifier" },
+                { text: "these two have been flipped independently twice, so they are separate settings from here on" }
+              ]},
+              { text: "unchanged", children: [
+                { text: "the little diagram still reports Z truthfully \u2014 you said that one was right" },
+                { text: "the star\u2019s shadow needed nothing: a bigger multiple is still \u201cclose to the paper\u201d, you just reach it by moving away now" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2m: release depth_flip, indigo \u2014 toward the eye \u00d70.69 (was \u00d71.48), away \u00d71.48 (was \u00d70.69); pan and swirl measured unmoved" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "200 model_flip",
+        expanded: false,
         nodes: [
           { text: "200 model_flip", children: [
             { text: "prompt_restate", children: [
