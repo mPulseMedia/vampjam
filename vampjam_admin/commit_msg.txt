@@ -1,1 +1,1 @@
-iso_true
+auto_commit
