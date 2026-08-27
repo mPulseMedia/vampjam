@@ -155,7 +155,7 @@
      grey = how hard the phone is accelerating, purple = where the world is. */
   .trace {
     position: fixed; z-index: 6; right: max(22px, calc(env(safe-area-inset-right) + 10px));
-    top: max(182px, calc(env(safe-area-inset-top) + 170px));
+    top: max(228px, calc(env(safe-area-inset-top) + 216px));
     width: 130px; height: 48px; border-radius: 10px;
     background: rgba(255,255,255,0.86);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
@@ -164,7 +164,7 @@
   .pose {
     position: fixed; z-index: 6; right: max(18px, calc(env(safe-area-inset-right) + 8px));
     top: max(24px, calc(env(safe-area-inset-top) + 12px));
-    width: 148px; height: 148px; border-radius: 14px;
+    width: 178px; height: 194px; border-radius: 14px;
     background: rgba(255,255,255,0.86);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
@@ -260,18 +260,24 @@
   </div>
 </div>
 <button class="motion_btn" id="motion_btn">Set zero</button>
-<svg class="pose" id="pose" viewBox="-70 -70 140 140" hidden aria-hidden="true">
-  <!-- pose_arrow: the phone as an object on the grid. Faint axes are the zero
-       frame you set; the plate is the phone at its current attitude; the three
-       arrows are its own axes; the thick arrow is where it has travelled. -->
+<svg class="pose" id="pose" viewBox="-72 -74 144 158" hidden aria-hidden="true">
+  <!-- pose_arrow: the phone as an object standing in a frame that never moves.
+       The axes and the dashed zero rectangle are pinned at the origin; the plate
+       carries BOTH the tilt and the travel, so where the phone is in the picture
+       is where it is in the world. The coloured bars along each axis, and the
+       dashed drop lines to them, read off its position one axis at a time. -->
   <g id="pose_ref" stroke="rgba(0,0,0,0.18)" stroke-width="1" fill="none"></g>
-  <g id="pose_shadow" fill="rgba(0,0,0,0.10)"></g>
-  <polygon id="pose_plate" fill="rgba(14,116,144,0.20)" stroke="#0e7490" stroke-width="1.6" stroke-linejoin="round"></polygon>
-  <line id="pose_top" stroke="#0e7490" stroke-width="2.6" stroke-linecap="round"></line>
   <g id="pose_axes" stroke-width="2" stroke-linecap="round" fill="none"></g>
-  <line id="pose_move" stroke="#b91c1c" stroke-width="2.6" stroke-linecap="round"></line>
-  <circle id="pose_head" r="3" fill="#b91c1c"></circle>
-  <text id="pose_lbl" x="0" y="62" text-anchor="middle" font-size="11" font-weight="700"
+  <g id="pose_guide" fill="none"></g>
+  <line id="pose_move" stroke="rgba(0,0,0,0.28)" stroke-width="1.4" stroke-linecap="round"
+        stroke-dasharray="3 3"></line>
+  <g id="pose_shadow" fill="rgba(0,0,0,0.10)"></g>
+  <polygon id="pose_plate" fill="rgba(109,40,217,0.16)" stroke="#6d28d9" stroke-width="1.5" stroke-linejoin="round"></polygon>
+  <line id="pose_top" stroke="#6d28d9" stroke-width="2.4" stroke-linecap="round"></line>
+  <g id="pose_knob"></g>
+  <text id="pose_pos" x="0" y="64" text-anchor="middle" font-size="12" font-weight="800"
+        font-family="-apple-system, sans-serif"></text>
+  <text id="pose_lbl" x="0" y="78" text-anchor="middle" font-size="10.5" font-weight="700"
         font-family="-apple-system, sans-serif" fill="rgba(0,0,0,0.62)"></text>
 </svg>
 <canvas class="trace" id="trace" width="260" height="96" hidden></canvas>
@@ -279,7 +285,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'gest_small', bg: '#0f766e', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'plate_move', bg: '#6d28d9', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -535,6 +541,9 @@
     var roll  = Math.atan2(-m[6], m[8]) * deg;
     return { m: mat_from(-yaw, pitch, roll), pitch: pitch, yaw: -yaw, roll: roll };
   }
+  // pose_scale — 1 cm of hand travel is POSE_SC/100 units in the diagram, an
+  // axis arm is AX_LEN units long, and a tick every TICK units marks 5 cm.
+  var POSE_SC = 300, AX_LEN = 46, AX_MAX = 44, TICK = 15;
   function draw_pose(mult) {
     if (!poseEl || poseEl.hidden) return;
     var m0 = rel_matrix(); if (!m0) return;
@@ -548,8 +557,9 @@
       // the zero pose, faint: the rectangle the phone filled when you pressed
       // Set zero. The bold axes below never move, so the plate's departure from
       // this outline is the whole story.
-      ref.innerHTML = '<rect x="-15" y="-28" width="30" height="56" rx="3" ' +
-                      'stroke-dasharray="3 3" fill="none"/>';
+      ref.innerHTML = '<rect x="-10" y="-18" width="20" height="36" rx="2.5" ' +
+                      'stroke-dasharray="3 3" fill="none"/>' +
+                      '<circle cx="0" cy="0" r="1.6" fill="rgba(0,0,0,0.35)" stroke="none"/>';
     }
     // fixed_axes — the axes are the WORLD's and never move: X right, Y up,
     // Z toward you. The phone plate turns inside them. (It was the other way
@@ -560,46 +570,92 @@
     // the phone's own directions, used for the plate only
     var px_ = { x: m[0], y: m[3], z: m[6] };
     var py_ = { x: m[1], y: m[4], z: m[7] };
-    // axis_face: fat arrows with heads and letters, so an axis can be pointed at
+    // axis_face: fat arrows with heads and letters, so an axis can be pointed at.
+    // axis_rule: each arm also carries a faint negative stub and a tick every
+    // 5 cm, so how FAR along an axis the phone is can be read, not just which way.
     var axes = document.getElementById('pose_axes');
     function arrow(v, colour, letter) {
-      var e = iso({ x: v.x * 44, y: v.y * 44, z: v.z * 44 });
+      var e = iso({ x: v.x * AX_LEN, y: v.y * AX_LEN, z: v.z * AX_LEN });
       var n = Math.hypot(e.x, e.y) || 1;
       var ux = e.x / n, uy = e.y / n;
       var hx = e.x - ux * 7, hy = e.y - uy * 7;
-      var lx = e.x + ux * 9, ly = e.y + uy * 9;
-      return '<line x1="0" y1="0" x2="' + hx.toFixed(1) + '" y2="' + hy.toFixed(1) + '" stroke="' + colour + '" stroke-width="3.4"/>' +
-             '<polygon points="' + e.x.toFixed(1) + ',' + e.y.toFixed(1) + ' ' +
-               (hx - uy * 4).toFixed(1) + ',' + (hy + ux * 4).toFixed(1) + ' ' +
-               (hx + uy * 4).toFixed(1) + ',' + (hy - ux * 4).toFixed(1) + '" fill="' + colour + '" stroke="none"/>' +
-             '<text x="' + lx.toFixed(1) + '" y="' + (ly + 3.5).toFixed(1) + '" fill="' + colour +
-               '" font-size="11" font-weight="800" text-anchor="middle" stroke="none"' +
-               ' font-family="-apple-system, sans-serif">' + letter + '</text>';
+      var lx = e.x + ux * 10, ly = e.y + uy * 10;
+      var back = iso({ x: -v.x * AX_LEN * 0.8, y: -v.y * AX_LEN * 0.8, z: -v.z * AX_LEN * 0.8 });
+      var out = '<line x1="0" y1="0" x2="' + back.x.toFixed(1) + '" y2="' + back.y.toFixed(1) +
+                '" stroke="' + colour + '" stroke-width="1.5" opacity="0.28"/>' +
+                '<line x1="0" y1="0" x2="' + hx.toFixed(1) + '" y2="' + hy.toFixed(1) + '" stroke="' + colour + '" stroke-width="3.4"/>' +
+                '<polygon points="' + e.x.toFixed(1) + ',' + e.y.toFixed(1) + ' ' +
+                  (hx - uy * 4).toFixed(1) + ',' + (hy + ux * 4).toFixed(1) + ' ' +
+                  (hx + uy * 4).toFixed(1) + ',' + (hy - ux * 4).toFixed(1) + '" fill="' + colour + '" stroke="none"/>' +
+                '<text x="' + lx.toFixed(1) + '" y="' + (ly + 3.8).toFixed(1) + '" fill="' + colour +
+                  '" font-size="12" font-weight="800" text-anchor="middle" stroke="none"' +
+                  ' font-family="-apple-system, sans-serif">' + letter + '</text>';
+      for (var t = TICK; t <= AX_LEN - 4; t += TICK) {
+        [t, -t].forEach(function (d) {
+          var p = iso({ x: v.x * d, y: v.y * d, z: v.z * d });
+          out += '<line x1="' + (p.x - uy * 3.2).toFixed(1) + '" y1="' + (p.y + ux * 3.2).toFixed(1) +
+                 '" x2="' + (p.x + uy * 3.2).toFixed(1) + '" y2="' + (p.y - ux * 3.2).toFixed(1) +
+                 '" stroke="' + colour + '" stroke-width="1.4" opacity="0.5"/>';
+        });
+      }
+      return out;
     }
     axes.innerHTML = arrow(ax, '#dc2626', 'X') + arrow(ay, '#16a34a', 'Y') + arrow(az, '#2563eb', 'Z');
-    // the phone plate: a rectangle in its own x/y plane
+    // plate_move — the phone carries its travel now; the axes hold still. Each
+    // axis is clamped on its own so a big move on one never drags the picture off.
+    function clamp_ax(v) { var u = v * POSE_SC; return Math.max(-AX_MAX, Math.min(AX_MAX, u)); }
+    var mv = { x: clamp_ax(pos.x), y: clamp_ax(pos.y), z: clamp_ax(pos.z) };
+    var mvp0 = iso(mv);
+    // axis_read: a fat coloured bar from the origin to where the phone stands on
+    // that axis, a knob at the end of it, and a dashed line joining the knob to
+    // the phone — read one axis at a time without doing the projection yourself.
+    var guide = '', knob = '';
+    [[ax, '#dc2626', mv.x], [ay, '#16a34a', mv.y], [az, '#2563eb', mv.z]].forEach(function (g) {
+      var v = g[0], colour = g[1], d = g[2];
+      var p = iso({ x: v.x * d, y: v.y * d, z: v.z * d });
+      if (Math.abs(d) > 0.6) {
+        guide += '<line x1="0" y1="0" x2="' + p.x.toFixed(1) + '" y2="' + p.y.toFixed(1) +
+                 '" stroke="' + colour + '" stroke-width="6.5" stroke-linecap="round" opacity="0.42"/>' +
+                 '<line x1="' + p.x.toFixed(1) + '" y1="' + p.y.toFixed(1) + '" x2="' + mvp0.x.toFixed(1) +
+                 '" y2="' + mvp0.y.toFixed(1) + '" stroke="' + colour + '" stroke-width="1.3" opacity="0.6" stroke-dasharray="2.5 2.5"/>';
+        // the knob rides above the plate: the phone can never hide a reading
+        knob += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
+                '" r="3.2" fill="' + colour + '" stroke="#ffffff" stroke-width="1.1"/>';
+      }
+    });
+    document.getElementById('pose_guide').innerHTML = guide;
+    document.getElementById('pose_knob').innerHTML = knob;
+    // the phone plate: a rectangle in its own x/y plane, standing where it has
+    // travelled to rather than at the origin
     function corner(sx2, sy2) {
-      return { x: px_.x * sx2 + py_.x * sy2, y: px_.y * sx2 + py_.y * sy2, z: px_.z * sx2 + py_.z * sy2 };
+      return { x: mv.x + px_.x * sx2 + py_.x * sy2,
+               y: mv.y + px_.y * sx2 + py_.y * sy2,
+               z: mv.z + px_.z * sx2 + py_.z * sy2 };
     }
-    var w2 = 15, h2 = 28;
+    var w2 = 10, h2 = 18;
     var cs = [corner(-w2, h2), corner(w2, h2), corner(w2, -h2), corner(-w2, -h2)];
     document.getElementById('pose_plate').setAttribute('points',
       cs.map(function (c) { return pt(c, 1); }).join(' '));
     document.getElementById('pose_shadow').innerHTML =
       '<polygon points="' + cs.map(function (c) { return pt({ x: c.x, y: 0, z: c.z }, 1); }).join(' ') + '"/>';
     set_line(document.getElementById('pose_top'), iso(corner(-w2, h2)), iso(corner(w2, h2)));
-    // where it has travelled, in the zero frame: 1 cm of hand = 3 units here
-    var mv = { x: pos.x * 300, y: pos.y * 300, z: pos.z * 300 };
-    var mvp = iso(mv);
-    var lim = 52, mag = Math.hypot(mvp.x, mvp.y);
-    if (mag > lim) { mvp.x *= lim / mag; mvp.y *= lim / mag; }
-    set_line(document.getElementById('pose_move'), { x: 0, y: 0 }, mvp);
-    var head = document.getElementById('pose_head');
-    head.setAttribute('cx', mvp.x.toFixed(1)); head.setAttribute('cy', mvp.y.toFixed(1));
-    head.setAttribute('opacity', mag > 2 ? '1' : '0');
+    // a faint tether back to the origin, so the departure reads as a departure
+    set_line(document.getElementById('pose_move'), { x: 0, y: 0 }, mvp0);
+    // pos_read: the three positions spelled out in centimetres, in the axis
+    // colours, above the attitude line
+    function cm_txt(v) {
+      var n = v * 100;
+      return (n < -0.05 ? '\u2212' : '+') + Math.abs(n).toFixed(1);
+    }
+    document.getElementById('pose_pos').innerHTML =
+      '<tspan fill="#dc2626">X' + cm_txt(pos.x) + '</tspan>' +
+      '<tspan fill="rgba(0,0,0,0.25)">  </tspan>' +
+      '<tspan fill="#16a34a">Y' + cm_txt(pos.y) + '</tspan>' +
+      '<tspan fill="rgba(0,0,0,0.25)">  </tspan>' +
+      '<tspan fill="#2563eb">Z' + cm_txt(pos.z) + '</tspan>';
     // pitch / yaw / roll, straight out of the same matrix
     document.getElementById('pose_lbl').textContent =
-      'P' + flipped.pitch.toFixed(0) + '  Y' + flipped.yaw.toFixed(0) +
+      'cm   \u00b7   P' + flipped.pitch.toFixed(0) + '  Y' + flipped.yaw.toFixed(0) +
       '  R' + flipped.roll.toFixed(0) + '   \u00d7' + mult.toFixed(1);
   }
 

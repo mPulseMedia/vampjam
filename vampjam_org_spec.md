@@ -1028,7 +1028,29 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   gap above the bar. Playwright at 390×780: bar 206×145 ✓, hold button 192×51 ✓, no label
   clipped (scrollWidth ≤ clientWidth on all three) ✓, Set zero 12px clear of the bar ✓,
   a recorded take still captures 20 samples ✓, no page errors.
-- NEXT → add entry 196 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 196 plate_move — lab.html, release plate_move / violet) the diagram is inverted and
+  enlarged. plate_move: travel used to be a red arrow with a dot on its head while the phone
+  plate sat at the origin — a dot sliding along an axis. Now the AXES and the dashed zero
+  rectangle are pinned at the origin and the plate itself stands where the phone has
+  travelled to, carrying tilt and position together, with a faint dashed tether back to the
+  origin. The plate shrank (26×48 → 20×36 units) and its fill lightened to 0.16 so the frame
+  reads through it. axis_rule: each arm gains a faint negative stub (0.8 of the arm) and a
+  tick every 15 units = 5 cm, so how FAR along an axis it is can be read, not just which way;
+  arm 42 → 46 units, letters 11 → 12px. axis_read: a fat coloured bar runs from the origin to
+  the phone's position ON that axis, a white-ringed knob sits at its end, and a dashed line
+  joins the knob to the plate — one axis at a time, no projection to do in your head. The
+  knobs are a separate group drawn above the plate so the phone can never hide a reading.
+  pos_read: a bold 12px line under the picture spells the three positions in centimetres in
+  the axis colours (X+6.2 Y+3.5 Z+2.0), with pitch/yaw/roll and the multiple demoted to a
+  smaller line below. Panel 148×148 → 178×194 (+55% area), viewBox -72 -74 144 158, and the
+  trace strip moved from 182px to 228px to follow it. Each axis is clamped on its own
+  (±44 units ≈ ±14.7 cm) so a big move on one never drags the picture off. Playwright: plate
+  centre 0,0 at zero and 28.4,0 after a 9.5 cm slide right ✓; pose_axes innerHTML byte-identical
+  before the move, after the move and after pose(35,25,-15) — the frame genuinely holds still ✓;
+  guide group populates per moving axis (2 elements one axis, 6 for three) ✓; readouts correct ✓;
+  panel 178×194 with the trace clear below it ✓; glide_stop and gest_small regressions still
+  pass; no page errors.
+- NEXT → add entry 197 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

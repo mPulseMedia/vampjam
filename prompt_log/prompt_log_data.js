@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "195 gest_small",
+        id: "196 plate_move",
         expanded: true,
+        nodes: [
+          { text: "196 plate_move", children: [
+            { text: "prompt_restate", children: [
+              { text: "The little diagram is tiny \u2014 make the position on each axis clearer." },
+              { text: "Invert it: hold the axes still and move the PHONE relative to them, instead of a dot sliding along an axis." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "With the little diagram, can you make the position on the various Axis more clear it\u2019s tiny and a little hard to tell. Also I\u2019d like it too invert in that instead of showing a dot moving along an Axis as the phone is moved in one of the Axis instead of that which is what we have now I want you to move the phone Relative to the Axis in the illustration, hold the Axis still and move the phone in Relative position to the Axis" }
+            ]},
+            { text: "response", children: [
+              { text: "plate_move", children: [
+                { text: "the red travel arrow is gone" },
+                { text: "the axes and the dashed zero rectangle are pinned; the phone itself now stands where it has travelled to" },
+                { text: "the plate carries tilt and position together, with a faint dashed tether back to the origin" }
+              ]},
+              { text: "axis_read", children: [
+                { text: "a fat coloured bar runs from the origin to where the phone is ON each axis" },
+                { text: "a knob at the end of it, and a dashed line joining the knob to the phone" },
+                { text: "the knobs sit above the plate so the phone can never hide a reading" }
+              ]},
+              { text: "axis_rule", children: [
+                { text: "each arm has a faint negative stub and a tick every 5 cm, so you can tell how far, not just which way" }
+              ]},
+              { text: "pos_read", children: [
+                { text: "the three positions in centimetres, bold and colour-matched: X+6.2 Y+3.5 Z+2.0" },
+                { text: "pitch / yaw / roll and the multiple moved to a smaller line below" }
+              ]},
+              { text: "size_up", children: [
+                { text: "the panel is 178\u00d7194 where it was 148\u00d7148 \u2014 about half again the area" },
+                { text: "the trace strip moved down to follow it" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2m: release plate_move, violet \u2014 plate moves 0 \u2192 28.4 on a 9.5 cm slide while the axes markup stays byte-identical, through the move and through a big tilt" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "195 gest_small",
+        expanded: false,
         nodes: [
           { text: "195 gest_small", children: [
             { text: "prompt_restate", children: [
