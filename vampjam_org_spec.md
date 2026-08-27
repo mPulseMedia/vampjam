@@ -736,7 +736,17 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   cannot beat. Press is a scale-down that springs back. Playwright (touch context):
   background rgb(0,113,227) with its gradient before the tap, after the tap, and with the
   pointer parked on it ✓.
-- NEXT → add entry 173 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 173 tap_zoom — 12 pages) a mis-aimed double tap beside a button was making the
+  browser zoom the page. touch-action: manipulation on html and body of all 12 pages
+  (8 session pages, session.html, record, favorites, admin) — it drops the double-tap-to-
+  zoom gesture while leaving pinch-zoom and every scroll untouched, which beats
+  user-scalable=no (iOS ignores that anyway, and it would kill pinch too). touch-action
+  does NOT inherit, so a second rule names the things actually tapped:
+  button, a, input, label, .jam_item, .tag_row, .mom_row. The drag handles' own
+  touch-action: none and .tag_list's pan-y both outrank it and are unchanged. Playwright:
+  html/body/button all report manipulation on every page, .tag_list still pan-y, drag rule
+  intact, 171/172 regressions clean.
+- NEXT → add entry 174 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -21,6 +21,11 @@
   }
   * { box-sizing: border-box; }
   html, body { background: var(--bg); color: var(--fg); margin: 0; padding: 0; }
+  /* tap_zoom: no double-tap zoom on a mis-hit; pinch still works */
+  html, body { touch-action: manipulation; }
+  /* tap_zoom: touch-action does not inherit, so the things you actually tap
+     say it too — the drag handles keep their own 'none'. */
+  button, a, input, label, .jam_item, .tag_row, .mom_row { touch-action: manipulation; }
   body {
     font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     padding: 4px 16px 48px; max-width: 640px; margin: 0 auto;

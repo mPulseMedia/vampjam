@@ -8,9 +8,12 @@
 <script src="theme.js?v=2"></script>
 <style>
   * { box-sizing: border-box; }
-  html { background: var(--bg, #ffffff); }   /* kbd_black: never a transparent canvas */
+  html { background: var(--bg, #ffffff); touch-action: manipulation; }
+  /* tap_zoom: touch-action does not inherit, so the things you actually tap
+     say it too — the drag handles keep their own 'none'. */
+  button, a, input, label, .jam_item, .tag_row, .mom_row { touch-action: manipulation; }   /* kbd_black + tap_zoom */
   body {
-    margin: 0; background: var(--bg, #ffffff); color: var(--fg, #1d1d1f); min-height: 100vh; min-height: 100dvh;
+    margin: 0; background: var(--bg, #ffffff); color: var(--fg, #1d1d1f); min-height: 100vh; min-height: 100dvh; touch-action: manipulation;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     display: flex; flex-direction: column; align-items: center;
     padding: max(10px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));

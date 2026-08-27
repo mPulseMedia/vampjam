@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "172 btn_gray",
+        id: "173 tap_zoom",
         expanded: true,
+        nodes: [
+          { text: "173 tap_zoom", children: [
+            { text: "prompt_restate", children: [
+              { text: "A missed double-click beside a button makes the mobile browser zoom in; that should not happen on these pages." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Sometimes when I am double clicking a button I miss and I double click part of the screen and so the mobile browser zoom in for me, which is great, but I don\u2019t want that to happen for these pages" }
+            ]},
+            { text: "response", children: [
+              { text: "tap_zoom", children: [
+                { text: "double-tap zoom is off across all twelve pages — a stray double tap now does nothing" },
+                { text: "pinch to zoom still works, and so does every scroll and swipe" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: double tap an empty patch of a session page — nothing moves; pinch still zooms" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "172 btn_gray",
+        expanded: false,
         nodes: [
           { text: "172 btn_gray", children: [
             { text: "prompt_restate", children: [
