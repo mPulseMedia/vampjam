@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "169 release_upload",
+        id: "170 sess_0814",
         expanded: true,
+        nodes: [
+          { text: "170 sess_0814", children: [
+            { text: "prompt_restate", children: [
+              { text: "The oversized file was the wrong one; the correct, smaller file is uploaded to Cloudflare. Go ahead and make the session." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "wait. I uploaded the wtrong file to cloudflare the first time. it\u2019s smaller. so I uploaded it. So please proceed. It is uploaded!" }
+            ]},
+            { text: "response", children: [
+              { text: "sess_0814", children: [
+                { text: "session built: 2026-08-14 Sound Union, top of the list, playing from the bucket" },
+                { text: "no GitHub release needed — forget those steps" },
+                { text: "tag moments in it like any other session" }
+              ]},
+              { text: "one_assumption", children: [
+                { text: "I pointed it at 2026_08_14_sound_union.m4a in the bucket, the name from the rename step" },
+                { text: "I could not read the bucket listing from here to confirm it" },
+                { text: "if it does not play, send me the file name shown in the bucket and it is a one-line fix" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: open Sessions \u2192 2026-08-14 Sound Union \u2192 press play" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "169 release_upload",
+        expanded: false,
         nodes: [
           { text: "169 release_upload", children: [
             { text: "prompt_restate", children: [

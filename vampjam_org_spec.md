@@ -697,7 +697,22 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   at github.com/mPulseMedia/vampjam/releases/download/2026_08_14_sound_union/
   2026_08_14_sound_union.m4a, which is the url that goes in the session json. Standing
   move_to_r2 item unchanged — this adds one more release-hosted file to it.
-- NEXT → add entry 170 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 170 sess_0814 — new page + manifest) the file that got refused was the wrong one;
+  the right (smaller) one is in the R2 bucket, so the release route is dropped. Built the
+  session the STATIC way (the worker's registry can't be written from here — no sandbox
+  egress to workers.dev, and shipping sessions_auto.json is forbidden since 124):
+  2026_08_14_sound_union.html is a copy of the 08-07 page with PAGE_ID
+  sound_union_2026_08_14, its own <title> and h1, and the stale 'current' marker on the
+  static fallback row cleared; DATA_PATH derives from the filename, so it reads the new
+  2026_08_14_sound_union.json ({audio:{label:'2026-08-14 Sound Union', url:
+  pub-33cfd…r2.dev/2026_08_14_sound_union.m4a, kind:'url'}, tags:[]}); sessions.js gains
+  the row (dur 0 — durations aren't displayed since 160 and the page caches the real one
+  on first load) and every page's manifest is cache-busted to v=129. Assumption on the
+  record: the bucket object is named 2026_08_14_sound_union.m4a, per the rename step in
+  168 — the Chrome bridge could list his tabs but not read page text, so the bucket
+  listing could not be confirmed from here; if the audio 404s it is a one-line url fix in
+  the json.
+- NEXT → add entry 171 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
