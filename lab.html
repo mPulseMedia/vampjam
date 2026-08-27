@@ -377,7 +377,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'read_split', bg: '#1e40af', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'tilt_back', bg: '#a16207', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1000,13 +1000,13 @@
   // the zero pose. Tipping the top toward you leans the paper's TOP away, so
   // the squares crowd together up there and open out along the bottom.
   // PITCH_INV is the sign switch, as everything else here has one.
-  // PITCH_INV is -1 because the normal-based extraction comes out the opposite
-  // way round from the Euler term it replaced; this keeps the direction that
-  // already shipped, so the only change felt here is depth and the new axis.
-  // TURN_INV is -1 so the two axes agree: the edge you bring TOWARD your eye is
-  // the edge that lies away toward the vanishing point. That is his rule for
-  // the top, so it is the rule for the sides too.
-  var PITCH_INV = -1, TURN_INV = -1;
+  // tilt_back — PITCH_INV flips to +1: tipping the top of the phone toward you
+  // now brings the paper's TOP toward you and pushes its bottom away, the
+  // opposite of every build since paper_tilt. Only the top/bottom axis moves.
+  // TURN_INV stays -1, so the side axis keeps its old rule — the edge you bring
+  // toward your eye is the edge that lies away. The two are on opposite rules
+  // now, deliberately, until he says which one he wants for both.
+  var PITCH_INV = 1, TURN_INV = -1;
   var TILT_GAIN = 1.7;       // a modest tilt of the hand should lay it well down
   var TILT_MAX  = 74;        // deg: never let the plane go edge-on and vanish
   function lean(v, sign) {

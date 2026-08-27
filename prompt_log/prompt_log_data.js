@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "211 read_split",
+        id: "212 tilt_back",
         expanded: true,
+        nodes: [
+          { text: "212 tilt_back", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tilting toward or away pulls one side toward me and pushes the other away." },
+              { text: "Reverse which side gets pulled and which gets pushed." },
+              { text: "May be reversed again later." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, I may reverse this, but when I tilt the phone toward me or away from me, you\u2019ve been making either the top or the bottom closer to me and the other and further from me can you reverse that reverse how you handle which side gets pulled toward Ward versus away can you reverse that with what you have set up now for tilt" }
+            ]},
+            { text: "response", children: [
+              { text: "tilt_back", children: [
+                { text: "tipping the top toward you now brings the paper\u2019s top toward you and sends its bottom away" },
+                { text: "one character \u2014 this axis has had its own switch since the deep tilt build" }
+              ]},
+              { text: "side_left", children: [
+                { text: "the left/right axis is untouched, so the two are on opposite rules right now" },
+                { text: "you only asked about the top, and you said you may reverse it again \u2014 say the word if you want them matched" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1m: release tilt_back, ochre \u2014 top/bottom exactly mirrored from the last build, side axis measured unchanged, the picture now crowds toward the bottom where it crowded toward the top" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "211 read_split",
+        expanded: false,
         nodes: [
           { text: "211 read_split", children: [
             { text: "prompt_restate", children: [

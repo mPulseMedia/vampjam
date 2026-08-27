@@ -1366,7 +1366,19 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   reset at 350 / 545 / 743 / 940 ms ✓; veto table 10→1, 30→0.69, 60→0.17, 90→0 ✓; every prior
   lab regression re-run and passing (vj_197, vj_200 and vj_205 updated for the removed
   elements); no page errors.
-- NEXT → add entry 212 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 212 tilt_back — lab.html, release tilt_back / ochre) tilt_back: PITCH_INV -1 → +1, so
+  tipping the top of the phone toward you now brings the paper's TOP toward you and pushes its
+  bottom away toward the vanishing point — the opposite of every build since paper_tilt.
+  One character, because this axis has had its own named switch since tilt_deep. Only the
+  top/bottom axis moves: TURN_INV stays -1, so the side axis keeps the old rule (the edge you
+  bring toward your eye is the edge that lies away). The two are deliberately on OPPOSITE rules
+  now — he asked only for the top and said he may reverse it again, so the side is left alone
+  rather than guessed at; if he settles on one rule for both it is the other character.
+  Playwright: beta +20 → tilt -34 and beta -20 → tilt +34, exactly mirrored from the last build,
+  while gamma ±25 still gives ∓42.5 unchanged ✓; the rendered picture at beta +18 now crowds
+  toward the bottom where it crowded toward the top ✓; Set zero still clears the lean ✓;
+  glide_stop, plate_move, deck_one, paper_tilt and read_split regressions pass; no page errors.
+- NEXT → add entry 213 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
