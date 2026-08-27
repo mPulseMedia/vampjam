@@ -9,8 +9,33 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "167 kbd_black",
+        id: "168 m4a_upload",
         expanded: true,
+        nodes: [
+          { text: "168 m4a_upload", children: [
+            { text: "prompt_restate", children: [
+              { text: "An m4a sits on the laptop Desktop; it should become a new session dated August 14 2026, Sound Union." },
+              { text: "Wants the fewest, most explicit steps — and the file is huge." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I have a M4 a file on the desktop of my laptop. What\u2019s the best way to put it so it can be added as a new session. The session should be August 14, 2026 and it\u2019s a Sound Union but Weir what should I do with the file please be really super explicit with simple steps and make them few. but it\u2019s a huge file." }
+            ]},
+            { text: "response", children: [
+              { text: "m4a_upload", children: [
+                { text: "three steps: rename the file, drag it into the audio bucket in the browser, tell me it is up" },
+                { text: "I cannot upload it for you — neither this sandbox nor the helper on your Mac can reach the audio host, and the repo refuses audio files" },
+                { text: "once it is up I write the session and it appears in the list; no copy-paste of links needed" }
+              ]},
+              { text: "size_caveat", children: [
+                { text: "the bucket page tops out around 300 MB per file; if it refuses, we put it in a GitHub Release instead (2 GB), which is where the older sessions live" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "167 kbd_black",
+        expanded: false,
         nodes: [
           { text: "167 kbd_black", children: [
             { text: "prompt_restate", children: [

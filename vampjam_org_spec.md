@@ -676,7 +676,18 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   meta present, zero -webkit-overflow-scrolling rules, no clip; viewport shrunk to 380 with
   the scroll pushed past the end → scrollY clamped back inside ✓; scrollWidth == clientWidth
   ✓; 163/165 regressions clean.
-- NEXT → add entry 168 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 168 m4a_upload — no page edit) he has an m4a on the laptop Desktop for a
+  2026-08-14 Sound Union session and asked for the fewest explicit steps. Neither side can
+  upload it for him: the sandbox has no egress to R2/workers (curl → 000) and the device
+  shell has none either, and the repo gitignores m4a, so the file must go up from his
+  browser. Answer given: rename to 2026_08_14_sound_union.m4a → drag into the vampjam-audio
+  bucket (dash.cloudflare.com/?to=/:account/r2/default/buckets/vampjam-audio) → say
+  'uploaded', and I write 2026_08_14_sound_union.json ({audio:{label:'2026-08-14 Sound
+  Union', url: pub-33cfd…r2.dev/<file>, kind:'url'}, tags:[]}) plus the registry row via the
+  sync worker. Caveat flagged: the R2 dashboard tops out around 300 MB per file; over that
+  we fall back to a GitHub Release asset (2 GB), which is how the pre-R2 sessions are still
+  hosted.
+- NEXT → add entry 169 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
