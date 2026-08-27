@@ -1,1 +1,1 @@
-name_wide
+auto_commit
