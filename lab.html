@@ -394,7 +394,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'diag_flip', bg: '#86198f', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'turn_back', bg: '#7f1d1d', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1240,10 +1240,11 @@
   // it goes past 45, the bottom crowding and the top running to a vanishing
   // point. PITCH_INV is -1 for that to be the way round it falls.
   var TILT_BASE = 45;
-  // turn_flip: TURN_INV +1 — pushing the right edge away now throws the paper's
-  // vanishing point the other way. Only the side axis moves; the top/bottom lean
-  // and its 45-degree ground base are untouched.
-  var PITCH_INV = -1, TURN_INV = 1;
+  // turn_back: TURN_INV back to -1 — pulling the right edge toward you or away
+  // throws the paper's vanishing point the other way again. The top/bottom lean
+  // he likes as it is, so PITCH_INV and the 45-degree ground base are untouched;
+  // this is the side axis alone, and it is the only thing that changed.
+  var PITCH_INV = -1, TURN_INV = -1;
   var TILT_GAIN = 1.7;       // a modest tilt of the hand should lay it well down
   var TILT_MAX  = 74;        // deg: never let the plane go edge-on and vanish
   function lean(v, sign) {

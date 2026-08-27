@@ -9,8 +9,30 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "220 diag_flip",
+        id: "221 turn_back",
         expanded: true,
+        nodes: [
+          { text: "221 turn_back", children: [
+            { text: "prompt_restate", children: [
+              { text: "Rotating right or left \u2014 pulling one edge toward me or away \u2014 invert what that does to the graph paper." },
+              { text: "The tilt is right as it is; only the turn should go the other way." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I rotate the phone to the right or to the left, meaning I pull the right edge toward her away from me or the left edge toward her away from me, I would like you to invert the effect that it is having on the graph paper I like the tilt, but I like the graph paper tilt, but the tilt should be in the opposite way" }
+            ]},
+            { text: "turn_back", children: [
+              { text: "the side lean is reversed \u2014 pulling the right edge toward you now throws the vanishing point the other way" },
+              { text: "the top/bottom tilt is untouched, along with its 45-degree ground pose, exactly as you asked" }
+            ]},
+            { text: "verify", children: [
+              { text: "~2m: release turn_back, maroon \u2014 tilt measured unchanged at 45 / 74 / 11 across three poses while the turn flipped at every angle; whole suite green" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "220 diag_flip",
+        expanded: false,
         nodes: [
           { text: "220 diag_flip", children: [
             { text: "prompt_restate", children: [

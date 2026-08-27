@@ -1584,7 +1584,18 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   paper; MODEL_INV, TILT_INV, SWIRL_INV for the diagram. Every one has been flipped at least
   once and several more than that, which is the argument for having named them rather than
   burying minus signs in the maths.
-- NEXT → add entry 221 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 221 turn_back — lab.html, release turn_back / maroon) TURN_INV +1 → -1: pulling the
+  right edge toward you or away throws the paper's vanishing point the other way again, undoing
+  the flip made in iso_true. He said plainly that he likes the tilt as it is, so PITCH_INV and
+  the 45-degree ground base are untouched and the test asserts it — tilt still reads exactly
+  45.0 at rest, 74.0 at beta +20 and 11.0 at beta -20, unchanged in all three, while gamma ±25
+  goes from ∓42.5 to ±42.5 and gamma ±60 from ∓74 to ±74. This is the second reversal of this
+  one sign and the fourth on the paper overall; every one has been a one-character edit because
+  each axis has its own named switch. The diagram is untouched too (MODEL_INV, TILT_INV,
+  SWIRL_INV are separate). Whole lab suite re-run and green; no page errors.
+  test_note: the local http.server had died again between prompts. Restarting it on 8901 is the
+  first thing to try on ERR_CONNECTION_REFUSED — it is not the page.
+- NEXT → add entry 222 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
