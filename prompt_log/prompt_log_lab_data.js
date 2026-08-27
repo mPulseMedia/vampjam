@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "188 lag_trace",
+        id: "189 pose_arrow",
         expanded: true,
+        nodes: [
+          { text: "189 pose_arrow", children: [
+            { text: "prompt_restate", children: [
+              { text: "Replace the numbers with a vector diagram of where the phone is relative to its starting direction \u2014 angle, pitch, yaw, all of it." },
+              { text: "Draw it as an SVG that moves with the phone, an object on the grid." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Instead of those numbers, can you do kind of a vector diagram showing what you think the position of the phone is relative to some initial direction and I\u2019m talking show me angle and pitching yawn and all of it. Illustrate that somehow with an SVG that moves in response to the phone how that is an object the grid" }
+            ]},
+            { text: "response", children: [
+              { text: "pose_arrow", children: [
+                { text: "the numbers are gone; there is a little drawing instead, live" },
+                { text: "the plate is your phone \u2014 flat when you are flat, tipping and turning as you tip and turn it, with a heavier line marking its top edge" },
+                { text: "red, green and blue are the phone\u2019s own three directions; the faint ring and stubs are the zero you set, so the difference between them IS the pitch, yaw and roll" },
+                { text: "the dark red arrow is how far it has travelled from zero, and the shadow underneath gives it a floor" },
+                { text: "one small line of text is left \u2014 P, Y, R in degrees and the current multiple" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: release pose_arrow, cyan. Set zero, then tip and turn and slide, and watch the plate follow" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "188 lag_trace",
+        expanded: false,
         nodes: [
           { text: "188 lag_trace", children: [
             { text: "prompt_restate", children: [

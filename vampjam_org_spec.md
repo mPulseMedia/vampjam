@@ -935,7 +935,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   wall-clock, which is wrong if the sensor throttles (and made synthetic tests impossible)
   — it now accumulates SAMPLE time. Playwright: out-and-back lands at -13.4px of a 358px
   screen and holds there ('held'), the strip renders, state hook exposes px/mult/moving ✓.
-- NEXT → add entry 189 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 189 pose_arrow — lab.html, release pose_arrow / cyan) the numeric readout is
+  replaced by a live diagram: a 148px inline SVG showing the phone as an object standing on
+  the zero frame. Isometric projection with the phone's own y drawn away from the viewer
+  and its z drawn up, so the zero pose (phone flat) reads flat and every tip reads as a tip.
+  Drawn each frame from R_rel = transpose(R0)·Rnow: a translucent plate for the phone body
+  with a heavier edge marking its top, its three axes as red/green/blue arrows, a faint
+  ellipse and axis stubs for the zero frame it is being measured against, a dropped shadow
+  polygon on the ground plane for depth, and a dark-red arrow with a head for how far it
+  has travelled (300 units per metre, clamped to the box). One small line of text remains —
+  P/Y/R in degrees and the current multiple — extracted from the same matrix
+  (pitch = asin(m7), yaw = atan2(-m1,m4), roll = atan2(-m6,m8)). The trace strip moved down
+  to make room. Playwright: pitch/roll/yaw each change the plate polygon and read back
+  P30 / R-25 / Y40, a slide + approach draws the travel arrow at 18.7,-26.6 with ×1.4, no
+  page errors ✓.
+- NEXT → add entry 190 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

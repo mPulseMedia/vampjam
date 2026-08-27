@@ -148,20 +148,17 @@
      grey = how hard the phone is accelerating, purple = where the world is. */
   .trace {
     position: fixed; z-index: 6; right: max(22px, calc(env(safe-area-inset-right) + 10px));
-    top: max(228px, calc(env(safe-area-inset-top) + 214px));
+    top: max(286px, calc(env(safe-area-inset-top) + 272px));
     width: 130px; height: 48px; border-radius: 10px;
     background: rgba(255,255,255,0.86);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     pointer-events: none;
   }
-  .readout {
-    /* under Set zero, clear of the release square and the back button */
-    position: fixed; z-index: 6; right: max(22px, calc(env(safe-area-inset-right) + 10px));
-    top: max(132px, calc(env(safe-area-inset-top) + 118px));
-    background: rgba(255,255,255,0.86); color: #1d1d1f;
-    border-radius: 12px; padding: 7px 12px;
-    font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;
-    white-space: pre; line-height: 1.5; text-align: right;
+  .pose {
+    position: fixed; z-index: 6; right: max(18px, calc(env(safe-area-inset-right) + 8px));
+    top: max(126px, calc(env(safe-area-inset-top) + 112px));
+    width: 148px; height: 148px; border-radius: 14px;
+    background: rgba(255,255,255,0.86);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     pointer-events: none;
@@ -250,13 +247,26 @@
   </div>
 </div>
 <button class="motion_btn" id="motion_btn">Set zero</button>
-<div class="readout" id="readout" hidden></div>
+<svg class="pose" id="pose" viewBox="-70 -70 140 140" hidden aria-hidden="true">
+  <!-- pose_arrow: the phone as an object on the grid. Faint axes are the zero
+       frame you set; the plate is the phone at its current attitude; the three
+       arrows are its own axes; the thick arrow is where it has travelled. -->
+  <g id="pose_ref" stroke="rgba(0,0,0,0.18)" stroke-width="1" fill="none"></g>
+  <g id="pose_shadow" fill="rgba(0,0,0,0.10)"></g>
+  <polygon id="pose_plate" fill="rgba(14,116,144,0.20)" stroke="#0e7490" stroke-width="1.6" stroke-linejoin="round"></polygon>
+  <line id="pose_top" stroke="#0e7490" stroke-width="2.6" stroke-linecap="round"></line>
+  <g id="pose_axes" stroke-width="2" stroke-linecap="round" fill="none"></g>
+  <line id="pose_move" stroke="#b91c1c" stroke-width="2.6" stroke-linecap="round"></line>
+  <circle id="pose_head" r="3" fill="#b91c1c"></circle>
+  <text id="pose_lbl" x="0" y="62" text-anchor="middle" font-size="11" font-weight="700"
+        font-family="-apple-system, sans-serif" fill="rgba(0,0,0,0.62)"></text>
+</svg>
 <canvas class="trace" id="trace" width="260" height="96" hidden></canvas>
 
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'lag_trace', bg: '#6b21a8', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'pose_arrow', bg: '#0e7490', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -435,7 +445,86 @@
     return (r.z > 0 ? 'closer ' : 'away ') + cm + ' cm';
   }
   var motionBtn = document.getElementById('motion_btn');
-  var readout   = document.getElementById('readout');
+  var poseEl    = document.getElementById('pose');
+  // pose_arrow — the phone drawn as an object sitting on the zero frame.
+  // Isometric projection: a 3D point becomes (x - z)*0.87 across and
+  // -(y + (x + z)*0.5) down, which is enough to read pitch, yaw and roll at a
+  // glance without any of the numbers he is tired of.
+  function iso(v) {
+    // the zero pose is the phone lying in the ground plane, so the phone's own
+    // y (its long axis) is drawn going away from you and its z (the screen
+    // normal) is drawn straight up — a flat phone looks flat, a tipped one tips
+    var d = { x: v.x, y: v.z, z: -v.y };
+    return { x: (d.x - d.z) * 0.866, y: -(d.y + (d.x + d.z) * 0.5) };
+  }
+  function pt(v, s) { var p = iso({ x: v.x * s, y: v.y * s, z: v.z * s }); return p.x.toFixed(1) + ',' + p.y.toFixed(1); }
+  function rel_matrix() {
+    if (!R0 || !Rnow) return null;
+    // transpose(R0) * Rnow — the phone's attitude measured from the zero pose
+    var m = new Array(9);
+    for (var r = 0; r < 3; r++) for (var c = 0; c < 3; c++) {
+      var s = 0;
+      for (var k = 0; k < 3; k++) s += R0[k * 3 + r] * Rnow[k * 3 + c];
+      m[r * 3 + c] = s;
+    }
+    return m;
+  }
+  function set_line(el, a, b) {
+    el.setAttribute('x1', a.x.toFixed(1)); el.setAttribute('y1', a.y.toFixed(1));
+    el.setAttribute('x2', b.x.toFixed(1)); el.setAttribute('y2', b.y.toFixed(1));
+  }
+  var poseInit = false;
+  function draw_pose(mult) {
+    if (!poseEl || poseEl.hidden) return;
+    var m = rel_matrix(); if (!m) return;
+    var ref = document.getElementById('pose_ref');
+    if (!poseInit) {   // the zero frame, drawn once
+      poseInit = true;
+      var g = '';
+      [[{x:1,y:0,z:0}], [{x:0,y:1,z:0}], [{x:0,y:0,z:1}]].forEach(function (a) {
+        var p = iso({ x: a[0].x * 42, y: a[0].y * 42, z: a[0].z * 42 });
+        g += '<line x1="0" y1="0" x2="' + p.x.toFixed(1) + '" y2="' + p.y.toFixed(1) + '"/>';
+      });
+      g += '<ellipse cx="0" cy="0" rx="46" ry="23" opacity="0.5"/>';
+      ref.innerHTML = g;
+    }
+    // the phone's own axes, from the relative matrix (columns are the axes)
+    var ax = { x: m[0], y: m[3], z: m[6] };
+    var ay = { x: m[1], y: m[4], z: m[7] };
+    var az = { x: m[2], y: m[5], z: m[8] };
+    var axes = document.getElementById('pose_axes');
+    axes.innerHTML =
+      '<line x1="0" y1="0" x2="' + pt(ax, 34).split(',')[0] + '" y2="' + pt(ax, 34).split(',')[1] + '" stroke="#dc2626"/>' +
+      '<line x1="0" y1="0" x2="' + pt(ay, 34).split(',')[0] + '" y2="' + pt(ay, 34).split(',')[1] + '" stroke="#16a34a"/>' +
+      '<line x1="0" y1="0" x2="' + pt(az, 34).split(',')[0] + '" y2="' + pt(az, 34).split(',')[1] + '" stroke="#2563eb"/>';
+    // the phone plate: a rectangle in its own x/y plane
+    function corner(sx2, sy2) {
+      return { x: ax.x * sx2 + ay.x * sy2, y: ax.y * sx2 + ay.y * sy2, z: ax.z * sx2 + ay.z * sy2 };
+    }
+    var w2 = 15, h2 = 28;
+    var cs = [corner(-w2, h2), corner(w2, h2), corner(w2, -h2), corner(-w2, -h2)];
+    document.getElementById('pose_plate').setAttribute('points',
+      cs.map(function (c) { return pt(c, 1); }).join(' '));
+    document.getElementById('pose_shadow').innerHTML =
+      '<polygon points="' + cs.map(function (c) { return pt({ x: c.x, y: 0, z: c.z }, 1); }).join(' ') + '"/>';
+    set_line(document.getElementById('pose_top'), iso(corner(-w2, h2)), iso(corner(w2, h2)));
+    // where it has travelled, in the zero frame: 1 cm of hand = 3 units here
+    var mv = { x: pos.x * 300, y: pos.y * 300, z: pos.z * 300 };
+    var mvp = iso(mv);
+    var lim = 52, mag = Math.hypot(mvp.x, mvp.y);
+    if (mag > lim) { mvp.x *= lim / mag; mvp.y *= lim / mag; }
+    set_line(document.getElementById('pose_move'), { x: 0, y: 0 }, mvp);
+    var head = document.getElementById('pose_head');
+    head.setAttribute('cx', mvp.x.toFixed(1)); head.setAttribute('cy', mvp.y.toFixed(1));
+    head.setAttribute('opacity', mag > 2 ? '1' : '0');
+    // pitch / yaw / roll, straight out of the same matrix
+    var deg = 180 / Math.PI;
+    var pitch = Math.asin(Math.max(-1, Math.min(1, m[7]))) * deg;
+    var yaw   = Math.atan2(-m[1], m[4]) * deg;
+    var roll  = Math.atan2(-m[6], m[8]) * deg;
+    document.getElementById('pose_lbl').textContent =
+      'P' + pitch.toFixed(0) + '  Y' + yaw.toFixed(0) + '  R' + roll.toFixed(0) + '   \u00d7' + mult.toFixed(1);
+  }
 
   // orientation -> rotation matrix (ZXY intrinsic, the W3C convention)
   function mat_from(alpha, beta, gamma) {
@@ -571,15 +660,7 @@
     root.setProperty('--sx', sx.toFixed(1) + 'px');
     root.setProperty('--sy', sy.toFixed(1) + 'px');
     root.setProperty('--sc', mult.toFixed(3));
-    if (readout) {
-      readout.textContent =
-        'across  ' + (sx / w >= 0 ? '+' : '') + (sx / w).toFixed(2) + ' screens' +
-        '   up  ' + (sy / w >= 0 ? '+' : '') + (sy / w).toFixed(2) +
-        '\n' + Math.round(dist * 100) + ' cm   ×' + mult.toFixed(2) +
-        '   ' + Math.max(1, Math.round((frame.clientHeight || 700) / (30 * mult))) + ' lines' +
-        '\n' + (moving ? 'moving…' : (lastMove ? 'held · ' + lastMove : 'held')) +
-        (rotVeto < 0.5 ? '   (turning — ignored)' : '');
-    }
+    draw_pose(mult);
     requestAnimationFrame(paint_world);
   }
 
@@ -599,7 +680,7 @@
     window.addEventListener('devicemotion', on_motion);
     motionBtn.classList.add('on');
     motionBtn.textContent = 'Set zero';
-    if (readout) readout.hidden = false;
+    if (poseEl) poseEl.hidden = false;
     if (traceEl) traceEl.hidden = false;
     if (hint) hint.style.opacity = '0';
     requestAnimationFrame(paint_world);
@@ -877,7 +958,8 @@
     world: function () {
       var st = getComputedStyle(document.documentElement);
       return { sx: st.getPropertyValue('--sx').trim(), sy: st.getPropertyValue('--sy').trim(),
-               sc: st.getPropertyValue('--sc').trim(), read: (readout.textContent || '').replace('\n', ' | ') };
+               sc: st.getPropertyValue('--sc').trim(),
+               read: (document.getElementById('pose_lbl').textContent || '') };
     },
     takes: function () { return gest_get(); }
   };
