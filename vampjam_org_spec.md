@@ -921,7 +921,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Playwright: slide right lands at 310.8px and is still at 310.8px after 1.5s of stillness
   (and through the next unrelated move), closer holds ×1.98 / 13 lines, categories read
   right/up/closer with the distance ✓.
-- NEXT → add entry 188 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 188 lag_trace — lab.html, release lag_trace / plum) his round trip ended where it
+  started but 'took a long time to get there'. Cause: position is the double integral of
+  acceleration, so it structurally trails the hand. Fix without breaking the hold: display
+  pos + vel*LEAD (0.10s of prediction) for all three axes — while the phone travels the
+  world sits where the phone WILL be a tenth of a second on, and at rest vel is 0 so the
+  lead vanishes and nothing overshoots. And to answer the second half of his ask — a way
+  to say what is and isn't working — the page now shows it instead of describing it:
+  .trace, a 130×48 canvas holding four rolling seconds of hand effort (grey, |a| in the
+  zero frame) against world offset (plum), so the gap between the two is visible. Takes
+  gained an st[] field per sample (pos xyz, vel xyz, moving) so a recording can be measured
+  end to end from this side. Also fixed while testing: move-end quiet was counted in
+  wall-clock, which is wrong if the sensor throttles (and made synthetic tests impossible)
+  — it now accumulates SAMPLE time. Playwright: out-and-back lands at -13.4px of a 358px
+  screen and holds there ('held'), the strip renders, state hook exposes px/mult/moving ✓.
+- NEXT → add entry 189 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

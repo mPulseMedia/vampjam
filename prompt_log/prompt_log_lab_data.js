@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "187 hold_still",
+        id: "188 lag_trace",
         expanded: true,
+        nodes: [
+          { text: "188 lag_trace", children: [
+            { text: "prompt_restate", children: [
+              { text: "In the last recording he started and ended in the same place and the dot did come back \u2014 but it took a long time to get there." },
+              { text: "He wants a way to communicate what is working and what is not." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "In this last recording, I start an end in the same position and the dot did return to the same position, but it took a long time to get there and I\u2019d like to figure out how to communicate what\u2019s working and what\u2019s not working" }
+            ]},
+            { text: "response", children: [
+              { text: "lag_trace", children: [
+                { text: "the lag is real and it is structural: position has to be built from acceleration twice over, so it always runs behind your hand" },
+                { text: "the world now shows where the phone will be a tenth of a second from now, which cancels most of that \u2014 and because it is based on speed, it disappears the instant you stop, so nothing overshoots" }
+              ]},
+              { text: "how_we_talk_about_it", children: [
+                { text: "a small strip in the corner draws the last four seconds: grey is your hand pushing, purple is where the world went" },
+                { text: "if purple lags grey, you can see it; if purple keeps moving after grey stops, you can see that too \u2014 point at the shape instead of describing it" },
+                { text: "and every take you record now carries what the page computed at each instant, so I can measure the delay in milliseconds from your recording rather than guessing" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: release lag_trace, purple. Set zero, slide out and back, and watch the strip" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "187 hold_still",
+        expanded: false,
         nodes: [
           { text: "187 hold_still", children: [
             { text: "prompt_restate", children: [
