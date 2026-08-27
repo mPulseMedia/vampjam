@@ -1,1 +1,1 @@
-paper_scale
+auto_commit
