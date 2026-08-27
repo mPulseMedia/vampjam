@@ -1490,7 +1490,33 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   other way. Side axis only — the top/bottom lean and its 45-degree ground base are untouched,
   which the test asserts (tilt still exactly 45 at rest). Whole lab suite re-run and green; no
   page errors.
-- NEXT → add entry 217 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 217 rig_right — lab.html, release rig_right / royal blue) the interface collapses to
+  almost nothing, and the page watches its own source. rig_right: the full-width deck is gone.
+  Everything he touches is now a 168px column off the RIGHT edge, lifted 96px off the bottom
+  corner: one wide Record (56px tall), and above it the traffic light the button turns into
+  when the tape starts. The window gets its bottom back (no more 108px reservation). no_name:
+  the name field is deleted outright — a take is identified by its number ('take 7') and by its
+  marks, which is what actually tells one from another; the keyboard-raising dance in rec_stop
+  goes with it. The two things that are not controls — where you came from and which build this
+  is — move to the top-left corner as a small pill and a small chip. light_show: green (good) /
+  amber (a little bad) / red (way bad) appear together while recording, BUT red stays out at
+  all times on its own, because red is also the reset and the reset has to be reachable when
+  you are only moving the paper around; it widens from 52px to a third of the row when its two
+  companions arrive. Green is back — with a name field gone there is now a reason to say 'this
+  bit was fine'.
+  watch_live: the page reloads itself when its own source changes. It asks the server every 5s
+  whether lab.html has a new ETag (falling back to Last-Modified, then to length), reloads when
+  it does, and gives up after 16 minutes of no change so a page left open does not poll all
+  night. A small pulsing dot under the release chip says 'watching', turns blue and says
+  'changed — reloading' at the moment it fires, and goes grey with 'watch off — no change for
+  15 min' when it stops. Skipped entirely on file:// . Proven live: touching lab.html on disk
+  reloaded the open page 4.6s later, and touching it again reloaded it again.
+  Playwright: name field absent; rig at x206 y606 168×78 with Record 168×56; back and chip at
+  16,16 and 16,56; window back to 362×752; lights off/off/on when idle and on/on/on while
+  recording; a take saved as 'take 1' with good / a_little_off / reset / way_off / levelled on
+  its track; watcher shown and reloading on a real file change. Whole lab suite re-run and
+  green (five tests repointed off the deleted name field and deck geometry); no page errors.
+- NEXT → add entry 218 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

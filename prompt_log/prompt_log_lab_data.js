@@ -9,8 +9,50 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "216 iso_true",
+        id: "217 rig_right",
         expanded: true,
+        nodes: [
+          { text: "217 rig_right", children: [
+            { text: "prompt_restate", children: [
+              { text: "Get rid of the name field; simplify." },
+              { text: "One wide Record button that turns into green / yellow / red when pressed." },
+              { text: "Stack it off the right edge, a little up from the bottom corner." },
+              { text: "Move everything else away \u2014 just Record, the traffic light, and back." },
+              { text: "Make the page reload itself when the source changes, check every five seconds, show that it is watching, and stop after fifteen minutes of nothing." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, get rid of the name filled in the data trace and make it simplify. Just have a wide button called record and when I hit the record button, have those turn into the green yellow and red of the traffic light feedback things are good. Things are a little bad things are way bad and make that be in the bottom right corner of the well actually yeah a little up from the bottom right corner so actually you can stack the interface element kind of being built off the right edge of the page and move some other stuff away so that it\u2019s just the record and traffic light and back in process it." },
+              { text: "Can you build into this page something that reloads itself whenever the source files have changed and give some indication that that\u2019s happening that query is being monitored because I don\u2019t want them but I\u2019m developing this thing. It\u2019s very helpful to have it. Yeah check every five seconds and if it\u2019s hasn\u2019t been updated and over five minutes checking let\u2019s make it more than five minutes. It\u2019s taking longer than 15 minutes. Stop." }
+            ]},
+            { text: "rig_right", children: [
+              { text: "the bar across the bottom is gone \u2014 it is a narrow column off the right edge now, lifted off the corner" },
+              { text: "one wide Record, and the traffic light it turns into" },
+              { text: "back and the release name moved to the top-left corner, out of the way" },
+              { text: "the window gets its full height back" }
+            ]},
+            { text: "no_name", children: [
+              { text: "the name field is deleted \u2014 a take is \u201ctake 7\u201d plus its marks, which is what really tells them apart" },
+              { text: "and no keyboard jumping up at you when you stop" }
+            ]},
+            { text: "light_show", children: [
+              { text: "green good, amber a little bad, red way bad \u2014 all three while recording" },
+              { text: "red stays out on its own the rest of the time, because red is also the reset and you need that when you are just moving the paper around" }
+            ]},
+            { text: "watch_live", children: [
+              { text: "the page now watches its own source and reloads itself when it changes" },
+              { text: "a small pulsing dot says watching, goes blue and says changed \u2014 reloading when it fires" },
+              { text: "it gives up after fifteen minutes of nothing and says so, so a page left open does not poll all night" },
+              { text: "proven live: I touched the file and the open page reloaded 4.6 seconds later" }
+            ]},
+            { text: "verify", children: [
+              { text: "~9m: release rig_right, royal blue \u2014 geometry measured, lights off/off/on idle and on/on/on recording, a take saved as \u201ctake 1\u201d with all five marks, watcher reloaded on a real file change" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "216 iso_true",
+        expanded: false,
         nodes: [
           { text: "216 iso_true", children: [
             { text: "prompt_restate", children: [
