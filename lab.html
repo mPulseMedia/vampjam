@@ -139,7 +139,7 @@
      just above the recorder bar, where a right thumb lands without a stretch. */
   .motion_btn {
     position: fixed; z-index: 8;
-    bottom: max(236px, calc(env(safe-area-inset-bottom) + 226px));
+    bottom: max(173px, calc(env(safe-area-inset-bottom) + 165px));
     right: max(22px, calc(env(safe-area-inset-right) + 10px));
     background: rgba(29,29,31,0.86); color: #ffffff;
     border: none; border-radius: 999px; padding: 15px 22px;
@@ -174,25 +174,29 @@
   /* gesture_lab — hold the button, do the move, let go. Everything the phone's
      sensors say during the hold is kept, tagged with the name you typed, so
      the two of us can look at real numbers instead of guessing. */
+  /* gest_small — everything around the hold button gets out of the way: the bar
+     is far narrower, the chrome is half the size it was. The one thing that does
+     NOT shrink is the hold target itself, which stays a full-height slab because
+     it is held down through a whole gesture with the phone in motion. */
   .gest_bar {
     position: fixed; z-index: 7; left: 50%; transform: translateX(-50%);
-    bottom: max(20px, calc(env(safe-area-inset-bottom) + 10px));
-    width: min(340px, calc(100vw - 60px));
-    background: rgba(255,255,255,0.92); border-radius: 18px; padding: 12px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.28);
+    bottom: max(16px, calc(env(safe-area-inset-bottom) + 8px));
+    width: min(206px, calc(100vw - 120px));
+    background: rgba(255,255,255,0.92); border-radius: 13px; padding: 7px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.24);
     -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-    display: flex; flex-direction: column; gap: 8px;
+    display: flex; flex-direction: column; gap: 5px;
     touch-action: manipulation;
   }
   #g_name {
-    width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 10px;
-    padding: 9px 11px; font: inherit; font-size: 15px; color: #1d1d1f;
+    width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 7px;
+    padding: 5px 7px; font: inherit; font-size: 12px; color: #1d1d1f;
     background: #ffffff; outline: none;
   }
   #g_name:focus { border-color: #1350c4; }
   .g_rec {
-    width: 100%; border: none; border-radius: 12px; padding: 14px;
-    font: inherit; font-size: 16px; font-weight: 700; cursor: pointer;
+    width: 100%; border: none; border-radius: 11px; padding: 17px 10px;
+    font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
     background: #d7263d; color: #ffffff; touch-action: none;
     box-shadow: 0 3px 10px rgba(215,38,61,0.35);
   }
@@ -200,9 +204,9 @@
   @keyframes g_pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.72; } }
   /* take_clear: the bar says which of the four states it is in, in colour and
      in words — idle, recording, sending, sent-and-ready. */
-  .g_status { font-size: 12px; color: rgba(0,0,0,0.55); text-align: center; min-height: 16px;
-              display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .g_led { width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.22); flex: 0 0 auto; }
+  .g_status { font-size: 10px; line-height: 1.25; color: rgba(0,0,0,0.55); text-align: center; min-height: 12px;
+              display: flex; align-items: center; justify-content: center; gap: 4px; }
+  .g_led { width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,0.22); flex: 0 0 auto; }
   .gest_bar.is_rec  .g_led { background: #d7263d; animation: g_pulse 1s ease-in-out infinite; }
   .gest_bar.is_send .g_led { background: #e0a800; animation: g_pulse 0.7s ease-in-out infinite; }
   .gest_bar.is_sent .g_led { background: #16a34a; }
@@ -211,16 +215,18 @@
   .gest_bar.is_sent { box-shadow: 0 6px 20px rgba(22,163,74,0.40); }
   .gest_bar.is_sent #g_msg { color: #16a34a; font-weight: 700; }
   .gest_bar.is_rec  #g_msg { color: #d7263d; font-weight: 700; }
-  .g_recent { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; min-height: 0; }
-  .g_chip { font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.55);
-            background: rgba(0,0,0,0.06); border-radius: 999px; padding: 3px 8px; }
-  .g_row { display: flex; align-items: center; gap: 8px; }
+  .g_recent { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; min-height: 0; }
+  .g_chip { font-size: 9px; font-weight: 600; color: rgba(0,0,0,0.55);
+            background: rgba(0,0,0,0.06); border-radius: 999px; padding: 2px 6px;
+            max-width: 88px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .g_row { display: flex; align-items: center; gap: 4px; }
   .g_small {
-    flex: 1 1 auto; border: none; border-radius: 9px; padding: 8px;
-    font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+    flex: 1 1 auto; min-width: 0; border: none; border-radius: 7px; padding: 5px 4px;
+    font: inherit; font-size: 10px; font-weight: 600; cursor: pointer;
     background: rgba(0,0,0,0.06); color: #1d1d1f; touch-action: manipulation;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .g_count { flex: 0 0 auto; font-size: 12px; color: rgba(0,0,0,0.45); min-width: 46px; text-align: right; }
+  .g_count { flex: 0 0 auto; font-size: 10px; color: rgba(0,0,0,0.45); min-width: 30px; text-align: right; }
 </style>
 </head>
 <body>
@@ -243,13 +249,13 @@
 
 <div class="gest_bar" id="gest_bar">
   <input id="g_name" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"
-         placeholder="name the pair — raise / lower">
+         placeholder="name it — raise / lower">
   <button id="g_rec" class="g_rec">Hold to record</button>
-  <div class="g_status" id="g_status"><span class="g_led" id="g_led"></span><span id="g_msg">hold the button, do the gesture, let go</span></div>
+  <div class="g_status" id="g_status"><span class="g_led" id="g_led"></span><span id="g_msg">hold, move, let go</span></div>
   <div class="g_recent" id="g_recent"></div>
   <div class="g_row">
-    <button id="g_copy" class="g_small">Copy last take</button>
-    <button id="g_send" class="g_small">Send takes</button>
+    <button id="g_copy" class="g_small">Copy last</button>
+    <button id="g_send" class="g_small">Send</button>
     <span class="g_count" id="g_count"></span>
   </div>
 </div>
@@ -273,7 +279,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'glide_stop', bg: '#7c2d12', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'gest_small', bg: '#0f766e', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);

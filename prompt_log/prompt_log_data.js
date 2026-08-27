@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "194 glide_stop",
+        id: "195 gest_small",
         expanded: true,
+        nodes: [
+          { text: "195 gest_small", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the whole hold-to-record control a lot smaller." },
+              { text: "Keep the hold button itself big." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "With the interface, make the whole hold to record control a whole lot, smaller and but still moving big" }
+            ]},
+            { text: "response", children: [
+              { text: "gest_small", children: [
+                { text: "the bar is 206\u00d7145 where it was 340\u00d7216 \u2014 about 40% of the space it was taking" },
+                { text: "name field, status line, take chips and the two small buttons all about a third smaller" },
+                { text: "shorter labels (Copy last / Send) so nothing spills in the narrower bar" }
+              ]},
+              { text: "hold_big", children: [
+                { text: "the hold target is untouched \u2014 still a 51px slab" },
+                { text: "you hold it through a whole gesture while the phone is moving, so it stays easy to hit" }
+              ]},
+              { text: "thumb_reach", children: [
+                { text: "Set zero drops with the bar, 173px off the bottom, 12px above it" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1m: release gest_small, teal \u2014 measured at 390\u00d7780, no label clipped, a take still captures 20 samples" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "194 glide_stop",
+        expanded: false,
         nodes: [
           { text: "194 glide_stop", children: [
             { text: "prompt_restate", children: [

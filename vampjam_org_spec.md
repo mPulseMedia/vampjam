@@ -1015,7 +1015,20 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   left of zero, held reads 'right 9 cm' ✓; two slides in a row accumulate (368 → 735px) ✓;
   up reads 'up 7 cm', a push toward the eye reads 'closer 3 cm' and lifts the multiple to
   ×1.25 ✓; recorder captures 20 samples where it captured 0 ✓; no page errors.
-- NEXT → add entry 195 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 195 gest_small — lab.html, release gest_small / teal) the recorder bar was taking a
+  third of the screen away from the thing it is there to measure. Everything around the hold
+  button shrinks: the bar goes 340×216 → 206×145 (width -39%, area -59%), padding 12→7,
+  gap 8→5, radius 18→13; the name field 15px/9px padding → 12px/5px; the status line 12px →
+  10px with a 6px LED; the take chips 11px → 9px, capped at 88px with an ellipsis; the two
+  small buttons 13px → 10px with shortened labels (Copy last / Send) and nowrap+ellipsis so
+  they can never spill. hold_big: the one thing that does NOT shrink is the hold target —
+  17px vertical padding keeps it a 51px slab (was 52), because it is held down through a
+  whole gesture while the phone is moving and a small target would be missed. thumb_reach
+  follows the shorter bar: Set zero moves from 236px off the bottom to 173px, keeping a 12px
+  gap above the bar. Playwright at 390×780: bar 206×145 ✓, hold button 192×51 ✓, no label
+  clipped (scrollWidth ≤ clientWidth on all three) ✓, Set zero 12px clear of the bar ✓,
+  a recorded take still captures 20 samples ✓, no page errors.
+- NEXT → add entry 196 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
