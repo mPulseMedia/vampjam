@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "205 swirl_flip",
+        id: "206 paper_tilt",
         expanded: true,
+        nodes: [
+          { text: "206 paper_tilt", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tilting the top of the phone toward my eye should lean the graph paper." },
+              { text: "It starts flat \u2014 everything on one plane, equidistant." },
+              { text: "As the top comes toward me, the paper\u2019s top moves toward a vanishing point." },
+              { text: "The bottom expands with foreshortening." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I tilt the phone to Ward that when I tilt the top of the phone toward my eye, would I expect to see is the grid the grid in the top far distance pitches down meaning it begins with everything equidistant from my eye at least on the same plane, but now I see the graph paper such that there is for shortening along the bottom and a vanishing point along the top, and as I tilt the top of the phone toward my eye that flat graph paper tilts its top away from me such that it\u2019s top moves toward the vanishing point and it\u2019s bottom expands with for shortening" }
+            ]},
+            { text: "response", children: [
+              { text: "paper_tilt", children: [
+                { text: "the window is a real camera now and the paper is a plane lying behind it" },
+                { text: "tip the top toward you and the paper\u2019s top leans away \u2014 squares crowd toward a vanishing point above, and open out along the bottom" },
+                { text: "tip it away and it mirrors; flat is flat, exactly as before" },
+                { text: "the lean stops at 72 degrees so the plane can never go edge-on and disappear" }
+              ]},
+              { text: "transform_order", children: [
+                { text: "the lean tips about the phone\u2019s own left-right axis, so it turns with the paper when you swirl" },
+                { text: "travel still runs along the paper\u2019s surface, not across the glass" }
+              ]},
+              { text: "star_stays", children: [
+                { text: "the star stays upright \u2014 it floats above the paper, which is what its shadow has been saying" }
+              ]},
+              { text: "verify", children: [
+                { text: "~4m: release paper_tilt, red \u2014 measured from the rendered pixels, rows run 30 30 30 flat and 34 53 49 51 101 101 131 top to bottom when leaning; swirl and lean compose; Set zero clears it" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "205 swirl_flip",
+        expanded: false,
         nodes: [
           { text: "205 swirl_flip", children: [
             { text: "prompt_restate", children: [

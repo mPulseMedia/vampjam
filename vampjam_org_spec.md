@@ -1223,7 +1223,29 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   at 33.7-38.5s do the ALPHA in-plane swirls appear, three of them and small (+29, +38, -51),
   not the quarter turns he described. So the 'new angle' he suspected is the gamma roll, and
   the swirls he meant to do second-to-last happened last and under-rotated.
-- NEXT → add entry 206 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 206 paper_tilt — lab.html, release paper_tilt / red) the paper lies in space now.
+  paper_tilt: pitch had been inert on the surface by design since the very first motion build;
+  it now leans the graph paper. .frame_window carries `perspective: 760px`, so it is a camera
+  rather than a flat viewport, and .grid gains rotateX(var(--tilt)) driven by screen_pitch() —
+  the relative pitch out of the same zero-pose matrix everything else reads, clamped to
+  TILT_MAX 72 deg so the plane can never go edge-on and vanish. Tip the top of the phone toward
+  your eye and the paper's top leans away: the squares crowd toward a vanishing point above and
+  open out along the bottom; tip it away and it mirrors. transform_order: rotateX comes AFTER
+  the swirl rotate (so the lean is about the phone's own left-right axis, which turns with the
+  paper) and BEFORE the pan (so travel runs along the paper's surface, not across the glass).
+  The window's background changes from white to the paper's own #fcfcf8, so whatever lies
+  beyond the horizon reads as haze rather than a hole. PITCH_INV is the sign switch — the
+  sixth — and screen_pitch joins view() as `tilt`, so the one law still owns everything the
+  screen shows; zero_here clears --tilt with the rest. The star is deliberately left upright:
+  it floats ABOVE the paper, which is what its cast shadow has been saying since model_flip.
+  Playwright: perspective 760px on the window ✓; beta 0/40/-40 give --tilt 0/40/-40 and beta
+  ±80 clamps at ±72 ✓; the element transform goes 3D at any lean ✓; measured from the RENDERED
+  pixels (the parent's perspective is not in the element's own matrix, so a matrix test proves
+  nothing here) the row spacing runs 30 30 30 … flat, 34 53 49 51 101 101 131 top-to-bottom
+  leaning toward, and reversed leaning away ✓; swirl and lean compose (rot 30 / tilt 45) ✓;
+  Set zero clears the lean to 0.00deg ✓; glide_stop, plate_move, roll_hold, deck_one and
+  swirl_flip regressions pass; no page errors.
+- NEXT → add entry 207 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
