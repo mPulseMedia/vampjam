@@ -783,7 +783,17 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Playwright (390x780 touch): frame 14/14/376/766 radius 22 with an inset shadow ✓;
   swipes 0 → 1 → 2, held at 2 at the end, back down to 1, a 20px nudge does nothing ✓;
   back button lands on admin.html ✓.
-- NEXT → add entry 178 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 178 pager_prompt — no page edit) he wants lab_frame's mechanism as pagination for an
+  existing multi-page site, in another thread. Handed him a copy-block prompt: portable (no
+  vampjam context assumed), spelling out the frame (fixed inset window, radius, inset
+  shadow above the content, heaviest at top), the track (full-height cells, translate3d,
+  0.26s cubic-bezier(.22,.61,.36,1), no transition while dragging), the drag (5px to
+  activate, rubber-band 0.35 at the ends, snap at min(40px, 8% of cell height) — the
+  close_light number), the input set (touch, mouse drag, wheel with a 420ms lock, arrow /
+  page keys), how existing pages map onto cells without rewriting them, hash deep-links,
+  the inner-scroll gate that leaves room for his free-scroll mode later, and acceptance
+  tests. No repo change beyond this log.
+- NEXT → add entry 179 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
