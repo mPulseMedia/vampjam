@@ -1,1 +1,1 @@
-diag_flip
+auto_commit
