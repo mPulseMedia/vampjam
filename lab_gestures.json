@@ -142419,5 +142419,11 @@
   "ts": 1787819866454,
   "ms": 22127,
   "samples": []
+ },
+ {
+  "name": "OK, this trace has me starting at position zero and moving in many different angles away from it but returning to it over and over and over again and I think from that you may be able to tell a little bit about how to adjust",
+  "ts": 1787820999777,
+  "ms": 28012,
+  "samples": []
  }
 ]
