@@ -412,9 +412,12 @@
       if (d) {
         var cur = parseFloat(d.style.maxHeight) || 0;
         var max = maxOpenPx();
+        // close_light: closing takes a small push — 36px, or 7.5% of the sheet
+        // on a short screen. Opening keeps its own, longer pull (that one has
+        // to beat an ordinary scroll, closing does not).
         var openIt = (drag.mode === 'open')
           ? cur > Math.min(100, max * 0.3)      // pulled far enough to open?
-          : cur > max * 0.82;                   // list_swipe: a ~20% push up is enough to close
+          : (max - cur) < Math.min(36, max * 0.075);
         d.classList.remove('dragging');                             // re-enable transition
         d.style.maxHeight = (openIt ? max : 0) + 'px';              // animate to the snap point
         set_open(openIt);                                           // caret + shadow follow

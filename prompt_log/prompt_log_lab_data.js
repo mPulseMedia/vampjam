@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "175 row_rule",
+        id: "176 close_light",
         expanded: true,
+        nodes: [
+          { text: "176 close_light", children: [
+            { text: "prompt_restate", children: [
+              { text: "Returning from the session list takes too long a swipe — make the closing swipe shorter, in that direction only." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I\u2019ve swiped down the control panel to see the session list, when I swipe back to return, I have to swipe too far to trigger. It makes me sweat have to swipe too far to have it return so can you reduce the amount that I have to swipe it but only in that direction thanks." }
+            ]},
+            { text: "response", children: [
+              { text: "close_light", children: [
+                { text: "closing now takes about 40px of push instead of about 110 — a flick, not a haul" },
+                { text: "opening is untouched: a downward pull still has to be deliberate so it is not confused with scrolling" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: open the list, then nudge the logo upward — it goes" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "175 row_rule",
+        expanded: false,
         nodes: [
           { text: "175 row_rule", children: [
             { text: "prompt_restate", children: [

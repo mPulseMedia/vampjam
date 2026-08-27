@@ -761,7 +761,15 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   playhead line (or the drag indicator) sits between two rows they are no longer siblings
   in sequence, so no line is drawn there, no JS involved. Playwright: borders 0,0,1,1,1,1
   with the playhead after row 1, and the row right after the line reports 0px ✓.
-- NEXT → add entry 176 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 176 close_light — drawer v135) closing the session list took too long a swipe. The
+  snap test was symmetric-ish (close needed cur > max * 0.82 — about 112px of travel on a
+  780px screen, on top of the 6px the drag needs to activate). Now the close arm measures
+  travel, not remaining height: (max - cur) < Math.min(36, max * 0.075), so ~40px of push
+  closes it. The open arm is untouched (cur > min(100, max * 0.3)) — a downward pull has to
+  out-argue an ordinary scroll, a close does not. Playwright (touch, swipe from the
+  control_panel): 20px still open, 40/60/90px close ✓; a 40px downward pull still does NOT
+  open ✓.
+- NEXT → add entry 177 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
