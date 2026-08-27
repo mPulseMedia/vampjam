@@ -111,6 +111,22 @@
       repeating-linear-gradient(to bottom, rgba(38,86,140,0.32) 0 1px, transparent 1px 30px),
       repeating-linear-gradient(to right,  rgba(38,86,140,0.32) 0 1px, transparent 1px 30px);
   }
+  /* shot_on — something real lying ON the paper, at the world origin, so moving
+     the phone moves you around and INTO a picture instead of around a dot. It is
+     a child of the paper, so it inherits the pan, the zoom, the swirl and both
+     leans for free — no second transform to keep in step. Sized in the paper's
+     own units: 340 there is about one screen wide at x1, so the whole thing is
+     in view when you are zeroed and you walk into it as you come closer.
+     If the file is missing the image simply does not paint and the paper is
+     exactly as it was. Swap lab_surface.png for any picture. */
+  .shot {
+    position: absolute; left: 50%; top: 50%;
+    width: 340px; height: auto; transform: translate(-50%, -50%);
+    border-radius: 3px; background: #ffffff;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.28), 0 1px 3px rgba(0,0,0,0.22);
+    pointer-events: none; -webkit-user-select: none; user-select: none;
+  }
+  .shot[data-missing] { display: none; }
   /* the distance dissolving into the background: one screen-sized overlay in
      the paper's own colour, cheap to paint and independent of the paper's size */
   .haze {
@@ -328,7 +344,8 @@
 <body>
 
 <div class="frame_window" id="frame">
-  <div class="stage"><div class="grid" id="grid"></div></div>
+  <div class="stage"><div class="grid" id="grid"><img class="shot" id="shot" alt=""
+       src="lab_surface.png"></div></div>
   <div class="track" id="track">
     <div class="cell cell_1"></div>
     <div class="cell cell_2"></div>
@@ -394,7 +411,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'axis_one', bg: '#365314', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'shot_on', bg: '#831843', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1753,6 +1770,12 @@
     }
     show('watching');
     tick();
+  })();
+
+  // shot_on: if there is no picture, say so once and leave the paper alone
+  (function () {
+    var sh = document.getElementById('shot');
+    if (sh) sh.addEventListener('error', function () { sh.setAttribute('data-missing', '1'); });
   })();
 
   window.__lab = {
