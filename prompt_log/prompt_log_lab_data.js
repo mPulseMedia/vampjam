@@ -9,8 +9,39 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "197 roll_hold",
+        id: "198 axis_flip",
         expanded: true,
+        nodes: [
+          { text: "198 axis_flip", children: [
+            { text: "prompt_restate", children: [
+              { text: "Reverse every axis \u2014 the swirl and every other sensor." },
+              { text: "The motion stabilises but then becomes too stable: it records the first gesture, then falls off." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Well, this is a strange request, but I think you should reverse absolutely every access in when I rotate the phone and you\u2019re therefore adjusting the rotation of the phone and for every other sensor, can you just completely inverse what you have there because I think that\u2019s actually gonna get us closer to something that matches" },
+              { text: "Also, I\u2019m finding as of the moment I\u2019m writing this that the just prior to the moment I\u2019m writing this the motion of the page and the dot it\u2019s stabilize it but then it becomes too stable. It\u2019s like it. It gives me a records the first gesture, but then falls off." }
+            ]},
+            { text: "response", children: [
+              { text: "axis_flip", children: [
+                { text: "all four reversed: left/right, up/down, closer/further and the swirl" },
+                { text: "it is one switch in the code now, so flipping the whole model again is a one-line change" },
+                { text: "the little diagram is NOT flipped \u2014 it reports where the phone really is, and inverting it would make it lie" }
+              ]},
+              { text: "lock_expire", children: [
+                { text: "that is the falling off, and it was my bug from two prompts ago" },
+                { text: "after a move I locked out the next one until the phone went properly still \u2014 if your hand kept trembling it never did, so nothing after the first gesture registered" },
+                { text: "the lock is a 0.45s countdown now and always expires" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2m: release axis_flip, magenta \u2014 all four axes measured reversed; six gestures in a row with a trembling hand all register, where before only the first would" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "197 roll_hold",
+        expanded: false,
         nodes: [
           { text: "197 roll_hold", children: [
             { text: "prompt_restate", children: [

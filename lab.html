@@ -289,7 +289,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'roll_hold', bg: '#b45309', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'axis_flip', bg: '#be185d', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -477,7 +477,11 @@
   // read as a fresh move backwards — that was the reversal in the second half
   // of every slide. So after a move ends the model stays disarmed until the
   // phone has actually been quiet for STILL_MS.
-  var rearm = false;
+  // lock_time: the lock is a countdown, not a latch. It was a latch, and if the
+  // hand never went properly still the model stayed disarmed for good — one
+  // gesture would register and everything after it fell off.
+  var LOCK_S = 0.45;                // s: how long the tail of a stopping push is ignored
+  var lockLeft = 0;
   function end_move() {
     // bake the frozen lead into the resting position so the world stays put
     // where it was last drawn instead of springing back
@@ -488,7 +492,7 @@
     });
     vel.x = vel.y = vel.z = 0;
     moving = false;
-    rearm = true;
+    lockLeft = LOCK_S;
     dir = { x: 0, y: 0, z: 0 };
     lastMove = name_move(run);
     run = { x: 0, y: 0, z: 0 };
@@ -714,13 +718,14 @@
     movedSign = (Math.abs(az.x) >= Math.abs(az.y) ? (az.x >= 0 ? 1 : -1) : (az.y >= 0 ? 1 : -1));
     // quiet time is counted in SAMPLE time, not wall-clock: if the phone throttles
     // its sensor the two drift apart, and only sample time reflects what was measured
+    if (lockLeft > 0) lockLeft -= dt;               // the lock always expires
     if (mag < MOVE_A && rot < 20) {
       quietFor += dt;
       if (moving && quietFor > STILL_MS / 1000) end_move();
-      if (quietFor > STILL_MS / 1000) rearm = false;   // genuinely still: arm again
+      if (quietFor > STILL_MS / 1000) lockLeft = 0;  // genuinely still: arm again now
     } else {
       quietFor = 0;
-      if (!moving && !rearm) { moving = true; run = { x: 0, y: 0, z: 0 }; dir = { x: 0, y: 0, z: 0 }; }
+      if (!moving && lockLeft <= 0) { moving = true; run = { x: 0, y: 0, z: 0 }; dir = { x: 0, y: 0, z: 0 }; }
     }
 
     var kv = Math.exp(-dt / VEL_TAU);
@@ -818,6 +823,12 @@
   // zero frame, gives the angle straight away: at zero it is world up and the
   // answer is 0. Pitch and yaw are deliberately absent — tipping the phone
   // toward or away, or turning it left and right, still changes nothing.
+  // axis_flip — ONE switch reverses every axis at once: the pan, the swirl and
+  // the depth. Every sign the screen depends on is expressed through it, so the
+  // whole model turns inside out by changing this line and nothing else. The
+  // pose diagram is deliberately left alone — it reports where the phone really
+  // is, and inverting it would make it lie.
+  var INV = -1;
   function screen_roll() {
     var m = rel_matrix(); if (!m) return 0;
     return Math.atan2(-m[1], m[4]) * 180 / Math.PI;
@@ -825,14 +836,14 @@
   function view() {
     var w = frame.clientWidth || 320;
     var cam = { x: pos.x + lead.x, y: pos.y + lead.y, z: pos.z + lead.z };
-    var dist = Math.max(D_MIN, Math.min(D_MAX, D0 - cam.z));
+    var dist = Math.max(D_MIN, Math.min(D_MAX, D0 - INV * cam.z));
     var mult = Math.max(MULT_MIN, Math.min(MULT_MAX, Math.pow(D0 / dist, Z_POWER)));
     var pxPerM = (w / PHONE_W) * mult;
     var lim = w * 3;
     return {
-      w: w, cam: cam, dist: dist, mult: mult, pxPerM: pxPerM, roll: screen_roll(),
-      ox: Math.max(-lim, Math.min(lim,  cam.x * pxPerM)),
-      oy: Math.max(-lim, Math.min(lim, -cam.y * pxPerM))
+      w: w, cam: cam, dist: dist, mult: mult, pxPerM: pxPerM, roll: INV * screen_roll(),
+      ox: Math.max(-lim, Math.min(lim,  INV * cam.x * pxPerM)),
+      oy: Math.max(-lim, Math.min(lim, -INV * cam.y * pxPerM))
     };
   }
 
@@ -858,7 +869,7 @@
     pos = { x: 0, y: 0, z: 0 };
     run = { x: 0, y: 0, z: 0 };
     lead = { x: 0, y: 0, z: 0 };
-    moving = false; lastMove = ''; quietFor = 0; rearm = false; dir = { x: 0, y: 0, z: 0 };
+    moving = false; lastMove = ''; quietFor = 0; lockLeft = 0; dir = { x: 0, y: 0, z: 0 };
     document.documentElement.style.setProperty('--sc', '1');
     document.documentElement.style.setProperty('--rot', '0deg');
   }
@@ -1124,7 +1135,7 @@
     state: function () {
       var v = view();
       return { px: v.ox, py: v.oy, mult: v.mult, dist: v.dist, roll: v.roll,
-               moving: moving, held: lastMove,
+               moving: moving, held: lastMove, lock: +Math.max(0, lockLeft).toFixed(2),
                pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) } };
     },
     world: function () {

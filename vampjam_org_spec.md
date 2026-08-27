@@ -1070,7 +1070,24 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   counter-clockwise swirl ✓; alpha -30, 90, 180 all track ✓; beta 40 and gamma 35 both leave
   --rot at 0.00deg ✓; world offset rotates with the paper (482,0 → 0,482 → -482,0) ✓;
   glide_stop, gest_small and plate_move regressions all still pass; no page errors.
-- NEXT → add entry 198 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 198 axis_flip — lab.html, release axis_flip / magenta) two asks. axis_flip: every axis
+  the screen depends on is reversed — pan left/right, pan up/down, the depth multiple and the
+  swirl counter-turn. It is ONE switch: `var INV = -1`, threaded through the only three places
+  a sign reaches the screen (dist = D0 - INV*cam.z, ox = INV*cam.x*pxPerM, oy = -INV*cam.y*pxPerM,
+  roll = INV*screen_roll()), so the whole model turns inside out by editing that line and
+  nothing else — worth knowing, because this is the third time a direction has been reversed.
+  The pose diagram is deliberately NOT flipped: it reports where the phone really is, and
+  inverting it would make it lie. lock_expire: the settle lock added in 194 was a latch cleared
+  only by genuine stillness, so a hand that kept trembling above MOVE_A left the model disarmed
+  for good — the first gesture registered and everything after it fell off, exactly what he
+  described. It is a countdown now: LOCK_S 0.45s, decremented every sample, cleared early by
+  real stillness, and it always expires. Playwright: slide right → screen -315px (was +315),
+  slide up → +181 (was -181), toward the eye → ×0.88 (was ×1.14), swirl +30 → -30° ✓; six
+  gestures in a row with a hand trembling at 0.30 m/s² between them all register 'right 6 cm'
+  where the latch would have dropped every one after the first ✓; lock reads 0 at the end ✓;
+  glide_stop still glides without springing back (now to -482px), gest_small and plate_move
+  regressions pass; no page errors.
+- NEXT → add entry 199 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
