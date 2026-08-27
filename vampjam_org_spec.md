@@ -1162,7 +1162,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   identical across 7 pages ✓; press opens the drawer and drops the pill to opacity 0 /
   pointer-events none, closing restores it, and the swipe route does the same ✓; wordmark ink
   clear of the pill on every page ✓; all 15 pages loaded with zero page errors ✓.
-- NEXT → add entry 203 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 203 tilt_flip — lab.html, release tilt_flip / gold) the diagram drew pitch backwards.
+  tilt_flip: TILT_INV (-1) negates the pitch taken out of the relative matrix in flip_yaw, and
+  because the same value feeds both the rebuilt plate matrix (mat_from(-yaw, pitch, roll)) and
+  the P readout, the drawing and the number flip together and cannot disagree. Tipping the top
+  of the phone toward you and tipping it away now draw the way he sees them. This is the
+  diagram only — the paper has never answered to pitch and still does not, which the test
+  asserts rather than assumes. It joins PAN_INV, DEPTH_INV and MODEL_INV as a named switch,
+  which is now four independent sign settings, each one having been reversed at least once.
+  Playwright: beta +40 reads P-40 and beta -40 reads P40, each redrawing the plate ✓; the two
+  tips project to different plate heights (22.4 vs 32.6) — the oblique projection is
+  deliberately asymmetric in depth, and that asymmetry is the cue that says which way it is
+  tipped ✓; --rot stays 0.00deg through both tips, so the paper is untouched ✓; swirl +30 still
+  gives +30 ✓; glide_stop, plate_move, roll_hold, model_flip and depth_flip regressions all
+  pass; three-way visual capture (forward / flat / back) taken; no page errors.
+- NEXT → add entry 204 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

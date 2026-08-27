@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "202 nav_left",
+        id: "203 tilt_flip",
         expanded: true,
+        nodes: [
+          { text: "203 tilt_flip", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tilting the top of the phone toward me or away from me is depicted the opposite way." },
+              { text: "Name the commit tilt_flip." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I tilt the top of the phone toward me or tilt the top of the phone away from me, I am seeing that motion in the opposite direction of what you currently depict. Try to name the commit tilt_flip" }
+            ]},
+            { text: "response", children: [
+              { text: "tilt_flip", children: [
+                { text: "the diagram\u2019s pitch is reversed \u2014 tipping the top toward you and away now draw the way you see them" },
+                { text: "the plate and the P number come from the same value, so they flip together" },
+                { text: "the paper is untouched: it has never answered to tilt and still does not" }
+              ]},
+              { text: "four_switch", children: [
+                { text: "that is now four independent sign settings \u2014 pan, depth, the model\u2019s travel, and tilt" },
+                { text: "each one has been reversed at least once, so each is its own named switch" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1m: release tilt_flip, gold \u2014 beta +40 reads P-40 and -40 reads P40; paper stays at 0deg through both; forward / flat / back captured" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "202 nav_left",
+        expanded: false,
         nodes: [
           { text: "202 nav_left", children: [
             { text: "prompt_restate", children: [
