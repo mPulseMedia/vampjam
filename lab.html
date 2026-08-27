@@ -316,132 +316,174 @@
     window.location.href = 'admin.html';
   });
 
-  // ---- dot_steady: hold the dot still while the phone moves ----
-  // Two sensors, two jobs.
-  //   tilt  — deviceorientation beta (nose up/down) and gamma (roll left/right),
-  //           measured against the angles at the moment you press the button.
-  //           This is what actually keeps a dot planted while you wave a phone
-  //           around: most 'movement' of a hand-held phone is rotation.
-  //   shift — devicemotion acceleration, high-passed and double-integrated,
-  //           with a hard leak. It catches the quick jiggle of a hand trying to
-  //           hold still. It CANNOT track real travel: two integrations of a
-  //           noisy accelerometer drift within a second or two, so the leak
-  //           pulls it back to zero on purpose. Tilt is the honest signal;
-  //           shift is the jiggle-canceller on top of it.
-  var PX_PER_DEG = 7;        // how hard tilt pushes the surface back
-  var SHIFT_GAIN = 900;      // metres of integrated shift -> px
-  var VEL_LEAK   = 0.86;     // per frame: kills accelerometer drift
-  var POS_LEAK   = 0.90;     // per frame: walks the correction back to centre
-  var HP         = 0.92;     // high-pass on acceleration (removes gravity + bias)
-  // paper_scale: nearer shrinks, further grows (his call — the surface behaves
-  // like a fixed world seen through a window that is being pushed away). z comes
-  // from the screen-normal axis, integrated with the same leaks, so a push or a
-  // pull shows immediately and then eases back rather than drifting off.
-  var Z_GAIN     = 3.2;      // metres of integrated z -> scale
-  var Z_MIN      = 0.55, Z_MAX = 1.8;
+  // ---- world_view: the screen is a window onto a world that does not move ----
+  //
+  // His model, followed literally:
+  //   · a zero pose is captured when he says so (phone flat, or comfortably
+  //     angled at his face). Everything is measured in THAT frame.
+  //   · turning the phone right/left, or tipping its top toward/away, must not
+  //     move the world at all. Rotation is not a translation.
+  //   · sliding the phone one screen width to the right slides the world one
+  //     screen width to the left — 1:1 at the reference distance.
+  //   · moving the phone toward the eye raises the multiple (one screen width
+  //     of hand movement can sweep three screen widths of world) and draws the
+  //     world larger; moving it away drops the multiple below one and draws the
+  //     world smaller. multiple = D0 / D, the plain magnifier law.
+  //
+  // How rotation gets ignored properly: the accelerometer reports in the
+  // PHONE's axes, so a tilted phone would smear a sideways slide across two
+  // axes. Each sample is rotated out of the phone frame into the world by the
+  // current orientation, then into the zero frame — after which only the three
+  // translations remain, and any amount of turning leaves them untouched.
+  //
+  // The honest caveat, unchanged: position comes from integrating acceleration
+  // twice, which drifts. Two things keep it usable — a zero-velocity update
+  // (when the phone reads still for 0.35s, velocity is forced to zero, the
+  // standard dead-reckoning trick) and a slow leak (~2.5s) that eases the world
+  // home rather than letting it wander off. Inside one gesture it holds.
+  var PHONE_W    = 0.071;    // metres across a phone: the 1:1 yardstick
+  var D0         = 0.35;     // metres: the reference viewing distance
+  var D_MIN      = 0.10, D_MAX = 1.20;
+  var MULT_MIN   = 0.35, MULT_MAX = 3.5;
+  var DEAD       = 0.12;     // m/s^2 ignored: the noise floor at rest (from his takes)
+  var STILL_MS   = 350;      // quiet for this long -> velocity is zero
+  var VEL_TAU    = 0.9;      // s: velocity leak
+  var POS_TAU    = 2.5;      // s: position leak — the world eases home
+  var ROT_OPEN   = 45;       // deg/s: below this the sample counts fully
+  var ROT_SHUT   = 160;      // deg/s: above this it is thrown away (a spin, not a slide)
 
   var motionOn = false;
-  var ref = null;            // { beta, gamma } captured when you start
-  var tilt = { b: 0, g: 0 };
-  var acc  = { x: 0, y: 0, z: 0 }; // high-passed acceleration
-  var accLP = { x: 0, y: 0, z: 0 };
-  var vel  = { x: 0, y: 0, z: 0 };
-  var pos  = { x: 0, y: 0, z: 0 };
-  var lastT = 0;
+  var R0 = null;             // zero-pose rotation matrix (world <- phone), transposed use
+  var Rnow = null;
+  var vel = { x: 0, y: 0, z: 0 };
+  var pos = { x: 0, y: 0, z: 0 };   // metres in the zero frame: x right, y up, z toward the eye
+  var quietSince = 0;
+  var rotVeto = 1;
   var motionBtn = document.getElementById('motion_btn');
   var readout   = document.getElementById('readout');
 
+  // orientation -> rotation matrix (ZXY intrinsic, the W3C convention)
+  function mat_from(alpha, beta, gamma) {
+    var d = Math.PI / 180;
+    var a = (alpha || 0) * d, b = (beta || 0) * d, g = (gamma || 0) * d;
+    var cA = Math.cos(a), sA = Math.sin(a);
+    var cB = Math.cos(b), sB = Math.sin(b);
+    var cG = Math.cos(g), sG = Math.sin(g);
+    return [
+      cA * cG - sA * sB * sG, -cB * sA,  cA * sG + cG * sA * sB,
+      cG * sA + cA * sB * sG,  cA * cB,  sA * sG - cA * cG * sB,
+                   -cB * sG,       sB,               cB * cG
+    ];
+  }
+  function mul_vec(m, v) {
+    return { x: m[0]*v.x + m[1]*v.y + m[2]*v.z,
+             y: m[3]*v.x + m[4]*v.y + m[5]*v.z,
+             z: m[6]*v.x + m[7]*v.y + m[8]*v.z };
+  }
+  function mul_t_vec(m, v) {   // transpose(m) * v
+    return { x: m[0]*v.x + m[3]*v.y + m[6]*v.z,
+             y: m[1]*v.x + m[4]*v.y + m[7]*v.z,
+             z: m[2]*v.x + m[5]*v.y + m[8]*v.z };
+  }
+
   function on_orientation(e) {
-    if (e.beta == null && e.gamma == null) return;
-    if (!ref) ref = { beta: e.beta || 0, gamma: e.gamma || 0 };
-    tilt.b = (e.beta || 0) - ref.beta;      // + = top of the phone tipped away
-    tilt.g = (e.gamma || 0) - ref.gamma;    // + = right edge dipped
+    if (e.alpha == null && e.beta == null && e.gamma == null) return;
+    Rnow = mat_from(e.alpha, e.beta, e.gamma);
+    if (!R0) R0 = Rnow;
   }
   function on_motion(e) {
     var a = e.acceleration;
-    if (!a || (a.x == null && a.y == null)) {
-      a = e.accelerationIncludingGravity;
-      if (!a) return;
-      // no gravity-free stream: subtract a slow average, which IS gravity
-      accLP.x = accLP.x * 0.95 + (a.x || 0) * 0.05;
-      accLP.y = accLP.y * 0.95 + (a.y || 0) * 0.05;
-      accLP.z = accLP.z * 0.95 + (a.z || 0) * 0.05;
-      acc.x = (a.x || 0) - accLP.x;
-      acc.y = (a.y || 0) - accLP.y;
-      acc.z = (a.z || 0) - accLP.z;
-    } else {
-      acc.x = acc.x * (1 - HP) + (a.x || 0) * HP;
-      acc.y = acc.y * (1 - HP) + (a.y || 0) * HP;
-      acc.z = acc.z * (1 - HP) + (a.z || 0) * HP;
-    }
+    if (!a || (a.x == null && a.y == null && a.z == null)) return;   // needs the gravity-free stream
+    if (!motionOn || !Rnow || !R0) return;
+    var rr = e.rotationRate || {};
+    var rot = Math.hypot(rr.alpha || 0, rr.beta || 0, rr.gamma || 0);
+    rotVeto = Math.max(0, Math.min(1, 1 - (rot - ROT_OPEN) / (ROT_SHUT - ROT_OPEN)));
+    var iv = e.interval || 0.0166;
+    var dt = iv < 1 ? iv : iv / 1000;
+
+    // phone axes -> world -> zero frame: rotation falls out here
+    var aw = mul_vec(Rnow, { x: a.x || 0, y: a.y || 0, z: a.z || 0 });
+    var az = mul_t_vec(R0, aw);
+    var mag = Math.hypot(az.x, az.y, az.z);
+    var now = Date.now();
+    if (mag < DEAD && rot < 12) {
+      if (!quietSince) quietSince = now;
+      if (now - quietSince > STILL_MS) { vel.x = vel.y = vel.z = 0; }   // zero-velocity update
+    } else { quietSince = 0; }
+
+    var kv = Math.exp(-dt / VEL_TAU), kp = Math.exp(-dt / POS_TAU);
+    ['x', 'y', 'z'].forEach(function (k) {
+      var v = az[k];
+      v = Math.abs(v) < DEAD ? 0 : (v - (v > 0 ? DEAD : -DEAD));
+      v *= rotVeto;
+      vel[k] = (vel[k] + v * dt) * kv;
+      pos[k] = (pos[k] + vel[k] * dt) * kp;
+    });
   }
-  function steady_frame(now) {
+
+  function paint_world() {
     if (!motionOn) return;
-    var dt = lastT ? Math.min(0.05, (now - lastT) / 1000) : 0.016;
-    lastT = now;
-    // shift: integrate, then leak both velocity and position back to zero
-    vel.x = (vel.x + acc.x * dt) * VEL_LEAK;
-    vel.y = (vel.y + acc.y * dt) * VEL_LEAK;
-    vel.z = (vel.z + acc.z * dt) * VEL_LEAK;
-    pos.x = (pos.x + vel.x * dt) * POS_LEAK;
-    pos.y = (pos.y + vel.y * dt) * POS_LEAK;
-    pos.z = (pos.z + vel.z * dt) * POS_LEAK;
-    // screen x is the phone's x; screen y is the phone's -y
-    var sx = -(tilt.g * PX_PER_DEG) - pos.x * SHIFT_GAIN;
-    var sy =  (tilt.b * PX_PER_DEG) + pos.y * SHIFT_GAIN;
-    var lim = Math.min(frame.clientWidth, frame.clientHeight) * 0.42;
+    var w = frame.clientWidth || 320;
+    // toward the eye is +z in the zero frame; closer = shorter distance
+    var dist = Math.max(D_MIN, Math.min(D_MAX, D0 - pos.z));
+    var mult = Math.max(MULT_MIN, Math.min(MULT_MAX, D0 / dist));
+    var pxPerM = (w / PHONE_W) * mult;         // one phone width of slide = one screen width, times the multiple
+    var sx = -pos.x * pxPerM;
+    var sy =  pos.y * pxPerM;                  // phone up -> world down
+    var lim = w * 3;
     sx = Math.max(-lim, Math.min(lim, sx));
     sy = Math.max(-lim, Math.min(lim, sy));
-    // +z is out of the screen, toward the face: coming closer shrinks it
-    var sc = 1 - pos.z * Z_GAIN;
-    sc = Math.max(Z_MIN, Math.min(Z_MAX, sc));
-    document.documentElement.style.setProperty('--sx', sx.toFixed(1) + 'px');
-    document.documentElement.style.setProperty('--sy', sy.toFixed(1) + 'px');
-    document.documentElement.style.setProperty('--sc', sc.toFixed(3));
+    var root = document.documentElement.style;
+    root.setProperty('--sx', sx.toFixed(1) + 'px');
+    root.setProperty('--sy', sy.toFixed(1) + 'px');
+    root.setProperty('--sc', mult.toFixed(3));
     if (readout) {
       readout.textContent =
-        'up/down  ' + (tilt.b >= 0 ? '+' : '') + tilt.b.toFixed(0) + '\u00b0' +
-        '   side  ' + (tilt.g >= 0 ? '+' : '') + tilt.g.toFixed(0) + '\u00b0' +
-        '\nnear/far  ' + (pos.z >= 0 ? '+' : '') + Math.round(pos.z * 1000) + ' mm' +
-        '   scale  ' + Math.round(sc * 100) + '%';
+        'across  ' + (sx / w >= 0 ? '+' : '') + (sx / w).toFixed(2) + ' screens' +
+        '   up  ' + (sy / w >= 0 ? '+' : '') + (sy / w).toFixed(2) +
+        '\n' + Math.round(dist * 100) + ' cm away   ×' + mult.toFixed(2) +
+        (rotVeto < 0.5 ? '   (turning — ignored)' : '');
     }
-    requestAnimationFrame(steady_frame);
+    requestAnimationFrame(paint_world);
   }
-  function start_steady() {
-    motionOn = true; ref = null; lastT = 0;
-    vel = { x: 0, y: 0, z: 0 }; pos = { x: 0, y: 0, z: 0 };
+
+  function zero_here() {
+    R0 = Rnow;
+    vel = { x: 0, y: 0, z: 0 };
+    pos = { x: 0, y: 0, z: 0 };
+    quietSince = 0;
     document.documentElement.style.setProperty('--sc', '1');
+  }
+  function start_world() {
+    motionOn = true;
+    R0 = null; Rnow = null;
+    zero_here();
     window.addEventListener('deviceorientation', on_orientation);
     window.addEventListener('devicemotion', on_motion);
     motionBtn.classList.add('on');
-    motionBtn.textContent = 'Recentre';
+    motionBtn.textContent = 'Set zero';
     if (readout) readout.hidden = false;
     if (hint) hint.style.opacity = '0';
-    requestAnimationFrame(steady_frame);
+    requestAnimationFrame(paint_world);
   }
-  function recentre() { ref = null; vel = { x: 0, y: 0, z: 0 }; pos = { x: 0, y: 0, z: 0 };
-                        document.documentElement.style.setProperty('--sc', '1'); }
 
   motionBtn.addEventListener('click', function () {
-    if (motionOn) { recentre(); return; }
-    var need = (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function');
-    var need2 = (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function');
-    if (!need && !need2) {
-      if (!window.DeviceOrientationEvent && !window.DeviceMotionEvent) {
-        motionBtn.textContent = 'No sensors here';
-        return;
-      }
-      start_steady(); return;
+    if (motionOn) { zero_here(); return; }
+    var needO = (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function');
+    var needM = (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function');
+    if (!needO && !needM) {
+      if (!window.DeviceOrientationEvent && !window.DeviceMotionEvent) { motionBtn.textContent = 'No sensors here'; return; }
+      start_world(); return;
     }
-    // iOS: permission must be asked for inside this tap
     var asks = [];
-    if (need)  asks.push(DeviceOrientationEvent.requestPermission());
-    if (need2) asks.push(DeviceMotionEvent.requestPermission());
+    if (needO) asks.push(DeviceOrientationEvent.requestPermission());
+    if (needM) asks.push(DeviceMotionEvent.requestPermission());
     Promise.all(asks).then(function (res) {
-      if (res.every(function (r) { return r === 'granted'; })) start_steady();
+      if (res.every(function (r) { return r === 'granted'; })) start_world();
       else motionBtn.textContent = 'Motion blocked';
     }).catch(function () { motionBtn.textContent = 'Motion blocked'; });
   });
+
 
   // ---- gesture_lab: hold to record every sensor the phone will give ----
   // A take is { name, ts, ms, samples: [...] }. Each sample carries whatever
@@ -506,7 +548,25 @@
     live.acc  = [r3(a.x), r3(a.y), r3(a.z)];
     live.accG = [r3(ag.x), r3(ag.y), r3(ag.z)];
     live.rot  = [r3(rr.alpha), r3(rr.beta), r3(rr.gamma)];
+    if (motionOn) integrate(e, rr);
     if (recording) push_sample(e.interval || null);
+  }
+  // one integration step per sensor sample — faster and steadier than doing it
+  // on the paint frame, and it uses the interval the phone itself reports
+  function integrate(e, rr) {
+    var iv = e.interval || 0.0166;
+    var dt = iv < 1 ? iv : iv / 1000;          // iOS reports seconds
+    var rot = Math.sqrt(sq(rr.alpha) + sq(rr.beta) + sq(rr.gamma));
+    rotVeto = Math.max(0, Math.min(1, 1 - (rot - ROT_OPEN) / (ROT_SHUT - ROT_OPEN)));
+    step('x', acc.x, dt); step('y', acc.y, dt); step('z', acc.z, dt);
+  }
+  function sq(v) { return (v || 0) * (v || 0); }
+  function step(k, a, dt) {
+    a = a || 0;
+    a = Math.abs(a) < DEAD ? 0 : (a - (a > 0 ? DEAD : -DEAD));
+    a *= rotVeto;
+    vel[k] = (vel[k] + a * dt) * VEL_LEAK;
+    pos[k] = (pos[k] + vel[k] * dt) * POS_LEAK;
   }
   function r3(v) { return (v == null) ? null : Math.round(v * 1000) / 1000; }
   function push_sample(interval) {
@@ -647,15 +707,26 @@
   window.__lab = {
     go: go,
     at: function () { return idx; },
-    steady: function () { start_steady(); },
+    steady: function () { start_world(); },
+    zero: function () { zero_here(); },
     rec: function (on) { on ? rec_start() : rec_stop(); },
-    push: function (dz) { pos.z = dz; },   // metres, + = toward the face
-    takes: function () { return gest_get(); },
-    feed: function (beta, gamma) {
-      on_orientation({ beta: beta, gamma: gamma });
-      return { sx: getComputedStyle(document.documentElement).getPropertyValue('--sx'),
-               sy: getComputedStyle(document.documentElement).getPropertyValue('--sy') };
-    }
+    // pose the phone (degrees) — rotation alone must not move the world
+    pose: function (alpha, beta, gamma) { on_orientation({ alpha: alpha, beta: beta, gamma: gamma }); },
+    // n samples of acceleration in the PHONE's own axes, as the phone sends them
+    shove: function (ax, ay, az, rot, n) {
+      for (var i = 0; i < (n || 30); i++) {
+        on_motion({ acceleration: { x: ax, y: ay, z: az },
+                    rotationRate: { alpha: rot || 0, beta: 0, gamma: 0 },
+                    interval: 0.0166 });
+      }
+      return { pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) }, veto: +rotVeto.toFixed(2) };
+    },
+    world: function () {
+      var st = getComputedStyle(document.documentElement);
+      return { sx: st.getPropertyValue('--sx').trim(), sy: st.getPropertyValue('--sy').trim(),
+               sc: st.getPropertyValue('--sc').trim(), read: (readout.textContent || '').replace('\n', ' | ') };
+    },
+    takes: function () { return gest_get(); }
   };
 </script>
 </body>

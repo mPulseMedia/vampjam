@@ -858,7 +858,25 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   eases back, not a distance measurement. Playwright: paper covers 200%×200% with the
   gradient; tilt +12 gamma → x -84, tilt +12 beta → y +84; pulled closer (z +80mm) → scale
   0.90, pushed away → 1.10, with the transform matrix matching ✓.
-- NEXT → add entry 183 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 183 world_view — lab.html) his model replaces the earlier one wholesale: the screen
+  is a window onto a world that does not move. Zero pose captured on demand (Set zero);
+  turning the phone or tipping it must change NOTHING; sliding one phone width sideways
+  slides the world one screen width the other way (1:1 at the reference distance); moving
+  toward the eye raises the multiple AND the drawn size (multiple = D0/D, D0 = 0.35 m,
+  clamped 0.35×–3.5×) — which reverses 182's closer-shrinks, per his correction. Rotation is
+  dropped properly rather than merely down-weighted: each acceleration sample is rotated out
+  of the PHONE frame into the world by the current orientation matrix (ZXY, W3C convention)
+  and then into the zero frame, so tilt smears nothing across axes and pure turning leaves
+  the three translations untouched. Drift is fought with a zero-velocity update (still for
+  350ms → velocity forced to 0, the standard dead-reckoning trick) plus leaks of 0.9s
+  (velocity) and 2.5s (position), so a gesture holds and then eases home instead of walking
+  off. Deadband 0.12 m/s² and a 45→160 deg/s veto come from his takes. The dot is pinned to
+  the world unscaled; the ruled paper takes the same offset plus the multiple as scale.
+  Playwright: 4.55cm slide right → 232px left (0.65 screens, exactly the 1:1 law), same
+  while the phone is tilted 35°, up-slide → world down, 4.55cm toward the eye → ×1.15;
+  a pure spin at 120 deg/s moves 5.6px, a pure tilt 19.5px, and turning with no
+  acceleration at all moves 0.0px ✓; after a slide the world eases back within ~2s.
+- NEXT → add entry 184 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

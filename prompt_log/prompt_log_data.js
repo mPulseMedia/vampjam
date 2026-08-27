@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "182 paper_scale",
+        id: "183 world_view",
         expanded: true,
+        nodes: [
+          { text: "183 world_view", children: [
+            { text: "prompt_restate", children: [
+              { text: "Hold the phone flat or comfortably angled and call that zero." },
+              { text: "Rotating the screen right or left, or tipping its top toward or away, must not change what is on screen." },
+              { text: "Slide the phone one screen width right and the world slides one screen width left; same up and down." },
+              { text: "Moving toward the eye raises the multiple \u2014 one screen width of hand movement can sweep three of world \u2014 and moving away drops it below one and draws things smaller." },
+              { text: "The surface is a flat lined notebook." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, I wanna change the whole way. We are approaching this and I\u2019m gonna make certain assumptions and describe what I think is in the phone and what I want the screen of the phone to To Do and I\u2019m going to leave it up to you to figure out how to do that so first of all my end objective is that when I hold my phone flat to the Earth or at a comfortable angle toward my face, I make that my zero position and the various accelerometers on the phone are able to assess that my zero position now when I rotate the screen to the writer to the left, I don\u2019t want that to change what\u2019s on the screen when I tilt the top of the phone back away from me or toward me I don\u2019t want that to change. What\u2019s on the screen but when I slide the phone to the right of phone screens with I want to see what\u2019s on my screen moved to the left of full screens with and likewise moving up and down and now it\u2019s really neat is moving away and toward because what that affects is the multiple of the screen with to how much the thing moves the further I move the phone away the more the screen moves when the phone moves one screens width. It might move three screen width on a scale that is considered close to the eye meaning as the phone is brought closer closer to the eye the multiple gets bigger as I move the phone away from the eye further the multiple gets smaller and even smaller than one and things are shown in a smaller size and what I\u2019m being presented is a flat set of lines resembling a notebook lined notebook" }
+            ]},
+            { text: "response", children: [
+              { text: "world_view", children: [
+                { text: "rebuilt to your model: the screen is a window onto a world that stays where it is" },
+                { text: "the button now reads Set zero \u2014 hold the phone how you like and press it; everything is measured from there" },
+                { text: "turn it, tip it, twist it: nothing moves. I do that by converting every reading out of the phone\u2019s own axes into your zero frame first, so rotation has nowhere to leak in" },
+                { text: "slide it one phone width and the world slides one screen width the other way; bring it toward your eye and both the multiple and the drawing grow, push it away and they shrink below one" },
+                { text: "lined notebook surface, and the dot is pinned to the world so you can see it hold" }
+              ]},
+              { text: "the_one_caveat", children: [
+                { text: "there is no distance sensor and no true position sensor in a phone \u2014 travel has to be built up from acceleration, which wanders" },
+                { text: "two things hold it together: when the phone reads still for a third of a second I force the drift to zero, and the world eases home over about two seconds rather than sailing away" },
+                { text: "so it holds inside a gesture, which is what you are testing; it will not hold a fixed world for a minute" }
+              ]},
+              { text: "verify", children: [
+                { text: "~3 min: Set zero, then slide the phone right and left, up and down, and in and out \u2014 and try turning it, which should do nothing at all" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "182 paper_scale",
+        expanded: false,
         nodes: [
           { text: "182 paper_scale", children: [
             { text: "prompt_restate", children: [
