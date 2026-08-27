@@ -896,7 +896,19 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   readout now names it directly — '10 cm ×13.00 2 lines' — so the range is calibratable by
   eye. Playwright: slide right → +252px (was -252), slide up → -252px; z bursts give ×1.40
   at 30cm / 18 lines, ×13 at 10cm / 2 lines, ×0.25 at 70cm / 100 lines ✓.
-- NEXT → add entry 186 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 186 graph_one — lab.html, release graph_one / burnt orange) the lab is now one
+  surface and nothing else. The three per-cell ruled papers are gone; a single .grid sits
+  behind everything in the frame (800% square, two repeating gradients at 30px = graph
+  paper, panned and scaled by --sx/--sy/--sc), cells are transparent with no numbers, and
+  one dot sits at the window's centre instead of one per card — so there are no layers of
+  lines to see through, which is what he was seeing at the card seams. lab_release replaces
+  the numbered build: a 96px square in the top-left corner painted the release colour with
+  the release's commit name inside it (LAB_RELEASE = { name, bg, fg } at the top of the
+  page — change both every ship). The back button moved below the square and the readout
+  moved under Set zero, so the corner is the stamp and nothing overlaps. Playwright:
+  1 grid layer, 0 paper layers, 1 dot, transparent cells, square 96×96 at 22,20 in
+  rgb(180,83,9) reading 'graph_one', and the close-in view still resolves to 2 lines ✓.
+- NEXT → add entry 187 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

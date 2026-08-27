@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "185 depth_wide",
+        id: "186 graph_one",
         expanded: true,
+        nodes: [
+          { text: "186 graph_one", children: [
+            { text: "prompt_restate", children: [
+              { text: "Simplify the page and make the surface graph paper." },
+              { text: "Top-left corner: a good-size square in the release colour with the release name in it; change both colour and name each time." },
+              { text: "No layers of lines \u2014 one surface only." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I would like you to simplify the appearance of the page and make it graph paper and put in the top left corner a good size square that is the color of the release and put the name of the release in that rectangle in that colored rectangle each time change the color of the rectangle and the name of the commit. Currently there seem to be layers of lines. I don\u2019t want any layers of lines. I want one layer and that is the surface graph paper surface." }
+            ]},
+            { text: "response", children: [
+              { text: "graph_one", children: [
+                { text: "one surface: graph paper, drawn once, behind everything \u2014 the card-by-card rulings that were stacking up are gone" },
+                { text: "no numbers, no colour blocks; a single dot in the middle so you can see the surface hold" }
+              ]},
+              { text: "lab_release", children: [
+                { text: "the corner square is the stamp now: burnt orange, and it reads graph_one \u2014 the name of this commit" },
+                { text: "colour and name both change with every ship, so the square tells you what you are looking at" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: open the lab \u2014 graph paper, orange square top left reading graph_one" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "185 depth_wide",
+        expanded: false,
         nodes: [
           { text: "185 depth_wide", children: [
             { text: "prompt_restate", children: [

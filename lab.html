@@ -24,6 +24,7 @@
 
   /* the white frame is simply the page; the window is what is cut out of it */
   .frame_window {
+    background: #fcfcf8;
     position: fixed;
     top: max(14px, env(safe-area-inset-top));
     bottom: max(14px, env(safe-area-inset-bottom));
@@ -58,23 +59,21 @@
     font-size: 74px; font-weight: 700; letter-spacing: 0.02em;
     user-select: none; -webkit-user-select: none;
   }
-  .cell_no { opacity: 0.16; position: relative; z-index: 1; }
   /* dot_steady — the dot sits dead centre of every card. When the phone's
      motion sensors are running it is pushed the OTHER way from every wobble,
      so it holds still in the room while the screen jiggles around it. */
-  /* paper_scale — the surface is ruled like school paper so distance reads at a
-     glance: the lines pan against the phone's movement and their spacing grows
-     as the phone pulls back, shrinks as it comes closer. Oversized and centred
-     so panning and scaling never expose an edge. */
-  .paper {
-    position: absolute; left: -50%; top: -50%; width: 200%; height: 200%;
-    pointer-events: none; transform-origin: 50% 50%;
+  /* graph_one — ONE surface for the whole window: graph paper, drawn once,
+     behind everything. It pans and scales with the phone; nothing else carries
+     lines, so there are no layers to see through. Sized 800% so even at the
+     small end of the scale, panned to its limit, no edge comes into view. */
+  .grid {
+    position: absolute; left: -350%; top: -350%; width: 800%; height: 800%;
+    pointer-events: none; z-index: 0; transform-origin: 50% 50%;
     transform: translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
+    background-color: #fcfcf8;
     background-image:
-      repeating-linear-gradient(to bottom,
-        currentColor 0px, currentColor 1px,
-        transparent 1px, transparent 30px);
-    opacity: 0.30;
+      repeating-linear-gradient(to bottom, rgba(38,86,140,0.30) 0 1px, transparent 1px 30px),
+      repeating-linear-gradient(to right,  rgba(38,86,140,0.30) 0 1px, transparent 1px 30px);
   }
   .pin { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2; }
   .pin_dot {
@@ -84,7 +83,7 @@
   }
   /* lab_build: every card wears the same colour, and the colour changes with
      each build — if it looks different from last time, the update landed. */
-  .cell { background: var(--lab_bg, #d7263d); color: var(--lab_fg, #ffffff); }
+  .cell { background: transparent; color: #1d1d1f; }
 
   /* which cell you are on, in the frame itself */
   .dots {
@@ -97,8 +96,8 @@
 
   .back_btn {
     position: fixed; z-index: 6;
-    top: max(24px, calc(env(safe-area-inset-top) + 12px));
-    left: max(26px, calc(env(safe-area-inset-left) + 14px));
+    top: max(132px, calc(env(safe-area-inset-top) + 118px));
+    left: max(22px, calc(env(safe-area-inset-left) + 10px));
     display: inline-flex; align-items: center; gap: 5px;
     background: rgba(255,255,255,0.86); color: #1d1d1f;
     border: none; border-radius: 999px; padding: 9px 15px 9px 12px;
@@ -108,14 +107,18 @@
     touch-action: manipulation;
   }
   .back_btn:active { transform: scale(0.96); }
+  /* lab_release — a solid square in the corner wearing this release's colour,
+     with this release's name inside it. New colour + new name every ship. */
   .build_tag {
-    position: fixed; z-index: 6; left: 50%; transform: translateX(-50%);
-    top: max(24px, calc(env(safe-area-inset-top) + 12px));
-    background: rgba(255,255,255,0.86); color: #1d1d1f;
-    border-radius: 999px; padding: 7px 12px;
-    font-size: 12px; font-weight: 700; letter-spacing: 0.02em;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
-    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    position: fixed; z-index: 6;
+    top: max(20px, calc(env(safe-area-inset-top) + 10px));
+    left: max(22px, calc(env(safe-area-inset-left) + 10px));
+    width: 96px; height: 96px; border-radius: 16px;
+    background: var(--lab_bg, #b45309); color: var(--lab_fg, #ffffff);
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: 8px; font-size: 14px; font-weight: 700; line-height: 1.25;
+    letter-spacing: 0.01em; word-break: break-word;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
     pointer-events: none;
   }
   .hint {
@@ -141,12 +144,13 @@
   .motion_btn:active { transform: scale(0.96); }
   .motion_btn.on { background: rgba(29,29,31,0.82); color: #ffffff; }
   .readout {
-    position: fixed; z-index: 6; left: 50%; transform: translateX(-50%);
-    top: max(72px, calc(env(safe-area-inset-top) + 60px));
+    /* under Set zero, clear of the release square and the back button */
+    position: fixed; z-index: 6; right: max(22px, calc(env(safe-area-inset-right) + 10px));
+    top: max(132px, calc(env(safe-area-inset-top) + 118px));
     background: rgba(255,255,255,0.86); color: #1d1d1f;
     border-radius: 12px; padding: 7px 12px;
     font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;
-    white-space: pre; line-height: 1.5; text-align: center;
+    white-space: pre; line-height: 1.5; text-align: right;
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     pointer-events: none;
@@ -207,11 +211,13 @@
 <body>
 
 <div class="frame_window" id="frame">
+  <div class="grid" id="grid"></div>
   <div class="track" id="track">
-    <div class="cell cell_1"><span class="paper"></span><span class="cell_no">1</span><span class="pin"><span class="pin_dot"></span></span></div>
-    <div class="cell cell_2"><span class="paper"></span><span class="cell_no">2</span><span class="pin"><span class="pin_dot"></span></span></div>
-    <div class="cell cell_3"><span class="paper"></span><span class="cell_no">3</span><span class="pin"><span class="pin_dot"></span></span></div>
+    <div class="cell cell_1"></div>
+    <div class="cell cell_2"></div>
+    <div class="cell cell_3"></div>
   </div>
+  <span class="pin"><span class="pin_dot"></span></span>
   <div class="frame_shadow"></div>
 </div>
 
@@ -236,28 +242,15 @@
 <div class="readout" id="readout" hidden></div>
 
 <script>
-  // lab_build — bumped on every ship; the colour comes with it, so a glance at
-  // the screen says whether the update arrived.
-  var LAB_BUILD = 3;
-  var LAB_COLOURS = [
-    { name: 'red',     bg: '#d7263d', fg: '#ffffff' },
-    { name: 'teal',    bg: '#0f766e', fg: '#ffffff' },
-    { name: 'indigo',  bg: '#3b3b98', fg: '#ffffff' },
-    { name: 'amber',   bg: '#b45309', fg: '#ffffff' },
-    { name: 'forest',  bg: '#166534', fg: '#ffffff' },
-    { name: 'plum',    bg: '#6b21a8', fg: '#ffffff' },
-    { name: 'slate',   bg: '#334155', fg: '#ffffff' },
-    { name: 'crimson', bg: '#9f1239', fg: '#ffffff' }
-  ];
+  // lab_release — the corner square IS the version stamp: this release's commit
+  // name in this release's colour. Both change on every ship.
+  var LAB_RELEASE = { name: 'graph_one', bg: '#b45309', fg: '#ffffff' };
   (function () {
-    var c = LAB_COLOURS[(LAB_BUILD - 1) % LAB_COLOURS.length];
     var r = document.documentElement.style;
-    r.setProperty('--lab_bg', c.bg);
-    r.setProperty('--lab_fg', c.fg);
+    r.setProperty('--lab_bg', LAB_RELEASE.bg);
+    r.setProperty('--lab_fg', LAB_RELEASE.fg);
     var tag = document.getElementById('build_tag');
-    if (tag) tag.textContent = 'build ' + LAB_BUILD + ' · ' + c.name;
-    var m = document.querySelector('meta[name="theme-color"]');
-    if (m) m.setAttribute('content', '#ffffff');
+    if (tag) tag.textContent = LAB_RELEASE.name;
   })();
 
   var N = 3;
