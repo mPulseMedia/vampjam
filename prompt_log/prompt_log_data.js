@@ -9,8 +9,30 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "189 pose_arrow",
+        id: "190 dot_scale",
         expanded: true,
+        nodes: [
+          { text: "190 dot_scale", children: [
+            { text: "prompt_restate", children: [
+              { text: "The dot should grow and shrink with the scale of the grid." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Make the dot get bigger along with the scale of the grid" }
+            ]},
+            { text: "response", children: [
+              { text: "dot_scale", children: [
+                { text: "the dot is part of the world now, not a sticker on the glass \u2014 it swells with the squares as you come closer and shrinks with them as you pull back" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: release dot_scale, crimson. Set zero, then move in and out \u2014 dot and squares grow together" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "189 pose_arrow",
+        expanded: false,
         nodes: [
           { text: "189 pose_arrow", children: [
             { text: "prompt_restate", children: [

@@ -949,7 +949,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   to make room. Playwright: pitch/roll/yaw each change the plate polygon and read back
   P30 / R-25 / Y40, a slide + approach draws the travel arrow at 18.7,-26.6 with ×1.4, no
   page errors ✓.
-- NEXT → add entry 190 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 190 dot_scale — lab.html, release dot_scale / crimson) the centre dot now takes the
+  world's scale as well as its position: .pin_dot's transform gains scale(var(--sc)), so it
+  swells and shrinks in step with the grid squares instead of staying a fixed 22px sticker
+  on top of a world that moves in depth. Playwright: at zero dot 22px / square 30px; moved
+  closer ×3.25 → dot 72px / square 98px; moved away ×0.47 → dot 10px / square 14px — the
+  ratio holds at every distance ✓.
+- NEXT → add entry 191 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

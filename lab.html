@@ -76,10 +76,13 @@
       repeating-linear-gradient(to right,  rgba(38,86,140,0.30) 0 1px, transparent 1px 30px);
   }
   .pin { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2; }
+  /* dot_scale — the dot is an object IN the world, so it takes the world's
+     scale as well as its position: near the eye it swells with the squares,
+     far away it shrinks with them. */
   .pin_dot {
     width: 22px; height: 22px; border-radius: 50%;
     background: currentColor; box-shadow: 0 2px 6px rgba(0,0,0,0.30);
-    transform: translate3d(var(--sx, 0px), var(--sy, 0px), 0);
+    transform: translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
   }
   /* lab_build: every card wears the same colour, and the colour changes with
      each build — if it looks different from last time, the update landed. */
@@ -266,7 +269,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'pose_arrow', bg: '#0e7490', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'dot_scale', bg: '#9f1239', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
