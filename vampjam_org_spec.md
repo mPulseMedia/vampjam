@@ -1659,7 +1659,28 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   482px and now leaves the scale at exactly ×1.00, where a lateral move used to disturb the zoom
   a little as well. An equal push on x and z still moves both (3.5 cm and 6.0 cm). Whole lab
   suite re-run and green; no page errors.
-- NEXT → add entry 225 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 225 shot_on — lab.html + lab_surface.png, release shot_on / plum) something real to look
+  at instead of a dot. shot_on: an <img class="shot"> is a CHILD of the paper element, absolutely
+  centred at the world origin, so it inherits the pan, the zoom, the swirl and both leans for
+  free — there is no second transform to keep in step, and it can never drift out of register
+  with the surface it is lying on. It is sized in the paper's own units (340px there is about one
+  screen wide at ×1), so the whole thing is in view when zeroed and you walk INTO it as you come
+  closer; a drop shadow puts it on the paper rather than in front of it. If the file is missing
+  the img fires error, sets data-missing and hides, and the page is exactly the graph paper it
+  was — so the picture is optional, not load-bearing. Swap lab_surface.png for any image.
+  no_upload: his screenshot did not arrive — the uploads directory holds only the old vampjam
+  project files, nothing from this turn. Rather than stall, the mechanism is shipped with a
+  plainly generic stand-in (a mock content screen drawn with PIL, 450×800, 12KB, no branding and
+  no real content) so he can judge the FEEL now; his image drops straight in over it.
+  Cost, measured honestly with the image shown and hidden back to back on the same build:
+  44 fps against 44 fps — the picture is free. (An earlier reading suggesting 59 → 41 was the
+  test harness having grown, not the page: vj_216c drives one full sensor sample per frame and
+  has gained the shake test, the axis gate, the per-axis deadband and the per-axis spring since
+  it was written.) will-change/translateZ on the image was tried to give it its own layer and
+  changed nothing, so it was removed rather than left in costing memory. Playwright: image
+  loads at 450×800 and its parent is #grid ✓; three-way capture at rest, closer and slid ✓;
+  with the file blocked the image hides and the paper still paints ✓; suite green.
+- NEXT → add entry 226 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

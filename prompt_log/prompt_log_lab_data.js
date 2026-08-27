@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "224 axis_one",
+        id: "225 shot_on",
         expanded: true,
+        nodes: [
+          { text: "225 shot_on", children: [
+            { text: "prompt_restate", children: [
+              { text: "Put the screenshot on the graph paper." },
+              { text: "I want to see what it is like to look at something, not just a ball on graph paper." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Meanwhile, here is a screenshot and I\u2019d like you to put on the graph paper. The image of the screenshot I wanna see what it\u2019s like to look at something not just a ball on a piece of crap paper." }
+            ]},
+            { text: "no_upload", children: [
+              { text: "your screenshot did not reach me \u2014 nothing came through on this turn" },
+              { text: "so I built the mechanism and put a plainly generic stand-in on the paper, so you can judge the feel now" },
+              { text: "send it again and it drops straight in over the stand-in" }
+            ]},
+            { text: "shot_on", children: [
+              { text: "the picture lies flat ON the paper at the centre of the world" },
+              { text: "it leans, turns, pans and zooms with the paper because it is part of it" },
+              { text: "about one screen wide when you are zeroed, so you walk into it as you come closer" },
+              { text: "if there is no picture the page is exactly the graph paper it was" }
+            ]},
+            { text: "free", children: [
+              { text: "measured with the picture shown and hidden back to back: 44 frames a second either way" }
+            ]},
+            { text: "one_question", children: [
+              { text: "the star still sits on top of it \u2014 say the word if you want it gone now there is something to look at" }
+            ]},
+            { text: "verify", children: [
+              { text: "~5m: release shot_on, plum \u2014 captured at rest, closer and slid sideways; with the file blocked the picture hides and the paper carries on" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "224 axis_one",
+        expanded: false,
         nodes: [
           { text: "224 axis_one", children: [
             { text: "prompt_restate", children: [
