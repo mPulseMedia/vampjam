@@ -35,13 +35,18 @@
     right: max(14px, env(safe-area-inset-right));
     border-radius: 22px;
     overflow: hidden;
-    /* paper_tilt — the window is a real camera now: the graph paper is a plane
-       lying in space behind it, so when it leans back the far edge shrinks
-       toward a vanishing point and the near edge spreads. The background is the
-       paper's own off-white, so whatever lies beyond the horizon reads as haze
-       rather than a hole. */
-    perspective: 760px;
     background: #fcfcf8;
+  }
+  /* tilt_deep — the perspective lives on its OWN layer, not on the window.
+     WebKit flattens 3D children of an element that both clips and rounds its
+     corners, which is why the lean barely showed on the phone while it looked
+     right in a desktop screenshot. The stage clips nothing and rounds nothing;
+     the window still does both, around it. The camera is close (460px against a
+     ~360px window), so a modest tilt of the hand lays the paper right down. */
+  .stage {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    perspective: 460px; perspective-origin: 50% 50%;
+    transform-style: preserve-3d;
   }
   /* frame_shadow — the white frame casting onto the cell below it: strongest
      from the top edge, present on all four. It rides ABOVE the cells. */
@@ -82,10 +87,11 @@
        along the world's own axes rather than the screen's. Swirl the phone in
        front of your face and the paper turns the other way by the same amount,
        which is what makes it look like the paper never moved. */
-    /* the lean comes after the swirl, so the paper tips about the phone's own
-       left-right axis, and before the pan, so the pan runs along the paper's
-       surface rather than across the glass */
-    transform: rotate(var(--rot, 0deg)) rotateX(var(--tilt, 0deg))
+    /* the two leans come after the swirl, so they tip about the phone's own
+       axes, and before the pan, so the pan runs along the paper's surface
+       rather than across the glass. --tilt lays the top away; --turn lays the
+       right-hand side away. */
+    transform: rotate(var(--rot, 0deg)) rotateX(var(--tilt, 0deg)) rotateY(var(--turn, 0deg))
                translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
     background-color: #fcfcf8;
     background-image:
@@ -275,7 +281,7 @@
 <body>
 
 <div class="frame_window" id="frame">
-  <div class="grid" id="grid"></div>
+  <div class="stage"><div class="grid" id="grid"></div></div>
   <div class="track" id="track">
     <div class="cell cell_1"></div>
     <div class="cell cell_2"></div>
@@ -340,7 +346,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'paper_tilt', bg: '#b91c1c', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'tilt_deep', bg: '#0369a1', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -915,13 +921,35 @@
   // the zero pose. Tipping the top toward you leans the paper's TOP away, so
   // the squares crowd together up there and open out along the bottom.
   // PITCH_INV is the sign switch, as everything else here has one.
-  var PITCH_INV = 1;
-  var TILT_MAX  = 72;        // deg: never let the plane go edge-on and vanish
-  function screen_pitch() {
-    var m = rel_matrix(); if (!m) return 0;
-    var p = Math.asin(Math.max(-1, Math.min(1, m[7]))) * 180 / Math.PI;
-    p *= PITCH_INV;
+  // PITCH_INV is -1 because the normal-based extraction comes out the opposite
+  // way round from the Euler term it replaced; this keeps the direction that
+  // already shipped, so the only change felt here is depth and the new axis.
+  // TURN_INV is -1 so the two axes agree: the edge you bring TOWARD your eye is
+  // the edge that lies away toward the vanishing point. That is his rule for
+  // the top, so it is the rule for the sides too.
+  var PITCH_INV = -1, TURN_INV = -1;
+  var TILT_GAIN = 1.7;       // a modest tilt of the hand should lay it well down
+  var TILT_MAX  = 74;        // deg: never let the plane go edge-on and vanish
+  function lean(v, sign) {
+    var p = sign * TILT_GAIN * v;
     return Math.max(-TILT_MAX, Math.min(TILT_MAX, p));
+  }
+  // lean_normal — both leans come from ONE thing: where the screen's own normal
+  // is pointing in the zero frame. Column 2 of the relative matrix IS that
+  // normal, so its swing up-and-down gives the top-away lean and its swing
+  // left-and-right gives the side-away lean, cleanly separated and correctly
+  // signed. (The Euler terms used before were not: +25 and -25 of gamma both
+  // came out +42.5, because that extraction folds the sign away.)
+  function screen_pitch() {                     // top toward you -> top lies away
+    var m = rel_matrix(); if (!m) return 0;
+    return lean(Math.atan2(m[5], m[8]) * 180 / Math.PI, PITCH_INV);
+  }
+  // turn_lean — the same thing on the other axis: turning the phone like a door
+  // lays the paper's right-hand side away, with the vanishing point out to the
+  // side instead of over the top.
+  function screen_turn() {
+    var m = rel_matrix(); if (!m) return 0;
+    return lean(Math.atan2(m[2], m[8]) * 180 / Math.PI, TURN_INV);
   }
   function view() {
     var w = frame.clientWidth || 320;
@@ -932,7 +960,7 @@
     var lim = w * 3;
     return {
       w: w, cam: cam, dist: dist, mult: mult, pxPerM: pxPerM,
-      roll: PAN_INV * screen_roll(), tilt: screen_pitch(),
+      roll: PAN_INV * screen_roll(), tilt: screen_pitch(), turn: screen_turn(),
       ox: Math.max(-lim, Math.min(lim,  PAN_INV * cam.x * pxPerM)),
       oy: Math.max(-lim, Math.min(lim, -PAN_INV * cam.y * pxPerM))
     };
@@ -951,6 +979,7 @@
     root.setProperty('--sc', mult.toFixed(3));
     root.setProperty('--rot', v.roll.toFixed(2) + 'deg');
     root.setProperty('--tilt', v.tilt.toFixed(2) + 'deg');
+    root.setProperty('--turn', v.turn.toFixed(2) + 'deg');
     // star_lift — how high the star floats above the paper, read off the scale:
     // ×1 and above is coming in to land, below ×1 it is climbing away.
     var near = Math.max(-1, Math.min(1, Math.log(mult) / Math.log(8)));
@@ -979,6 +1008,7 @@
     if (!keepDepth) document.documentElement.style.setProperty('--sc', '1');
     document.documentElement.style.setProperty('--rot', '0deg');
     document.documentElement.style.setProperty('--tilt', '0deg');
+    document.documentElement.style.setProperty('--turn', '0deg');
   }
   function start_world() {
     motionOn = true;
@@ -1245,7 +1275,7 @@
     // what the maths is thinking right now, without waiting for a paint frame
     state: function () {
       var v = view();
-      return { px: v.ox, py: v.oy, mult: v.mult, dist: v.dist, roll: v.roll, tilt: v.tilt,
+      return { px: v.ox, py: v.oy, mult: v.mult, dist: v.dist, roll: v.roll, tilt: v.tilt, turn: v.turn,
                moving: moving, held: lastMove, lock: +Math.max(0, lockLeft).toFixed(2),
                pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) } };
     },
@@ -1255,6 +1285,7 @@
                sc: st.getPropertyValue('--sc').trim(),
                rot: st.getPropertyValue('--rot').trim(),
                tilt: st.getPropertyValue('--tilt').trim(),
+               turn: st.getPropertyValue('--turn').trim(),
                read: (document.getElementById('pose_lbl').textContent || '') };
     },
     takes: function () { return gest_get(); }

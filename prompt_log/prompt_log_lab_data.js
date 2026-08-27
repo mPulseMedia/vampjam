@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "206 paper_tilt",
+        id: "207 tilt_deep",
         expanded: true,
+        nodes: [
+          { text: "207 tilt_deep", children: [
+            { text: "prompt_restate", children: [
+              { text: "The tilt did not flatten the grid the way it should." },
+              { text: "Tilting should push the top of the screen further away and foreshorten the bottom." },
+              { text: "The same should happen for left and right." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I think you were unsuccessful in the tilt and how it can how it should flatten the grid. See what I\u2019m trying to show here. Is that the grid which you\u2019re looking straight on when you tilt the phone it tilts the grid such that what\u2019s at the top of the screen becomes further away at the bottom of the screen becomes for shortened and same with Wright and." }
+            ]},
+            { text: "response", children: [
+              { text: "stage_layer", children: [
+                { text: "found why you saw almost nothing: Safari flattens 3D children of an element that both clips and rounds its corners \u2014 which the window does" },
+                { text: "the camera now sits on its own layer inside the window, so the lean actually renders on the phone" }
+              ]},
+              { text: "tilt_deep", children: [
+                { text: "the camera is much closer and the lean is 1.7\u00d7 your hand \u2014 20 degrees of tilt lays the paper down 34" },
+                { text: "it stops at 74 degrees so it can never go edge-on and vanish" }
+              ]},
+              { text: "turn_lean", children: [
+                { text: "the same on the other axis \u2014 turn the phone like a door and the vanishing point goes out to the side instead of over the top" },
+                { text: "that is the \u201cand same with right and\u2026\u201d you trailed off on" }
+              ]},
+              { text: "lean_normal", children: [
+                { text: "both leans come from one thing now: where the screen is facing" },
+                { text: "the old maths folded the sign away \u2014 turning the phone 25 degrees either way gave the same answer" }
+              ]},
+              { text: "sign_rule", children: [
+                { text: "the edge you bring toward your eye is the edge that lies away toward the vanishing point" },
+                { text: "that is your rule for the top, so I made it the rule for the sides too \u2014 say the word if the sides feel backwards" }
+              ]},
+              { text: "verify", children: [
+                { text: "~5m: release tilt_deep, ocean \u2014 both axes measured and composing, rendered rows go from an even 30 flat to 42 then 293 when leaned, Set zero clears both" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "206 paper_tilt",
+        expanded: false,
         nodes: [
           { text: "206 paper_tilt", children: [
             { text: "prompt_restate", children: [

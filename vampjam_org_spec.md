@@ -1245,7 +1245,32 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   leaning toward, and reversed leaning away ✓; swirl and lean compose (rot 30 / tilt 45) ✓;
   Set zero clears the lean to 0.00deg ✓; glide_stop, plate_move, roll_hold, deck_one and
   swirl_flip regressions pass; no page errors.
-- NEXT → add entry 207 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 207 tilt_deep — lab.html, release tilt_deep / ocean) the lean from 206 was real but
+  barely visible on the phone, and only had one axis. Three fixes. stage_layer: the perspective
+  moves off .frame_window onto its own .stage (position absolute, inset 0, clips nothing,
+  rounds nothing, transform-style preserve-3d). WebKit flattens 3D children of an element that
+  BOTH clips and rounds its corners, which is why a desktop screenshot showed the lean and the
+  phone showed almost none — the window still clips and rounds, the stage inside it carries the
+  camera. tilt_deep: the camera comes in from 760px to 460px against a ~360px window and
+  TILT_GAIN is 1.7, so 20 deg of hand lays the paper down 34 deg; the clamp is TILT_MAX 74.
+  turn_lean: the same thing on the other axis — rotateY(var(--turn)) — so turning the phone
+  like a door throws the vanishing point out to the side instead of over the top, which is the
+  'and same with right and…' he trailed off on. lean_normal: BOTH leans now come from one
+  thing, the screen's own normal in the zero frame (column 2 of the relative matrix): its swing
+  up/down is the top lean, its swing left/right is the side lean. The Euler terms used before
+  folded the sign away — measured, gamma +25 and -25 BOTH produced +42.5 — and the normal is
+  cleanly signed and cleanly separated. Signs: PITCH_INV -1 keeps the direction that already
+  shipped (the normal extraction comes out opposite to the Euler term it replaced), TURN_INV -1
+  makes the two axes agree on his rule — the edge you bring toward your eye is the edge that
+  lies away toward the vanishing point. Playwright: perspective 460px on .stage and none on the
+  window, which still reads overflow hidden ✓; beta ±20 → tilt ±34, gamma ±25 → turn ∓42.5,
+  ±60 clamps at ±74, and the two axes compose ✓; rendered pixels: rows uniform at 30 when flat
+  and collapsing to 42/293 when leaned ✓; Set zero clears both ✓; glide_stop, plate_move,
+  roll_hold, deck_one, swirl_flip and paper_tilt regressions pass; no page errors.
+  test_note: a stale-CSS-var read made an earlier run report both gamma signs as +42.5; reading
+  window.__lab.state() directly showed the maths had been right. Prefer the state hook to
+  getComputedStyle for anything the paint loop writes.
+- NEXT → add entry 208 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
