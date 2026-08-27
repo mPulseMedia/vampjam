@@ -9,8 +9,58 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "213 zero_cal",
+        id: "214 lane_view",
         expanded: true,
+        nodes: [
+          { text: "214 lane_view", children: [
+            { text: "prompt_restate", children: [
+              { text: "Take the numbers out from under the 3D diagram \u2014 no numbers anywhere." },
+              { text: "Separate the chart below it into one area per axis." },
+              { text: "Colour them to match the diagram\u2019s axes, filled solid, positive and negative, no markings." },
+              { text: "Make that rectangle a lot bigger; zoom the diagram in a little." },
+              { text: "Make the reset view look like graph paper on the ground seen from 45\u00b0 above." },
+              { text: "Tilt forward and it goes flat; tilt the top back and the top runs to a vanishing point." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I didn\u2019t wanna have the numbers up there that you have under the 3-D diagram. I don\u2019t wanna see those what I wanna see. Is that the chart you have the graph that you have underneath it it shows a bunch of the Axis and how much they are activated this way now and I want you to separate each of those to its own area and I want you to color code them correspond with the 3-D diagrams axis on the 3-D diagrams. I want the colors to be the same corresponding axis I want it filled in solid instead of just a line whether it\u2019s positive or negative and I don\u2019t want any markings on it. I don\u2019t want any numbers anywhere. I wanna increase the size lot of the containing rectangle but the size of the zoom that is on the phone in the Axis in the top right corner we can zoom in a little bit." },
+              { text: "OK, I wanna make the reset BA display that I would see if a piece of paper if it was in front of me on the ground that\u2019s what I wanna see as though I am tilted at a 45\u00b0 angle looking down and seeing some graph paper, such that if I tilt my phone forward, I will be looking directly at the graph paper and it is flat and if I were to tilt the top of the camera back from the reset location I would be seeing the graph paper with the bottom, highly for shortened and the top toward a vanishing point so I\u2019d like to see that occur now I may shift it\u2019s starting Location, but let\u2019s begin with that" }
+            ]},
+            { text: "response", children: [
+              { text: "lane_view", children: [
+                { text: "six lanes now, stacked and kept apart \u2014 one per axis" },
+                { text: "each fills solid away from its own centre, up for positive and down for negative" },
+                { text: "no line, no label, no tick, no number" },
+                { text: "the panel is 178\u00d7228 where the old strip was 130\u00d748" }
+              ]},
+              { text: "lane_colour", children: [
+                { text: "red is left-right AND the tilt about it, green up-down and the turn about it, blue near-far and the swirl about it" },
+                { text: "that pairing is real, not decoration: turning about an axis belongs to that axis" }
+              ]},
+              { text: "no_number", children: [
+                { text: "the seven rows under the diagram are gone" },
+                { text: "the X Y Z letters stay \u2014 they name the axes, they do not measure anything" },
+                { text: "the diagram is 16% larger inside its box now that it carries no text" }
+              ]},
+              { text: "ground_view", children: [
+                { text: "reset is now a sheet lying on the floor, seen from about 45 degrees above" },
+                { text: "tip the phone forward and the lean unwinds \u2014 45, 28, 11, then dead flat when you are looking straight down at it" },
+                { text: "tip the top back and it goes past 45 to 62 and on, the bottom crowding and the top running to a vanishing point" },
+                { text: "this reverses the flip from last time, but that was a lean with no base and this is the anchored version you have now described physically" }
+              ]},
+              { text: "far_haze", children: [
+                { text: "leaning 45 degrees brought the paper\u2019s own far edge into view as a hard diagonal cut" },
+                { text: "the paper is twice as big and fades out toward its rim, so the distance dissolves instead of ending at a line" }
+              ]},
+              { text: "verify", children: [
+                { text: "~6m: release lane_view, purple \u2014 lean table measured, Reset returns exactly 45\u00b0, lanes painting in all three colours, no visible figure left on the diagram" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "213 zero_cal",
+        expanded: false,
         nodes: [
           { text: "213 zero_cal", children: [
             { text: "prompt_restate", children: [

@@ -81,7 +81,13 @@
      lines, so there are no layers to see through. Sized 800% so even at the
      small end of the scale, panned to its limit, no edge comes into view. */
   .grid {
-    position: absolute; left: -350%; top: -350%; width: 800%; height: 800%;
+    /* far_haze — leaning the paper 45 degrees pushes its far edge into view as a
+       hard diagonal cut. It is twice the size it was, and it fades out toward
+       its own rim, so the distance dissolves into the background the way real
+       distance does instead of ending at a line. */
+    position: absolute; left: -750%; top: -750%; width: 1600%; height: 1600%;
+    -webkit-mask-image: radial-gradient(closest-side, #000 42%, rgba(0,0,0,0.55) 68%, transparent 88%);
+    mask-image: radial-gradient(closest-side, #000 42%, rgba(0,0,0,0.55) 68%, transparent 88%);
     pointer-events: none; z-index: 0; transform-origin: 50% 50%;
     /* roll_hold: the rotation comes FIRST, so the offset that follows is measured
        along the world's own axes rather than the screen's. Swirl the phone in
@@ -150,18 +156,24 @@
   /* lag_trace — four seconds of history, so what the hand did and what the
      screen did can be compared by eye instead of by adjective.
      grey = how hard the phone is accelerating, purple = where the world is. */
+  /* lane_view — six lanes, one per axis, stacked and kept apart. Each is a
+     solid fill away from its own centre line, up for positive and down for
+     negative, and carries no marking of any kind. The colours are the diagram's:
+     red is the left-right axis and the tilt about it, green up-down and the turn
+     about it, blue near-far and the swirl about it. */
   .trace {
-    position: fixed; z-index: 6; right: max(22px, calc(env(safe-area-inset-right) + 10px));
-    top: max(302px, calc(env(safe-area-inset-top) + 290px));
-    width: 130px; height: 48px; border-radius: 10px;
-    background: rgba(255,255,255,0.86);
+    position: fixed; z-index: 6; right: max(18px, calc(env(safe-area-inset-right) + 8px));
+    top: max(212px, calc(env(safe-area-inset-top) + 200px));
+    width: 178px; height: 228px; border-radius: 14px;
+    background: rgba(255,255,255,0.88);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     pointer-events: none;
   }
   .pose {
     position: fixed; z-index: 6; right: max(18px, calc(env(safe-area-inset-right) + 8px));
     top: max(24px, calc(env(safe-area-inset-top) + 12px));
-    width: 178px; height: 268px; border-radius: 14px;
+    width: 178px; height: 178px; border-radius: 14px;
     background: rgba(255,255,255,0.86);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
@@ -352,7 +364,7 @@
   <button id="g_send" class="g_small" hidden>Send</button>
   <span class="g_count" id="g_count" hidden></span>
 </div>
-<svg class="pose" id="pose" viewBox="-72 -74 144 218" hidden aria-hidden="true">
+<svg class="pose" id="pose" viewBox="-62 -62 124 124" hidden aria-hidden="true">
   <!-- pose_arrow: the phone as an object standing in a frame that never moves.
        The axes and the dashed zero rectangle are pinned at the origin; the plate
        carries BOTH the tilt and the travel, so where the phone is in the picture
@@ -372,12 +384,12 @@
   <g id="pose_read" font-family="-apple-system, sans-serif"></g>
   <text id="pose_lbl" font-size="0.01" fill="none"></text>
 </svg>
-<canvas class="trace" id="trace" width="260" height="96" hidden></canvas>
+<canvas class="trace" id="trace" width="356" height="456" hidden></canvas>
 
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'zero_cal', bg: '#065f46', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'lane_view', bg: '#7e22ce', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -823,14 +835,10 @@
       ['swirl flat',   deg_txt(SWIRL_INV * screen_roll()), 'rgba(0,0,0,0.68)'],
       ['scale',        '\u00d7' + mult.toFixed(2),         'rgba(0,0,0,0.68)']
     ];
-    document.getElementById('pose_read').innerHTML = lines.map(function (L, i) {
-      var y = 60 + i * 13;      // seven rows inside the viewBox's 144 floor
-      return '<text x="-64" y="' + y + '" font-size="9.5" font-weight="600" ' +
-               'fill="rgba(0,0,0,0.42)">' + L[0] + '</text>' +
-             '<text x="64" y="' + y + '" font-size="11.5" font-weight="800" ' +
-               'text-anchor="end" fill="' + L[2] + '">' + L[1] + '</text>';
-    }).join('');
-    // the state hook still reads one flat line out of the diagram
+    // no_number — the readout is gone from the face of the diagram: the lanes
+    // below say the same thing in a form that can be read at a glance, and he
+    // does not want a single figure on the page. The values still exist, in the
+    // hidden line the state hook and the tests read.
     document.getElementById('pose_lbl').textContent = lines.map(function (L) {
       return L[0] + ' ' + L[1];
     }).join('  \u00b7  ');
@@ -981,44 +989,71 @@
     });
   }
 
-  // trace_ring — a rolling four seconds of (hand effort, world offset)
+  // lane_view — a rolling four seconds, one lane per axis, six lanes stacked.
+  // Each sample is [x, y, z, tilt, turn, swirl]: where the world stands on that
+  // axis, and how far the phone is turned about it. Each lane fills solid from
+  // its own centre, up for positive and down for negative, and carries no line,
+  // no label and no number — the shape and the colour are the whole message.
   var TRACE_N = 240;
   var trace = new Array(TRACE_N);
   var traceAt = 0;
   var traceEl = document.getElementById('trace');
   var traceCtx = traceEl ? traceEl.getContext('2d') : null;
-  function trace_push(effort, offset) {
-    trace[traceAt] = [effort, offset];
+  // lane_colour — the diagram's own three, used twice: a distance along an axis
+  // and the rotation about that same axis share a colour.
+  var LANES = [
+    { i: 0, c: '#dc2626' },   // right / left
+    { i: 1, c: '#16a34a' },   // up / down
+    { i: 2, c: '#2563eb' },   // near / far
+    { i: 3, c: '#dc2626' },   // tilt   (about the left-right axis)
+    { i: 4, c: '#16a34a' },   // turn   (about the up-down axis)
+    { i: 5, c: '#2563eb' }    // swirl  (about the near-far axis)
+  ];
+  function trace_push(v) {
+    trace[traceAt] = v;
     traceAt = (traceAt + 1) % TRACE_N;
   }
   function trace_draw() {
     if (!traceCtx) return;
     var W = traceEl.width, H = traceEl.height;
     traceCtx.clearRect(0, 0, W, H);
-    var maxE = 0.5, maxO = 40;
+    var n = LANES.length;
+    var pad = 8, gap = 6;
+    var lh = (H - pad * 2 - gap * (n - 1)) / n;
+    // lane_scale — each lane finds its own full scale from what it has seen, so
+    // a small axis is not flattened by a large one; a floor keeps a quiet lane
+    // from turning noise into a mountain.
+    var floors = [0.03, 0.03, 0.03, 12, 12, 12];
+    var maxv = floors.slice();
     for (var i = 0; i < TRACE_N; i++) {
-      var s = trace[(traceAt + i) % TRACE_N];
-      if (!s) continue;
-      if (Math.abs(s[0]) > maxE) maxE = Math.abs(s[0]);
-      if (Math.abs(s[1]) > maxO) maxO = Math.abs(s[1]);
+      var s2 = trace[(traceAt + i) % TRACE_N];
+      if (!s2) continue;
+      for (var k = 0; k < n; k++) if (Math.abs(s2[k]) > maxv[k]) maxv[k] = Math.abs(s2[k]);
     }
-    function line(idx, colour, scale, width) {
+    LANES.forEach(function (L, k) {
+      var top = pad + k * (lh + gap);
+      var mid = top + lh / 2;
+      var half = lh / 2 - 1;
+      traceCtx.fillStyle = 'rgba(0,0,0,0.035)';
+      traceCtx.fillRect(0, top, W, lh);
       traceCtx.beginPath();
-      traceCtx.lineWidth = width; traceCtx.strokeStyle = colour;
-      var started = false;
+      traceCtx.moveTo(0, mid);
+      var last = 0;
       for (var i = 0; i < TRACE_N; i++) {
-        var s = trace[(traceAt + i) % TRACE_N];
-        if (!s) continue;
+        var s3 = trace[(traceAt + i) % TRACE_N];
         var x = (i / (TRACE_N - 1)) * W;
-        var y = H / 2 - (s[idx] / scale) * (H / 2 - 3);
-        if (!started) { traceCtx.moveTo(x, y); started = true; } else traceCtx.lineTo(x, y);
+        var v = s3 ? s3[L.i] : 0;
+        var y = mid - (v / maxv[k]) * half;
+        traceCtx.lineTo(x, y);
+        last = x;
       }
-      traceCtx.stroke();
-    }
-    traceCtx.strokeStyle = 'rgba(0,0,0,0.12)'; traceCtx.lineWidth = 1;
-    traceCtx.beginPath(); traceCtx.moveTo(0, H / 2); traceCtx.lineTo(W, H / 2); traceCtx.stroke();
-    line(0, 'rgba(0,0,0,0.35)', maxE, 2);          // the hand
-    line(1, '#6b21a8', maxO, 3);                   // the world
+      traceCtx.lineTo(last, mid);
+      traceCtx.closePath();
+      traceCtx.fillStyle = L.c;
+      traceCtx.globalAlpha = 0.8;
+      traceCtx.fill();
+      traceCtx.globalAlpha = 1;
+    });
   }
 
   // view — the ONE place that turns where the phone is into what the screen
@@ -1058,7 +1093,15 @@
   // TURN_INV stays -1, so the side axis keeps its old rule — the edge you bring
   // toward your eye is the edge that lies away. The two are on opposite rules
   // now, deliberately, until he says which one he wants for both.
-  var PITCH_INV = 1, TURN_INV = -1;
+  // ground_view — the reset pose is not a sheet held up facing you, it is a
+  // sheet lying on the FLOOR seen from about 45 degrees above it. So the lean
+  // starts at TILT_BASE and the phone moves it from there: tip the phone
+  // forward (top away, screen looking down) and the lean unwinds to nothing —
+  // you are looking straight down at the paper; tip the top back toward you and
+  // it goes past 45, the bottom crowding and the top running to a vanishing
+  // point. PITCH_INV is -1 for that to be the way round it falls.
+  var TILT_BASE = 45;
+  var PITCH_INV = -1, TURN_INV = -1;
   var TILT_GAIN = 1.7;       // a modest tilt of the hand should lay it well down
   var TILT_MAX  = 74;        // deg: never let the plane go edge-on and vanish
   function lean(v, sign) {
@@ -1071,9 +1114,10 @@
   // left-and-right gives the side-away lean, cleanly separated and correctly
   // signed. (The Euler terms used before were not: +25 and -25 of gamma both
   // came out +42.5, because that extraction folds the sign away.)
-  function screen_pitch() {                     // top toward you -> top lies away
-    var m = rel_matrix(); if (!m) return 0;
-    return lean(Math.atan2(m[5], m[8]) * 180 / Math.PI, PITCH_INV);
+  function screen_pitch() {
+    var m = rel_matrix(); if (!m) return TILT_BASE;
+    var v = TILT_BASE + lean(Math.atan2(m[5], m[8]) * 180 / Math.PI, PITCH_INV);
+    return Math.max(-TILT_MAX, Math.min(TILT_MAX, v));
   }
   // turn_lean — the same thing on the other axis: turning the phone like a door
   // lays the paper's right-hand side away, with the vanishing point out to the
@@ -1102,7 +1146,10 @@
     var v = view();
     var w = v.w, dist = v.dist, mult = v.mult;
     var sx = v.ox, sy = v.oy;
-    trace_push(lastAccel * (movedSign || 1), sx / (w / 4));
+    // six lanes: where the world stands on each axis, and how far the phone is
+    // turned about each. Distances in metres, angles in degrees.
+    trace_push([v.cam.x, v.cam.y, v.cam.z,
+                v.tilt - TILT_BASE, v.turn, v.roll]);
     trace_draw();
     var root = document.documentElement.style;
     root.setProperty('--sx', sx.toFixed(1) + 'px');
@@ -1142,7 +1189,7 @@
     moving = false; lastMove = ''; quietFor = 0; lockLeft = 0; dir = { x: 0, y: 0, z: 0 };
     if (!keepDepth) document.documentElement.style.setProperty('--sc', '1');
     document.documentElement.style.setProperty('--rot', '0deg');
-    document.documentElement.style.setProperty('--tilt', '0deg');
+    document.documentElement.style.setProperty('--tilt', TILT_BASE + 'deg');
     document.documentElement.style.setProperty('--turn', '0deg');
   }
   function start_world() {

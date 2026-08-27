@@ -1408,7 +1408,35 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   learn to wait out the levelling — that is the behaviour, not a bug (hold still after Reset).
   vj_201/vj_202 also repointed from the retired pose_pos to pose_lbl. Whole lab suite re-run
   and green; no page errors.
-- NEXT → add entry 214 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 214 lane_view — lab.html, release lane_view / purple) two asks, both about what he looks
+  at. lane_view: the old trace strip (130×48, two overlaid lines, one for the hand and one for
+  the world) becomes six stacked lanes at 178×228. Each lane is one axis, filled SOLID away from
+  its own centre line — up for positive, down for negative — with no line, no label, no tick and
+  no number. lane_colour reuses the diagram's three: red is the left-right axis AND the tilt
+  about it, green up-down and the turn about it, blue near-far and the swirl about it, which is
+  not a coincidence but the actual pairing (rotation about X is the tilt, about Y the turn,
+  about Z the swirl). lane_scale gives every lane its own full scale from what it has seen, with
+  a floor, so a small axis is not flattened by a large one and a quiet one does not turn noise
+  into a mountain. no_number: the seven-row readout under the diagram is gone entirely; the
+  values still exist in the hidden line the state hook and the tests read. The X/Y/Z axis
+  letters stay — they name the axes rather than measure anything. The diagram shrinks back to
+  178×178 and zooms in 16% (viewBox 144 → 124 wide) now that it carries no text.
+  ground_view: the reset pose is no longer a sheet held up facing you, it is a sheet lying on
+  the FLOOR seen from about 45 degrees above — TILT_BASE 45, with the phone moving the lean from
+  there rather than from flat. Tip the phone forward (top away, screen looking down) and the
+  lean unwinds: measured 45 → 28 → 11 → 0.8 at beta -26, where you are looking straight down at
+  the paper and it is dead flat; tip the top back toward you and it goes past 45 → 62 → the
+  74 clamp, the bottom crowding and the top running to a vanishing point. PITCH_INV back to -1
+  for that to fall the right way round — which reverses 212, but 212 was a free-standing lean
+  with no base and this is the anchored version he has now described physically, so the base is
+  the thing to keep and the sign follows it. far_haze: leaning 45 degrees pushed the grid's own
+  far edge into view as a hard diagonal cut; the grid doubles to 1600% and gains a radial mask
+  that fades it out toward its rim, so the distance dissolves into the background instead of
+  ending at a line. Playwright: diagram 178×178 at viewBox -62 -62 124 124 with no visible text
+  but the X Y Z letters ✓; lanes 178×228 painting in all three colours ✓; the lean table above ✓;
+  Reset returns the lean to exactly 45.00deg ✓; whole lab suite re-run and green (vj_207 and
+  vj_208c updated for the new resting lean); no page errors.
+- NEXT → add entry 215 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
