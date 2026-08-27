@@ -1516,7 +1516,38 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   recording; a take saved as 'take 1' with good / a_little_off / reset / way_off / levelled on
   its track; watcher shown and reloading on a real file change. Whole lab suite re-run and
   green (five tests repointed off the deleted name field and deck geometry); no page errors.
-- NEXT → add entry 218 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 218 grade_two — lab.html, release grade_two / green) his grading protocol, and the bug
+  it exposed. grade_two: amber is gone; the marks are two ordinary buttons, Good (green) and Bad
+  (red), the same shape and height as Record rather than lamps — they are pressed deliberately
+  after a move now, not blind mid-gesture. Green appears only while the tape runs; Bad is out at
+  all times because it is also the reset, which matches his protocol exactly: hitting reset IS
+  the bad grade. dwell_mark: he said that when the return is right he simply STAYS there a
+  second. That is a signal, not the absence of one, so it goes on the judgement track by itself
+  — a `dwell` mark after DWELL_S 1.0 of stillness, carrying the move it followed and where the
+  world settled. His grading is therefore complete without him pressing anything: reset = no,
+  dwell = yes.
+  trap_free + shake_test: he reported that the left-right axis most often gets stuck ON, the
+  model believing the hand is still pushing when it is not, and that this is what most of his
+  resets are for. It is real and it is now fixed at the root. Three guards, in order of how much
+  they mattered. shake_test is the one that counts: the real difference between a push and a
+  tremor is NET, not size — a hand going somewhere has a direction over a seventh of a second,
+  a hand only shaking averages to nothing while still reading large. Each axis carries a short
+  average of its signed drive (aBar, TREM_TAU 0.14s) and of its size (aMag); when |aBar| falls
+  below TREM_R 0.34 of aMag the axis is shaking. shake_hold: that state must PERSIST for
+  TREM_HOLD 0.35s before the axis is silenced, because a real push-then-brake passes through
+  'no net' for an instant at the turn — silencing it there cost half the gesture, measured, a
+  slide falling 482px → 266px. With the hold in, the same slide is 482px again. COAST: when the
+  drive on an axis is weak (under COAST_A 0.10) its speed decays with COAST_TAU 0.30s instead of
+  VEL_TAU 6.0 — coasting is not free. MOVE_MAX 1.5s caps any single move outright, and marks
+  `move_capped` only if the runaway actually carried more than a centimetre, so the shake test
+  doing its job stays silent. Measured: six seconds of continuous hand tremor at 0.30-0.34 m/s^2
+  — comfortably over the MOVE_A threshold — used to walk the world 241px (4.9 cm) and climbing;
+  it now moves it 4px (0.1 cm) and stays there. A quick slide still reads 'right 9 cm' at 482px
+  and a slow gentle one 727px, both unchanged. Playwright: buttons labelled Good/Bad, green
+  hidden when idle and shown while recording; the tremor table above; a take carrying
+  levelled / dwell after "right 9 cm" / good / reset / bad. Whole lab suite re-run and green
+  (four tests repointed off the retired amber button); no page errors.
+- NEXT → add entry 219 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

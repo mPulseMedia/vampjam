@@ -9,8 +9,52 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "217 rig_right",
+        id: "218 grade_two",
         expanded: true,
+        nodes: [
+          { text: "218 grade_two", children: [
+            { text: "prompt_restate", children: [
+              { text: "While recording, just red or green \u2014 and make them look like normal buttons." },
+              { text: "The protocol: hit reset, make a move; hitting reset means I did not like the move." },
+              { text: "Then move it back; if I like where it returned to I stay there a second." },
+              { text: "If I do not like the return, I hit reset." },
+              { text: "The right/left axis most often gets trapped on \u2014 believing the accelerometer is still moving when it is not \u2014 and that is what most of my resets are for." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I think I know what will be good is when I\u2019m recording just give me red or green cause what I\u2019ll do is. I\u2019ll move the phone from A default position to a different position and then back and I\u2019ll give you a rating on both the position I move it to, and then how well it returns back to the reset position so I\u2019m grading both your movement and your return so can you redo those buttons the visual of those buttons especially they read and green and just make them look like normal buttons" },
+              { text: "See what happens I see that the right or left one more often gets trapped on meaning trapped, believing that the accelerator is continuing to move even though it isn\u2019t, I think that\u2019s the most frequent cause for the resets that I do \u2026 I\u2019m gonna hit reset then I\u2019m gonna make a move. I\u2019m gonna give it if I hit reset when I do that move. That means I didn\u2019t like the move if I don\u2019t hit reset, I like to move and then I\u2019m gonna move it back to the default position and if I like it, I\u2019m gonna stay there a second \u2026 or I may hit reset if I don\u2019t like where it got moved back to." }
+            ]},
+            { text: "grade_two", children: [
+              { text: "two plain buttons now, Good and Bad, the same shape as Record" },
+              { text: "Good only while recording; Bad is always there, because Bad is also the reset" },
+              { text: "which is exactly your protocol \u2014 hitting reset IS the bad grade" }
+            ]},
+            { text: "dwell_mark", children: [
+              { text: "you said that when the return is right you simply stay there a second" },
+              { text: "that is a signal, so I record it \u2014 a second of stillness writes its own mark, with the move it followed" },
+              { text: "so your grading is complete without pressing anything: reset means no, staying put means yes" }
+            ]},
+            { text: "trap_free", children: [
+              { text: "you were right, and I found it" },
+              { text: "the difference between a push and a shake is NET, not size \u2014 a hand going somewhere has a direction, a hand trembling averages to nothing while still reading big" },
+              { text: "each axis now watches its own net, and an axis that is only shaking is not allowed to move the world" },
+              { text: "it has to keep shaking for a third of a second first, because a real move passes through no-net for an instant when you stop pushing and start braking" },
+              { text: "and no single move may run longer than a second and a half" }
+            ]},
+            { text: "measured", children: [
+              { text: "six seconds of hand tremor used to walk the world 4.9 cm and keep going" },
+              { text: "it now moves it a millimetre and stays there" },
+              { text: "a real slide is unchanged \u2014 still right 9 cm" }
+            ]},
+            { text: "verify", children: [
+              { text: "~8m: release grade_two, green \u2014 tremor table measured over six seconds, a take carrying levelled / dwell / good / reset / bad, whole suite green" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "217 rig_right",
+        expanded: false,
         nodes: [
           { text: "217 rig_right", children: [
             { text: "prompt_restate", children: [

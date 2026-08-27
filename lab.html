@@ -241,36 +241,27 @@
     touch-action: manipulation;
   }
   .rig [hidden] { display: none !important; }
-  /* the wide button turns INTO the traffic light when the tape starts — but the
-     RED one stays out at all times, because red is also the reset and the reset
-     has to be reachable when you are just moving the paper around. Green and
-     amber are judgements about a take, so they only exist during one. */
+  /* grade_two — plain buttons, the same shape as Record. Green only exists while
+     the tape is running, because a grade is about a take; Red is out at all
+     times, because it is also the reset and that has to be reachable whenever
+     the paper is moving. */
   .rig_lights { display: flex; gap: 8px; justify-content: flex-end; }
-  .rig_lights .g_mark.g_green,
-  .rig_lights .g_mark.g_amber { display: none; }
-  .rig.is_rec .rig_lights .g_mark { display: block; }
-  .rig_lights .g_mark.g_red { flex: 0 0 52px; }
-  .rig.is_rec .rig_lights .g_mark.g_red { flex: 1 1 0; }
+  .rig_lights .g_mark.g_green { display: none; }
+  .rig.is_rec .rig_lights .g_mark.g_green { display: block; }
+  .rig_lights .g_mark.g_red { flex: 0 0 78px; }
+  .rig.is_rec .rig_lights .g_mark { flex: 1 1 0; }
   .g_mark {
-    flex: 1 1 0; height: 46px; border: none; border-radius: 13px;
-    padding: 0; cursor: pointer; touch-action: manipulation;
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.18), inset 0 0 0 2px rgba(0,0,0,0.05);
-    transition: background 0.15s ease;
+    height: 46px; border: none; border-radius: 13px; padding: 0 10px;
+    font: inherit; font-size: 15px; font-weight: 700; line-height: 1;
+    color: #ffffff; cursor: pointer; touch-action: manipulation;
+    box-shadow: 0 2px 9px rgba(0,0,0,0.20);
+    transition: filter 0.15s ease;
   }
-  .g_mark::before {
-    content: ''; display: block; width: 20px; height: 20px; margin: 0 auto;
-    border-radius: 50%; background: currentColor;
-    box-shadow: 0 0 0 3px rgba(255,255,255,0.55) inset;
-    transition: transform 0.9s linear, box-shadow 0.15s ease;
-  }
-  .g_mark.g_green { color: #16a34a; }
-  .g_mark.g_amber { color: #e0a800; }
-  .g_mark.g_red   { color: #d7263d; }
-  .g_mark:active { transform: scale(0.94); }
-  .g_mark.down::before { transform: scale(1.35); box-shadow: 0 0 0 1px rgba(255,255,255,0.9) inset; }
-  .g_mark.hit { background: currentColor; }
-  .g_mark.hit::before { box-shadow: 0 0 0 3px rgba(255,255,255,0.95) inset; }
+  .g_mark.g_green { background: #16a34a; }
+  .g_mark.g_red   { background: #d7263d; }
+  .g_mark:active { transform: scale(0.96); }
+  .g_mark.down  { filter: brightness(0.82); }
+  .g_mark.hit   { filter: brightness(1.35); }
   .rig_say { display: flex; align-items: center; justify-content: flex-end; gap: 5px;
              min-height: 12px; overflow: hidden; }
   .g_led { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,0,0,0.22); flex: 0 0 auto; }
@@ -356,10 +347,12 @@
      lights it turns into. Nothing else lives down here any more — no name to
      type, no bar across the bottom. -->
 <div class="rig" id="gest_bar">
+  <!-- grade_two — two ordinary buttons, not lamps. Green says that was right.
+       Red says it was not, and resets, which is the same press he was making
+       anyway: in his protocol hitting reset IS the bad grade. Amber is gone. -->
   <div class="rig_lights" id="rig_lights">
-    <button id="g_good" class="g_mark g_green" title="good"></button>
-    <button id="g_off"  class="g_mark g_amber" title="a little bad"></button>
-    <button id="g_wire" class="g_mark g_red"   title="way bad \u2014 and reset"></button>
+    <button id="g_good" class="g_mark g_green">Good</button>
+    <button id="g_wire" class="g_mark g_red">Bad</button>
   </div>
   <div class="rig_say"><span class="g_led" id="g_led"></span><span class="rig_msg" id="g_msg">tap Record</span></div>
   <button id="g_rec" class="g_rec">Record</button>
@@ -397,7 +390,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'rig_right', bg: '#1d4ed8', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'grade_two', bg: '#15803d', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -566,6 +559,32 @@
   // the same take shows mean linear acceleration of 0.13-0.41 through windows he
   // called wrong, so 0.20 was calling noise a move; 0.26 clears the quiet ones
   var MOVE_A     = 0.26;     // m/s^2: above this the phone counts as moving
+  // trap_free — the left-right axis was the one that most often got stuck ON:
+  // the model kept believing the hand was still pushing when it was not, the
+  // velocity never bled away (VEL_TAU 6s is barely a leak at all), and the
+  // world walked off on its own. That is what most of his resets were for.
+  // Two guards. COAST: when the drive on an axis is weak, that axis's speed
+  // decays in a third of a second instead of six — coasting is not free,
+  // because a hand that has stopped pushing has stopped. MOVE_MAX: no single
+  // move may run longer than this; real gestures are short, and anything still
+  // 'moving' after a second and a half is the trap, not a gesture.
+  var COAST_A    = 0.10;     // m/s^2 of drive below which an axis is coasting
+  var COAST_TAU  = 0.30;     // s: how fast a coasting axis gives up its speed
+  var MOVE_MAX   = 1.5;      // s: hard ceiling on one move
+  // shake_test — the real difference between a push and a tremor is NET. A hand
+  // that is going somewhere has a direction over a third of a second; a hand
+  // that is only shaking averages to nothing while still reading large. So each
+  // axis carries a short average of its signed drive and of its size, and when
+  // the signed one is a small fraction of the size, that axis is shaking and is
+  // not allowed to move the world at all. This is the thing that was getting
+  // stuck on, and no threshold on magnitude alone can tell the two apart.
+  var TREM_TAU   = 0.14;     // s: the window the net is measured over
+  var TREM_R     = 0.34;     // net/size ratio below which an axis is only shaking
+  // shake_hold — a real push-then-brake passes through 'no net' for an instant at
+  // the turn, and killing its speed there costs half the gesture (measured: a
+  // slide fell from 482px to 266px). So shaking has to PERSIST before it counts.
+  var TREM_HOLD  = 0.35;     // s of continuous no-net before an axis is silenced
+  var DWELL_S    = 1.0;      // s of stillness that counts as 'I meant to stop here'
   // lag_trace: position is the integral of the integral of acceleration, so it
   // always trails the hand. Showing pos + vel*LEAD cancels most of that — while
   // the phone travels at a steady rate the screen sits where the phone WILL be
@@ -632,6 +651,11 @@
   // gesture would register and everything after it fell off.
   var LOCK_S = 0.45;                // s: how long the tail of a stopping push is ignored
   var lockLeft = 0;
+  var moveFor  = 0;          // how long the move in progress has been running
+  var aBar = { x: 0, y: 0, z: 0 };   // short average of the SIGNED drive
+  var aMag = { x: 0, y: 0, z: 0 };   // short average of its size
+  var trem = { x: 0, y: 0, z: 0 };   // how long each axis has been only shaking
+  var dwelled  = false;      // has the current rest already been noted?
   function end_move() {
     // bake the frozen lead into the resting position so the world stays put
     // where it was last drawn instead of springing back
@@ -956,9 +980,21 @@
       quietFor += dt;
       if (moving && quietFor > STILL_MS / 1000) end_move();
       if (quietFor > STILL_MS / 1000) lockLeft = 0;  // genuinely still: arm again now
+      // dwell_mark — his protocol says that if the return was right he simply
+      // STAYS there a second. That is a signal, not an absence of one, so it
+      // goes on the judgement track by itself with where the world had settled.
+      if (!moving && !dwelled && quietFor > DWELL_S) {
+        dwelled = true;
+        if (typeof mark_add === 'function') mark_add('dwell', {
+          after: lastMove || '',
+          pos: [+pos.x.toFixed(4), +pos.y.toFixed(4), +pos.z.toFixed(4)] });
+      }
     } else {
       quietFor = 0;
-      if (!moving && lockLeft <= 0) { moving = true; run = { x: 0, y: 0, z: 0 }; dir = { x: 0, y: 0, z: 0 }; }
+      if (!moving && lockLeft <= 0) {
+        moving = true; moveFor = 0; dwelled = false;
+        run = { x: 0, y: 0, z: 0 }; dir = { x: 0, y: 0, z: 0 };
+      }
     }
 
     var kv = Math.exp(-dt / VEL_TAU);
@@ -968,6 +1004,16 @@
         var a = az[k];
         a = Math.abs(a) < DEAD ? 0 : (a - (a > 0 ? DEAD : -DEAD));
         a *= rotVeto;
+        // shake_test: is this axis going anywhere, or just vibrating?
+        var w = Math.min(1, dt / TREM_TAU);
+        aBar[k] += (a - aBar[k]) * w;
+        aMag[k] += (Math.abs(a) - aMag[k]) * w;
+        if (aMag[k] > 0.06 && Math.abs(aBar[k]) < TREM_R * aMag[k]) {
+          trem[k] += dt;
+          if (trem[k] > TREM_HOLD) { vel[k] = 0; a = 0; }
+        } else {
+          trem[k] = 0;
+        }
         // latch which way this move is going, once it is going anywhere
         if (!dir[k] && Math.abs(vel[k]) > LATCH_V) {
           dir[k] = vel[k] > 0 ? 1 : -1;
@@ -983,7 +1029,10 @@
           vel[k] = (vel[k] + a * dt) * BRAKE_DECAY;
           if (vel[k] * dir[k] < 0) vel[k] = 0;      // stop at zero, do not reverse
         } else {
-          vel[k] = (vel[k] + a * dt) * kv;
+          // trap_free: weak drive on this axis means it is coasting, and coasting
+          // decays fast. Strong drive keeps the near-lossless integration.
+          var tau = Math.abs(a) < COAST_A ? COAST_TAU : VEL_TAU;
+          vel[k] = (vel[k] + a * dt) * Math.exp(-dt / tau);
         }
         // creep_floor: the stop threshold may only kill a move that is ending.
         // Applied unconditionally it also killed every move that was starting —
@@ -1000,6 +1049,17 @@
       // everything has come to rest: end the move now rather than waiting out
       // the quiet timer — this is the 'jump the gun' he asked for
       if (!vel.x && !vel.y && !vel.z && (slowing || quietFor > 0.05)) end_move();
+      // trap_free: and no move may simply keep running
+      moveFor += dt;
+      if (moving && moveFor > MOVE_MAX) {
+        // only worth a mark if the runaway actually carried the world somewhere;
+        // a capped move that went nowhere is the shake test doing its job
+        var carried = Math.max(Math.abs(run.x), Math.abs(run.y), Math.abs(run.z));
+        if (carried > 0.01 && typeof mark_add === 'function') mark_add('move_capped', {
+          ran: +moveFor.toFixed(2),
+          vel: [+vel.x.toFixed(3), +vel.y.toFixed(3), +vel.z.toFixed(3)] });
+        end_move();
+      }
     }
     smooth_step(dt);
   }
@@ -1227,6 +1287,8 @@
     calLeft = CAL_MS / 1000; calSum = { x: 0, y: 0, z: 0 }; calN = 0; calSq = 0;
     if (motionOn) say('send', 'levelling \u2014 hold still\u2026');
     moving = false; lastMove = ''; quietFor = 0; lockLeft = 0; dir = { x: 0, y: 0, z: 0 };
+    moveFor = 0; dwelled = true;   // a reset is not a dwell
+    aBar = { x: 0, y: 0, z: 0 }; aMag = { x: 0, y: 0, z: 0 }; trem = { x: 0, y: 0, z: 0 };
     if (!keepDepth) document.documentElement.style.setProperty('--sc', '1');
     document.documentElement.style.setProperty('--rot', '0deg');
     document.documentElement.style.setProperty('--tilt', TILT_BASE + 'deg');
@@ -1287,7 +1349,6 @@
 
   var gRec  = document.getElementById('g_rec');
   var gGood = document.getElementById('g_good');
-  var gOff  = document.getElementById('g_off');
   var gWire = document.getElementById('g_wire');
   var gBar  = document.getElementById('gest_bar');
   var gMsg  = document.getElementById('g_msg');
@@ -1422,7 +1483,7 @@
     // drop is_rec first, so the name field is back in the layout before the
     // focus below tries to raise the keyboard on it
     gBar.classList.remove('is_rec');
-    [gGood, gOff, gWire].forEach(function (b) { if (b) b.classList.remove('hit', 'down'); });
+    [gGood, gWire].forEach(function (b) { if (b) b.classList.remove('hit', 'down'); });
     if (!take) return;
     take.ms = Date.now() - take.ts;
     var done = take;
@@ -1462,7 +1523,7 @@
   // into the data instead of living only in his head. Red resets the moment it
   // goes down (that is the whole point of reaching for it) and files its mark on
   // release, once the length is known.
-  [[gGood, 'good', false], [gOff, 'a_little_off', false], [gWire, 'way_off', true]].forEach(function (p) {
+  [[gGood, 'good', false], [gWire, 'bad', true]].forEach(function (p) {
     var el = p[0], kind = p[1], resets = p[2];
     if (!el) return;
     var downAt = 0;
