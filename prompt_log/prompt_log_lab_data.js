@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "192 fixed_axes",
+        id: "193 name_wide",
         expanded: true,
+        nodes: [
+          { text: "193 name_wide", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the coloured box with the release name wider and less tall, so the full name shows without wrapping." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Oh, and make the color box with the name in it wider maybe less tall but wider so that you can see the full name without a wrap" }
+            ]},
+            { text: "response", children: [
+              { text: "name_wide", children: [
+                { text: "the stamp is a wide low pill now and the name sits on one line" },
+                { text: "it grows with the name and stops before the diagram \u2014 a very long name shortens with an ellipsis rather than crashing into it" },
+                { text: "the back button moved up into the space the tall square was using" }
+              ]},
+              { text: "verify", children: [
+                { text: "~30s: release name_wide, blue \u2014 name on one line" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "192 fixed_axes",
+        expanded: false,
         nodes: [
           { text: "192 fixed_axes", children: [
             { text: "prompt_restate", children: [

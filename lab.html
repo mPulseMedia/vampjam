@@ -99,7 +99,7 @@
 
   .back_btn {
     position: fixed; z-index: 6;
-    top: max(132px, calc(env(safe-area-inset-top) + 118px));
+    top: max(78px, calc(env(safe-area-inset-top) + 66px));
     left: max(22px, calc(env(safe-area-inset-left) + 10px));
     display: inline-flex; align-items: center; gap: 5px;
     background: rgba(255,255,255,0.86); color: #1d1d1f;
@@ -116,11 +116,13 @@
     position: fixed; z-index: 6;
     top: max(20px, calc(env(safe-area-inset-top) + 10px));
     left: max(22px, calc(env(safe-area-inset-left) + 10px));
-    width: 96px; height: 96px; border-radius: 16px;
-    background: var(--lab_bg, #b45309); color: var(--lab_fg, #ffffff);
-    display: flex; align-items: center; justify-content: center; text-align: center;
-    padding: 8px; font-size: 14px; font-weight: 700; line-height: 1.25;
-    letter-spacing: 0.01em; word-break: break-word;
+    /* name_wide: wide and low, so the release name reads on one line */
+    height: 44px; max-width: calc(100vw - 192px); border-radius: 12px;
+    overflow: hidden; text-overflow: ellipsis;
+    background: var(--lab_bg, #1d4ed8); color: var(--lab_fg, #ffffff);
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0 18px; font-size: 15px; font-weight: 700; line-height: 1;
+    letter-spacing: 0.01em; white-space: nowrap;
     box-shadow: 0 4px 14px rgba(0,0,0,0.25);
     pointer-events: none;
   }
@@ -271,7 +273,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'fixed_axes', bg: '#3f6212', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'name_wide', bg: '#1d4ed8', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);

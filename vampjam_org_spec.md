@@ -983,7 +983,14 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   identical at zero and at pose(35,25,-15) while the plate polygon changes ✓; state hook
   and painted CSS vars agree exactly (449px, ×1.245) ✓; button 236px off the bottom ✓;
   no page errors.
-- NEXT → add entry 193 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 193 name_wide — lab.html, release name_wide / blue) the corner stamp goes from a
+  96×96 square to a wide, low pill: height 44, width auto with white-space nowrap so the
+  release name sits on one line, capped at calc(100vw - 192px) with ellipsis so a long
+  codename shortens instead of colliding with the pose diagram (measured: 118px for
+  'name_wide', 198px capped for a 24-character name, never overlapping the diagram at
+  x=224). The back button moved up to fill the space the tall square had taken.
+  Playwright: one line, nowrap, no overlap ✓.
+- NEXT → add entry 194 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
