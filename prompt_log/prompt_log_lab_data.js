@@ -9,8 +9,53 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "193 name_wide",
+        id: "194 glide_stop",
         expanded: true,
+        nodes: [
+          { text: "194 glide_stop", children: [
+            { text: "prompt_restate", children: [
+              { text: "Use the newest recorded data to tune the maths." },
+              { text: "A move should slow smoothly to a still, and start slowing about a second sooner." },
+              { text: "The first half of a rightward slide is right; the second half reverses \u2014 invert at that point and damp to a still." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Given the most recent data, adjust the mathematics that translate the accelerometers into what might be calibrated per person and / OK, and also regarding the connection between the math, the connects the submeters with the adjustment to location on the screen it slow down, not stop suddenly, but if if it is moving, it should slow down to a still, and I think it should slow down like a full second sooner than you\u2019re doing it so jump the gun a little bit on. Also, when I slide it to the right the first half of how you move the dog on the screen is perfect but then I believe it moves in a different direction for a second half and can you invert the right left direction that you go at that point and Damsen to a still" }
+            ]},
+            { text: "response", children: [
+              { text: "dir_latch", children: [
+                { text: "a move latches its direction as soon as it is moving" },
+                { text: "from then on the braking half can only slow the world, never carry it backwards" },
+                { text: "the glide starts the moment you brake instead of waiting for stillness \u2014 the second you asked for" }
+              ]},
+              { text: "lead_hold", children: [
+                { text: "the picture used to spring back when you stopped (384px \u2192 196px)" },
+                { text: "the lead is held now and folded in when the move ends, so it eases forward and stays" }
+              ]},
+              { text: "settle_lock", children: [
+                { text: "stopping is itself a shove the other way" },
+                { text: "after a move ends nothing new can start until the phone is really quiet" }
+              ]},
+              { text: "creep_floor", children: [
+                { text: "a gentle push never got off the ground \u2014 the stop threshold was killing it on the first sample" },
+                { text: "closer/away registered nothing at all before this; it works now" }
+              ]},
+              { text: "run_true", children: [
+                { text: "a slide right is reported as right, not left" }
+              ]},
+              { text: "rec_revive", children: [
+                { text: "dead code from the old model was throwing inside the sensor handler" },
+                { text: "that is why four of your takes saved zero samples \u2014 those need re-recording" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2m: release glide_stop, rust \u2014 push 19\u2192300px, glide to 482px, holds 482px, reads right 9 cm; recorder captures 20 samples" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "193 name_wide",
+        expanded: false,
         nodes: [
           { text: "193 name_wide", children: [
             { text: "prompt_restate", children: [

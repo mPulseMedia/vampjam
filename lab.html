@@ -273,7 +273,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'name_wide', bg: '#1d4ed8', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'glide_stop', bg: '#7c2d12', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -416,7 +416,17 @@
   // actually moving, and the moment it reads still the velocity is killed and
   // the position simply STAYS. Drift cannot accumulate between moves because
   // nothing is being integrated between moves.
-  var STILL_MS   = 180;      // quiet for this long -> the move is over
+  // glide_stop — a slide has two halves: the hand pushes, then the hand brakes.
+  // Integrating the brake honestly makes the world travel BACK, which is what he
+  // saw in the second half of every slide. So a move latches its direction, and
+  // from then on opposing acceleration is only allowed to slow it down, never to
+  // carry it the other way. The moment braking is detected the glide-out starts —
+  // about a second earlier than waiting for stillness — and it eases to rest
+  // instead of stopping dead.
+  var BRAKE_DECAY = 0.90;    // per sample once the hand starts braking (~0.16s)
+  var LATCH_V     = 0.02;    // m/s: fast enough to call the direction of a move
+  var STOP_V      = 0.015;   // m/s: slower than this counts as stopped
+  var STILL_MS   = 120;      // quiet for this long -> the move is over
   var VEL_TAU    = 6.0;      // s: barely any leak — a leak makes the braking half
                              // of a move outweigh the pushing half, which dragged
                              // the world back the moment you stopped
@@ -427,6 +437,11 @@
   // a tenth of a second from now, and the moment it stops, vel is 0 and the lead
   // vanishes, so nothing overshoots at rest.
   var LEAD       = 0.10;     // s of prediction
+  // lead_hold: the lead term used to unwind the instant the hand braked, which
+  // dragged the picture back exactly where he said it reversed. Now the lead is
+  // carried as state: it tracks vel while the move is building, FREEZES the
+  // moment that axis starts braking, and is folded into pos when the move ends.
+  // The picture therefore only ever eases forward to a stop.
   var ROT_OPEN   = 45;       // deg/s: below this the sample counts fully
   var ROT_SHUT   = 160;      // deg/s: above this it is thrown away (a spin, not a slide)
 
@@ -439,6 +454,29 @@
   var rotVeto = 1;
   var lastAccel = 0, movedSign = 1;
   var moving = false;               // is the phone in a move right now?
+  var dir  = { x: 0, y: 0, z: 0 };  // the latched direction of the move in progress
+  var lead = { x: 0, y: 0, z: 0 };  // metres of lag compensation currently shown
+  // settle_lock: stopping a slide is itself a shove the other way. Once a move
+  // has been braked to rest, the tail of that same stopping push must not be
+  // read as a fresh move backwards — that was the reversal in the second half
+  // of every slide. So after a move ends the model stays disarmed until the
+  // phone has actually been quiet for STILL_MS.
+  var rearm = false;
+  function end_move() {
+    // bake the frozen lead into the resting position so the world stays put
+    // where it was last drawn instead of springing back
+    ['x', 'y', 'z'].forEach(function (k) {
+      pos[k] += lead[k];
+      if (!dir[k] || lead[k] * dir[k] > 0) run[k] += lead[k];
+      lead[k] = 0;
+    });
+    vel.x = vel.y = vel.z = 0;
+    moving = false;
+    rearm = true;
+    dir = { x: 0, y: 0, z: 0 };
+    lastMove = name_move(run);
+    run = { x: 0, y: 0, z: 0 };
+  }
   var run = { x: 0, y: 0, z: 0 };   // distance carried by the move in progress
   var lastMove = '';                // what the last finished move was
   // name_move — categorise a finished move by whichever axis carried it
@@ -608,28 +646,52 @@
     // its sensor the two drift apart, and only sample time reflects what was measured
     if (mag < MOVE_A && rot < 20) {
       quietFor += dt;
-      if (moving && quietFor > STILL_MS / 1000) {
-        vel.x = vel.y = vel.z = 0;
-        moving = false;
-        lastMove = name_move(run);
-        run = { x: 0, y: 0, z: 0 };
-      }
+      if (moving && quietFor > STILL_MS / 1000) end_move();
+      if (quietFor > STILL_MS / 1000) rearm = false;   // genuinely still: arm again
     } else {
       quietFor = 0;
-      if (!moving) { moving = true; run = { x: 0, y: 0, z: 0 }; }
+      if (!moving && !rearm) { moving = true; run = { x: 0, y: 0, z: 0 }; dir = { x: 0, y: 0, z: 0 }; }
     }
 
     var kv = Math.exp(-dt / VEL_TAU);
     if (moving) {
+      var slowing = false;
       ['x', 'y', 'z'].forEach(function (k) {
-        var v = az[k];
-        v = Math.abs(v) < DEAD ? 0 : (v - (v > 0 ? DEAD : -DEAD));
-        v *= rotVeto;
-        vel[k] = (vel[k] + v * dt) * kv;
+        var a = az[k];
+        a = Math.abs(a) < DEAD ? 0 : (a - (a > 0 ? DEAD : -DEAD));
+        a *= rotVeto;
+        // latch which way this move is going, once it is going anywhere
+        if (!dir[k] && Math.abs(vel[k]) > LATCH_V) {
+          dir[k] = vel[k] > 0 ? 1 : -1;
+          // run_true: anything the settling wobble put on the tally before the
+          // direction was known is not part of the move, so a slide right can
+          // never be reported as a move left
+          if (run[k] * dir[k] < 0) run[k] = 0;
+        }
+        var braking = !!(dir[k] && a * dir[k] < 0);
+        if (braking) {
+          // the hand is braking: bleed speed off, never push the other way
+          slowing = true;
+          vel[k] = (vel[k] + a * dt) * BRAKE_DECAY;
+          if (vel[k] * dir[k] < 0) vel[k] = 0;      // stop at zero, do not reverse
+        } else {
+          vel[k] = (vel[k] + a * dt) * kv;
+        }
+        // creep_floor: the stop threshold may only kill a move that is ending.
+        // Applied unconditionally it also killed every move that was starting —
+        // a gentle push never got its first sample above STOP_V, so slow moves
+        // (and the whole closer/away axis) registered nothing at all.
+        if ((braking || !a) && Math.abs(vel[k]) < STOP_V) vel[k] = 0;
+        // lead grows with the push and holds through the brake
+        var want = vel[k] * LEAD;
+        if (!braking || Math.abs(want) > Math.abs(lead[k])) lead[k] = want;
         var d = vel[k] * dt;
         pos[k] += d;               // no leak: where it lands is where it stays
-        run[k] += d;               // how far THIS move has carried
+        if (!dir[k] || d * dir[k] > 0) run[k] += d;   // only forward travel counts
       });
+      // everything has come to rest: end the move now rather than waiting out
+      // the quiet timer — this is the 'jump the gun' he asked for
+      if (!vel.x && !vel.y && !vel.z && (slowing || quietFor > 0.05)) end_move();
     }
   }
 
@@ -683,7 +745,7 @@
   //         the phone)
   function view() {
     var w = frame.clientWidth || 320;
-    var cam = { x: pos.x + vel.x * LEAD, y: pos.y + vel.y * LEAD, z: pos.z + vel.z * LEAD };
+    var cam = { x: pos.x + lead.x, y: pos.y + lead.y, z: pos.z + lead.z };
     var dist = Math.max(D_MIN, Math.min(D_MAX, D0 - cam.z));
     var mult = Math.max(MULT_MIN, Math.min(MULT_MAX, Math.pow(D0 / dist, Z_POWER)));
     var pxPerM = (w / PHONE_W) * mult;
@@ -715,7 +777,8 @@
     vel = { x: 0, y: 0, z: 0 };
     pos = { x: 0, y: 0, z: 0 };
     run = { x: 0, y: 0, z: 0 };
-    moving = false; lastMove = ''; quietFor = 0;
+    lead = { x: 0, y: 0, z: 0 };
+    moving = false; lastMove = ''; quietFor = 0; rearm = false; dir = { x: 0, y: 0, z: 0 };
     document.documentElement.style.setProperty('--sc', '1');
   }
   function start_world() {
@@ -813,26 +876,11 @@
     live.acc  = [r3(a.x), r3(a.y), r3(a.z)];
     live.accG = [r3(ag.x), r3(ag.y), r3(ag.z)];
     live.rot  = [r3(rr.alpha), r3(rr.beta), r3(rr.gamma)];
-    if (motionOn) integrate(e, rr);
     if (recording) push_sample(e.interval || null);
   }
-  // one integration step per sensor sample — faster and steadier than doing it
-  // on the paint frame, and it uses the interval the phone itself reports
-  function integrate(e, rr) {
-    var iv = e.interval || 0.0166;
-    var dt = iv < 1 ? iv : iv / 1000;          // iOS reports seconds
-    var rot = Math.sqrt(sq(rr.alpha) + sq(rr.beta) + sq(rr.gamma));
-    rotVeto = Math.max(0, Math.min(1, 1 - (rot - ROT_OPEN) / (ROT_SHUT - ROT_OPEN)));
-    step('x', acc.x, dt); step('y', acc.y, dt); step('z', acc.z, dt);
-  }
-  function sq(v) { return (v || 0) * (v || 0); }
-  function step(k, a, dt) {
-    a = a || 0;
-    a = Math.abs(a) < DEAD ? 0 : (a - (a > 0 ? DEAD : -DEAD));
-    a *= rotVeto;
-    vel[k] = (vel[k] + a * dt) * VEL_LEAK;
-    pos[k] = (pos[k] + vel[k] * dt) * POS_LEAK;
-  }
+  // (an integrator from an earlier model used to live here and still ran on
+  //  every sample — it referenced a constant that no longer exists, threw
+  //  inside the sensor handler, and silently emptied four of his takes.)
   function r3(v) { return (v == null) ? null : Math.round(v * 1000) / 1000; }
   function push_sample(interval) {
     if (!take) return;

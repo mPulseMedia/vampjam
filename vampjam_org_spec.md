@@ -990,7 +990,32 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   'name_wide', 198px capped for a 24-character name, never overlapping the diagram at
   x=224). The back button moved up to fill the space the tall square had taken.
   Playwright: one line, nowrap, no overlap ✓.
-- NEXT → add entry 194 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 194 glide_stop — lab.html, release glide_stop / rust) three faults in how a slide
+  ends, all from the same place: braking is itself a shove the other way, and the model was
+  reading it as motion. dir_latch: once a move is going faster than LATCH_V (0.02 m/s) it
+  latches a direction per axis; from then on opposing acceleration may only bleed speed off
+  (BRAKE_DECAY 0.90 a sample, ~0.16 s) and can never carry the world backwards — the glide
+  now starts the instant the hand brakes rather than waiting out the still timer, which is
+  the 'jump the gun by a second' he asked for. lead_hold: the LEAD lag-compensation term used
+  to be computed at paint time as vel*LEAD, so the moment vel fell the picture sprang back
+  (measured 384px → 196px). It is carried as state now: it tracks vel while the push builds,
+  freezes when that axis starts braking, and is folded into pos when the move ends, so the
+  world only ever eases forward to a stop and stays where it was last drawn. settle_lock:
+  after a move ends the model is disarmed until the phone has been genuinely quiet for
+  STILL_MS, so the tail of the stopping push cannot open a fresh move in reverse.
+  creep_floor: the STOP_V clamp was applied on every sample, which killed every move that
+  started gently — the first sample of a slow push never cleared 0.015 m/s, so the whole
+  closer/away axis registered nothing at all; it now applies only while braking or coasting.
+  run_true: travel is tallied only in the latched direction and any pre-latch wobble is
+  discarded, so a slide right reads 'right N cm' instead of 'left N cm'. rec_revive: a
+  leftover integrate() call from the retired axis_snap model still ran inside grab_motion and
+  referenced the deleted POS_LEAK, throwing inside the sensor handler — which is why takes
+  #6-#9 in lab_gestures.json captured zero samples. Removed with its dead block.
+  Playwright: push 19→300px, brake glides 417→482px, rest holds 482px, peak == final, never
+  left of zero, held reads 'right 9 cm' ✓; two slides in a row accumulate (368 → 735px) ✓;
+  up reads 'up 7 cm', a push toward the eye reads 'closer 3 cm' and lifts the multiple to
+  ×1.25 ✓; recorder captures 20 samples where it captured 0 ✓; no page errors.
+- NEXT → add entry 195 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
