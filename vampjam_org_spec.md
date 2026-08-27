@@ -876,7 +876,18 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   while the phone is tilted 35°, up-slide → world down, 4.55cm toward the eye → ×1.15;
   a pure spin at 120 deg/s moves 5.6px, a pure tilt 19.5px, and turning with no
   acceleration at all moves 0.0px ✓; after a slide the world eases back within ~2s.
-- NEXT → add entry 184 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 184 lab_build — lab.html) all three cards share one colour now, and the colour is
+  the version stamp: LAB_BUILD (an integer at the top of the page) indexes an eight-colour
+  palette — red, teal, indigo, amber, forest, plum, slate, crimson — applied as --lab_bg /
+  --lab_fg, with a 'build N · name' pill between the two top buttons. Bump LAB_BUILD on
+  every lab ship and a glance says whether the update arrived. Also: no-cache metas added
+  (a cached page would show a stale colour and defeat the whole point), the per-cell colour
+  and dot/paper overrides removed, and the top-right button renamed 'Set zero' — shorter
+  than 'Steady the dot', so the stamp fits between the buttons, and it matches the
+  world_view model. Shipped as build 2 (teal), deliberately not red, so this build differs
+  from what he was looking at. Playwright: all three cells rgb(15,118,110), one ink colour,
+  one paper opacity, tag reads 'build 2 · teal' ✓.
+- NEXT → add entry 185 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

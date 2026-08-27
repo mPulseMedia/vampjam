@@ -9,8 +9,36 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "183 world_view",
+        id: "184 lab_build",
         expanded: true,
+        nodes: [
+          { text: "184 lab_build", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make all three screens the same colour for now." },
+              { text: "Change that colour on every update, so a new build is obvious at a glance." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Just make all of the three screens the same color for now and each time you update change the color so that I can tell that a new update has occurred" }
+            ]},
+            { text: "response", children: [
+              { text: "lab_build", children: [
+                { text: "one colour across all three cards, and it changes with every build I ship" },
+                { text: "a small pill at the top says which build you are looking at \u2014 this one is build 2, teal" },
+                { text: "the page also refuses to be cached now, so you never get yesterday\u2019s colour by accident" }
+              ]},
+              { text: "small_tidy", children: [
+                { text: "the top right button is now Set zero, which is what it does and leaves room for the build pill" }
+              ]},
+              { text: "verify", children: [
+                { text: "~30s: open the lab \u2014 teal, build 2" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "183 world_view",
+        expanded: false,
         nodes: [
           { text: "183 world_view", children: [
             { text: "prompt_restate", children: [

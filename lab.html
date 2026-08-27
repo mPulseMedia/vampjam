@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>vampsf — lab</title>
 <style>
   /* lab_frame — a sketch of the feeling the session list gave us: a fixed
@@ -73,17 +76,15 @@
         transparent 1px, transparent 30px);
     opacity: 0.30;
   }
-  .cell_2 .paper { opacity: 0.16; }
   .pin { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2; }
   .pin_dot {
     width: 22px; height: 22px; border-radius: 50%;
     background: currentColor; box-shadow: 0 2px 6px rgba(0,0,0,0.30);
     transform: translate3d(var(--sx, 0px), var(--sy, 0px), 0);
   }
-  .cell_2 .pin_dot { background: #1d1d1f; }
-  .cell_1 { background: #d7263d; color: #ffffff; }
-  .cell_2 { background: #ffffff; color: #1d1d1f; }
-  .cell_3 { background: #1350c4; color: #ffffff; }
+  /* lab_build: every card wears the same colour, and the colour changes with
+     each build — if it looks different from last time, the update landed. */
+  .cell { background: var(--lab_bg, #d7263d); color: var(--lab_fg, #ffffff); }
 
   /* which cell you are on, in the frame itself */
   .dots {
@@ -107,6 +108,16 @@
     touch-action: manipulation;
   }
   .back_btn:active { transform: scale(0.96); }
+  .build_tag {
+    position: fixed; z-index: 6; left: 50%; transform: translateX(-50%);
+    top: max(24px, calc(env(safe-area-inset-top) + 12px));
+    background: rgba(255,255,255,0.86); color: #1d1d1f;
+    border-radius: 999px; padding: 7px 12px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.02em;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    pointer-events: none;
+  }
   .hint {
     position: fixed; z-index: 6; left: 50%; transform: translateX(-50%);
     bottom: max(26px, calc(env(safe-area-inset-bottom) + 14px));
@@ -206,6 +217,7 @@
 
 <div class="dots" id="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
 <button class="back_btn" id="back_btn">&#8249; Admin</button>
+<div class="build_tag" id="build_tag"></div>
 <div class="hint" id="hint">swipe up / down</div>
 
 <div class="gest_bar" id="gest_bar">
@@ -220,10 +232,34 @@
     <span class="g_count" id="g_count"></span>
   </div>
 </div>
-<button class="motion_btn" id="motion_btn">Steady the dot</button>
+<button class="motion_btn" id="motion_btn">Set zero</button>
 <div class="readout" id="readout" hidden></div>
 
 <script>
+  // lab_build — bumped on every ship; the colour comes with it, so a glance at
+  // the screen says whether the update arrived.
+  var LAB_BUILD = 2;
+  var LAB_COLOURS = [
+    { name: 'red',     bg: '#d7263d', fg: '#ffffff' },
+    { name: 'teal',    bg: '#0f766e', fg: '#ffffff' },
+    { name: 'indigo',  bg: '#3b3b98', fg: '#ffffff' },
+    { name: 'amber',   bg: '#b45309', fg: '#ffffff' },
+    { name: 'forest',  bg: '#166534', fg: '#ffffff' },
+    { name: 'plum',    bg: '#6b21a8', fg: '#ffffff' },
+    { name: 'slate',   bg: '#334155', fg: '#ffffff' },
+    { name: 'crimson', bg: '#9f1239', fg: '#ffffff' }
+  ];
+  (function () {
+    var c = LAB_COLOURS[(LAB_BUILD - 1) % LAB_COLOURS.length];
+    var r = document.documentElement.style;
+    r.setProperty('--lab_bg', c.bg);
+    r.setProperty('--lab_fg', c.fg);
+    var tag = document.getElementById('build_tag');
+    if (tag) tag.textContent = 'build ' + LAB_BUILD + ' · ' + c.name;
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', '#ffffff');
+  })();
+
   var N = 3;
   var idx = 0;                 // which cell is showing
   var track = document.getElementById('track');
