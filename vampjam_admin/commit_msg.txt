@@ -1,1 +1,1 @@
-zero_split
+auto_commit
