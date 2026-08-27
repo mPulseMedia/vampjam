@@ -1547,7 +1547,28 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   hidden when idle and shown while recording; the tremor table above; a take carrying
   levelled / dwell after "right 9 cm" / good / reset / bad. Whole lab suite re-run and green
   (four tests repointed off the retired amber button); no page errors.
-- NEXT → add entry 219 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 219 spin_arc — lab.html, release spin_arc / indigo) he counted the lanes and said he
+  expected three, one per vector, each with a positive and a negative side — and that the
+  rotations belong in the diagram instead. He is right on both counts. lane_three: the lane
+  panel drops from six lanes to three — red right/left, green up/down, blue near/far — each
+  running positive above its centre and negative below, and each now half as cramped (panel
+  178×228 → 178×168, canvas with it). The rotations were never distances and did not belong on
+  a distance chart. spin_arc: each rotation is now drawn where a rotation can actually be seen —
+  an arc swept about the axis it turns, in that axis's own colour, so the colour that names a
+  direction also names the turn around it. Tilt sweeps about X, drawn in the Y-Z plane; turn
+  about Y, drawn in Z-X; swirl about Z, in X-Y. Each arc is built by walking the circle in the
+  plane spanned by the OTHER two axis vectors and pushing every point through the same iso()
+  the rest of the diagram uses, so the arcs sit correctly in the isometric frame rather than
+  being pasted on flat. A small head at the moving end says which way it is going. Radius 36,
+  outside the plate, and the group is drawn ABOVE the plate — at radius 25 and below it, the
+  phone hid the very thing it was doing. Nothing is drawn under 3 degrees, so a still phone
+  stays clean. Playwright: 0 arcs at rest; beta 30 gives exactly one red polyline, gamma 30 one
+  green, alpha 40 one blue, and 40/25/-20 gives all three at once ✓; lane panel measured at
+  178×168 with all three vector colours painting ✓; four-way visual capture (rest / tilt / turn
+  / swirl) ✓; whole lab suite re-run and green; no page errors.
+  test_note: the local http.server had died between runs — restarted on 8901. Worth checking
+  first when a suite fails with ERR_CONNECTION_REFUSED rather than debugging the page.
+- NEXT → add entry 220 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

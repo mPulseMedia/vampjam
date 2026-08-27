@@ -184,7 +184,7 @@
   .trace {
     position: fixed; z-index: 6; right: max(18px, calc(env(safe-area-inset-right) + 8px));
     top: max(212px, calc(env(safe-area-inset-top) + 200px));
-    width: 178px; height: 228px; border-radius: 14px;
+    width: 178px; height: 168px; border-radius: 14px;
     background: rgba(255,255,255,0.88);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
@@ -379,18 +379,22 @@
   <g id="pose_shadow" fill="rgba(0,0,0,0.055)"></g>
   <polygon id="pose_plate" fill="rgba(109,40,217,0.07)" stroke="rgba(109,40,217,0.55)" stroke-width="1" stroke-linejoin="round"></polygon>
   <line id="pose_top" stroke="rgba(109,40,217,0.8)" stroke-width="1.6" stroke-linecap="round"></line>
+  <!-- spin_arc: a rotation is not a distance, so it is drawn where a rotation
+       can be seen — an arc swept about the axis it turns, in that axis's colour.
+       It rides ABOVE the plate, or the phone hides the very thing it is doing. -->
+  <g id="pose_spin" fill="none"></g>
   <g id="pose_knob"></g>
   <!-- read_split: one named line per thing being read, instead of two crowded
        rows of initials sitting on top of each other. -->
   <g id="pose_read" font-family="-apple-system, sans-serif"></g>
   <text id="pose_lbl" font-size="0.01" fill="none"></text>
 </svg>
-<canvas class="trace" id="trace" width="178" height="228" hidden></canvas>
+<canvas class="trace" id="trace" width="178" height="168" hidden></canvas>
 
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'grade_two', bg: '#15803d', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'spin_arc', bg: '#4c1d95', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -819,6 +823,40 @@
       return out;
     }
     axes.innerHTML = arrow(ax, '#dc2626', 'X') + arrow(ay, '#16a34a', 'Y') + arrow(az, '#2563eb', 'Z');
+    // spin_arc — one arc per rotation, swept in the plane the rotation turns in:
+    // tilt sweeps about X and is drawn in the Y-Z plane, turn about Y in Z-X,
+    // swirl about Z in X-Y. Each is the axis's own colour, so the colour that
+    // names a direction also names the turn around it. Nothing is drawn below a
+    // few degrees, so a still phone stays clean.
+    var SPIN_R = 36;   // outside the plate, so the arcs are not lost behind it
+    function arc(u, v2, deg, colour) {
+      if (Math.abs(deg) < 3) return '';
+      var steps = Math.max(4, Math.min(28, Math.round(Math.abs(deg) / 6)));
+      var pts = [], i2, t, p;
+      for (i2 = 0; i2 <= steps; i2++) {
+        t = (deg * Math.PI / 180) * (i2 / steps);
+        p = iso({ x: (u.x * Math.cos(t) + v2.x * Math.sin(t)) * SPIN_R,
+                  y: (u.y * Math.cos(t) + v2.y * Math.sin(t)) * SPIN_R,
+                  z: (u.z * Math.cos(t) + v2.z * Math.sin(t)) * SPIN_R });
+        pts.push(p.x.toFixed(1) + ',' + p.y.toFixed(1));
+      }
+      // a small head at the moving end, so which way it is turning is not a guess
+      var a2 = pts[pts.length - 1].split(',').map(Number);
+      var b2 = pts[pts.length - 2].split(',').map(Number);
+      var dx = a2[0] - b2[0], dy = a2[1] - b2[1];
+      var m2 = Math.hypot(dx, dy) || 1; dx /= m2; dy /= m2;
+      return '<polyline points="' + pts.join(' ') + '" stroke="' + colour +
+             '" stroke-width="2.4" stroke-linecap="round" opacity="0.85"/>' +
+             '<polygon points="' + (a2[0] + dx * 4).toFixed(1) + ',' + (a2[1] + dy * 4).toFixed(1) + ' ' +
+               (a2[0] - dy * 2.6).toFixed(1) + ',' + (a2[1] + dx * 2.6).toFixed(1) + ' ' +
+               (a2[0] + dy * 2.6).toFixed(1) + ',' + (a2[1] - dx * 2.6).toFixed(1) +
+             '" fill="' + colour + '" stroke="none"/>';
+    }
+    document.getElementById('pose_spin').innerHTML =
+      arc(ay, az, flipped.pitch,             '#dc2626') +   // tilt,  about X
+      arc(az, ax, flipped.roll,              '#16a34a') +   // turn,  about Y
+      arc(ax, ay, SWIRL_INV * screen_roll(), '#2563eb');    // swirl, about Z
+
     // plate_move — the phone carries its travel now; the axes hold still. Each
     // axis is clamped on its own so a big move on one never drags the picture off.
     function clamp_ax(v) { var u = v * POSE_SC; return Math.max(-AX_MAX, Math.min(AX_MAX, u)); }
@@ -1085,15 +1123,15 @@
   var traceAt = 0;
   var traceEl = document.getElementById('trace');
   var traceCtx = traceEl ? traceEl.getContext('2d') : null;
-  // lane_colour — the diagram's own three, used twice: a distance along an axis
-  // and the rotation about that same axis share a colour.
+  // lane_three — one lane per VECTOR, and only the three: red for right/left,
+  // green for up/down, blue for near/far, each running positive above its centre
+  // and negative below. The three rotations are not distances and never belonged
+  // here; they show in the diagram now, as arcs about the axes they turn (see
+  // spin_arc), which is where a rotation can actually be seen.
   var LANES = [
     { i: 0, c: '#dc2626' },   // right / left
     { i: 1, c: '#16a34a' },   // up / down
-    { i: 2, c: '#2563eb' },   // near / far
-    { i: 3, c: '#dc2626' },   // tilt   (about the left-right axis)
-    { i: 4, c: '#16a34a' },   // turn   (about the up-down axis)
-    { i: 5, c: '#2563eb' }    // swirl  (about the near-far axis)
+    { i: 2, c: '#2563eb' }    // near / far
   ];
   function trace_push(v) {
     trace[traceAt] = v;
@@ -1120,7 +1158,7 @@
     // lane_scale — each lane finds its own full scale from what it has seen, so
     // a small axis is not flattened by a large one; a floor keeps a quiet lane
     // from turning noise into a mountain.
-    var floors = [0.03, 0.03, 0.03, 12, 12, 12];
+    var floors = [0.03, 0.03, 0.03];
     var maxv = floors.slice();
     for (var i = 0; i < TRACE_N; i += LANE_STEP) {
       var s2 = trace[(traceAt + i) % TRACE_N];
@@ -1246,10 +1284,8 @@
     var v = view();
     var w = v.w, dist = v.dist, mult = v.mult;
     var sx = v.ox, sy = v.oy;
-    // six lanes: where the world stands on each axis, and how far the phone is
-    // turned about each. Distances in metres, angles in degrees.
-    trace_push([v.cam.x, v.cam.y, v.cam.z,
-                v.tilt - TILT_BASE, v.turn, v.roll]);
+    // three lanes: where the world stands on each axis, in metres
+    trace_push([v.cam.x, v.cam.y, v.cam.z]);
     trace_draw(now);
     var root = document.documentElement.style;
     root.setProperty('--sx', sx.toFixed(1) + 'px');

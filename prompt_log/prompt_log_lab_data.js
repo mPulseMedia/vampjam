@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "218 grade_two",
+        id: "219 spin_arc",
         expanded: true,
+        nodes: [
+          { text: "219 spin_arc", children: [
+            { text: "prompt_restate", children: [
+              { text: "There are six readouts and I expect three." },
+              { text: "One per vector \u2014 red with the red vector, green with the green \u2014 each showing positive and negative." },
+              { text: "The others are the clockwise rotation and the tilt." },
+              { text: "Those should show up in the diagram instead, with some indication when I rotate, tilt or turn." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I\u2019m looking at those five readouts and I think there\u2019s six of them. I\u2019m expecting only to see three where each one has a positive and negative that it might be displaying and I\u2019m looking up. You know the red one to go with the red vector and the green one to go with the green vector, etc. and I guess they\u2019re a couple of others. There\u2019s the the route clockwise rotation and there\u2019s the tilt and I see. Maybe we can have some indication on when I rotate when I tilt when I clockwise that should be showing up in the diagram and as well as and." }
+            ]},
+            { text: "lane_three", children: [
+              { text: "three lanes now \u2014 red right/left, green up/down, blue near/far" },
+              { text: "each positive above its centre and negative below, and each twice the room it had" },
+              { text: "the rotations were never distances and did not belong on a distance chart" }
+            ]},
+            { text: "spin_arc", children: [
+              { text: "each rotation is drawn where a rotation can be seen: an arc swept about the axis it turns" },
+              { text: "in that axis\u2019s own colour, so the colour that names a direction also names the turn around it" },
+              { text: "a small head at the moving end says which way it is going" },
+              { text: "it sits outside the phone and above it \u2014 drawn behind, the phone hid the very thing it was doing" },
+              { text: "nothing shows under three degrees, so a still phone stays clean" }
+            ]},
+            { text: "verify", children: [
+              { text: "~4m: release spin_arc, indigo \u2014 no arcs at rest, one red for tilt, one green for turn, one blue for swirl, all three together when all three are turning" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "218 grade_two",
+        expanded: false,
         nodes: [
           { text: "218 grade_two", children: [
             { text: "prompt_restate", children: [
