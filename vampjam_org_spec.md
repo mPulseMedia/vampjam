@@ -1315,7 +1315,30 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   glide_stop, plate_move, deck_one, tilt_deep and smooth_move regressions pass; no page errors.
   next: the take with its judgement track is the thing to process — the marks say WHERE in the
   data the model went wrong, which is what every sign argument so far has lacked.
-- NEXT → add entry 210 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 210 axis_iso — lab.html, release axis_iso / burnt orange) the diagram's frame is drawn
+  properly now. axis_iso: iso() stops being a straight-on view with a depth nudge and becomes a
+  camera stepped off the normal and up onto the corner — three explicit basis vectors,
+  IX (0.960, 0.150), IY (0.130, -0.970), IZ (0.560, -0.480). Every axis keeps the screen
+  direction it had, so nothing he has already signed off moves: X still goes right, Y up, Z
+  toward you and up-right. What changes is that X now falls slightly, Y leans slightly, and Z
+  is a real 40-degree diagonal at nearly twice its old length (0.74 against 0.40), which is
+  what makes the three read as a box rather than a cross with a stub on it. Measured, the arms
+  now sit at 9 deg, -82 deg and -41 deg — no two parallel, none axis-aligned. line_thin:
+  hairlines throughout — axis arm 3.4 → 1.4, arrowheads 4 → 2.8, negative stubs 1.5 → 0.9,
+  ticks 1.4 → 0.9, the position bars 6.5 → 3, the drop lines 1.3 → 0.9, the knobs r3.2 → r2.6;
+  the heaviest stroke left anywhere in the diagram is 2. origin_top: the point the whole picture
+  is measured from is drawn LAST, into the knob group above the plate — a ring and a dot at
+  0,0 — so the phone passes in front of it and behind it and it never disappears either way;
+  the old faint origin dot in the reference layer is dropped as redundant. glass_faint: the
+  plate goes from 0.16 fill / 1.5 solid stroke to 0.07 fill / 1.0 stroke at 0.55 alpha, its top
+  edge from 2.4 solid to 1.6 at 0.8, and its ground shadow from 0.10 to 0.055 — the axes read
+  straight through it now. Playwright: arm angles and lengths as above ✓; max stroke-width 2
+  anywhere in the SVG ✓; pose_knob sits after pose_plate in document order and carries the
+  0,0 marker, before and after a move ✓; plate fill rgba(...,0.07) ✓; three-way visual capture
+  at zero, tilted and spun; plate_move, model_flip, tilt_flip, swirl_flip and tap_rec
+  regressions pass (plate centre reads -27.3,-4.3 where it read -28.4,0 — the new camera, not
+  a changed law); no page errors.
+- NEXT → add entry 211 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

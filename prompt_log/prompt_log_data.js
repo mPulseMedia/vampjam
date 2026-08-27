@@ -9,8 +9,47 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "209 tap_rec",
+        id: "210 axis_iso",
         expanded: true,
+        nodes: [
+          { text: "210 axis_iso", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the fixed coordinate frame look more isometric." },
+              { text: "Make all the axis lines thin." },
+              { text: "Keep the intersection of the axes always visible, in front of the glass or behind it." },
+              { text: "Make the glass fainter so it is easier to see through." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On the 3-D diagram, I think the angle of the fixed coordinate should be moved a little, not moved well it\u2019s but made to look more isometric more isometric and make the make the access lines all thin and make the intersection of the axis, always visible, even as it is sometimes in front of and sometimes behind the glass, the classmate be more faint to make it easier to see through" }
+            ]},
+            { text: "response", children: [
+              { text: "axis_iso", children: [
+                { text: "the camera steps off the normal and up onto the corner \u2014 the three axes read as a box now, not a cross with a stub" },
+                { text: "each axis keeps the direction it had: X right, Y up, Z toward you and up-right" },
+                { text: "what changed is that X falls a little, Y leans a little, and Z is a real diagonal at nearly twice its old length" }
+              ]},
+              { text: "line_thin", children: [
+                { text: "hairlines everywhere \u2014 arms, arrowheads, ticks, the position bars and the drop lines all cut back" },
+                { text: "the heaviest stroke left in the diagram is 2" }
+              ]},
+              { text: "origin_top", children: [
+                { text: "the point everything is measured from is drawn last, above the plate" },
+                { text: "the phone passes in front of it and behind it and it never disappears" }
+              ]},
+              { text: "glass_faint", children: [
+                { text: "the plate is a third of the fill it was, with a thinner outline and a lighter shadow" },
+                { text: "the axes read straight through it" }
+              ]},
+              { text: "verify", children: [
+                { text: "~3m: release axis_iso, burnt orange \u2014 arms measured at 9\u00b0, -82\u00b0 and -41\u00b0 with none parallel, max stroke 2, origin present before and after a move" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "209 tap_rec",
+        expanded: false,
         nodes: [
           { text: "209 tap_rec", children: [
             { text: "prompt_restate", children: [

@@ -350,9 +350,9 @@
   <g id="pose_guide" fill="none"></g>
   <line id="pose_move" stroke="rgba(0,0,0,0.28)" stroke-width="1.4" stroke-linecap="round"
         stroke-dasharray="3 3"></line>
-  <g id="pose_shadow" fill="rgba(0,0,0,0.10)"></g>
-  <polygon id="pose_plate" fill="rgba(109,40,217,0.16)" stroke="#6d28d9" stroke-width="1.5" stroke-linejoin="round"></polygon>
-  <line id="pose_top" stroke="#6d28d9" stroke-width="2.4" stroke-linecap="round"></line>
+  <g id="pose_shadow" fill="rgba(0,0,0,0.055)"></g>
+  <polygon id="pose_plate" fill="rgba(109,40,217,0.07)" stroke="rgba(109,40,217,0.55)" stroke-width="1" stroke-linejoin="round"></polygon>
+  <line id="pose_top" stroke="rgba(109,40,217,0.8)" stroke-width="1.6" stroke-linecap="round"></line>
   <g id="pose_knob"></g>
   <text id="pose_pos" x="0" y="64" text-anchor="middle" font-size="12" font-weight="800"
         font-family="-apple-system, sans-serif"></text>
@@ -364,7 +364,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'tap_rec', bg: '#be123c', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'axis_iso', bg: '#c2410c', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -604,12 +604,18 @@
   // Isometric projection: a 3D point becomes (x - z)*0.87 across and
   // -(y + (x + z)*0.5) down, which is enough to read pitch, yaw and roll at a
   // glance without any of the numbers he is tired of.
+  // axis_iso — the camera steps off the normal and up onto the corner, so the
+  // three axes read as a box rather than a cross with a stub on it. Each axis
+  // keeps the screen direction it had — X right, Y up, Z toward you and to the
+  // upper right — but X now falls slightly, Y leans slightly, and Z is a proper
+  // diagonal at nearly twice its old length, which is what makes the frame read
+  // as depth instead of as a nudge.
+  var IX = { x:  0.960, y:  0.150 };
+  var IY = { x:  0.130, y: -0.970 };
+  var IZ = { x:  0.560, y: -0.480 };
   function iso(v) {
-    // axis_face — the camera looks straight down the zero pose's normal, so at
-    // zero the phone is a plain rectangle parallel with the glass. Depth (the
-    // zero frame's z, toward the viewer) is drawn as a small up-and-right
-    // offset, which is enough to read a tip without skewing the flat state.
-    return { x: v.x + v.z * 0.34, y: -v.y - v.z * 0.22 };
+    return { x: v.x * IX.x + v.y * IY.x + v.z * IZ.x,
+             y: v.x * IX.y + v.y * IY.y + v.z * IZ.y };
   }
   function pt(v, s) { var p = iso({ x: v.x * s, y: v.y * s, z: v.z * s }); return p.x.toFixed(1) + ',' + p.y.toFixed(1); }
   function rel_matrix() {
@@ -674,8 +680,7 @@
       // Set zero. The bold axes below never move, so the plate's departure from
       // this outline is the whole story.
       ref.innerHTML = '<rect x="-10" y="-18" width="20" height="36" rx="2.5" ' +
-                      'stroke-dasharray="3 3" fill="none"/>' +
-                      '<circle cx="0" cy="0" r="1.6" fill="rgba(0,0,0,0.35)" stroke="none"/>';
+                      'stroke-dasharray="3 3" fill="none"/>';
     }
     // fixed_axes — the axes are the WORLD's and never move: X right, Y up,
     // Z toward you. The phone plate turns inside them. (It was the other way
@@ -698,20 +703,20 @@
       var lx = e.x + ux * 10, ly = e.y + uy * 10;
       var back = iso({ x: -v.x * AX_LEN * 0.8, y: -v.y * AX_LEN * 0.8, z: -v.z * AX_LEN * 0.8 });
       var out = '<line x1="0" y1="0" x2="' + back.x.toFixed(1) + '" y2="' + back.y.toFixed(1) +
-                '" stroke="' + colour + '" stroke-width="1.5" opacity="0.28"/>' +
-                '<line x1="0" y1="0" x2="' + hx.toFixed(1) + '" y2="' + hy.toFixed(1) + '" stroke="' + colour + '" stroke-width="3.4"/>' +
+                '" stroke="' + colour + '" stroke-width="0.9" opacity="0.3"/>' +
+                '<line x1="0" y1="0" x2="' + hx.toFixed(1) + '" y2="' + hy.toFixed(1) + '" stroke="' + colour + '" stroke-width="1.4"/>' +
                 '<polygon points="' + e.x.toFixed(1) + ',' + e.y.toFixed(1) + ' ' +
-                  (hx - uy * 4).toFixed(1) + ',' + (hy + ux * 4).toFixed(1) + ' ' +
-                  (hx + uy * 4).toFixed(1) + ',' + (hy - ux * 4).toFixed(1) + '" fill="' + colour + '" stroke="none"/>' +
+                  (hx - uy * 2.8).toFixed(1) + ',' + (hy + ux * 2.8).toFixed(1) + ' ' +
+                  (hx + uy * 2.8).toFixed(1) + ',' + (hy - ux * 2.8).toFixed(1) + '" fill="' + colour + '" stroke="none"/>' +
                 '<text x="' + lx.toFixed(1) + '" y="' + (ly + 3.8).toFixed(1) + '" fill="' + colour +
                   '" font-size="12" font-weight="800" text-anchor="middle" stroke="none"' +
                   ' font-family="-apple-system, sans-serif">' + letter + '</text>';
       for (var t = TICK; t <= AX_LEN - 4; t += TICK) {
         [t, -t].forEach(function (d) {
           var p = iso({ x: v.x * d, y: v.y * d, z: v.z * d });
-          out += '<line x1="' + (p.x - uy * 3.2).toFixed(1) + '" y1="' + (p.y + ux * 3.2).toFixed(1) +
-                 '" x2="' + (p.x + uy * 3.2).toFixed(1) + '" y2="' + (p.y - ux * 3.2).toFixed(1) +
-                 '" stroke="' + colour + '" stroke-width="1.4" opacity="0.5"/>';
+          out += '<line x1="' + (p.x - uy * 2.6).toFixed(1) + '" y1="' + (p.y + ux * 2.6).toFixed(1) +
+                 '" x2="' + (p.x + uy * 2.6).toFixed(1) + '" y2="' + (p.y - ux * 2.6).toFixed(1) +
+                 '" stroke="' + colour + '" stroke-width="0.9" opacity="0.55"/>';
         });
       }
       return out;
@@ -732,14 +737,19 @@
       var p = iso({ x: v.x * d, y: v.y * d, z: v.z * d });
       if (Math.abs(d) > 0.6) {
         guide += '<line x1="0" y1="0" x2="' + p.x.toFixed(1) + '" y2="' + p.y.toFixed(1) +
-                 '" stroke="' + colour + '" stroke-width="6.5" stroke-linecap="round" opacity="0.42"/>' +
+                 '" stroke="' + colour + '" stroke-width="3" stroke-linecap="round" opacity="0.45"/>' +
                  '<line x1="' + p.x.toFixed(1) + '" y1="' + p.y.toFixed(1) + '" x2="' + mvp0.x.toFixed(1) +
-                 '" y2="' + mvp0.y.toFixed(1) + '" stroke="' + colour + '" stroke-width="1.3" opacity="0.6" stroke-dasharray="2.5 2.5"/>';
+                 '" y2="' + mvp0.y.toFixed(1) + '" stroke="' + colour + '" stroke-width="0.9" opacity="0.6" stroke-dasharray="2.5 2.5"/>';
         // the knob rides above the plate: the phone can never hide a reading
         knob += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) +
-                '" r="3.2" fill="' + colour + '" stroke="#ffffff" stroke-width="1.1"/>';
+                '" r="2.6" fill="' + colour + '" stroke="#ffffff" stroke-width="0.9"/>';
       }
     });
+    // origin_top — where the three axes meet is the one point the whole picture
+    // is measured from, so it is drawn LAST, above the plate: the phone passes
+    // in front of it and behind it, and it never disappears either way.
+    knob += '<circle cx="0" cy="0" r="3.4" fill="none" stroke="rgba(0,0,0,0.75)" stroke-width="1.1"/>' +
+            '<circle cx="0" cy="0" r="1.1" fill="rgba(0,0,0,0.75)"/>';
     document.getElementById('pose_guide').innerHTML = guide;
     document.getElementById('pose_knob').innerHTML = knob;
     // the phone plate: a rectangle in its own x/y plane, standing where it has
