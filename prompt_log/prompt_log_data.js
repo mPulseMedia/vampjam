@@ -9,8 +9,41 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "191 axis_face",
+        id: "192 fixed_axes",
         expanded: true,
+        nodes: [
+          { text: "192 fixed_axes", children: [
+            { text: "prompt_restate", children: [
+              { text: "The second diagram is wrong: the axes should stay put \u2014 Y up, X right \u2014 and the phone should be the thing shown at an angle. Axes that never move is the objective." },
+              { text: "Given that, look for an architectural simplification behind the shifts left/right, up/down and the scaling." },
+              { text: "Put the reset button lower so a right thumb can hit it easily, many times." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "The second diagram is incorrect. The Axis should remain consistent with with, as you have it now by pointing up X pointing to the right, the phone should be shown at an angle, but the axis should attempt to never move. That is the objective I\u2019m trying to design for in my assessment to the webpage that we are making, so knowing this, maybe there\u2019s kind of some architectural things that you can do that simplify the causes of shifts the screen to the right to the left open to down and scaling up and going back maybe there is some architectural internal architectural call that you\u2019re making so it\u2019s easier to follow and create. Can you put the reset button lower on the screen so that my right thumb can more easily click it the many many times that I need to click itCan you put the reset button lower on the screen so that my right thumb can more easily click it the many many times that I need to click it" }
+            ]},
+            { text: "response", children: [
+              { text: "fixed_axes", children: [
+                { text: "the arrows are the world\u2019s now and never move \u2014 X right, Y up, Z toward you" },
+                { text: "the phone plate turns inside them, with the dashed rectangle showing where it sat at zero" }
+              ]},
+              { text: "one_law", children: [
+                { text: "yes \u2014 there was a simplification waiting: everything the screen does now comes out of a single function that answers where am I and how big is it" },
+                { text: "left/right, up/down and scale are one camera position and one magnifier rule; the picture, the diagram and the tests all read that same answer" },
+                { text: "so when something feels wrong there is exactly one place to look, and one set of numbers to change" }
+              ]},
+              { text: "thumb_reach", children: [
+                { text: "Set zero is a big dark button low on the right now, just above the recorder \u2014 no stretching" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: release fixed_axes, olive. Tip the phone \u2014 the arrows should stay rock still while the plate swings" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "191 axis_face",
+        expanded: false,
         nodes: [
           { text: "191 axis_face", children: [
             { text: "prompt_restate", children: [

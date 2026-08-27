@@ -968,7 +968,22 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   turn his way. Motion mapping is untouched; this is the diagram only. Playwright: plate at
   zero is exactly -15,-28 15,-28 15,28 -15,28; pose(+40 yaw) now labels Y-40 and pose(-40)
   labels Y40; three arrowheads and XYZ letters present; no page errors ✓.
-- NEXT → add entry 192 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 192 fixed_axes — lab.html, release fixed_axes / olive) three asks. fixed_axes: the
+  diagram's X/Y/Z arrows are the WORLD's now and never move (X right, Y up, Z toward you);
+  the plate turns inside them, with the dashed zero rectangle behind it. It had been the
+  other way round, which made the frame of reference itself appear to swing — his objective
+  is a frame that holds still. view(): the architectural simplification he asked for —
+  ONE function turns where the phone is into what the screen shows { cam (metres in the
+  zero frame, lead folded in), dist, mult, pxPerM, ox, oy }, and the paint loop, the state
+  hook and the diagram all read it. Nothing recomputes the law any more, so pan, scale and
+  the reset all have a single place to be tuned or reasoned about. thumb_reach: Set zero
+  moved from the top-right corner to bottom-right, 236px up from the bottom edge and
+  bigger (106×48, dark pill), just above the recorder bar where a right thumb lands; the
+  pose diagram and trace strip moved up into the space it left. Playwright: axis endpoints
+  identical at zero and at pose(35,25,-15) while the plate polygon changes ✓; state hook
+  and painted CSS vars agree exactly (449px, ×1.245) ✓; button 236px off the bottom ✓;
+  no page errors.
+- NEXT → add entry 193 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

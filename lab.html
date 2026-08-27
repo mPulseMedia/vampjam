@@ -133,25 +133,27 @@
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     pointer-events: none; transition: opacity 0.4s;
   }
+  /* thumb_reach: Set zero gets pressed constantly, so it sits low on the right,
+     just above the recorder bar, where a right thumb lands without a stretch. */
   .motion_btn {
-    position: fixed; z-index: 6;
-    top: max(24px, calc(env(safe-area-inset-top) + 12px));
-    right: max(26px, calc(env(safe-area-inset-right) + 14px));
-    background: rgba(255,255,255,0.86); color: #1d1d1f;
-    border: none; border-radius: 999px; padding: 9px 15px;
-    font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+    position: fixed; z-index: 8;
+    bottom: max(236px, calc(env(safe-area-inset-bottom) + 226px));
+    right: max(22px, calc(env(safe-area-inset-right) + 10px));
+    background: rgba(29,29,31,0.86); color: #ffffff;
+    border: none; border-radius: 999px; padding: 15px 22px;
+    font: inherit; font-size: 16px; font-weight: 700; cursor: pointer;
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     touch-action: manipulation;
   }
   .motion_btn:active { transform: scale(0.96); }
-  .motion_btn.on { background: rgba(29,29,31,0.82); color: #ffffff; }
+  .motion_btn.on { background: #3f6212; color: #ffffff; }
   /* lag_trace — four seconds of history, so what the hand did and what the
      screen did can be compared by eye instead of by adjective.
      grey = how hard the phone is accelerating, purple = where the world is. */
   .trace {
     position: fixed; z-index: 6; right: max(22px, calc(env(safe-area-inset-right) + 10px));
-    top: max(286px, calc(env(safe-area-inset-top) + 272px));
+    top: max(182px, calc(env(safe-area-inset-top) + 170px));
     width: 130px; height: 48px; border-radius: 10px;
     background: rgba(255,255,255,0.86);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
@@ -159,7 +161,7 @@
   }
   .pose {
     position: fixed; z-index: 6; right: max(18px, calc(env(safe-area-inset-right) + 8px));
-    top: max(126px, calc(env(safe-area-inset-top) + 112px));
+    top: max(24px, calc(env(safe-area-inset-top) + 12px));
     width: 148px; height: 148px; border-radius: 14px;
     background: rgba(255,255,255,0.86);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
@@ -269,7 +271,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'axis_face', bg: '#334155', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'fixed_axes', bg: '#3f6212', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -497,18 +499,21 @@
       poseInit = true;
       // the zero pose itself, faint: the rectangle the phone was in when you
       // pressed Set zero, so the difference between it and the plate IS the tilt
-      var g = '<rect x="-15" y="-28" width="30" height="56" rx="3" ' +
-              'stroke-dasharray="3 3" fill="none"/>';
-      [[{x:1,y:0,z:0}], [{x:0,y:1,z:0}], [{x:0,y:0,z:1}]].forEach(function (a) {
-        var p = iso({ x: a[0].x * 46, y: a[0].y * 46, z: a[0].z * 46 });
-        g += '<line x1="0" y1="0" x2="' + p.x.toFixed(1) + '" y2="' + p.y.toFixed(1) + '"/>';
-      });
-      ref.innerHTML = g;
+      // the zero pose, faint: the rectangle the phone filled when you pressed
+      // Set zero. The bold axes below never move, so the plate's departure from
+      // this outline is the whole story.
+      ref.innerHTML = '<rect x="-15" y="-28" width="30" height="56" rx="3" ' +
+                      'stroke-dasharray="3 3" fill="none"/>';
     }
-    // the phone's own axes, from the relative matrix (columns are the axes)
-    var ax = { x: m[0], y: m[3], z: m[6] };
-    var ay = { x: m[1], y: m[4], z: m[7] };
-    var az = { x: m[2], y: m[5], z: m[8] };
+    // fixed_axes — the axes are the WORLD's and never move: X right, Y up,
+    // Z toward you. The phone plate turns inside them. (It was the other way
+    // round, which made the frame of reference itself appear to swing.)
+    var ax = { x: 1, y: 0, z: 0 };
+    var ay = { x: 0, y: 1, z: 0 };
+    var az = { x: 0, y: 0, z: 1 };
+    // the phone's own directions, used for the plate only
+    var px_ = { x: m[0], y: m[3], z: m[6] };
+    var py_ = { x: m[1], y: m[4], z: m[7] };
     // axis_face: fat arrows with heads and letters, so an axis can be pointed at
     var axes = document.getElementById('pose_axes');
     function arrow(v, colour, letter) {
@@ -528,7 +533,7 @@
     axes.innerHTML = arrow(ax, '#dc2626', 'X') + arrow(ay, '#16a34a', 'Y') + arrow(az, '#2563eb', 'Z');
     // the phone plate: a rectangle in its own x/y plane
     function corner(sx2, sy2) {
-      return { x: ax.x * sx2 + ay.x * sy2, y: ax.y * sx2 + ay.y * sy2, z: ax.z * sx2 + ay.z * sy2 };
+      return { x: px_.x * sx2 + py_.x * sy2, y: px_.y * sx2 + py_.y * sy2, z: px_.z * sx2 + py_.z * sy2 };
     }
     var w2 = 15, h2 = 28;
     var cs = [corner(-w2, h2), corner(w2, h2), corner(w2, -h2), corner(-w2, -h2)];
@@ -666,20 +671,33 @@
     line(1, '#6b21a8', maxO, 3);                   // the world
   }
 
+  // view — the ONE place that turns where the phone is into what the screen
+  // shows. Grid, dot, diagram and tests all read this; nothing recomputes it.
+  //   cam   where the phone has travelled in the zero frame, metres
+  //         (+x right, +y up, +z toward the eye), lead term folded in
+  //   dist  how far the eye is from the surface
+  //   mult  the magnifier: how much world one phone-width of hand sweeps
+  //   ox/oy pixels the world is offset on screen (flip_axes: it travels WITH
+  //         the phone)
+  function view() {
+    var w = frame.clientWidth || 320;
+    var cam = { x: pos.x + vel.x * LEAD, y: pos.y + vel.y * LEAD, z: pos.z + vel.z * LEAD };
+    var dist = Math.max(D_MIN, Math.min(D_MAX, D0 - cam.z));
+    var mult = Math.max(MULT_MIN, Math.min(MULT_MAX, Math.pow(D0 / dist, Z_POWER)));
+    var pxPerM = (w / PHONE_W) * mult;
+    var lim = w * 3;
+    return {
+      w: w, cam: cam, dist: dist, mult: mult, pxPerM: pxPerM,
+      ox: Math.max(-lim, Math.min(lim,  cam.x * pxPerM)),
+      oy: Math.max(-lim, Math.min(lim, -cam.y * pxPerM))
+    };
+  }
+
   function paint_world() {
     if (!motionOn) return;
-    var w = frame.clientWidth || 320;
-    // toward the eye is +z in the zero frame; closer = shorter distance
-    var dist = Math.max(D_MIN, Math.min(D_MAX, D0 - (pos.z + vel.z * LEAD)));
-    var mult = Math.max(MULT_MIN, Math.min(MULT_MAX, Math.pow(D0 / dist, Z_POWER)));
-    var pxPerM = (w / PHONE_W) * mult;         // one phone width of slide = one screen width, times the multiple
-    // flip_axes: his call — the world travels WITH the phone, not against it
-    var px = pos.x + vel.x * LEAD, py = pos.y + vel.y * LEAD;
-    var sx =  px * pxPerM;
-    var sy = -py * pxPerM;
-    var lim = w * 3;
-    sx = Math.max(-lim, Math.min(lim, sx));
-    sy = Math.max(-lim, Math.min(lim, sy));
+    var v = view();
+    var w = v.w, dist = v.dist, mult = v.mult;
+    var sx = v.ox, sy = v.oy;
     trace_push(lastAccel * (movedSign || 1), sx / (w / 4));
     trace_draw();
     var root = document.documentElement.style;
@@ -973,12 +991,9 @@
     },
     // what the maths is thinking right now, without waiting for a paint frame
     state: function () {
-      var w = frame.clientWidth || 320;
-      var dist = Math.max(D_MIN, Math.min(D_MAX, D0 - (pos.z + vel.z * LEAD)));
-      var mult = Math.max(MULT_MIN, Math.min(MULT_MAX, Math.pow(D0 / dist, Z_POWER)));
-      return { px: (pos.x + vel.x * LEAD) * (w / PHONE_W) * mult,
-               py: -(pos.y + vel.y * LEAD) * (w / PHONE_W) * mult,
-               mult: mult, moving: moving, held: lastMove,
+      var v = view();
+      return { px: v.ox, py: v.oy, mult: v.mult, dist: v.dist,
+               moving: moving, held: lastMove,
                pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) } };
     },
     world: function () {
