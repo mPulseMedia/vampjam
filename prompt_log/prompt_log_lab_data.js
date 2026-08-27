@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "190 dot_scale",
+        id: "191 axis_face",
         expanded: true,
+        nodes: [
+          { text: "191 axis_face", children: [
+            { text: "prompt_restate", children: [
+              { text: "In the 3D rectangle diagram: at zero, show the phone straight on, parallel with the glass of the screen." },
+              { text: "Make the axes more visible so they can be talked about." },
+              { text: "Separately: spinning the phone flat on a table is drawn the wrong way round \u2014 reverse that axis." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, so for the thing that looks like the 3-D rectangle with the vectors, here\u2019s how I wanted to change when I said back to zero when I reset to zero I want the phone to be shown to me straight on show it to me such that it is parallel with the glass of the screen. And make those Axis more visible so that I can communicate about. Here\u2019s another separate thing however you were interpreting the gyros when I rotated the phone keeping it flat if it was placed on a table top, it would remain on a table top and I would be rotating it to put the top first to the right and then swinging around the bottoms, continuing up on the left, swinging all the way around to the top if whatever access that is, please reverse what you have been doing because in that access, you are exactly the opposite of what I think it should be" }
+            ]},
+            { text: "response", children: [
+              { text: "camera", children: [
+                { text: "at zero the phone is now a plain rectangle facing you, square with the glass \u2014 no more floor-tile view" },
+                { text: "every tilt reads as a departure from that flat face" }
+              ]},
+              { text: "axes_bold", children: [
+                { text: "the three axes are proper arrows now, with heads and letters: X red, Y green, Z blue" },
+                { text: "the dashed rectangle behind is the phone as it was when you pressed Set zero, so the gap between outline and plate is the tilt" }
+              ]},
+              { text: "yaw_flip", children: [
+                { text: "the table-top spin is reversed \u2014 turn it the way you described and the drawing now turns with you" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: release axis_face, slate. Set zero \u2014 flat rectangle; spin it on a table \u2014 it should follow your hand" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "190 dot_scale",
+        expanded: false,
         nodes: [
           { text: "190 dot_scale", children: [
             { text: "prompt_restate", children: [

@@ -955,7 +955,20 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   on top of a world that moves in depth. Playwright: at zero dot 22px / square 30px; moved
   closer ×3.25 → dot 72px / square 98px; moved away ×0.47 → dot 10px / square 14px — the
   ratio holds at every distance ✓.
-- NEXT → add entry 191 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 191 axis_face — lab.html, release axis_face / slate) three changes to the pose
+  diagram. camera: the isometric floor view is gone — the camera now looks straight down
+  the zero pose's normal (project: x + z*0.34, -y - z*0.22), so at zero the phone is a
+  plain upright rectangle parallel with the glass and every tilt reads as a departure from
+  that. axes_bold: each axis is a 3.4px shaft with a filled arrowhead and a letter (X red,
+  Y green, Z blue), so an axis can be named in conversation; the zero frame behind it is
+  now a dashed outline of the phone AS IT WAS at Set zero plus faint axis stubs, so the
+  difference between outline and plate IS the attitude. yaw_flip: he reported the flat-on-
+  a-table spin drawing backwards — the display decomposes R_rel to pitch/yaw/roll, negates
+  yaw, and rebuilds the matrix (mat_from(-yaw, pitch, roll)), so plate, axes and label all
+  turn his way. Motion mapping is untouched; this is the diagram only. Playwright: plate at
+  zero is exactly -15,-28 15,-28 15,28 -15,28; pose(+40 yaw) now labels Y-40 and pose(-40)
+  labels Y40; three arrowheads and XYZ letters present; no page errors ✓.
+- NEXT → add entry 192 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

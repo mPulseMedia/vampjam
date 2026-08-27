@@ -269,7 +269,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'dot_scale', bg: '#9f1239', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'axis_face', bg: '#334155', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -454,11 +454,11 @@
   // -(y + (x + z)*0.5) down, which is enough to read pitch, yaw and roll at a
   // glance without any of the numbers he is tired of.
   function iso(v) {
-    // the zero pose is the phone lying in the ground plane, so the phone's own
-    // y (its long axis) is drawn going away from you and its z (the screen
-    // normal) is drawn straight up — a flat phone looks flat, a tipped one tips
-    var d = { x: v.x, y: v.z, z: -v.y };
-    return { x: (d.x - d.z) * 0.866, y: -(d.y + (d.x + d.z) * 0.5) };
+    // axis_face — the camera looks straight down the zero pose's normal, so at
+    // zero the phone is a plain rectangle parallel with the glass. Depth (the
+    // zero frame's z, toward the viewer) is drawn as a small up-and-right
+    // offset, which is enough to read a tip without skewing the flat state.
+    return { x: v.x + v.z * 0.34, y: -v.y - v.z * 0.22 };
   }
   function pt(v, s) { var p = iso({ x: v.x * s, y: v.y * s, z: v.z * s }); return p.x.toFixed(1) + ',' + p.y.toFixed(1); }
   function rel_matrix() {
@@ -477,29 +477,55 @@
     el.setAttribute('x2', b.x.toFixed(1)); el.setAttribute('y2', b.y.toFixed(1));
   }
   var poseInit = false;
+  // yaw_flip — spinning the phone flat on a table drew the wrong way round for
+  // him, so the drawing's yaw is negated. Attitude is decomposed, yaw flipped,
+  // and the matrix rebuilt — the plate, the axes and the label all follow.
+  function flip_yaw(m) {
+    var deg = 180 / Math.PI;
+    var pitch = Math.asin(Math.max(-1, Math.min(1, m[7]))) * deg;
+    var yaw   = Math.atan2(-m[1], m[4]) * deg;
+    var roll  = Math.atan2(-m[6], m[8]) * deg;
+    return { m: mat_from(-yaw, pitch, roll), pitch: pitch, yaw: -yaw, roll: roll };
+  }
   function draw_pose(mult) {
     if (!poseEl || poseEl.hidden) return;
-    var m = rel_matrix(); if (!m) return;
+    var m0 = rel_matrix(); if (!m0) return;
+    var flipped = flip_yaw(m0);
+    var m = flipped.m;
     var ref = document.getElementById('pose_ref');
     if (!poseInit) {   // the zero frame, drawn once
       poseInit = true;
-      var g = '';
+      // the zero pose itself, faint: the rectangle the phone was in when you
+      // pressed Set zero, so the difference between it and the plate IS the tilt
+      var g = '<rect x="-15" y="-28" width="30" height="56" rx="3" ' +
+              'stroke-dasharray="3 3" fill="none"/>';
       [[{x:1,y:0,z:0}], [{x:0,y:1,z:0}], [{x:0,y:0,z:1}]].forEach(function (a) {
-        var p = iso({ x: a[0].x * 42, y: a[0].y * 42, z: a[0].z * 42 });
+        var p = iso({ x: a[0].x * 46, y: a[0].y * 46, z: a[0].z * 46 });
         g += '<line x1="0" y1="0" x2="' + p.x.toFixed(1) + '" y2="' + p.y.toFixed(1) + '"/>';
       });
-      g += '<ellipse cx="0" cy="0" rx="46" ry="23" opacity="0.5"/>';
       ref.innerHTML = g;
     }
     // the phone's own axes, from the relative matrix (columns are the axes)
     var ax = { x: m[0], y: m[3], z: m[6] };
     var ay = { x: m[1], y: m[4], z: m[7] };
     var az = { x: m[2], y: m[5], z: m[8] };
+    // axis_face: fat arrows with heads and letters, so an axis can be pointed at
     var axes = document.getElementById('pose_axes');
-    axes.innerHTML =
-      '<line x1="0" y1="0" x2="' + pt(ax, 34).split(',')[0] + '" y2="' + pt(ax, 34).split(',')[1] + '" stroke="#dc2626"/>' +
-      '<line x1="0" y1="0" x2="' + pt(ay, 34).split(',')[0] + '" y2="' + pt(ay, 34).split(',')[1] + '" stroke="#16a34a"/>' +
-      '<line x1="0" y1="0" x2="' + pt(az, 34).split(',')[0] + '" y2="' + pt(az, 34).split(',')[1] + '" stroke="#2563eb"/>';
+    function arrow(v, colour, letter) {
+      var e = iso({ x: v.x * 44, y: v.y * 44, z: v.z * 44 });
+      var n = Math.hypot(e.x, e.y) || 1;
+      var ux = e.x / n, uy = e.y / n;
+      var hx = e.x - ux * 7, hy = e.y - uy * 7;
+      var lx = e.x + ux * 9, ly = e.y + uy * 9;
+      return '<line x1="0" y1="0" x2="' + hx.toFixed(1) + '" y2="' + hy.toFixed(1) + '" stroke="' + colour + '" stroke-width="3.4"/>' +
+             '<polygon points="' + e.x.toFixed(1) + ',' + e.y.toFixed(1) + ' ' +
+               (hx - uy * 4).toFixed(1) + ',' + (hy + ux * 4).toFixed(1) + ' ' +
+               (hx + uy * 4).toFixed(1) + ',' + (hy - ux * 4).toFixed(1) + '" fill="' + colour + '" stroke="none"/>' +
+             '<text x="' + lx.toFixed(1) + '" y="' + (ly + 3.5).toFixed(1) + '" fill="' + colour +
+               '" font-size="11" font-weight="800" text-anchor="middle" stroke="none"' +
+               ' font-family="-apple-system, sans-serif">' + letter + '</text>';
+    }
+    axes.innerHTML = arrow(ax, '#dc2626', 'X') + arrow(ay, '#16a34a', 'Y') + arrow(az, '#2563eb', 'Z');
     // the phone plate: a rectangle in its own x/y plane
     function corner(sx2, sy2) {
       return { x: ax.x * sx2 + ay.x * sy2, y: ax.y * sx2 + ay.y * sy2, z: ax.z * sx2 + ay.z * sy2 };
@@ -521,12 +547,9 @@
     head.setAttribute('cx', mvp.x.toFixed(1)); head.setAttribute('cy', mvp.y.toFixed(1));
     head.setAttribute('opacity', mag > 2 ? '1' : '0');
     // pitch / yaw / roll, straight out of the same matrix
-    var deg = 180 / Math.PI;
-    var pitch = Math.asin(Math.max(-1, Math.min(1, m[7]))) * deg;
-    var yaw   = Math.atan2(-m[1], m[4]) * deg;
-    var roll  = Math.atan2(-m[6], m[8]) * deg;
     document.getElementById('pose_lbl').textContent =
-      'P' + pitch.toFixed(0) + '  Y' + yaw.toFixed(0) + '  R' + roll.toFixed(0) + '   \u00d7' + mult.toFixed(1);
+      'P' + flipped.pitch.toFixed(0) + '  Y' + flipped.yaw.toFixed(0) +
+      '  R' + flipped.roll.toFixed(0) + '   \u00d7' + mult.toFixed(1);
   }
 
   // orientation -> rotation matrix (ZXY intrinsic, the W3C convention)
