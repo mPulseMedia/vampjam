@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "181 take_clear",
+        id: "182 paper_scale",
         expanded: true,
+        nodes: [
+          { text: "182 paper_scale", children: [
+            { text: "prompt_restate", children: [
+              { text: "Phone closer shrinks the image, phone further expands it." },
+              { text: "Phone right moves the image left, phone up moves the image down \u2014 the counterbalance he saw with the dot, applied to the surface." },
+              { text: "Keep the red / white / blue surfaces but give them texture \u2014 horizontal lines like school homework paper \u2014 so distance is readable." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, so I want you to make it so that when the phone moves closer it shrinks the scale and when I move further, it expands the scale of the image. I\u2019m seeing when I move the phone to the right to the left. The object on the screen moves to the left so as to counterbalance to create an counter effect to the movement of the phone like Wise up and down when I move up the daughter, the image on the screen moves down this is what I\u2019m interested in having and let\u2019s use the surface red white and blue surface but give it some texture such that when it\u2019s close versus when it\u2019s far you can Tell the distance maybe it\u2019s horizontal lines like on school homework paper try that" }
+            ]},
+            { text: "response", children: [
+              { text: "paper_scale", children: [
+                { text: "all three cards are ruled like homework paper now \u2014 the lines are what make distance obvious, since their spacing opens and closes with the scale" },
+                { text: "the whole ruled surface counter-moves: phone right, surface left; phone up, surface down" },
+                { text: "pull the phone closer and it shrinks, push it away and it grows, as you asked" },
+                { text: "the dot stays put and unscaled, so you have something fixed to judge it against" },
+                { text: "the readout now shows near/far in mm and the scale as a percentage" }
+              ]},
+              { text: "same_limit", children: [
+                { text: "near/far is a push-and-pull response that eases back to normal \u2014 the sensors cannot hold a true distance" },
+                { text: "the takes you record will tell me how much of each move is tilt and how much is travel, and I can retune from that" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: Steady the dot, then move the phone toward you and away, and side to side" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "181 take_clear",
+        expanded: false,
         nodes: [
           { text: "181 take_clear", children: [
             { text: "prompt_restate", children: [

@@ -844,7 +844,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   cancel the start instead of leaving it recording. Playwright: idle → is_rec (name in the
   message, live timer on the button) → is_send with the field already empty and #g_name
   focused → is_sent with the chip listed ✓.
-- NEXT → add entry 182 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 182 paper_scale — lab.html) the whole surface now answers the phone, not just the
+  dot. Each cell gains a .paper layer — school-ruled horizontal lines (repeating-linear-
+  gradient, 1px of currentColor every 30px, 30% opacity, 16% on the white card), sized 200%
+  and centred so panning and scaling never expose an edge — transformed by
+  translate3d(var(--sx), var(--sy), 0) scale(var(--sc)). --sx/--sy are the counter-motion
+  the dot already used (phone right → surface left, phone up → surface down); --sc is new:
+  the z axis (screen normal) is integrated with the same leaks as x and y, and scale =
+  clamp(1 - z*3.2, 0.55, 1.8) — closer SHRINKS, further GROWS, per his call. The ruling is
+  what makes distance legible: line spacing widens and narrows with the scale. The dot
+  stays unscaled as the fixed reference, and the readout's second line became
+  'near/far ±NN mm  scale NN%'. Same honest limit as 179: z is a push/pull response that
+  eases back, not a distance measurement. Playwright: paper covers 200%×200% with the
+  gradient; tilt +12 gamma → x -84, tilt +12 beta → y +84; pulled closer (z +80mm) → scale
+  0.90, pushed away → 1.10, with the transform matrix matching ✓.
+- NEXT → add entry 183 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

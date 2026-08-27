@@ -55,11 +55,26 @@
     font-size: 74px; font-weight: 700; letter-spacing: 0.02em;
     user-select: none; -webkit-user-select: none;
   }
-  .cell_no { opacity: 0.16; }
+  .cell_no { opacity: 0.16; position: relative; z-index: 1; }
   /* dot_steady — the dot sits dead centre of every card. When the phone's
      motion sensors are running it is pushed the OTHER way from every wobble,
      so it holds still in the room while the screen jiggles around it. */
-  .pin { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  /* paper_scale — the surface is ruled like school paper so distance reads at a
+     glance: the lines pan against the phone's movement and their spacing grows
+     as the phone pulls back, shrinks as it comes closer. Oversized and centred
+     so panning and scaling never expose an edge. */
+  .paper {
+    position: absolute; left: -50%; top: -50%; width: 200%; height: 200%;
+    pointer-events: none; transform-origin: 50% 50%;
+    transform: translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
+    background-image:
+      repeating-linear-gradient(to bottom,
+        currentColor 0px, currentColor 1px,
+        transparent 1px, transparent 30px);
+    opacity: 0.30;
+  }
+  .cell_2 .paper { opacity: 0.16; }
+  .pin { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2; }
   .pin_dot {
     width: 22px; height: 22px; border-radius: 50%;
     background: currentColor; box-shadow: 0 2px 6px rgba(0,0,0,0.30);
@@ -182,9 +197,9 @@
 
 <div class="frame_window" id="frame">
   <div class="track" id="track">
-    <div class="cell cell_1"><span class="cell_no">1</span><span class="pin"><span class="pin_dot"></span></span></div>
-    <div class="cell cell_2"><span class="cell_no">2</span><span class="pin"><span class="pin_dot"></span></span></div>
-    <div class="cell cell_3"><span class="cell_no">3</span><span class="pin"><span class="pin_dot"></span></span></div>
+    <div class="cell cell_1"><span class="paper"></span><span class="cell_no">1</span><span class="pin"><span class="pin_dot"></span></span></div>
+    <div class="cell cell_2"><span class="paper"></span><span class="cell_no">2</span><span class="pin"><span class="pin_dot"></span></span></div>
+    <div class="cell cell_3"><span class="paper"></span><span class="cell_no">3</span><span class="pin"><span class="pin_dot"></span></span></div>
   </div>
   <div class="frame_shadow"></div>
 </div>
@@ -313,19 +328,25 @@
   //           noisy accelerometer drift within a second or two, so the leak
   //           pulls it back to zero on purpose. Tilt is the honest signal;
   //           shift is the jiggle-canceller on top of it.
-  var PX_PER_DEG = 7;        // how hard tilt pushes the dot back
+  var PX_PER_DEG = 7;        // how hard tilt pushes the surface back
   var SHIFT_GAIN = 900;      // metres of integrated shift -> px
   var VEL_LEAK   = 0.86;     // per frame: kills accelerometer drift
   var POS_LEAK   = 0.90;     // per frame: walks the correction back to centre
   var HP         = 0.92;     // high-pass on acceleration (removes gravity + bias)
+  // paper_scale: nearer shrinks, further grows (his call — the surface behaves
+  // like a fixed world seen through a window that is being pushed away). z comes
+  // from the screen-normal axis, integrated with the same leaks, so a push or a
+  // pull shows immediately and then eases back rather than drifting off.
+  var Z_GAIN     = 3.2;      // metres of integrated z -> scale
+  var Z_MIN      = 0.55, Z_MAX = 1.8;
 
   var motionOn = false;
   var ref = null;            // { beta, gamma } captured when you start
   var tilt = { b: 0, g: 0 };
-  var acc  = { x: 0, y: 0 }; // high-passed acceleration
-  var accLP = { x: 0, y: 0 };
-  var vel  = { x: 0, y: 0 };
-  var pos  = { x: 0, y: 0 };
+  var acc  = { x: 0, y: 0, z: 0 }; // high-passed acceleration
+  var accLP = { x: 0, y: 0, z: 0 };
+  var vel  = { x: 0, y: 0, z: 0 };
+  var pos  = { x: 0, y: 0, z: 0 };
   var lastT = 0;
   var motionBtn = document.getElementById('motion_btn');
   var readout   = document.getElementById('readout');
@@ -344,11 +365,14 @@
       // no gravity-free stream: subtract a slow average, which IS gravity
       accLP.x = accLP.x * 0.95 + (a.x || 0) * 0.05;
       accLP.y = accLP.y * 0.95 + (a.y || 0) * 0.05;
+      accLP.z = accLP.z * 0.95 + (a.z || 0) * 0.05;
       acc.x = (a.x || 0) - accLP.x;
       acc.y = (a.y || 0) - accLP.y;
+      acc.z = (a.z || 0) - accLP.z;
     } else {
       acc.x = acc.x * (1 - HP) + (a.x || 0) * HP;
       acc.y = acc.y * (1 - HP) + (a.y || 0) * HP;
+      acc.z = acc.z * (1 - HP) + (a.z || 0) * HP;
     }
   }
   function steady_frame(now) {
@@ -358,27 +382,35 @@
     // shift: integrate, then leak both velocity and position back to zero
     vel.x = (vel.x + acc.x * dt) * VEL_LEAK;
     vel.y = (vel.y + acc.y * dt) * VEL_LEAK;
+    vel.z = (vel.z + acc.z * dt) * VEL_LEAK;
     pos.x = (pos.x + vel.x * dt) * POS_LEAK;
     pos.y = (pos.y + vel.y * dt) * POS_LEAK;
+    pos.z = (pos.z + vel.z * dt) * POS_LEAK;
     // screen x is the phone's x; screen y is the phone's -y
     var sx = -(tilt.g * PX_PER_DEG) - pos.x * SHIFT_GAIN;
     var sy =  (tilt.b * PX_PER_DEG) + pos.y * SHIFT_GAIN;
     var lim = Math.min(frame.clientWidth, frame.clientHeight) * 0.42;
     sx = Math.max(-lim, Math.min(lim, sx));
     sy = Math.max(-lim, Math.min(lim, sy));
+    // +z is out of the screen, toward the face: coming closer shrinks it
+    var sc = 1 - pos.z * Z_GAIN;
+    sc = Math.max(Z_MIN, Math.min(Z_MAX, sc));
     document.documentElement.style.setProperty('--sx', sx.toFixed(1) + 'px');
     document.documentElement.style.setProperty('--sy', sy.toFixed(1) + 'px');
+    document.documentElement.style.setProperty('--sc', sc.toFixed(3));
     if (readout) {
       readout.textContent =
         'up/down  ' + (tilt.b >= 0 ? '+' : '') + tilt.b.toFixed(0) + '\u00b0' +
         '   side  ' + (tilt.g >= 0 ? '+' : '') + tilt.g.toFixed(0) + '\u00b0' +
-        '\njiggle  ' + Math.round(Math.hypot(pos.x, pos.y) * 1000) + ' mm';
+        '\nnear/far  ' + (pos.z >= 0 ? '+' : '') + Math.round(pos.z * 1000) + ' mm' +
+        '   scale  ' + Math.round(sc * 100) + '%';
     }
     requestAnimationFrame(steady_frame);
   }
   function start_steady() {
     motionOn = true; ref = null; lastT = 0;
-    vel = { x: 0, y: 0 }; pos = { x: 0, y: 0 };
+    vel = { x: 0, y: 0, z: 0 }; pos = { x: 0, y: 0, z: 0 };
+    document.documentElement.style.setProperty('--sc', '1');
     window.addEventListener('deviceorientation', on_orientation);
     window.addEventListener('devicemotion', on_motion);
     motionBtn.classList.add('on');
@@ -387,7 +419,8 @@
     if (hint) hint.style.opacity = '0';
     requestAnimationFrame(steady_frame);
   }
-  function recentre() { ref = null; vel = { x: 0, y: 0 }; pos = { x: 0, y: 0 }; }
+  function recentre() { ref = null; vel = { x: 0, y: 0, z: 0 }; pos = { x: 0, y: 0, z: 0 };
+                        document.documentElement.style.setProperty('--sc', '1'); }
 
   motionBtn.addEventListener('click', function () {
     if (motionOn) { recentre(); return; }
@@ -616,6 +649,7 @@
     at: function () { return idx; },
     steady: function () { start_steady(); },
     rec: function (on) { on ? rec_start() : rec_stop(); },
+    push: function (dz) { pos.z = dz; },   // metres, + = toward the face
     takes: function () { return gest_get(); },
     feed: function (beta, gamma) {
       on_orientation({ beta: beta, gamma: gamma });
