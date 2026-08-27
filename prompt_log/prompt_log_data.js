@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "178 pager_prompt",
+        id: "179 dot_steady",
         expanded: true,
+        nodes: [
+          { text: "179 dot_steady", children: [
+            { text: "prompt_restate", children: [
+              { text: "Put a dot in the centre of each of the three cards." },
+              { text: "Read the phone\u2019s motion sensors directly, measuring movement up/down and side to side against wherever the phone started." },
+              { text: "Use that to hold the dot still while the phone is jiggled." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Put a dot in the center of each of the three cards and what I wanna do is try to directly access the gyros on the phone in order to tell when it has the phone has been moved up meaning regardless of what position the phone starts at if it goes such that it\u2019s bottom is where it\u2019s top was and back in that dimension it monitors that and monitors moving from side to side, but based strictly on starting position and what I\u2019d like you to do is try to make the dot stationary as I move my phone around as I jiggle it as I hold, largely still, but jiggling I want the stabilizer I want you to stabilize the dot in the middle of the page" }
+            ]},
+            { text: "response", children: [
+              { text: "dot_steady", children: [
+                { text: "dot in the centre of all three cards" },
+                { text: "tap Steady the dot (top right) \u2014 iPhone asks permission for motion; after that the dot fights every wobble and the button becomes Recentre" },
+                { text: "everything is measured from the pose you were in when you pressed it, so it does not matter how you were holding the phone" },
+                { text: "a small readout shows up/down and side angles and how much jiggle it is cancelling" }
+              ]},
+              { text: "honest_limit", children: [
+                { text: "tilt is solid \u2014 that is what keeps the dot planted, and most hand movement is tilt" },
+                { text: "actual travel (bottom ends up where the top was) cannot be measured by these sensors: position comes from integrating acceleration twice and it drifts away within a second or two" },
+                { text: "so the travel part is tuned as a jiggle-canceller that eases back to centre rather than a tracker that slowly wanders off" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2 min: lab page \u2192 Steady the dot \u2192 hold the phone and shake gently; the dot should sit much stiller than the screen" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "178 pager_prompt",
+        expanded: false,
         nodes: [
           { text: "178 pager_prompt", children: [
             { text: "prompt_restate", children: [

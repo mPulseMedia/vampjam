@@ -793,7 +793,27 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   page keys), how existing pages map onto cells without rewriting them, hash deep-links,
   the inner-scroll gate that leaves room for his free-scroll mode later, and acceptance
   tests. No repo change beyond this log.
-- NEXT → add entry 179 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 179 dot_steady — lab.html) a dot dead-centre of each of the three cards, and a
+  stabiliser that tries to hold it still in the room while the phone moves. Two sensors,
+  two jobs. tilt: deviceorientation beta (nose up/down) and gamma (roll) measured against
+  the angles captured when you press the button — reference-at-start, exactly as he asked,
+  so the starting pose does not matter; offset = -gamma*7px in x and +beta*7px in y, which
+  is what actually keeps a dot planted, since most 'movement' of a hand-held phone is
+  rotation. shift: devicemotion acceleration (e.acceleration, or
+  accelerationIncludingGravity minus a slow average when the gravity-free stream is
+  missing), high-passed, double-integrated, with hard leaks (velocity ×0.86, position ×0.90
+  per frame). That cancels a jiggle and then walks itself back to centre — deliberately, because
+  two integrations of a phone accelerometer drift within a second or two; real translation
+  ('the bottom is where the top was') is NOT recoverable from these sensors, and pretending
+  otherwise would just show him drift. Offsets are clamped to 42% of the window and written
+  as --sx/--sy on :root, so all three dots move with one write per frame. A readout pill
+  shows up/down and side angles plus the jiggle amplitude in mm. iOS gates the sensors:
+  the 'Steady the dot' button calls DeviceOrientationEvent/DeviceMotionEvent
+  .requestPermission() inside the tap, then becomes 'Recentre' (which re-captures the
+  reference); it says 'Motion blocked' or 'No sensors here' when it cannot. Playwright:
+  all three dots centred (0,0) at 22px; fed tilts give sy +70/-70 for beta ±10 and sx
+  -84/+84 for gamma ±12, readout tracking ✓.
+- NEXT → add entry 180 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

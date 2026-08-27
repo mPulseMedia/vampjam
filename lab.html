@@ -50,11 +50,22 @@
   .track.dragging { transition: none; }
 
   .cell {
-    flex: 0 0 100%; height: 100%;
+    flex: 0 0 100%; height: 100%; position: relative;
     display: flex; align-items: center; justify-content: center;
     font-size: 74px; font-weight: 700; letter-spacing: 0.02em;
     user-select: none; -webkit-user-select: none;
   }
+  .cell_no { opacity: 0.16; }
+  /* dot_steady — the dot sits dead centre of every card. When the phone's
+     motion sensors are running it is pushed the OTHER way from every wobble,
+     so it holds still in the room while the screen jiggles around it. */
+  .pin { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  .pin_dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: currentColor; box-shadow: 0 2px 6px rgba(0,0,0,0.30);
+    transform: translate3d(var(--sx, 0px), var(--sy, 0px), 0);
+  }
+  .cell_2 .pin_dot { background: #1d1d1f; }
   .cell_1 { background: #d7263d; color: #ffffff; }
   .cell_2 { background: #ffffff; color: #1d1d1f; }
   .cell_3 { background: #1350c4; color: #ffffff; }
@@ -90,15 +101,39 @@
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     pointer-events: none; transition: opacity 0.4s;
   }
+  .motion_btn {
+    position: fixed; z-index: 6;
+    top: max(24px, calc(env(safe-area-inset-top) + 12px));
+    right: max(26px, calc(env(safe-area-inset-right) + 14px));
+    background: rgba(255,255,255,0.86); color: #1d1d1f;
+    border: none; border-radius: 999px; padding: 9px 15px;
+    font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    touch-action: manipulation;
+  }
+  .motion_btn:active { transform: scale(0.96); }
+  .motion_btn.on { background: rgba(29,29,31,0.82); color: #ffffff; }
+  .readout {
+    position: fixed; z-index: 6; left: 50%; transform: translateX(-50%);
+    top: max(72px, calc(env(safe-area-inset-top) + 60px));
+    background: rgba(255,255,255,0.86); color: #1d1d1f;
+    border-radius: 12px; padding: 7px 12px;
+    font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;
+    white-space: pre; line-height: 1.5; text-align: center;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
 
 <div class="frame_window" id="frame">
   <div class="track" id="track">
-    <div class="cell cell_1">1</div>
-    <div class="cell cell_2">2</div>
-    <div class="cell cell_3">3</div>
+    <div class="cell cell_1"><span class="cell_no">1</span><span class="pin"><span class="pin_dot"></span></span></div>
+    <div class="cell cell_2"><span class="cell_no">2</span><span class="pin"><span class="pin_dot"></span></span></div>
+    <div class="cell cell_3"><span class="cell_no">3</span><span class="pin"><span class="pin_dot"></span></span></div>
   </div>
   <div class="frame_shadow"></div>
 </div>
@@ -106,6 +141,8 @@
 <div class="dots" id="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
 <button class="back_btn" id="back_btn">&#8249; Admin</button>
 <div class="hint" id="hint">swipe up / down</div>
+<button class="motion_btn" id="motion_btn">Steady the dot</button>
+<div class="readout" id="readout" hidden></div>
 
 <script>
   var N = 3;
@@ -200,8 +237,126 @@
     window.location.href = 'admin.html';
   });
 
+  // ---- dot_steady: hold the dot still while the phone moves ----
+  // Two sensors, two jobs.
+  //   tilt  — deviceorientation beta (nose up/down) and gamma (roll left/right),
+  //           measured against the angles at the moment you press the button.
+  //           This is what actually keeps a dot planted while you wave a phone
+  //           around: most 'movement' of a hand-held phone is rotation.
+  //   shift — devicemotion acceleration, high-passed and double-integrated,
+  //           with a hard leak. It catches the quick jiggle of a hand trying to
+  //           hold still. It CANNOT track real travel: two integrations of a
+  //           noisy accelerometer drift within a second or two, so the leak
+  //           pulls it back to zero on purpose. Tilt is the honest signal;
+  //           shift is the jiggle-canceller on top of it.
+  var PX_PER_DEG = 7;        // how hard tilt pushes the dot back
+  var SHIFT_GAIN = 900;      // metres of integrated shift -> px
+  var VEL_LEAK   = 0.86;     // per frame: kills accelerometer drift
+  var POS_LEAK   = 0.90;     // per frame: walks the correction back to centre
+  var HP         = 0.92;     // high-pass on acceleration (removes gravity + bias)
+
+  var motionOn = false;
+  var ref = null;            // { beta, gamma } captured when you start
+  var tilt = { b: 0, g: 0 };
+  var acc  = { x: 0, y: 0 }; // high-passed acceleration
+  var accLP = { x: 0, y: 0 };
+  var vel  = { x: 0, y: 0 };
+  var pos  = { x: 0, y: 0 };
+  var lastT = 0;
+  var motionBtn = document.getElementById('motion_btn');
+  var readout   = document.getElementById('readout');
+
+  function on_orientation(e) {
+    if (e.beta == null && e.gamma == null) return;
+    if (!ref) ref = { beta: e.beta || 0, gamma: e.gamma || 0 };
+    tilt.b = (e.beta || 0) - ref.beta;      // + = top of the phone tipped away
+    tilt.g = (e.gamma || 0) - ref.gamma;    // + = right edge dipped
+  }
+  function on_motion(e) {
+    var a = e.acceleration;
+    if (!a || (a.x == null && a.y == null)) {
+      a = e.accelerationIncludingGravity;
+      if (!a) return;
+      // no gravity-free stream: subtract a slow average, which IS gravity
+      accLP.x = accLP.x * 0.95 + (a.x || 0) * 0.05;
+      accLP.y = accLP.y * 0.95 + (a.y || 0) * 0.05;
+      acc.x = (a.x || 0) - accLP.x;
+      acc.y = (a.y || 0) - accLP.y;
+    } else {
+      acc.x = acc.x * (1 - HP) + (a.x || 0) * HP;
+      acc.y = acc.y * (1 - HP) + (a.y || 0) * HP;
+    }
+  }
+  function steady_frame(now) {
+    if (!motionOn) return;
+    var dt = lastT ? Math.min(0.05, (now - lastT) / 1000) : 0.016;
+    lastT = now;
+    // shift: integrate, then leak both velocity and position back to zero
+    vel.x = (vel.x + acc.x * dt) * VEL_LEAK;
+    vel.y = (vel.y + acc.y * dt) * VEL_LEAK;
+    pos.x = (pos.x + vel.x * dt) * POS_LEAK;
+    pos.y = (pos.y + vel.y * dt) * POS_LEAK;
+    // screen x is the phone's x; screen y is the phone's -y
+    var sx = -(tilt.g * PX_PER_DEG) - pos.x * SHIFT_GAIN;
+    var sy =  (tilt.b * PX_PER_DEG) + pos.y * SHIFT_GAIN;
+    var lim = Math.min(frame.clientWidth, frame.clientHeight) * 0.42;
+    sx = Math.max(-lim, Math.min(lim, sx));
+    sy = Math.max(-lim, Math.min(lim, sy));
+    document.documentElement.style.setProperty('--sx', sx.toFixed(1) + 'px');
+    document.documentElement.style.setProperty('--sy', sy.toFixed(1) + 'px');
+    if (readout) {
+      readout.textContent =
+        'up/down  ' + (tilt.b >= 0 ? '+' : '') + tilt.b.toFixed(0) + '\u00b0' +
+        '   side  ' + (tilt.g >= 0 ? '+' : '') + tilt.g.toFixed(0) + '\u00b0' +
+        '\njiggle  ' + Math.round(Math.hypot(pos.x, pos.y) * 1000) + ' mm';
+    }
+    requestAnimationFrame(steady_frame);
+  }
+  function start_steady() {
+    motionOn = true; ref = null; lastT = 0;
+    vel = { x: 0, y: 0 }; pos = { x: 0, y: 0 };
+    window.addEventListener('deviceorientation', on_orientation);
+    window.addEventListener('devicemotion', on_motion);
+    motionBtn.classList.add('on');
+    motionBtn.textContent = 'Recentre';
+    if (readout) readout.hidden = false;
+    if (hint) hint.style.opacity = '0';
+    requestAnimationFrame(steady_frame);
+  }
+  function recentre() { ref = null; vel = { x: 0, y: 0 }; pos = { x: 0, y: 0 }; }
+
+  motionBtn.addEventListener('click', function () {
+    if (motionOn) { recentre(); return; }
+    var need = (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function');
+    var need2 = (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function');
+    if (!need && !need2) {
+      if (!window.DeviceOrientationEvent && !window.DeviceMotionEvent) {
+        motionBtn.textContent = 'No sensors here';
+        return;
+      }
+      start_steady(); return;
+    }
+    // iOS: permission must be asked for inside this tap
+    var asks = [];
+    if (need)  asks.push(DeviceOrientationEvent.requestPermission());
+    if (need2) asks.push(DeviceMotionEvent.requestPermission());
+    Promise.all(asks).then(function (res) {
+      if (res.every(function (r) { return r === 'granted'; })) start_steady();
+      else motionBtn.textContent = 'Motion blocked';
+    }).catch(function () { motionBtn.textContent = 'Motion blocked'; });
+  });
+
   // test hook
-  window.__lab = { go: go, at: function () { return idx; } };
+  window.__lab = {
+    go: go,
+    at: function () { return idx; },
+    steady: function () { start_steady(); },
+    feed: function (beta, gamma) {
+      on_orientation({ beta: beta, gamma: gamma });
+      return { sx: getComputedStyle(document.documentElement).getPropertyValue('--sx'),
+               sy: getComputedStyle(document.documentElement).getPropertyValue('--sy') };
+    }
+  };
 </script>
 </body>
 </html>
