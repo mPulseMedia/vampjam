@@ -1,1 +1,1 @@
-icon_big
+auto_commit
