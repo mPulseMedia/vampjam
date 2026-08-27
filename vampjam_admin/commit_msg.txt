@@ -1,1 +1,1 @@
-close_light
+auto_commit
