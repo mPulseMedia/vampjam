@@ -268,6 +268,20 @@
     box-shadow: 0 3px 10px rgba(0,0,0,0.22); touch-action: manipulation;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  /* mark_live — the two judgement buttons: one for 'a little off', one for
+     'haywire'. Symbols only, because they are pressed mid-gesture without
+     looking. Hidden until the tape is running; the name field steps aside. */
+  .g_mark {
+    flex: 0 0 48px; display: none; border: none; border-radius: 13px; padding: 0;
+    font: inherit; font-size: 21px; line-height: 1; cursor: pointer;
+    background: rgba(0,0,0,0.07); color: #1d1d1f; touch-action: manipulation;
+  }
+  .g_mark.g_wild { background: rgba(224,168,0,0.22); }
+  .g_mark:active { transform: scale(0.94); }
+  .g_mark.hit { background: #1d1d1f; color: #ffffff; }
+  .deck.is_rec .g_mark { display: block; }
+  .deck.is_rec #g_name { display: none; }
+  .g_rec.recording { background: #1d1d1f; }
   .motion_btn:active, .g_rec:active { transform: scale(0.97); }
   .motion_btn.on { background: #3f6212; }
   .deck.is_rec  .g_led { background: #d7263d; animation: g_pulse 1s ease-in-out infinite; }
@@ -306,13 +320,17 @@
     <a class="deck_back" id="back_btn" href="admin.html">&#8249; Admin</a>
     <span class="build_tag" id="build_tag"></span>
     <span class="g_led" id="g_led"></span>
-    <span class="deck_msg" id="g_msg">hold, move, let go</span>
+    <span class="deck_msg" id="g_msg">name it, tap Record</span>
     <button class="deck_reset" id="reset_btn" hidden>Reset</button>
   </div>
   <div class="deck_row">
     <input id="g_name" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"
            placeholder="name it">
-    <button id="g_rec" class="g_rec">Hold to record</button>
+    <!-- mark_live: these two only exist while the tape is running, and they take
+         the name field's place, because the name is already fixed by then. -->
+    <button id="g_off"  class="g_mark" title="a little off">&#8776;</button>
+    <button id="g_wire" class="g_mark g_wild" title="haywire">&#9889;</button>
+    <button id="g_rec" class="g_rec">Record</button>
     <button class="motion_btn" id="motion_btn">Set zero</button>
   </div>
   <div class="g_status" id="g_status" hidden></div>
@@ -346,7 +364,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'smooth_move', bg: '#7c3aed', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'tap_rec', bg: '#be123c', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -927,11 +945,12 @@
   // sign, because they have been reversed independently and will be again.
   //   PAN_INV    left/right, up/down and the swirl counter-turn
   //   DEPTH_INV  the magnifier
-  // depth_flip: DEPTH_INV is -1 now — bringing the phone toward the eye makes
-  // the paper SMALLER and taking it away makes it bigger, the opposite of what
-  // it did. Pan and swirl are untouched.
+  // depth_back: DEPTH_INV goes back to +1 — bringing the phone toward the eye
+  // makes the paper BIGGER again, and taking it away makes it smaller. This is
+  // the third time this one sign has moved, which is exactly why it is a named
+  // switch and not a buried minus. Pan and swirl are untouched.
   var PAN_INV   = 1;
-  var DEPTH_INV = -1;
+  var DEPTH_INV = 1;
   function screen_roll() {
     var m = rel_matrix(); if (!m) return 0;
     return Math.atan2(-m[1], m[4]) * 180 / Math.PI;
@@ -1046,7 +1065,7 @@
   }
 
   motionBtn.addEventListener('click', function () {
-    if (motionOn) { zero_here(true); return; }   // centre, keep the depth
+    if (motionOn) { mark_zero('set_zero'); zero_here(true); return; }   // centre, keep the depth
     var needO = (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function');
     var needM = (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function');
     if (!needO && !needM) {
@@ -1062,7 +1081,22 @@
     }).catch(function () { motionBtn.textContent = 'Motion blocked'; });
   });
   // the full reset: centre AND put the depth back to \u00d71
-  if (resetBtn) resetBtn.addEventListener('click', function () { if (motionOn) zero_here(false); });
+  if (resetBtn) resetBtn.addEventListener('click', function () {
+    if (!motionOn) return;
+    mark_zero('reset_all');
+    zero_here(false);
+  });
+  // mark_zero — a zero or a reset during a take is itself data: it says 'from
+  // here on, read the numbers from a new origin'. Stamped with where the model
+  // had drifted to and what the scale was at that instant, so the segment before
+  // it can still be read on its own terms.
+  function mark_zero(kind) {
+    if (typeof mark_add !== 'function') return;
+    var v = view();
+    mark_add(kind, { pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) },
+                     mult: +v.mult.toFixed(3), tilt: +v.tilt.toFixed(1), turn: +v.turn.toFixed(1),
+                     roll: +v.roll.toFixed(1) });
+  }
 
 
   // ---- gesture_lab: hold to record every sensor the phone will give ----
@@ -1077,6 +1111,8 @@
 
   var gName = document.getElementById('g_name');
   var gRec  = document.getElementById('g_rec');
+  var gOff  = document.getElementById('g_off');
+  var gWire = document.getElementById('g_wire');
   var gBar  = document.getElementById('gest_bar');
   var gMsg  = document.getElementById('g_msg');
   var gRecent = document.getElementById('g_recent');
@@ -1180,17 +1216,21 @@
     say('rec', 'starting…');
     sensors_live(function (ok) {
       if (!ok) { wantRec = false; say('warn', 'motion permission was refused'); return; }
-      if (!wantRec) return;         // released before permission came back
+      if (!wantRec) return;         // stopped before permission came back
       recording = true; gRef = null;
-      take = { name: (gName.value || 'unnamed').trim(), ts: Date.now(), ms: 0, samples: [] };
+      // mark_time: events is the judgement track that runs alongside the samples —
+      // every zero, every reset, every 'a little off' and every 'haywire', stamped
+      // with the millisecond it happened and where the model was at that instant.
+      take = { name: (gName.value || 'unnamed').trim(), ts: Date.now(), ms: 0,
+               samples: [], events: [] };
       gRec.classList.add('recording');
-      gRec.textContent = 'recording  0.0s';
+      gRec.textContent = 'Stop  0.0s';
       // deck_say: short lines — the deck gives one line and the lamp carries the state
       say('rec', 'recording "' + take.name + '"');
       clearInterval(recTimer);
       recTimer = setInterval(function () {
         if (!recording || !take) return;
-        gRec.textContent = 'recording  ' + ((Date.now() - take.ts) / 1000).toFixed(1) + 's';
+        gRec.textContent = 'Stop  ' + ((Date.now() - take.ts) / 1000).toFixed(1) + 's';
       }, 100);
     });
   }
@@ -1200,7 +1240,11 @@
     recording = false;
     clearInterval(recTimer);
     gRec.classList.remove('recording');
-    gRec.textContent = 'Hold to record';
+    gRec.textContent = 'Record';
+    // drop is_rec first, so the name field is back in the layout before the
+    // focus below tries to raise the keyboard on it
+    gBar.classList.remove('is_rec');
+    [gOff, gWire].forEach(function (b) { if (b) b.classList.remove('hit'); });
     if (!take) return;
     take.ms = Date.now() - take.ts;
     var done = take;
@@ -1222,12 +1266,33 @@
     send_takes(true, done);
   }
 
-  // hold semantics on touch AND mouse; pointer events would double-fire on iOS
-  gRec.addEventListener('touchstart', function (e) { e.preventDefault(); rec_start(); }, { passive: false });
-  gRec.addEventListener('touchend',   function (e) { e.preventDefault(); rec_stop(); },  { passive: false });
-  gRec.addEventListener('touchcancel', rec_stop);
-  gRec.addEventListener('mousedown', function (e) { e.preventDefault(); rec_start(); });
-  window.addEventListener('mouseup', function () { if (recording) rec_stop(); });
+  // tap_rec — tap to start, tap again to stop. Holding meant the recording hand
+  // and the moving hand were the same hand; now they are not, and the two
+  // judgement buttons are reachable mid-take.
+  gRec.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (recording || wantRec) rec_stop(); else rec_start();
+  });
+  // mark_add — one entry on the judgement track. Nothing is recorded when the
+  // tape is not running, deliberately: these are notes ABOUT a take.
+  function mark_add(kind, extra) {
+    if (!recording || !take) return false;
+    var e = { t: Date.now() - take.ts, kind: kind };
+    if (extra) for (var k in extra) e[k] = extra[k];
+    take.events.push(e);
+    say('rec', kind + ' at ' + (e.t / 1000).toFixed(1) + 's · ' + take.events.length + ' marks');
+    return true;
+  }
+  window.__lab_mark = mark_add;
+  [[gOff, 'a_little_off'], [gWire, 'haywire']].forEach(function (p) {
+    if (!p[0]) return;
+    p[0].addEventListener('click', function (e) {
+      e.preventDefault();
+      if (!mark_add(p[1])) return;
+      p[0].classList.add('hit');
+      setTimeout(function () { p[0].classList.remove('hit'); }, 260);
+    });
+  });
 
   gCopy.addEventListener('click', function () {
     var list = gest_get();

@@ -1291,7 +1291,31 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   holds without springing back, plate_move, roll_hold, zero_split, deck_one and tilt_deep
   regressions pass (the depth sweep reads 1.35 1.87 2.63 3.77 5.51 where it read 1.36 1.88
   2.65 3.80 5.56 — the spring's tail, not a change of law); no page errors.
-- NEXT → add entry 209 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 209 tap_rec — lab.html, release tap_rec / rose) two asks. depth_back: DEPTH_INV goes
+  back to +1, so the phone coming toward the eye makes the paper BIGGER again and going away
+  makes it smaller — the pre-depth_flip behaviour. Third move for this one sign, which is the
+  argument for having made it a named switch. Pan, swirl and the two leans are untouched.
+  tap_rec: the recorder is a toggle, not a hold — one tap starts, one tap stops. Holding meant
+  the recording hand and the moving hand were the same hand; they are not any more, which is
+  what makes the rest of this possible. The button reads Record, then Stop 3.4s. mark_live: two
+  judgement buttons, ≈ (a little off) and ⚡ (haywire), symbols only because they are pressed
+  mid-gesture without looking. They exist ONLY while the tape is running and take the name
+  field's place in the thumb row — the name is already fixed by then — so nothing new competes
+  for width: off 18+48, haywire 73+48, Stop 128+141, Set zero 276+96. mark_time: every take
+  now carries an `events` array beside its samples — a judgement track. Each entry is
+  { t (ms from the start of the take), kind }, and the two zero buttons add their own entries
+  (set_zero, reset_all) stamped with pos, mult, tilt, turn and roll AT the moment of the press,
+  before the reset lands, so the segment before a zero can still be read on its own terms.
+  Nothing is recorded when the tape is not running, deliberately: these are notes ABOUT a take.
+  rec_stop drops is_rec before it focuses the name field, or the field would still be
+  display:none when the focus tried to raise the keyboard. Playwright: toward the eye ×1.47,
+  away ×0.69 ✓; Record → Stop → Record with the markers appearing and the name field stepping
+  aside and back ✓; a bench take saved as 'bench take' with 25 samples and 4 events — 367ms
+  a_little_off, 545ms set_zero (mult 0.692, pos x 0.0419), 713ms haywire, 879ms reset_all ✓;
+  glide_stop, plate_move, deck_one, tilt_deep and smooth_move regressions pass; no page errors.
+  next: the take with its judgement track is the thing to process — the marks say WHERE in the
+  data the model went wrong, which is what every sign argument so far has lacked.
+- NEXT → add entry 210 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

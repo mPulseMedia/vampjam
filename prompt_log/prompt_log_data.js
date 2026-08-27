@@ -9,8 +9,54 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "208 smooth_move",
+        id: "209 tap_rec",
         expanded: true,
+        nodes: [
+          { text: "209 tap_rec", children: [
+            { text: "prompt_restate", children: [
+              { text: "Reverse the effect the Z axis has on the paper (again \u2014 confirming it is not redundant)." },
+              { text: "Tap to start recording, tap to stop \u2014 no holding." },
+              { text: "Add two buttons pressed during a recording: \u201ca little off\u201d and \u201chaywire\u201d." },
+              { text: "Record the reset button presses into the take\u2019s timeline with metadata." },
+              { text: "Then save it and process it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, it\u2019s 315 and I don\u2019t know how recently I\u2019ve asked for the Z effect on the graph paper to be inverted I may have recently asked for it and it just hasn\u2019t been processed but if I haven\u2019t asked, I didn\u2019t 315. It\u2019s not redundant I\u2019d like you to reverse the fact that the Z Axis has on the paper." },
+              { text: "OK, I\u2019d like you to change the buttons a little bit. I don\u2019t wanna hold down the button. I wanna tap it to start it and tap it to stop the record because I also wanna have another button next to it and that button has a symbol on it that indicates that it\u2019s gone haywire and what I\u2019ll do is just record a bunch and by the way in the recording, it should include the data that if I hit the reset the one reset or the other reset button that should be recorded in the timeline here with some some Mehta data somehow because I want you to have the recorded date of the accelerometers have that being recorded and have my tapping of the record just start the recording and the record to stop the recording and have a reset button that it\u2019s captured in there and then I\u2019ll move the phone around and once it gets once it if it goes haywire, I\u2019ll tap the hay wire actually let\u2019s have a haywire button versus a little off and I\u2019m gonna say a little off versus haywire those buttons out press during the recording and when I stop recording, save that and then process it" }
+            ]},
+            { text: "response", children: [
+              { text: "depth_back", children: [
+                { text: "toward the eye makes the paper bigger again; away makes it smaller" },
+                { text: "you had not asked since \u2014 the last one shipped, so this is a real reversal, not a repeat" }
+              ]},
+              { text: "tap_rec", children: [
+                { text: "one tap starts, one tap stops \u2014 the button reads Record, then Stop 3.4s" },
+                { text: "holding meant the recording hand and the moving hand were the same hand" }
+              ]},
+              { text: "mark_live", children: [
+                { text: "two buttons appear while the tape runs: \u2248 for a little off, \u26a1 for haywire" },
+                { text: "symbols only \u2014 you press them mid-gesture without looking" },
+                { text: "they take the name field\u2019s place, since the name is already set by then" }
+              ]},
+              { text: "mark_time", children: [
+                { text: "every take carries a judgement track beside the samples" },
+                { text: "each mark is stamped with the millisecond it happened" },
+                { text: "Set zero and Reset all write their own marks, carrying where the model had drifted to and what the scale was at that instant \u2014 taken BEFORE the reset lands" }
+              ]},
+              { text: "verify", children: [
+                { text: "~4m: release tap_rec, rose \u2014 bench take saved with 25 samples and 4 marks at 367 / 545 / 713 / 879 ms, depth measured \u00d71.47 toward and \u00d70.69 away" }
+              ]},
+              { text: "next", children: [
+                { text: "record what you want and stop \u2014 it sends itself" },
+                { text: "then say the word and I will read the marks against the data" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "208 smooth_move",
+        expanded: false,
         nodes: [
           { text: "208 smooth_move", children: [
             { text: "prompt_restate", children: [
