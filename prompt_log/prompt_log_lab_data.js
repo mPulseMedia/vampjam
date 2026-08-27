@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "168 m4a_upload",
+        id: "169 release_upload",
         expanded: true,
+        nodes: [
+          { text: "169 release_upload", children: [
+            { text: "prompt_restate", children: [
+              { text: "The bucket refused the file: over its 300 MB limit, and it points at the S3 API or Workers for bigger uploads." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "It says \"1 file could not be uploaded because it exceeds the 300 MB limit. Use the [S3 Compatibility API](https://developers.cloudflare.com/r2/api/s3/api/) or [Workers](https://developers.cloudflare.com/r2/api/workers/workers-api-usage/#5-access-your-r2-bucket-from-your-worker) to upload larger files.\"" }
+            ]},
+            { text: "response", children: [
+              { text: "release_upload", children: [
+                { text: "skip both of those — they need credentials and a command line, and our own uploader caps out lower still (100 MB)" },
+                { text: "put it in a GitHub Release instead: 2 GB limit, browser only, and five of your older sessions already stream from there" },
+                { text: "four clicks: new release, type the tag, drag the file, publish" }
+              ]},
+              { text: "alt_shrink", children: [
+                { text: "if you would rather keep it in the bucket, drop the file into your vampjam folder and I can shrink it under 300 MB — costs a little audio quality and an extra upload" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "168 m4a_upload",
+        expanded: false,
         nodes: [
           { text: "168 m4a_upload", children: [
             { text: "prompt_restate", children: [

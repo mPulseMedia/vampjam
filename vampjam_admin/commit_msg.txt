@@ -1,1 +1,1 @@
-auto_commit
+release_upload

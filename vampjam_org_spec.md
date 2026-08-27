@@ -687,7 +687,17 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   sync worker. Caveat flagged: the R2 dashboard tops out around 300 MB per file; over that
   we fall back to a GitHub Release asset (2 GB), which is how the pre-R2 sessions are still
   hosted.
-- NEXT → add entry 169 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 169 release_upload — no page edit) the R2 dashboard refused the file (300 MB cap,
+  as flagged in 168). Routes considered: our own upload worker is out (Workers cap the
+  request body at 100 MB on the free plan), S3 API needs credentials + a CLI, and
+  re-encoding on his Mac (ffmpeg is there — /usr/bin/ffprobe answered in an earlier check)
+  would cost quality AND still need an upload afterwards. Chosen: a GitHub Release asset,
+  2 GB limit, browser-only, and already how five pre-R2 sessions stream today. Steps given:
+  releases/new → tag 2026_08_14_sound_union → drag the file → Publish; the asset then sits
+  at github.com/mPulseMedia/vampjam/releases/download/2026_08_14_sound_union/
+  2026_08_14_sound_union.m4a, which is the url that goes in the session json. Standing
+  move_to_r2 item unchanged — this adds one more release-hosted file to it.
+- NEXT → add entry 170 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
