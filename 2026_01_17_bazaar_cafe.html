@@ -484,6 +484,39 @@
   .play_tag { font-size: 35px !important; }
   .tag_row button.ghost { font-size: 23px; }
   .tag_numbers, .num_strip { height: 20px !important; }
+
+  /* nav_left — ONE top-left control, in the same place on every vampsf page:
+     it is fixed to the viewport corner rather than sitting in the page, so it
+     does not move when the page does. On a session page it says Sessions and
+     pulls the list in, exactly as the swipe does. nav_hide: it disappears
+     while the list is open, because from there it has nowhere to go — the
+     swipe (or the control panel) is what takes you back. */
+  .nav_left {
+    position: fixed; z-index: 60;
+    top: max(12px, calc(env(safe-area-inset-top) + 6px));
+    left: max(12px, calc(env(safe-area-inset-left) + 10px));
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--panel, rgba(255,255,255,0.92));
+    color: var(--fg, #1d1d1f);
+    border: 1px solid var(--panel_3, rgba(0,0,0,0.12));
+    border-radius: 999px; padding: 0 13px 0 12px; margin: 0;
+    min-height: 34px; box-sizing: border-box;
+    font: inherit; font-size: 14px; font-weight: 600; line-height: 1;
+    text-decoration: none; cursor: pointer;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.26);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    transition: opacity 0.22s ease;
+    touch-action: manipulation;
+  }
+  .nav_left:active { transform: scale(0.96); }
+  .nav_left svg { flex: 0 0 auto; width: 15px; height: 15px; }
+  body.drawer_open .nav_left { opacity: 0; pointer-events: none; }
+  /* nav_room — the pill owns the top band outright, so the wordmark starts
+     below it instead of running under it. Without this the big centred
+     wordmark reaches back far enough to sit under the pill on a phone. It goes
+     on the header, not on the wordmark: several pages set the wordmark's own
+     margin with a two-class rule that would win. */
+  .brand, .top_bar { padding-top: max(46px, calc(env(safe-area-inset-top) + 40px)); }
 </style>
 </head>
 <body>
@@ -501,7 +534,7 @@
 </div>
 
 <header class="brand" style="position:relative;">
-  <button id="drawer_toggle" onclick="vampjamDrawer.toggle()" aria-label="Sessions" style="position:absolute;left:0;top:50%;transform:translateY(-50%);color:var(--muted);background:none;border:none;padding:8px 12px 8px 0;margin-left:-4px;cursor:pointer;display:flex;align-items:center;gap:5px;font:inherit;font-size:14px;"><span>Sessions</span><svg class="drawer_caret" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  <button id="drawer_toggle" class="nav_left" onclick="vampjamDrawer.toggle()" aria-label="Sessions"><span>Sessions</span><svg class="drawer_caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
   <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
 </header>
 

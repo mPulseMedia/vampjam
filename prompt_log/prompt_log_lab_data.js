@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "201 depth_flip",
+        id: "202 nav_left",
         expanded: true,
+        nodes: [
+          { text: "202 nav_left", children: [
+            { text: "prompt_restate", children: [
+              { text: "Put the top-left link on all vampjam pages in a consistent position." },
+              { text: "On the control panel it should say Sessions." },
+              { text: "Pressing it does the same as swiping." },
+              { text: "Once the list is showing, no control in the top left \u2014 it is only for part of the time." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Back on all the vamp Jam pages I wanna put that link that is in the upper left corner, which takes you for example to the sessions and return to you from Admin and I want to have that be positioned in a consistent manner and when viewing the control panel I want to see the word that says session and then if I press it or if I swipe in, it has the same effect, I see no controls in the top left where that used to say sessions cause it\u2019s only that part of the time where it displayed," }
+            ]},
+            { text: "response", children: [
+              { text: "nav_left", children: [
+                { text: "one pill, pinned to the same corner on all 13 pages \u2014 measured identical at x12 y12, 34px tall" },
+                { text: "it replaces four different treatments that had drifted apart" },
+                { text: "on a session page it says Sessions; on admin it says Sessions; on the R2 page it says Admin" }
+              ]},
+              { text: "nav_hide", children: [
+                { text: "pressing it does exactly what the swipe does" },
+                { text: "the moment the list is open the control goes away, and closing brings it back" }
+              ]},
+              { text: "nav_room", children: [
+                { text: "the headers start below the pill now \u2014 the big wordmark was running under it on four of five pages" }
+              ]},
+              { text: "not_touched", children: [
+                { text: "the lab page keeps its own arrangement \u2014 its top-left corner is the release stamp" }
+              ]},
+              { text: "verify", children: [
+                { text: "~3m: geometry identical across 7 pages; press and swipe both open and both hide the pill; all 15 pages load with no errors" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "201 depth_flip",
+        expanded: false,
         nodes: [
           { text: "201 depth_flip", children: [
             { text: "prompt_restate", children: [

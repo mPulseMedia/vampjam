@@ -1139,7 +1139,30 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   and ×1.48 (was ×0.69) ✓; slide right +315px, slide up -181px, swirl +30 → +30° all unmoved ✓;
   after a move toward the eye the diagram still reads Z+2.0 while the paper reads ×0.7 ✓;
   the whole suite (195-201) re-run and passing; no page errors.
-- NEXT → add entry 202 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 202 nav_left — 13 pages) one top-left control, in the same place everywhere.
+  nav_left: a shared .nav_left pill, position:fixed at top max(12px, safe+6) / left
+  max(12px, safe+10), 34px tall, panel background with the page's own theme vars and literal
+  fallbacks so it reads correctly on the light lab-style pages and the dark session pages
+  alike. It replaces four different treatments: the in-flow '‹ back to sessions' / '‹ back to
+  admin' anchors on admin and r2_setup, the absolutely-positioned Back button inside
+  record's top_bar, and the inline-styled Sessions caret that sat inside the brand header on
+  session.html, favorites.html and the eight static session pages. Measured identical on all
+  seven checked pages: x12 y12 h34. nav_hide: on a session page the control says Sessions and
+  calls vampjamDrawer.toggle(), so pressing it does exactly what the swipe does — and
+  `body.drawer_open .nav_left { opacity: 0; pointer-events: none }` takes it away while the
+  list is open, because from there it has nowhere to go; closing brings it back. The
+  drawer_open body class already existed as a styling hook, so no drawer JS changed.
+  nav_room: `.brand, .top_bar { padding-top: max(46px, safe+40) }` gives the pill its own
+  band — the big centred wordmark's ink reached back under it on four of five pages
+  (session/favorites overlapped by 38px). The room goes on the HEADER, not on .wordmark: most
+  of these pages set `.brand .wordmark { margin: 0 }`, a two-class rule that beats a
+  one-class one — the same specificity trap as btn_gray. record's Back is now Sessions and
+  keeps its own mid-recording confirm. lab.html is deliberately untouched: its top-left corner
+  is the release stamp, and its back button stays below it. Playwright: pill geometry
+  identical across 7 pages ✓; press opens the drawer and drops the pill to opacity 0 /
+  pointer-events none, closing restores it, and the swipe route does the same ✓; wordmark ink
+  clear of the pill on every page ✓; all 15 pages loaded with zero page errors ✓.
+- NEXT → add entry 203 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
