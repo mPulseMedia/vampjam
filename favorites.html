@@ -163,8 +163,14 @@
 
   /* one_size: a single text size for the whole app — only the vampSF wordmark
      (and glyph buttons whose icons scale with font-size) keep their own */
-  body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(svg):not(.fav_play_sm) { font-size: 17px !important; }
-  .fav_play_sm { font-size: 26px !important; }   /* tri_big: bigger row triangles */
+  body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(svg):not(.fav_play_sm):not(.ghost) { font-size: 17px !important; }
+  button.ghost { font-size: 17px; }
+  /* icon_big: favourites rows match the session rows — triangle 26 -> 35,
+     heart / share / x 17 -> 23 */
+  .fav_play_sm { font-size: 35px !important; }
+  .fav_row button.ghost { font-size: 23px; }
+  /* row_rule: hairline between favourite rows */
+  .fav_row + .fav_row { border-top: 1px solid var(--panel_3); }
   .tag_numbers, .num_strip { height: 20px !important; }
 </style>
 </head>

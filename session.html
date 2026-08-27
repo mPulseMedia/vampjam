@@ -278,7 +278,7 @@
   .tag_row .tag_end:hover { background: rgba(232,199,148,0.15); }
   .tag_row button.play_tag {
     background: transparent; color: var(--accent);
-    padding: 6px 8px 6px 2px; margin-left: 0; min-height: 40px; font-size: 22px;
+    padding: 6px 8px 6px 2px; margin-left: 0; min-height: 40px; font-size: 22px; line-height: 0;
     border-radius: 7px; flex: 0 0 auto;
   }
   .tag_row button.play_tag:hover,
@@ -294,6 +294,11 @@
      other play button; tapping it still starts playback. */
   .tag_row:hover { background: var(--row_active); }
   .tag_row.active { background: var(--row_active); }
+  /* row_rule: a hairline between highlight rows. The adjacent-sibling
+     selector does the thinking: where the blue play line (or a drag
+     indicator) sits between two rows, the rows are no longer adjacent,
+     so no line is drawn there. */
+  .tag_row + .tag_row { border-top: 1px solid var(--panel_3); }
   .tag_row.active button.ghost { background: transparent; }
   .tag_row button.ghost { padding: 5px 7px; min-height: 32px; font-size: 18px; border-radius: 7px; background: transparent; color: var(--muted); }
   .tag_row button.ghost:hover { background: transparent; color: var(--fg); }
@@ -466,8 +471,13 @@
 
   /* one_size: a single text size for the whole app — only the vampSF wordmark
      (and glyph buttons whose icons scale with font-size) keep their own */
-  body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(svg):not(.play_tag) { font-size: 17px !important; }
-  .play_tag { font-size: 26px !important; }   /* tri_big: bigger row triangles */
+  body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(svg):not(.play_tag):not(.ghost) { font-size: 17px !important; }
+  button.ghost { font-size: 17px; }   /* the app size stays the default for ghosts */
+  /* icon_big: every icon in a highlight row up 33% — triangle 26 -> 35,
+     heart / share / x / nudge chevrons 17 -> 23 (they need !important to
+     clear the one_size rule above, which does not exclude them) */
+  .play_tag { font-size: 35px !important; }
+  .tag_row button.ghost { font-size: 23px; }
   .tag_numbers, .num_strip { height: 20px !important; }
 </style>
 </head>

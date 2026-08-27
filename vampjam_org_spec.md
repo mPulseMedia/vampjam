@@ -746,7 +746,22 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   touch-action: none and .tag_list's pan-y both outrank it and are unchanged. Playwright:
   html/body/button all report manipulation on every page, .tag_list still pan-y, drag rule
   intact, 171/172 regressions clean.
-- NEXT → add entry 174 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 174 icon_big — 10 pages) every icon in a highlight row up 33%: the play triangle
+  26 → 35, and the heart / share / x / nudge chevrons 17 → 23. The ghosts needed the
+  one_size rule to let go — its selector scores (0,6,1), so no !important on a plain class
+  could beat it; :not(.ghost) added to the exclusion list and a plain
+  `button.ghost { font-size: 17px }` keeps every ghost elsewhere at the app size, with
+  .tag_row/.fav_row ghosts at 23. The triangle also got line-height: 0 (as favorites
+  already had): at 35px the inherited 1.45 line box was adding ~16px to every row.
+  Favorites rows match. Playwright: triangle svg 35x35, heart 23x23, rows 61px (were 54,
+  would have been 78 without the line-height fix).
+- (log 175 row_rule — shipped inside the 174 commit) a hairline between highlight rows:
+  `.tag_row + .tag_row { border-top: 1px solid var(--panel_3); }` (and .fav_row on
+  favorites). The adjacent-sibling combinator IS the rule he asked for — where the blue
+  playhead line (or the drag indicator) sits between two rows they are no longer siblings
+  in sequence, so no line is drawn there, no JS involved. Playwright: borders 0,0,1,1,1,1
+  with the playhead after row 1, and the row right after the line reports 0px ✓.
+- NEXT → add entry 176 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

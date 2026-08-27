@@ -9,8 +9,55 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "173 tap_zoom",
+        id: "175 row_rule",
         expanded: true,
+        nodes: [
+          { text: "175 row_rule", children: [
+            { text: "prompt_restate", children: [
+              { text: "Draw a thin line between highlight rows, except where the blue play line already sits between them." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "draw a thin line between the highlight rows. but not where there is the blue \"play line\" between" }
+            ]},
+            { text: "response", children: [
+              { text: "row_rule", children: [
+                { text: "hairline between every pair of rows, on session pages and favourites" },
+                { text: "where the blue play line sits, no hairline — the rule only draws between rows that are directly next to each other, so the play line takes its place automatically" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: scroll the highlights — thin lines everywhere except at the blue one" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "174 icon_big",
+        expanded: false,
+        nodes: [
+          { text: "174 icon_big", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make all the icons in a highlight row 33% bigger." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make the highlight row icons all 33% bigger" }
+            ]},
+            { text: "response", children: [
+              { text: "icon_big", children: [
+                { text: "play triangle, heart, share, x and the nudge arrows are all a third bigger" },
+                { text: "favourites rows match" },
+                { text: "rows grew by 7px, not 24 — the triangle no longer drags a text line box around with it" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: open a session — bigger, easier targets in every row" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "173 tap_zoom",
+        expanded: false,
         nodes: [
           { text: "173 tap_zoom", children: [
             { text: "prompt_restate", children: [
