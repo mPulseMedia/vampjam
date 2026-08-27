@@ -1,1 +1,1 @@
-axis_flip
+auto_commit
