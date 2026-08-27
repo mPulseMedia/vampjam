@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "222 mark_line",
+        id: "223 z_calm",
         expanded: true,
+        nodes: [
+          { text: "223 z_calm", children: [
+            { text: "prompt_restate", children: [
+              { text: "The diagram\u2019s phone turns the right way but the swirl arrow points the wrong way \u2014 reverse it." },
+              { text: "Same for the tilt: the rectangle is right, the arrow is not." },
+              { text: "The Z axis is the most erratic of all the dimensions \u2014 tune it, or prepare me for another trace to rate." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "The little 3-D diagram shows the phone screen rotating the correct way when I turn a clockwise counterclockwise, but the arrow that is displayed is going in the wrong direction so reverse the arrow I believe also for the tilt when I tilt the top toward me in the bottom away or I tilt the top away from me and the bottom toward me the phone is doing the right thing that that rectangle surface is doing the right thing, but the arrow is pointing in the wrong direction, so please flip that as well. Also noticed that the Z Axis seems to be the most inaccurate in the last couple of tracks it\u2019s it\u2019s more erratic than all of the other dimensions so see if you can tune that or prepare me for another tracing where I will rate it, and you can tune it more." }
+            ]},
+            { text: "arc_flip", children: [
+              { text: "the tilt and swirl arrows now sweep the other way" },
+              { text: "the phone itself is untouched \u2014 only the arrows moved, which is what you asked for" },
+              { text: "the turn arrow was already right, so I left it" }
+            ]},
+            { text: "z_calm", children: [
+              { text: "you are right about near/far, and there is a real reason for it" },
+              { text: "gravity points almost straight through the screen at any comfortable angle, and the phone\u2019s gravity-free reading is an estimate whose error is worst exactly along gravity \u2014 so z gets noise the other two never see" },
+              { text: "it now has its own, larger noise floor" },
+              { text: "and the zoom was multiplying whatever got through: a centimetre of z error moved the whole picture\u2019s scale where a centimetre of sideways error moved it one screen-width" },
+              { text: "the zoom is a third less twitchy per centimetre now and still reaches the top of its range" },
+              { text: "what does get through arrives as a glide rather than a flicker" }
+            ]},
+            { text: "next_trace", children: [
+              { text: "for the next pass, a minute of near/far only would let me tune it against your grading instead of my judgement" },
+              { text: "reset, push toward, hold a second, pull back, hold a second" },
+              { text: "double-tap reset whenever it goes wrong \u2014 I read that as the bad grade now" }
+            ]},
+            { text: "verify", children: [
+              { text: "~4m: release z_calm, navy \u2014 arrow endpoints mirrored while the plate reads the same angle; the same four pushes now give a much gentler scale ramp; six seconds of wobble moves nothing" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "222 mark_line",
+        expanded: false,
         nodes: [
           { text: "222 mark_line", children: [
             { text: "prompt_restate", children: [

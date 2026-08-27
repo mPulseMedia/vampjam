@@ -1617,7 +1617,30 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   its `bad` mark, since red is both ✓; the canvas read back column by column shows one green
   rule, one lone red, and a tight cluster of thick reds ✓; whole lab suite re-run and green;
   no page errors.
-- NEXT → add entry 223 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 223 z_calm — lab.html, release z_calm / navy) arc_flip: the plate turns the right way but
+  two of the three arrows did not. An arc is swept from 0 to its angle and the head sits at the
+  end of the sweep, so negating the angle sweeps the other way and turns the arrow round. Tilt
+  and swirl are negated for the ARC only — the plate still reads flipped.pitch untouched, which
+  the test asserts (beta +35 still reports tilt top +35 while the red arc's endpoint mirrors).
+  The turn arrow was already right and is left alone.
+  z_calm: he noticed near/far is the most erratic axis and he is right. Three causes, one fix
+  each. (1) Gravity points mostly along the screen's normal at any comfortable holding angle,
+  and the phone's gravity-free acceleration is an ESTIMATE whose error is largest exactly along
+  gravity — so z carries leakage x and y never see. It gets its own larger deadband, DEAD_Z 0.20
+  against 0.12. (2) The depth mapping amplified whatever survived: at Z_POWER 6.6 a centimetre
+  of z error moved the whole picture's scale, where a centimetre of x error moved it one
+  screen-width. 6.6 → 4.6 — a third less twitchy per centimetre, still reaching ×16.6 at 16 cm
+  and the ×39 ceiling beyond, with ×1.75 / ×3.30 / ×6.90 at 4 / 8 / 12 cm where it used to be
+  ×2.2 / ×5.5 / ×17. (3) The display spring is softened for z alone (SM_W_Z 6 against 11), so
+  what does get through arrives as a glide rather than a flicker. Measured, the same four pushes
+  now read ×1.12 / ×1.22 / ×1.35 / ×1.52 where they were far steeper, and six seconds of
+  0.17 m/s^2 wobble moves neither x nor z at all.
+  next_trace: everything needed to tune this further is already on the judgement track — dwell
+  marks, reset runs with their severity, and the marks drawn on the charts. A run of about a
+  minute doing only near/far — reset, push toward, hold a second, pull back, hold a second,
+  double-tap reset whenever it goes wrong — would let the next pass be measured against his
+  grading rather than guessed. Whole lab suite re-run and green; no page errors.
+- NEXT → add entry 224 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

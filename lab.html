@@ -394,7 +394,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'mark_line', bg: '#a21caf', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'z_calm', bg: '#1e3a8a', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -531,7 +531,7 @@
   // scale_blow — the depth response is three times what it was: the exponent
   // went 2.2 -> 6.6, and the ceiling and floor opened up to match, so a hand's
   // width of toward-and-away covers the whole range instead of a slice of it.
-  var Z_POWER    = 6.6;
+  var Z_POWER    = 4.6;
   // paper_floor — the paper is a fixed 400% that SHRINKS with the zoom, so the
   // bottom of the range is set by coverage now: 0.45 still leaves 180% of the
   // window covered when it is leaning. It is also the cheapest end to paint —
@@ -540,6 +540,18 @@
   // cares about.
   var MULT_MIN   = 0.45, MULT_MAX = 39;
   var DEAD       = 0.12;     // m/s^2 ignored: the noise floor at rest (from his takes)
+  // z_calm — near/far is the worst axis and he is right that it is. Three
+  // reasons, and one fix each. (1) Gravity points mostly along the screen's
+  // normal at any comfortable holding angle, and the phone's gravity-free
+  // acceleration is an ESTIMATE — its error is largest exactly along gravity,
+  // so z carries more leakage than x or y ever do. It gets its own, larger
+  // deadband. (2) The depth mapping amplifies whatever survives: at Z_POWER 6.6
+  // a centimetre of z error moved the whole picture's scale, where a centimetre
+  // of x error moved it one screen-width. The exponent comes down to 4.6, which
+  // still reaches x39 but is a third less twitchy per centimetre. (3) The
+  // display spring is softened for z alone, so what does get through arrives as
+  // a glide rather than a flicker.
+  var DEAD_Z     = 0.20;     // m/s^2: near/far's own, larger noise floor
   // hold_still: a move ends where it ends. There is no position leak any more —
   // the world used to ease back to centre after every gesture, which read as
   // 'resets instead of holding'. Now the run is integrated while the phone is
@@ -653,7 +665,8 @@
   // overshoot left and settles instead of stopping dead. It always converges
   // exactly on the model, so nothing is lost: the same gesture ends in the same
   // place, it just gets there with its ends dimmed and its middle driven.
-  var SM_W  = 11;                   // rad/s: spring stiffness (~0.09s to catch up)
+  var SM_W   = 11;                  // rad/s: spring stiffness (~0.09s to catch up)
+  var SM_W_Z = 6;                   // z_calm: near/far follows more softly
   var show  = { x: 0, y: 0, z: 0 }; // what is drawn
   var showV = { x: 0, y: 0, z: 0 };
   // settle_lock: stopping a slide is itself a shove the other way. Once a move
@@ -867,10 +880,15 @@
                (a2[0] + dy * 2.6).toFixed(1) + ',' + (a2[1] - dx * 2.6).toFixed(1) +
              '" fill="' + colour + '" stroke="none"/>';
     }
+    // arc_flip — the plate turns the right way but two of the arrows did not.
+    // The arc is swept from 0 to the angle, so its arrowhead sits at the end of
+    // the sweep; negating the angle sweeps the other way and turns the arrow
+    // round. Tilt and swirl are negated here; the turn arrow was already right.
+    // This is the ARROW only — the plate reads flipped.pitch untouched.
     document.getElementById('pose_spin').innerHTML =
-      arc(ay, az, flipped.pitch,             '#dc2626') +   // tilt,  about X
-      arc(az, ax, flipped.roll,              '#16a34a') +   // turn,  about Y
-      arc(ax, ay, SWIRL_INV * screen_roll(), '#2563eb');    // swirl, about Z
+      arc(ay, az, -flipped.pitch,             '#dc2626') +   // tilt,  about X
+      arc(az, ax,  flipped.roll,              '#16a34a') +   // turn,  about Y
+      arc(ax, ay, -SWIRL_INV * screen_roll(), '#2563eb');    // swirl, about Z
 
     // plate_move — the phone carries its travel now; the axes hold still. Each
     // axis is clamped on its own so a big move on one never drags the picture off.
@@ -1055,7 +1073,8 @@
       var slowing = false;
       ['x', 'y', 'z'].forEach(function (k) {
         var a = az[k];
-        a = Math.abs(a) < DEAD ? 0 : (a - (a > 0 ? DEAD : -DEAD));
+        var dz = (k === 'z') ? DEAD_Z : DEAD;
+        a = Math.abs(a) < dz ? 0 : (a - (a > 0 ? dz : -dz));
         a *= rotVeto;
         // shake_test: is this axis going anywhere, or just vibrating?
         var w = Math.min(1, dt / TREM_TAU);
@@ -1123,7 +1142,8 @@
     var sdt = Math.min(0.05, dt);
     ['x', 'y', 'z'].forEach(function (k) {
       var target = pos[k] + lead[k];
-      showV[k] += (SM_W * SM_W * (target - show[k]) - 2 * SM_W * showV[k]) * sdt;
+      var wk = (k === 'z') ? SM_W_Z : SM_W;
+      showV[k] += (wk * wk * (target - show[k]) - 2 * wk * showV[k]) * sdt;
       show[k]  += showV[k] * sdt;
     });
   }
