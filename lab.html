@@ -125,6 +125,42 @@
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     pointer-events: none;
   }
+
+  /* gesture_lab — hold the button, do the move, let go. Everything the phone's
+     sensors say during the hold is kept, tagged with the name you typed, so
+     the two of us can look at real numbers instead of guessing. */
+  .gest_bar {
+    position: fixed; z-index: 7; left: 50%; transform: translateX(-50%);
+    bottom: max(20px, calc(env(safe-area-inset-bottom) + 10px));
+    width: min(340px, calc(100vw - 60px));
+    background: rgba(255,255,255,0.92); border-radius: 18px; padding: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.28);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    display: flex; flex-direction: column; gap: 8px;
+    touch-action: manipulation;
+  }
+  #g_name {
+    width: 100%; border: 1px solid rgba(0,0,0,0.14); border-radius: 10px;
+    padding: 9px 11px; font: inherit; font-size: 15px; color: #1d1d1f;
+    background: #ffffff; outline: none;
+  }
+  #g_name:focus { border-color: #1350c4; }
+  .g_rec {
+    width: 100%; border: none; border-radius: 12px; padding: 14px;
+    font: inherit; font-size: 16px; font-weight: 700; cursor: pointer;
+    background: #d7263d; color: #ffffff; touch-action: none;
+    box-shadow: 0 3px 10px rgba(215,38,61,0.35);
+  }
+  .g_rec.recording { background: #1d1d1f; animation: g_pulse 1s ease-in-out infinite; }
+  @keyframes g_pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.72; } }
+  .g_status { font-size: 12px; color: rgba(0,0,0,0.55); text-align: center; min-height: 15px; }
+  .g_row { display: flex; align-items: center; gap: 8px; }
+  .g_small {
+    flex: 1 1 auto; border: none; border-radius: 9px; padding: 8px;
+    font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+    background: rgba(0,0,0,0.06); color: #1d1d1f; touch-action: manipulation;
+  }
+  .g_count { flex: 0 0 auto; font-size: 12px; color: rgba(0,0,0,0.45); min-width: 46px; text-align: right; }
 </style>
 </head>
 <body>
@@ -141,6 +177,18 @@
 <div class="dots" id="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
 <button class="back_btn" id="back_btn">&#8249; Admin</button>
 <div class="hint" id="hint">swipe up / down</div>
+
+<div class="gest_bar" id="gest_bar">
+  <input id="g_name" type="text" autocomplete="off" autocapitalize="none" spellcheck="false"
+         placeholder="name the pair — raise / lower">
+  <button id="g_rec" class="g_rec">Hold to record</button>
+  <div class="g_status" id="g_status">hold the button, do the gesture, let go</div>
+  <div class="g_row">
+    <button id="g_copy" class="g_small">Copy last take</button>
+    <button id="g_send" class="g_small">Send takes</button>
+    <span class="g_count" id="g_count"></span>
+  </div>
+</div>
 <button class="motion_btn" id="motion_btn">Steady the dot</button>
 <div class="readout" id="readout" hidden></div>
 
@@ -203,7 +251,7 @@
   }
 
   window.addEventListener('touchstart', function (e) {
-    if (e.target.closest && e.target.closest('.back_btn')) return;
+    if (e.target.closest && e.target.closest('.back_btn, .motion_btn, .gest_bar')) return;
     if (e.touches.length === 1) start(e.touches[0].clientY);
   }, { passive: true });
   window.addEventListener('touchmove', function (e) {
@@ -215,7 +263,7 @@
   // mouse + keyboard, so the same thing works on a laptop
   var mouseDown = false;
   window.addEventListener('mousedown', function (e) {
-    if (e.target.closest && e.target.closest('.back_btn')) return;
+    if (e.target.closest && e.target.closest('.back_btn, .motion_btn, .gest_bar')) return;
     mouseDown = true; start(e.clientY);
   });
   window.addEventListener('mousemove', function (e) { if (mouseDown) move(e.clientY); });
@@ -346,11 +394,164 @@
     }).catch(function () { motionBtn.textContent = 'Motion blocked'; });
   });
 
+  // ---- gesture_lab: hold to record every sensor the phone will give ----
+  // A take is { name, ts, ms, samples: [...] }. Each sample carries whatever
+  // arrived at that instant: orientation (alpha/beta/gamma), acceleration with
+  // and without gravity, and rotation rate. Angles are also stored relative to
+  // the pose at the START of the hold, since that is the frame he cares about.
+  var GEST_KEY = 'vampjam_gestures';
+  var SYNC_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
+  var REPO_RAW = 'https://raw.githubusercontent.com/mPulseMedia/vampjam/main/';
+  var API_URL  = 'https://api.github.com/repos/mPulseMedia/vampjam/contents/lab_gestures.json?ref=main';
+
+  var gName = document.getElementById('g_name');
+  var gRec  = document.getElementById('g_rec');
+  var gStat = document.getElementById('g_status');
+  var gCopy = document.getElementById('g_copy');
+  var gSend = document.getElementById('g_send');
+  var gCount= document.getElementById('g_count');
+
+  var recording = false, take = null, gRef = null;
+  var live = { ori: null, acc: null, accG: null, rot: null };
+
+  function gest_get() {
+    try { var a = JSON.parse(localStorage.getItem(GEST_KEY) || '[]'); return Array.isArray(a) ? a : []; }
+    catch (e) { return []; }
+  }
+  function gest_put(list) {
+    try { localStorage.setItem(GEST_KEY, JSON.stringify(list.slice(-40))); } catch (e) {}
+    if (gCount) gCount.textContent = list.length + ' take' + (list.length === 1 ? '' : 's');
+  }
+  gest_put(gest_get());
+
+  function grab_orientation(e) {
+    // browsers fire one empty event when you subscribe — it must not become
+    // the reference pose, or every angle afterwards is measured from zero
+    if (e.alpha == null && e.beta == null && e.gamma == null) return;
+    live.ori = [r3(e.alpha), r3(e.beta), r3(e.gamma)];
+    if (recording && !gRef) gRef = { a: e.alpha || 0, b: e.beta || 0, g: e.gamma || 0 };
+  }
+  function grab_motion(e) {
+    var a = e.acceleration || {}, ag = e.accelerationIncludingGravity || {}, rr = e.rotationRate || {};
+    if (a.x == null && ag.x == null && rr.alpha == null) return;   // empty priming event
+    live.acc  = [r3(a.x), r3(a.y), r3(a.z)];
+    live.accG = [r3(ag.x), r3(ag.y), r3(ag.z)];
+    live.rot  = [r3(rr.alpha), r3(rr.beta), r3(rr.gamma)];
+    if (recording) push_sample(e.interval || null);
+  }
+  function r3(v) { return (v == null) ? null : Math.round(v * 1000) / 1000; }
+  function push_sample(interval) {
+    if (!take) return;
+    var t = Date.now() - take.ts;
+    var o = live.ori || [null, null, null];
+    var rel = gRef && live.ori
+      ? [r3(ang(o[0] - gRef.a)), r3(o[1] - gRef.b), r3(o[2] - gRef.g)]
+      : [null, null, null];
+    take.samples.push({ t: t, ori: o, rel: rel, acc: live.acc, accG: live.accG, rot: live.rot, iv: interval });
+  }
+  function ang(d) { while (d > 180) d -= 360; while (d < -180) d += 360; return d; }
+
+  function sensors_live(after) {
+    var needO = (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function');
+    var needM = (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function');
+    function wire() {
+      window.addEventListener('deviceorientation', grab_orientation);
+      window.addEventListener('devicemotion', grab_motion);
+      after(true);
+    }
+    if (!needO && !needM) { wire(); return; }
+    var asks = [];
+    if (needO) asks.push(DeviceOrientationEvent.requestPermission());
+    if (needM) asks.push(DeviceMotionEvent.requestPermission());
+    Promise.all(asks).then(function (res) {
+      if (res.every(function (r) { return r === 'granted'; })) wire();
+      else after(false);
+    }).catch(function () { after(false); });
+  }
+
+  function rec_start() {
+    if (recording) return;
+    sensors_live(function (ok) {
+      if (!ok) { gStat.textContent = 'motion permission was refused'; return; }
+      recording = true; gRef = null;
+      take = { name: (gName.value || 'unnamed').trim(), ts: Date.now(), ms: 0, samples: [] };
+      gRec.classList.add('recording');
+      gRec.textContent = 'recording…';
+      gStat.textContent = 'do the move, then let go';
+    });
+  }
+  function rec_stop() {
+    if (!recording) return;
+    recording = false;
+    gRec.classList.remove('recording');
+    gRec.textContent = 'Hold to record';
+    if (!take) return;
+    take.ms = Date.now() - take.ts;
+    var list = gest_get();
+    list.push(take);
+    gest_put(list);
+    gStat.textContent = '"' + take.name + '" · ' + take.samples.length + ' samples · ' + (take.ms / 1000).toFixed(1) + 's';
+    if (!take.samples.length) gStat.textContent += ' — no sensor data came through';
+    send_takes(true);
+    take = null;
+  }
+
+  // hold semantics on touch AND mouse; pointer events would double-fire on iOS
+  gRec.addEventListener('touchstart', function (e) { e.preventDefault(); rec_start(); }, { passive: false });
+  gRec.addEventListener('touchend',   function (e) { e.preventDefault(); rec_stop(); },  { passive: false });
+  gRec.addEventListener('touchcancel', rec_stop);
+  gRec.addEventListener('mousedown', function (e) { e.preventDefault(); rec_start(); });
+  window.addEventListener('mouseup', function () { if (recording) rec_stop(); });
+
+  gCopy.addEventListener('click', function () {
+    var list = gest_get();
+    if (!list.length) { gStat.textContent = 'nothing recorded yet'; return; }
+    var txt = JSON.stringify(list[list.length - 1]);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function () { gStat.textContent = 'last take copied'; },
+                                              function () { gStat.textContent = 'copy failed'; });
+    } else { gStat.textContent = 'copy not available here'; }
+  });
+
+  // send_takes — park them in the repo (lab_gestures.json) so they can be read
+  // from the other side without any copy and paste
+  var sending = false;
+  function send_takes(quiet) {
+    var list = gest_get();
+    if (!list.length || sending) return;
+    sending = true;
+    if (!quiet) gStat.textContent = 'sending…';
+    fetch(API_URL + '&t=' + Date.now(), { headers: { Accept: 'application/vnd.github.raw+json' }, cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .catch(function () { return []; })
+      .then(function (have) {
+        if (!Array.isArray(have)) have = [];
+        var seen = {};
+        have.forEach(function (t) { if (t && t.ts) seen[t.ts] = true; });
+        var add = list.filter(function (t) { return !seen[t.ts]; });
+        if (!add.length) { sending = false; gStat.textContent = 'already sent'; return; }
+        var out = have.concat(add).slice(-60);
+        return fetch(SYNC_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: 'lab_gestures.json', content: JSON.stringify(out, null, 1),
+                                 message: 'gesture ' + (add[add.length - 1].name || 'take') })
+        }).then(function (r) {
+          sending = false;
+          gStat.textContent = r.ok ? ('sent ' + add.length + ' take' + (add.length === 1 ? '' : 's') + ' ✓')
+                                   : 'send failed — takes are safe on this phone';
+        });
+      })
+      .catch(function () { sending = false; gStat.textContent = 'send failed — takes are safe on this phone'; });
+  }
+  gSend.addEventListener('click', function () { send_takes(false); });
+
   // test hook
   window.__lab = {
     go: go,
     at: function () { return idx; },
     steady: function () { start_steady(); },
+    rec: function (on) { on ? rec_start() : rec_stop(); },
+    takes: function () { return gest_get(); },
     feed: function (beta, gamma) {
       on_orientation({ beta: beta, gamma: gamma });
       return { sx: getComputedStyle(document.documentElement).getPropertyValue('--sx'),

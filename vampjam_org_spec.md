@@ -813,7 +813,24 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   reference); it says 'Motion blocked' or 'No sensors here' when it cannot. Playwright:
   all three dots centred (0,0) at 22px; fed tilts give sy +70/-70 for beta ±10 and sx
   -84/+84 for gamma ±12, readout tracking ✓.
-- NEXT → add entry 180 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 180 gesture_lab — lab.html) a capture rig, so the stabiliser can be tuned on real
+  numbers instead of guesses. A bar along the bottom of the lab page: a name field (the
+  pair, e.g. 'raise / lower'), a hold-to-record button, a status line, Copy last take and
+  Send takes. While held, every deviceorientation and devicemotion event is stored as a
+  sample: { t, ori[alpha,beta,gamma], rel[Δ from the pose at the START of the hold, alpha
+  wrapped to ±180], acc[x,y,z], accG[x,y,z], rot[alpha,beta,gamma], iv }. Takes live in
+  localStorage (vampjam_gestures, last 40) AND are pushed to the repo automatically on
+  release: read lab_gestures.json fresh off the GitHub API, drop takes whose ts is already
+  there, append, write through the sync worker (root .json — inside the worker's PATH_RE),
+  keeping the last 60. So a take he records reaches this side with no copy-paste; Copy last
+  take is the fallback when he is offline. iOS permission is requested inside the press.
+  Two traps handled: browsers fire ONE empty deviceorientation/devicemotion event when you
+  subscribe — it must not become the reference pose (it was making every angle read from
+  zero) or a dead sample; and the bar is excluded from the page-drag handlers (with
+  .back_btn and .motion_btn) so recording never flips a card. Playwright: 30 synthetic
+  samples captured under the typed name, rel starting at 0/0/0, status 'sent 1 take ✓',
+  POST body path lab_gestures.json, and a 96px drag on the bar leaves the page index at 0 ✓.
+- NEXT → add entry 181 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

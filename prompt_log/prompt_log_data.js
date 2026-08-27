@@ -9,8 +9,37 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "179 dot_steady",
+        id: "180 gesture_lab",
         expanded: true,
+        nodes: [
+          { text: "180 gesture_lab", children: [
+            { text: "prompt_restate", children: [
+              { text: "A button that records every gyro and orientation reading for as long as it is held down." },
+              { text: "A field to name the pair of actions \u2014 raise / lower, go left / go right \u2014 so a phrase like \u2018when I raise it\u2019 means something concrete." },
+              { text: "He will hold the button, do a go-and-return, and hand over real data." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "We gotta work on that so I\u2019m gonna ask you to make a button and when I hold down that button, I want you to record every bit of Latin long and every other Gyro that you can record and what I\u2019m gonna do is tell you the gesture that I did the two gestures good to go in the return so that we can use a phrase like when I raise it that means the go part of this pattern so I think we gotta get real data so I\u2019ll press down that button and then I\u2019ll do a go and return Action and give me a place where I can type in a name for what those two actions are like raise lower go left go right etc." }
+            ]},
+            { text: "response", children: [
+              { text: "gesture_lab", children: [
+                { text: "recorder bar at the bottom of the lab page: type the name, hold the red button, do the go-and-return, let go" },
+                { text: "it keeps every reading the phone emits while you hold \u2014 tilt angles, both accelerations, rotation rate \u2014 plus the same angles measured from the pose you started the hold in" },
+                { text: "each take is saved on the phone and sent to me automatically; nothing to copy or paste" },
+                { text: "recording on that bar never flips a card" }
+              ]},
+              { text: "do_this", children: [
+                { text: "name it raise / lower, hold, raise the phone and bring it back, let go" },
+                { text: "do the same for go left / go right, maybe two or three takes each" },
+                { text: "then tell me they are in \u2014 I will read the numbers and rebuild the stabiliser around what your hand actually does" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "179 dot_steady",
+        expanded: false,
         nodes: [
           { text: "179 dot_steady", children: [
             { text: "prompt_restate", children: [
