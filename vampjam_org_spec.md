@@ -887,7 +887,16 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   world_view model. Shipped as build 2 (teal), deliberately not red, so this build differs
   from what he was looking at. Playwright: all three cells rgb(15,118,110), one ink colour,
   one paper opacity, tag reads 'build 2 · teal' ✓.
-- NEXT → add entry 185 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 185 depth_wide — lab.html, build 3 indigo) flip_axes: both pan signs inverted — the
+  world now travels WITH the phone (slide right, world right; slide up, world up), his
+  call after feeling the counter-motion. depth_wide: the magnifier law alone only spans
+  about 3x within arm's reach, so the ratio is raised to a power — multiple =
+  (D0/D)^2.2, clamped 0.25x…13x. That lands the two ends he described: brought right in
+  (10 cm) the screen holds about 2 ruled lines; pushed out (70 cm) it packs about 100. The
+  readout now names it directly — '10 cm ×13.00 2 lines' — so the range is calibratable by
+  eye. Playwright: slide right → +252px (was -252), slide up → -252px; z bursts give ×1.40
+  at 30cm / 18 lines, ×13 at 10cm / 2 lines, ×0.25 at 70cm / 100 lines ✓.
+- NEXT → add entry 186 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "184 lab_build",
+        id: "185 depth_wide",
         expanded: true,
+        nodes: [
+          { text: "185 depth_wide", children: [
+            { text: "prompt_restate", children: [
+              { text: "Invert up/down and right/left." },
+              { text: "Multiply the near/far effect much more \u2014 a wide range, from lines packed tight to about two lines filling the viewport when it is close." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "So I\u2019d like you to invert your up and down and your right left and I\u2019d like you to multiply the scale of the away and closer more cause I want a wide range of moving the phone to go deeper or shower maybe not but I definitely wanted to go too much where the lines are way closer and then where the lines are maybe two per page 22 lines you see in the viewport that\u2019s so close" }
+            ]},
+            { text: "response", children: [
+              { text: "flip_axes", children: [
+                { text: "both directions flipped \u2014 the world now travels with the phone: slide right and it goes right, lift it and it goes up" }
+              ]},
+              { text: "depth_wide", children: [
+                { text: "the near/far effect is much stronger: bring the phone right in and you are down to about two lines on the whole screen; push it out to arm\u2019s length and the lines pack to about a hundred" },
+                { text: "the readout says it plainly now \u2014 distance, multiple, and how many lines you are seeing" }
+              ]},
+              { text: "verify", children: [
+                { text: "~1 min: build 3, indigo. Set zero, then move it in and out \u2014 watch the line count in the readout" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "184 lab_build",
+        expanded: false,
         nodes: [
           { text: "184 lab_build", children: [
             { text: "prompt_restate", children: [

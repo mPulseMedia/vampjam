@@ -238,7 +238,7 @@
 <script>
   // lab_build — bumped on every ship; the colour comes with it, so a glance at
   // the screen says whether the update arrived.
-  var LAB_BUILD = 2;
+  var LAB_BUILD = 3;
   var LAB_COLOURS = [
     { name: 'red',     bg: '#d7263d', fg: '#ffffff' },
     { name: 'teal',    bg: '#0f766e', fg: '#ffffff' },
@@ -380,7 +380,13 @@
   var PHONE_W    = 0.071;    // metres across a phone: the 1:1 yardstick
   var D0         = 0.35;     // metres: the reference viewing distance
   var D_MIN      = 0.10, D_MAX = 1.20;
-  var MULT_MIN   = 0.35, MULT_MAX = 3.5;
+  // depth_wide: plain D0/D only spans about 3x within arm's reach, and he wants
+  // the far end dense and the near end down to a couple of lines on the whole
+  // screen. Raising the ratio to a power stretches that range without needing
+  // the phone to travel any further: (D0/D)^2.2 gives ~0.25x at arm's length
+  // and ~13x when it is brought right in.
+  var Z_POWER    = 2.2;
+  var MULT_MIN   = 0.25, MULT_MAX = 13;
   var DEAD       = 0.12;     // m/s^2 ignored: the noise floor at rest (from his takes)
   var STILL_MS   = 350;      // quiet for this long -> velocity is zero
   var VEL_TAU    = 0.9;      // s: velocity leak
@@ -462,10 +468,11 @@
     var w = frame.clientWidth || 320;
     // toward the eye is +z in the zero frame; closer = shorter distance
     var dist = Math.max(D_MIN, Math.min(D_MAX, D0 - pos.z));
-    var mult = Math.max(MULT_MIN, Math.min(MULT_MAX, D0 / dist));
+    var mult = Math.max(MULT_MIN, Math.min(MULT_MAX, Math.pow(D0 / dist, Z_POWER)));
     var pxPerM = (w / PHONE_W) * mult;         // one phone width of slide = one screen width, times the multiple
-    var sx = -pos.x * pxPerM;
-    var sy =  pos.y * pxPerM;                  // phone up -> world down
+    // flip_axes: his call — the world travels WITH the phone, not against it
+    var sx =  pos.x * pxPerM;
+    var sy = -pos.y * pxPerM;
     var lim = w * 3;
     sx = Math.max(-lim, Math.min(lim, sx));
     sy = Math.max(-lim, Math.min(lim, sy));
@@ -477,7 +484,8 @@
       readout.textContent =
         'across  ' + (sx / w >= 0 ? '+' : '') + (sx / w).toFixed(2) + ' screens' +
         '   up  ' + (sy / w >= 0 ? '+' : '') + (sy / w).toFixed(2) +
-        '\n' + Math.round(dist * 100) + ' cm away   ×' + mult.toFixed(2) +
+        '\n' + Math.round(dist * 100) + ' cm   ×' + mult.toFixed(2) +
+        '   ' + Math.max(1, Math.round((frame.clientHeight || 700) / (30 * mult))) + ' lines' +
         (rotVeto < 0.5 ? '   (turning — ignored)' : '');
     }
     requestAnimationFrame(paint_world);
