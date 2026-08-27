@@ -1270,7 +1270,28 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   test_note: a stale-CSS-var read made an earlier run report both gamma signs as +42.5; reading
   window.__lab.state() directly showed the maths had been right. Prefer the state hook to
   getComputedStyle for anything the paint loop writes.
-- NEXT → add entry 208 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 208 smooth_move — lab.html, release smooth_move / violet) the world's motion is shaped
+  now instead of raw. smooth_move: the picture no longer sits ON the model, it CHASES it
+  through a critically damped spring — show/showV, stiffness SM_W 11 rad/s, advanced in
+  on_motion off the SENSOR clock rather than the paint clock so a burst of samples with no
+  frame between them shapes the move identically (which is also what keeps the headless tests
+  meaningful). view() reads `show` where it used to read pos+lead. Starting from rest the
+  spring is slack, so the world eases in; through the middle it is behind and runs FASTER than
+  the hand to catch up — the over-acceleration of the middle he asked for; arriving, it has no
+  overshoot left and settles rather than stopping dead. Because it is a converging filter and
+  not a reshaping of the travel, nothing is lost: measured, the drawn position ends on the
+  model to within 0.00 mm, and short gestures and long ones both keep their true distance.
+  The LEAD feedforward stays in the target, and its 0.10s roughly cancels the spring's 0.09s
+  catch-up, so the net lag against the hand is about nil. zero_here resets show and showV with
+  everything else, keeping pos.z when Set zero is keeping depth. Playwright: the per-sample
+  step of a slide right runs 1 1 3 5 7 8 11 13 15 18 20 22 24 25 25 25 24 23 22 20 18 17 15 14
+  12 11 10 8 … — an S-curve, dimmed at both ends and driven through the middle ✓; peak
+  25px/sample against a first step of 1px ✓; final 482px with model and drawn agreeing to
+  0.00 mm and settled velocity 0.0001 m/s ✓; within 1px of final at 0.95s ✓; glide_stop still
+  holds without springing back, plate_move, roll_hold, zero_split, deck_one and tilt_deep
+  regressions pass (the depth sweep reads 1.35 1.87 2.63 3.77 5.51 where it read 1.36 1.88
+  2.65 3.80 5.56 — the spring's tail, not a change of law); no page errors.
+- NEXT → add entry 209 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

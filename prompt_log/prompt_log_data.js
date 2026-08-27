@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "207 tilt_deep",
+        id: "208 smooth_move",
         expanded: true,
+        nodes: [
+          { text: "208 smooth_move", children: [
+            { text: "prompt_restate", children: [
+              { text: "Dim the speed at the beginning and the end of a movement." },
+              { text: "Over-accelerate the middle to make up for it." },
+              { text: "Some gestures are quick and short, some slower and longer; most are small." },
+              { text: "Call it smooth_move." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Give the speed like dim in the speed at the beginning of the ending of the transition of the movement, and some movements are quick and shorten other movements are slower and longer, but most of these gestures are small and short and right and left they may go a few more steps yeah so I want you to Champion speed at the beginning and at the end of the movement, which means I think you have to over accelerate the mental peace. Let\u2019s see how that works and call this smooth_move." }
+            ]},
+            { text: "response", children: [
+              { text: "smooth_move", children: [
+                { text: "the picture chases the model through a spring instead of sitting on it" },
+                { text: "from rest the spring is slack, so the world eases in" },
+                { text: "through the middle it is behind and runs faster than your hand to catch up \u2014 that is the over-acceleration" },
+                { text: "arriving, it has nothing left to overshoot with, so it settles instead of stopping dead" }
+              ]},
+              { text: "no_loss", children: [
+                { text: "it always converges exactly on the model, so no distance is lost" },
+                { text: "measured: the drawn position lands on the model to within a hundredth of a millimetre" },
+                { text: "a quick short gesture and a long slow one both keep their true distance \u2014 only the shape of getting there changes" }
+              ]},
+              { text: "shape", children: [
+                { text: "per frame, a slide right now goes 1 1 3 5 7 8 11 13 15 18 20 22 24 25 25 25 24 23 22 20 18 17 15 14 12 11 10 8 \u2026" },
+                { text: "an S-curve: a whisper at each end, 25 through the middle" }
+              ]},
+              { text: "verify", children: [
+                { text: "~3m: release smooth_move, violet \u2014 profile measured per sample, ends on the model with settled velocity 0.0001 m/s, everything else still passes" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "207 tilt_deep",
+        expanded: false,
         nodes: [
           { text: "207 tilt_deep", children: [
             { text: "prompt_restate", children: [
