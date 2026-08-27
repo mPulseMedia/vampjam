@@ -154,6 +154,21 @@
   }
   .motion_btn:active { transform: scale(0.96); }
   .motion_btn.on { background: #3f6212; color: #ffffff; }
+  /* zero_split: the rarer of the two sits above the one the thumb wants, and is
+     quieter — Set zero is pressed constantly, Reset all only when the scale has
+     run away. */
+  .reset_btn {
+    position: fixed; z-index: 8;
+    bottom: max(231px, calc(env(safe-area-inset-bottom) + 223px));
+    right: max(22px, calc(env(safe-area-inset-right) + 10px));
+    background: rgba(255,255,255,0.90); color: #1d1d1f;
+    border: 1px solid rgba(0,0,0,0.12); border-radius: 999px; padding: 9px 16px;
+    font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    touch-action: manipulation;
+  }
+  .reset_btn:active { transform: scale(0.96); }
   /* lag_trace — four seconds of history, so what the hand did and what the
      screen did can be compared by eye instead of by adjective.
      grey = how hard the phone is accelerating, purple = where the world is. */
@@ -263,6 +278,7 @@
     <span class="g_count" id="g_count"></span>
   </div>
 </div>
+<button class="reset_btn" id="reset_btn" hidden>Reset all</button>
 <button class="motion_btn" id="motion_btn">Set zero</button>
 <svg class="pose" id="pose" viewBox="-72 -74 144 158" hidden aria-hidden="true">
   <!-- pose_arrow: the phone as an object standing in a frame that never moves.
@@ -289,7 +305,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'axis_flip', bg: '#be185d', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'zero_split', bg: '#166534', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -356,7 +372,7 @@
   }
 
   window.addEventListener('touchstart', function (e) {
-    if (e.target.closest && e.target.closest('.back_btn, .motion_btn, .gest_bar')) return;
+    if (e.target.closest && e.target.closest('.back_btn, .motion_btn, .reset_btn, .gest_bar')) return;
     if (e.touches.length === 1) start(e.touches[0].clientY);
   }, { passive: true });
   window.addEventListener('touchmove', function (e) {
@@ -368,7 +384,7 @@
   // mouse + keyboard, so the same thing works on a laptop
   var mouseDown = false;
   window.addEventListener('mousedown', function (e) {
-    if (e.target.closest && e.target.closest('.back_btn, .motion_btn, .gest_bar')) return;
+    if (e.target.closest && e.target.closest('.back_btn, .motion_btn, .reset_btn, .gest_bar')) return;
     mouseDown = true; start(e.clientY);
   });
   window.addEventListener('mousemove', function (e) { if (mouseDown) move(e.clientY); });
@@ -423,8 +439,11 @@
   // screen. Raising the ratio to a power stretches that range without needing
   // the phone to travel any further: (D0/D)^2.2 gives ~0.25x at arm's length
   // and ~13x when it is brought right in.
-  var Z_POWER    = 2.2;
-  var MULT_MIN   = 0.25, MULT_MAX = 13;
+  // scale_blow — the depth response is three times what it was: the exponent
+  // went 2.2 -> 6.6, and the ceiling and floor opened up to match, so a hand's
+  // width of toward-and-away covers the whole range instead of a slice of it.
+  var Z_POWER    = 6.6;
+  var MULT_MIN   = 0.09, MULT_MAX = 39;
   var DEAD       = 0.12;     // m/s^2 ignored: the noise floor at rest (from his takes)
   // hold_still: a move ends where it ends. There is no position leak any more —
   // the world used to ease back to centre after every gesture, which read as
@@ -510,6 +529,7 @@
     return (r.z > 0 ? 'closer ' : 'away ') + cm + ' cm';
   }
   var motionBtn = document.getElementById('motion_btn');
+  var resetBtn  = document.getElementById('reset_btn');
   var poseEl    = document.getElementById('pose');
   // pose_arrow — the phone drawn as an object sitting on the zero frame.
   // Isometric projection: a 3D point becomes (x - z)*0.87 across and
@@ -863,14 +883,20 @@
     requestAnimationFrame(paint_world);
   }
 
-  function zero_here() {
+  // zero_split — Set zero re-centres the dot and re-takes the attitude, but
+  // LEAVES the depth alone: how far in or out you have zoomed survives a
+  // re-centre, which is the only way to work at a scale and still recover the
+  // middle of the picture. Reset all is the separate button that clears depth
+  // too and puts the whole model back to ×1.
+  function zero_here(keepDepth) {
     R0 = Rnow;
+    var z = keepDepth ? pos.z : 0;
     vel = { x: 0, y: 0, z: 0 };
-    pos = { x: 0, y: 0, z: 0 };
+    pos = { x: 0, y: 0, z: z };
     run = { x: 0, y: 0, z: 0 };
     lead = { x: 0, y: 0, z: 0 };
     moving = false; lastMove = ''; quietFor = 0; lockLeft = 0; dir = { x: 0, y: 0, z: 0 };
-    document.documentElement.style.setProperty('--sc', '1');
+    if (!keepDepth) document.documentElement.style.setProperty('--sc', '1');
     document.documentElement.style.setProperty('--rot', '0deg');
   }
   function start_world() {
@@ -881,6 +907,7 @@
     window.addEventListener('devicemotion', on_motion);
     motionBtn.classList.add('on');
     motionBtn.textContent = 'Set zero';
+    if (resetBtn) resetBtn.hidden = false;
     if (poseEl) poseEl.hidden = false;
     if (traceEl) traceEl.hidden = false;
     if (hint) hint.style.opacity = '0';
@@ -888,7 +915,7 @@
   }
 
   motionBtn.addEventListener('click', function () {
-    if (motionOn) { zero_here(); return; }
+    if (motionOn) { zero_here(true); return; }   // centre, keep the depth
     var needO = (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function');
     var needM = (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function');
     if (!needO && !needM) {
@@ -903,6 +930,8 @@
       else motionBtn.textContent = 'Motion blocked';
     }).catch(function () { motionBtn.textContent = 'Motion blocked'; });
   });
+  // the full reset: centre AND put the depth back to \u00d71
+  if (resetBtn) resetBtn.addEventListener('click', function () { if (motionOn) zero_here(false); });
 
 
   // ---- gesture_lab: hold to record every sensor the phone will give ----
@@ -1118,7 +1147,8 @@
     go: go,
     at: function () { return idx; },
     steady: function () { start_world(); },
-    zero: function () { zero_here(); },
+    zero: function (keepDepth) { zero_here(keepDepth !== false); },
+    reset: function () { zero_here(false); },
     rec: function (on) { on ? rec_start() : rec_stop(); },
     // pose the phone (degrees) — rotation alone must not move the world
     pose: function (alpha, beta, gamma) { on_orientation({ alpha: alpha, beta: beta, gamma: gamma }); },

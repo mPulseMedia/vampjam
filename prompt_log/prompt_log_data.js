@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "198 axis_flip",
+        id: "199 zero_split",
         expanded: true,
+        nodes: [
+          { text: "199 zero_split", children: [
+            { text: "prompt_restate", children: [
+              { text: "Set zero should re-centre the dot but leave the toward/away distance alone." },
+              { text: "Give me a separate button that resets both \u2014 centres AND resets depth." },
+              { text: "Increase the magnification of scale by three. Blow it through the roof." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I hit set zero Center the dot on the screen, but don\u2019t change the distance of the Toor Ward away. Axis don\u2019t change that and then give me a separate button that resets both of them centers and resets depth." },
+              { text: "Increase the magnification of scale by three of what you\u2019re currently doing so really blow it off though roof" }
+            ]},
+            { text: "response", children: [
+              { text: "zero_split", children: [
+                { text: "Set zero re-centres the dot and re-takes the attitude, and leaves your scale exactly where it was" },
+                { text: "a second button, Reset all, puts the depth back to \u00d71 as well" },
+                { text: "it sits above Set zero, quieter and smaller, since you press Set zero constantly and this one rarely" }
+              ]},
+              { text: "scale_blow", children: [
+                { text: "the depth response is three times steeper" },
+                { text: "\u00d71 where you zeroed, \u00d72.2 four centimetres nearer, \u00d75.5 at eight, pinned at \u00d739 by twelve" },
+                { text: "and \u00d70.49 / \u00d70.26 / \u00d70.09 going the other way \u2014 the whole range inside a hand\u2019s width" }
+              ]},
+              { text: "verify", children: [
+                { text: "~2m: release zero_split, forest \u2014 Set zero keeps \u00d71.48 while centring, Reset all returns \u00d71.00; five equal pull-aways now reach \u00d75.56 where the old maths reached \u00d71.72" }
+              ]}
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "198 axis_flip",
+        expanded: false,
         nodes: [
           { text: "198 axis_flip", children: [
             { text: "prompt_restate", children: [

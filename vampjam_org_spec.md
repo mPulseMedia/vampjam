@@ -1087,7 +1087,24 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   where the latch would have dropped every one after the first ✓; lock reads 0 at the end ✓;
   glide_stop still glides without springing back (now to -482px), gest_small and plate_move
   regressions pass; no page errors.
-- NEXT → add entry 199 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 199 zero_split — lab.html, release zero_split / forest) two buttons and a much
+  steeper scale. zero_split: zero_here() takes a keepDepth flag. Set zero now re-centres the
+  dot and re-takes the attitude but LEAVES pos.z alone, so whatever scale you have worked out
+  to survives a re-centre — without that, finding the middle of the picture meant throwing the
+  zoom away. A second button, Reset all, calls zero_here(false) and puts everything back to
+  ×1. It is hidden until motion is on, sits above Set zero (231px vs 173px off the bottom,
+  10px gap) and is deliberately quieter — white pill, 13px — because Set zero is pressed
+  constantly and this one only when the scale has run away. Both are added to the swipe
+  guards so neither turns into a page flick. scale_blow: the depth response is tripled —
+  Z_POWER 2.2 → 6.6, and the clamps opened to match (MULT_MIN 0.25 → 0.09, MULT_MAX 13 → 39).
+  The whole range is now inside a hand's width of travel: ×1 at the zero distance, ×2.2 at
+  4 cm nearer the ceiling, ×5.5 at 8 cm, pinned at ×39 by 12 cm, and ×0.49 / ×0.26 / ×0.09 the
+  other way. Playwright: Reset all hidden before motion and visible after ✓; after a pull-away
+  plus a slide right (x -466, ×1.48), Set zero gives x 0 with ×1.48 and pos.z intact, Reset all
+  gives x 0 with ×1.00 and pos.z 0 ✓; five equal pull-aways now read 1.36 1.88 2.65 3.80 5.56
+  where the old exponent would have reached ×1.72 in total ✓; button geometry ✓; glide_stop,
+  gest_small, plate_move, roll_hold and axis_flip regressions all pass; no page errors.
+- NEXT → add entry 200 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
