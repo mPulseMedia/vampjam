@@ -48,13 +48,16 @@
   window.vampjamDrawer = { toggle: toggle };
 
   // ---- data-driven session list (rendered from sessions.js) ----
-  // icon_grow — cassette, share, heart and trash all a quarter larger, on his
-  // say-so. The four are the working vocabulary of the list and the rows: what a
-  // thing IS (cassette, heart) and what you can DO with it (share, trash). The
-  // gear and the plus are labels on one-off rows and stay as they were.
-  var ICO_CASS = '<svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg>';
-  var ICO_GEAR = '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.6l1.7 2.2 2.7-.7.4 2.8 2.5 1.2-1 2.6 1 2.6-2.5 1.2-.4 2.8-2.7-.7L12 21.4l-1.7-2.2-2.7.7-.4-2.8-2.5-1.2 1-2.6-1-2.6 2.5-1.2.4-2.8 2.7.7z"/></svg>';
-  var ICO_SHARE = '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
+  // row_size — ONE size for every icon that sits in a list row: 29px, the size the
+  // highlight rows already use. The session list had drifted to four different
+  // numbers (25, 21, 24, 20) which is four conventions where there should be one.
+  // The header pair stays at 26 — that is the other convention, and two is the
+  // whole set.
+  // The gear and the plus come along, because "most things follow the convention"
+  // beats "these two are special for a reason nobody can see".
+  var ICO_CASS = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg>';
+  var ICO_GEAR = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.6l1.7 2.2 2.7-.7.4 2.8 2.5 1.2-1 2.6 1 2.6-2.5 1.2-.4 2.8-2.7-.7L12 21.4l-1.7-2.2-2.7.7-.4-2.8-2.5-1.2 1-2.6-1-2.6 2.5-1.2.4-2.8 2.7.7z"/></svg>';
+  var ICO_SHARE = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
   // pending_session — a recording that was just created on this device but may
   // not have landed in sessions_auto.json yet (GitHub can take a minute).
   var SYNC_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
@@ -187,9 +190,13 @@
       });
   }
 
-  var ICO_NEW = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>';
-  var ICO_HEART_M = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.2-1.1C6.2 15.1 3.2 12.4 3.2 9.1c0-2.6 2-4.6 4.6-4.6 1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.6 2 4.6 4.6 0 3.3-3 6-7.6 10.1L12 20.3z"/></svg>';
-  var ICO_TRASH = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4.8A0.8 0.8 0 0 1 9.8 4h4.4a0.8 0.8 0 0 1 0.8 0.8V7"/><path d="M6.5 7l0.9 12.2A1.6 1.6 0 0 0 9 20.6h6a1.6 1.6 0 0 0 1.6-1.4L17.5 7"/><path d="M10 11v6M14 11v6"/></svg>';
+  var ICO_NEW = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>';
+  var ICO_HEART_M = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.2-1.1C6.2 15.1 3.2 12.4 3.2 9.1c0-2.6 2-4.6 4.6-4.6 1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.6 2 4.6 4.6 0 3.3-3 6-7.6 10.1L12 20.3z"/></svg>';
+  // row_x — the same X the highlight rows use for "remove this", instead of a
+  // trash can. Two glyphs for one idea is one glyph too many, and the X is the one
+  // he already reaches for. (The action is unchanged: it still deletes the
+  // session, still behind the same confirmation.)
+  var ICO_X = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var HERE = (location.pathname.split('/').pop() || '');
   // On the generic session page (session.html?p=<id>) the identity includes the
   // recording id, so duration cache + current-row detection stay per-recording.
@@ -273,9 +280,9 @@
       var del = isDel
         ? '<span class="jam_spin" aria-label="Deleting…"></span>'
         : (isLocal
-          ? '<button class="jam_del" data-local="' + s.page.split('local=')[1] + '" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this local recording">' + ICO_TRASH + '</button>'
+          ? '<button class="jam_del" data-local="' + s.page.split('local=')[1] + '" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this local recording">' + ICO_X + '</button>'
           : (isAuto
-            ? '<button class="jam_del" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this session">' + ICO_TRASH + '</button>'
+            ? '<button class="jam_del" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this session">' + ICO_X + '</button>'
             // dur_align: rows without a trash can reserve its slot, so every
             // row's duration column ends on the same right edge
             : '<span class="jam_del_sp"></span>'));
@@ -503,7 +510,13 @@
       '.jam_item .menu_sub{display:inline-flex;justify-content:center;text-align:center;' +
         'min-width:30px;font-variant-numeric:tabular-nums;flex:0 0 auto;color:var(--muted);white-space:nowrap;}' +
       '.jam_item .menu_sub .jam_count{display:inline-block;min-width:26px;text-align:center;margin:0;}' +
-      '.jam_del_sp{flex:0 0 auto;width:30px;}' +
+      // col_hold — the empty slot a row without a remove control reserves has to be
+      // exactly as wide as the control it stands in for, or the share buttons above
+      // and below it stop lining up. It was 30px against a 30px trash can; the X is
+      // 29px of icon plus 12 of padding plus 2 of margin, so it is 43 now. Measured
+      // by comparing the share buttons' right edges across rows, which is the only
+      // way this ever gets noticed.
+      '.jam_del_sp{flex:0 0 auto;width:43px;}' +
       '.jamc_overlay{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,0.5);' +
         'backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;}' +
       '.jamc_card{background:var(--panel);color:var(--fg);border-radius:14px;padding:20px 22px;' +

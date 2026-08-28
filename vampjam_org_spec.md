@@ -2298,7 +2298,29 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Measured at 34px of lap on a 134px column = 25%, on three titles from short to overlong, with the
   session name ending in the same place on every row. fav_share re-verified. No page errors.
   Still no new trace.
-- NEXT → add entry 252 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 252 row_size · b252 · drawer.js + favorites.html — one icon size for every list row, and the
+  trash can becomes the X.
+  row_size: 29px, the size the highlight rows already use, now on EVERY icon that sits in a list
+  row. The session list had drifted to five different numbers across six rows (25, 21, 24, 20, 19,
+  20) and the favourite rows were on a sixth (24). That is six conventions where there should be
+  one. The header pair stays at 26 — that is the other convention, and two is the whole set.
+  the gear and the plus came along. Last build left them out as "labels on one-off rows"; that is a
+  reason nobody can see from the outside, and "most things follow the convention" beats a private
+  exception. ui_grammar applied to my own previous decision.
+  row_x: ICO_TRASH becomes ICO_X, the same glyph the highlight rows use for "remove this". Two
+  drawings for one idea is one too many, and the X is the one he already reaches for. The action is
+  untouched — it still deletes the session, still behind the same confirmation.
+  col_hold: the empty slot a row without a remove control reserves has to be exactly as wide as the
+  control it stands in for, or the share buttons above and below stop lining up. It was 30px
+  against a 30px trash can; the X is 29 of icon plus 12 of padding plus 2 of margin, so it is 43
+  now. Caught by comparing the share buttons' right edges across rows — 302 on rows without the
+  control against 289 on the row with it — which is the only way this ever gets noticed. Now one
+  column at 289 across every row.
+  the cost, stated plainly: bigger icons take room, so session names truncate a little sooner in
+  the list. That is the trade he asked for.
+  drawer.js?v=139 → 140. Row heights unchanged at 54px. nav_cass, icon_grow and title_lap all
+  re-verified. No page errors. Still no new trace.
+- NEXT → add entry 253 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

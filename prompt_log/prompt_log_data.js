@@ -9,8 +9,47 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "251 title_lap",
+        id: "252 row_size",
         expanded: true,
+        nodes: [
+          { text: "252 row_size", children: [
+            { text: "prompt_restate", children: [
+              { text: "Use the larger icons on the session list too." },
+              { text: "Replace the trash can with the X from the highlight list." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Use those larger icons on the session list as well and replace the trashcan icon with the X icon that you use on the highlight list" }
+            ]},
+            { text: "row_size", children: [
+              { text: "one size now for every icon that sits in a list row \u2014 the session list, the highlight list and the favourites list all match" },
+              { text: "the session list had drifted to five different sizes across six rows, and the favourites rows were on a sixth" },
+              { text: "the two header icons keep their own slightly smaller size; two sizes is the whole set" }
+            ]},
+            { text: "row_x", children: [
+              { text: "the trash can is the X you already use for removing a highlight" },
+              { text: "two drawings for one idea is one too many" },
+              { text: "the action is untouched \u2014 it still deletes the session, still behind the same confirmation" }
+            ]},
+            { text: "also_fixed", children: [
+              { text: "the gear and the plus came along too \u2014 I had left them out last time as \u2018special\u2019, which is a reason nobody can see from the outside" },
+              { text: "and the blank slot that rows without a remove button reserve had to be widened to match the new one, or the share buttons stopped lining up down the column" },
+              { text: "that one was only caught by measuring the right edges across rows" }
+            ]},
+            { text: "the_cost", children: [
+              { text: "bigger icons take room, so session names truncate a little sooner in the list \u2014 that is the trade you asked for" }
+            ]},
+            { text: "verify", children: [
+              { text: "~11m: release row_size \u2014 every icon in every list row measured after the change, the remove control confirmed to be drawing an X and not a can, the column alignment measured across rows, row heights unchanged, the last three builds re-verified, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "251 title_lap",
+        expanded: false,
         nodes: [
           { text: "251 title_lap", children: [
             { text: "prompt_restate", children: [
