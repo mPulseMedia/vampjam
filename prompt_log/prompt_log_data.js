@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "227 zoom_wide",
+        id: "228 star_off",
         expanded: true,
+        nodes: [
+          { text: "228 star_off", children: [
+            { text: "prompt_restate", children: [
+              { text: "Get rid of the star." },
+              { text: "Double the Z zoom factor again." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Get rid of the star double that Z Zoom factor again" }
+            ]},
+            { text: "star_off", children: [
+              { text: "gone, and its shadow machinery with it" },
+              { text: "it was there to be the one thing in the world when the world was blank paper \u2014 now there is a picture, and it was in the way" }
+            ]},
+            { text: "zoom_more", children: [
+              { text: "doubled again \u2014 the whole range is inside about six centimetres of hand now" },
+              { text: "2 cm toward the eye is \u00d73, 4 cm is \u00d79, and the top arrives by six and a half" }
+            ]},
+            { text: "one_note", children: [
+              { text: "the away side now bottoms out about two and a half centimetres out" },
+              { text: "if you want a long way out and a short way in, the two directions need their own settings rather than sharing one \u2014 say the word" }
+            ]},
+            { text: "verify", children: [
+              { text: "~3m: release star_off, teal \u2014 no star anywhere in the page; five pushes measured at roughly the square of what they gave two builds ago; whole suite green" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "227 zoom_wide",
+        expanded: false,
         nodes: [
           { text: "227 zoom_wide", children: [
             { text: "prompt_restate", children: [

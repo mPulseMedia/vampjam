@@ -1709,7 +1709,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Playwright: pushes of 4 / 6 / 8 / 10 / 12 samples now land x1.25 / 1.48 / 1.81 / 2.31 / 3.05
   against roughly half those before; a full pull away reaches the 0.30 floor; three-way capture
   at the floor, at rest and pushed in; whole lab suite re-run and green; no page errors.
-- NEXT → add entry 228 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 228 star_off — lab.html, release star_off / teal) star_off: the star is gone, along with
+  its shadow machinery (--shx/--shy/--shb/--sho, star_lift, star_cap, dot_scale and the .pin
+  wrapper). It existed to be the one thing in the world when the world was blank graph paper;
+  with a picture lying on the paper there is something to look at, and a marker sitting on top
+  of it was in the way. Z_POWER 9.2 → 18.4, doubling the depth response for the second time in
+  two prompts: the whole range is now inside about six centimetres of hand — 2 cm toward the eye
+  is ×2.95, 4 cm is ×9.3, and the ×39 ceiling arrives by 6.5. Measured on the same synthetic
+  pushes, 2 / 4 / 6 / 8 / 10 samples now land ×1.19 / 1.56 / 2.18 / 3.28 / 5.33, roughly the
+  square of what they gave two builds ago. MULT_MIN stays 0.30 and is now reached about
+  two and a half centimetres out, so the AWAY side saturates quickly while the toward side has
+  the whole range — worth naming: if he wants a long way out and a short way in, the two
+  directions need their own exponents rather than one shared one. Playwright: no .pin or
+  .pin_dot in the document ✓; the push table above ✓; three-way capture at the floor, at rest
+  and pushed in ✓; whole lab suite re-run and green; no page errors.
+- NEXT → add entry 229 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
