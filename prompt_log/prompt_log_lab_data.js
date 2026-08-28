@@ -9,8 +9,46 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "246 nav_gone",
+        id: "247 fav_share",
         expanded: true,
+        nodes: [
+          { text: "247 fav_share", children: [
+            { text: "prompt_restate", children: [
+              { text: "A share button on the sessions-list row that Favorites sits on, over on the right." },
+              { text: "And one on the Favorites page itself \u2014 you pick the spot, follow the same UI grammar." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Add a share button on both the sessions list row favorites is listed on. It\u2019s a share button. Should be there on the right and also on the favorites page itself. I\u2019m not sure where that should go but follow the same UI grammar of everything else." }
+            ]},
+            { text: "in_the_list", children: [
+              { text: "the Favorites row now has the same share button every session row has, in the same column, with the same icon" },
+              { text: "nothing else was needed \u2014 the drawer already wires every share button it finds, so this was markup only" },
+              { text: "its right edge lines up with the sessions below to the pixel" },
+              { text: "tapping it copies the link to the Favorites page" }
+            ]},
+            { text: "on_the_page", children: [
+              { text: "every favourite row gets the share icon, in the slot a highlight row uses back in its session" },
+              { text: "and what it copies is the deep link \u2014 session, highlight and time \u2014 so whoever opens it lands on that exact moment, not the top of the session" },
+              { text: "checked end to end: the copied link followed, and it landed on the right highlight at the right second" }
+            ]},
+            { text: "where_it_sits", children: [
+              { text: "play, then share, then heart \u2014 the share immediately left of the heart" },
+              { text: "on a session row the order is heart, share, delete: share immediately left of the destructive control" },
+              { text: "on a favourite row the heart IS the destructive control, so this is the same grammar rather than a different one" },
+              { text: "and it is muted like every other share on the site; the accent stays for the heart, the one thing on the row that carries state" }
+            ]},
+            { text: "verify", children: [
+              { text: "~12m: release fav_share \u2014 both buttons clicked and their copied text read back from the clipboard, the column alignment measured, the copied deep link followed and confirmed to land, the script version bumped on all ten pages so a cached browser picks it up, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "246 nav_gone",
+        expanded: false,
         nodes: [
           { text: "246 nav_gone", children: [
             { text: "prompt_restate", children: [

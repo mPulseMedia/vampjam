@@ -2181,7 +2181,30 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   pull counts as a reveal rather than the tail of a scroll. A test that scrolls to 0 and swipes
   immediately gets nothing, and that is the drawer working, not failing.
   fav_jump and nudge_hear re-checked and still green. No page errors. Still no new trace.
-- NEXT → add entry 247 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 247 fav_share · b247 · drawer.js + favorites.html (+ v bump on all 10 pages) — a share button on
+  the Favorites row in the session list, and one on every row of the Favorites page.
+  fav_share (the list): the Favorites row gets the same .jam_share button every session row already
+  has, in the same slot, with the same icon markup — and nothing else was needed, because
+  wire_links already binds every .jam_share in the menu and copies its data-href. The empty
+  menu_sub and jam_del_sp after it are what keep its right edge on the same column as the sessions
+  below: measured at 302px against 302px, aligned to the pixel. Tapping it copies
+  http://…/favorites.html.
+  fav_share (the page): every favourite row gets the share icon in the slot a highlight row uses on
+  a session page — and what it copies is the deep link fav_jump built two builds ago, session +
+  tag id + time, so what someone else opens is that exact moment rather than the top of the
+  session. Measured end to end: the copy comes back as ?tag=tg_b&t=20 and following it lands on
+  tg_b at 20s.
+  where it sits, and why there: play | share | heart, so the share is immediately LEFT of the
+  heart. On a session row the order is heart | share | delete — share immediately left of the
+  destructive control. On a favourite row the heart IS the destructive control (it un-favourites),
+  so putting share to its left is the same grammar, not a different one. It also wears --muted like
+  every other share on the site; the accent stays reserved for the heart, which is the only thing
+  on the row carrying state.
+  drawer.js?v=135 → 136 on all ten pages, so the change actually reaches a browser that has the old
+  one cached.
+  Suite: fav_jump re-verified through the new button (the copied link followed and landed). No page
+  errors. Still no new trace.
+- NEXT → add entry 248 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

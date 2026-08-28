@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
-<script src="drawer.js?v=135"></script>
+<script src="drawer.js?v=136"></script>
 <style>
   * { box-sizing: border-box; }
   html, body { background: var(--bg); color: var(--fg); margin: 0; padding: 0; }
@@ -165,6 +165,10 @@
   .fav_name:focus { border-bottom-color: var(--panel_3); }
   .fav_time { display: none; }   /* fav_time_hide: timestamps off the favorite rows for now */
   .fav_heart { flex: 0 0 auto; background: none; border: none; color: var(--accent); padding: 8px; cursor: pointer; line-height: 0; }
+  /* fav_share — muted like every other share on the site; the accent is reserved
+     for the heart, which is the one thing on the row that carries state */
+  .fav_share_btn { color: var(--muted); }
+  .fav_share_btn:hover { color: var(--fg); }
   .empty { text-align: center; color: var(--muted); padding: 26px 12px; }
   #toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 9px 16px; border-radius: 999px; font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity 0.25s; max-width: 86vw; }
   #toast.show { opacity: 0.94; }
@@ -281,6 +285,26 @@
     });
   }
 
+  // fav_share — the same share icon and the same slot the session pages give every
+  // highlight row: to the left of the heart. A favourite IS a highlight, so it gets
+  // the button its own row would have back in its session, and what it copies is
+  // the deep link fav_jump already builds — session, tag id and time — so what
+  // someone else opens is this exact moment, not the top of the session.
+  var ICON_SHARE = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
+  function fav_link(f) {
+    return new URL(f.src.page + '?tag=' + encodeURIComponent(f.tag.id) +
+                   '&t=' + Math.max(0, Math.round(f.tag.t)), window.location.href).href;
+  }
+  function copy_to_clipboard(text) {
+    try { if (navigator.clipboard) { navigator.clipboard.writeText(text); return; } } catch (e) {}
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+    } catch (e) {}
+  }
   function toast(msg) {
     toastEl.textContent = msg;
     toastEl.classList.add('show');
@@ -413,6 +437,18 @@
       tm.className = 'fav_time';
       tm.textContent = fmt(f.tag.t);
       row.appendChild(tm);
+
+      var sb = document.createElement('button');
+      sb.className = 'fav_heart fav_share_btn';
+      sb.title = 'Copy a link to this moment';
+      sb.setAttribute('aria-label', 'Copy a link to this moment');
+      sb.innerHTML = ICON_SHARE;
+      sb.addEventListener('click', function () {
+        var url = fav_link(f);
+        copy_to_clipboard(url);
+        toast('Link copied: ' + url);
+      });
+      row.appendChild(sb);
 
       var hb = document.createElement('button');
       hb.className = 'fav_heart';

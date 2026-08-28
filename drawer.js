@@ -241,9 +241,15 @@
     var favSeen = false;
     try { favSeen = localStorage.getItem('vampjam_fav_seen') === '1'; } catch (eF) {}
     if (favSeen) {
+      // fav_share — the Favorites row shares like a session row does: same button,
+      // same slot, same handler (wire_links binds every .jam_share in the menu, so
+      // this needed markup and nothing else). The empty menu_sub and del spacer
+      // after it are what keep its right edge lined up with the sessions below.
       var favCur = (PKEY === 'favorites.html') ? ' current' : '';
       rows.push('<div class="jam_item' + favCur + '"><a class="jam_link' + favCur + '" href="favorites.html">'
-        + '<span class="jam_left"><span class="jam_ico">' + ICO_HEART_M + '</span><span class="jam_name">Favorites</span></span></a></div>');
+        + '<span class="jam_left"><span class="jam_ico">' + ICO_HEART_M + '</span><span class="jam_name">Favorites</span></span></a>'
+        + '<button class="jam_share" data-href="favorites.html" aria-label="Copy link to Favorites">' + ICO_SHARE + '</button>'
+        + '<span class="menu_sub"></span><span class="jam_del_sp"></span></div>');
     }
     rows.push('<div class="jam_item jam_new"><a class="jam_link" href="record.html">'
       + '<span class="jam_left"><span class="jam_ico">' + ICO_NEW + '</span><span class="jam_name">New recording</span></span></a></div>');
