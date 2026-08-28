@@ -1791,7 +1791,20 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   big piece of glass reads as a point, not as a patch.
   Frame rate unchanged by the widening: 39-56fps with both worlds live against 61 with the rim
   hidden, same as before. Suite green, no page errors.
-- NEXT → add entry 232 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 232 lens_back · b232 · lab.html — 231 lens_wide is undone. "That's too freaky."
+  --lens_d goes back to the fixed 270px and the .stage rule that set it to min(90vw, 90vh) is
+  gone. The flare goes back with it: closest-side highlight, the 22%/46% streak falloff and the
+  15%×8% specular spot — the values 231 shrank were shrunk only to survive the bigger glass, so
+  they have no reason to stay.
+  what the widening got wrong: at 90% the glass stops being an OBJECT you hold up and look
+  through and becomes the page itself with a ring drawn round it — a huge eye rather than a hand
+  lens. The rim was reduced to four corners, so it no longer read as "the same place, further
+  back"; there was nothing left of the wider scene to be further back FROM. Worth keeping in
+  mind if the diameter is ever raised again: the rim has to hold enough scene to be recognisable
+  as the same one, and the glass has to look like it is sitting on top of something.
+  Nothing else from lens_glass is touched — two worlds, gain 1.8, the fog between them, no
+  filter on the rim. Suite green, no page errors. No new trace with this one.
+- NEXT → add entry 233 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

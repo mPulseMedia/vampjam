@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "231 lens_wide",
+        id: "232 lens_back",
         expanded: true,
+        nodes: [
+          { text: "232 lens_back", children: [
+            { text: "prompt_restate", children: [
+              { text: "The full-screen lens is too freaky. Undo it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "That\u2019s too freaky undo that" }
+            ]},
+            { text: "lens_back", children: [
+              { text: "the glass is back to 270px, exactly where lens_glass had it" },
+              { text: "the flare goes back too \u2014 it had only been shrunk to survive the bigger lens, so there is no reason for it to stay small" },
+              { text: "everything else from lens_glass is untouched: two worlds, the 1.8x gain, the fog between them, no filter on the rim" }
+            ]},
+            { text: "what_went_wrong", children: [
+              { text: "at 90% the glass stopped being an object you hold up and look through and became the page itself with a ring drawn round it \u2014 a huge eye rather than a hand lens" },
+              { text: "and the rim was down to four corners, so there was nothing left of the wider scene for the lens to be closer than" },
+              { text: "noted in the spec in case the size ever goes up again: the rim has to hold enough scene to be recognisable as the same one" }
+            ]},
+            { text: "verify", children: [
+              { text: "~3m: release lens_back, rust \u2014 lens and ring measured back at 270x270, gain still 1.8x, suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "no new trace arrived with this one \u2014 nothing since the 11:43 batch" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "231 lens_wide",
+        expanded: false,
         nodes: [
           { text: "231 lens_wide", children: [
             { text: "prompt_restate", children: [
