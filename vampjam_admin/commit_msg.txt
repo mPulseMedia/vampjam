@@ -1,1 +1,1 @@
-push_go
+auto_commit
