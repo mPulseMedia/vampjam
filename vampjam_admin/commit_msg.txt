@@ -1,1 +1,1 @@
-z_one xy_curve
+auto_commit
