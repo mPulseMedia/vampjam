@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "242 push_go",
+        id: "243 z_one",
         expanded: true,
+        nodes: [
+          { text: "243 z_one", children: [
+            { text: "prompt_restate", children: [
+              { text: "Only one Z layer of cards, so I can move them toward and away." },
+              { text: "Really exaggerate the movement in and out." },
+              { text: "Name the commit z_one xy_curve." },
+              { text: "In the diagram, curve the X axis around a viewpoint, and the Y axis too." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Make it so there\u2019s only one layer only one Z layer of the cards so that I can move them away or to Ward and really exaggerate the movement when I move away or torque\n\nName this commit z_one xy_curve\n\nAnd refinement on the orbit is in the diagram in the upper right and like you to make the horizontal, I believe it is curve around a viewpoint and similarly have the Y access curve around a viewpoint as" }
+            ]},
+            { text: "z_one", children: [
+              { text: "the nested layers are gone \u2014 one spread of 25 cards, and toward and away move it nearer and further" },
+              { text: "one nudge more than doubles the size, which is the exaggeration you asked for" },
+              { text: "four notches either way: 19 times bigger to 19 times smaller" },
+              { text: "six was tried and both ends were useless \u2014 a card fourteen thousand pixels of flat colour one way, the whole spread a smudge the other" },
+              { text: "the card you are standing on stays the card you are standing on through the whole trip" },
+              { text: "and one nudge sideways is still one card, at every size \u2014 measured at 1x, 4.4x and 19x" }
+            ]},
+            { text: "xy_curve", children: [
+              { text: "X and Y are arcs now, bowing away from your eye the way a circle round it does" },
+              { text: "both arms of each axis curl back from you, so the pair read as hoops rather than rails" },
+              { text: "Z stays straight, because Z is the line from your eye to the phone and a radius really is straight" },
+              { text: "the ticks ride the curves, and the bend is done before the drawing so it stays right whichever way the little camera looks" }
+            ]},
+            { text: "two_wrong_turns", children: [
+              { text: "bowing by the true geometry with enough curve to see dragged the ends of the axes far off \u2014 the arrowheads and letters ended up nowhere near where the axis pointed" },
+              { text: "pinning both ends kept them in place but put a visible kink in the last few millimetres" },
+              { text: "what works keeps the honest shape at a readable size and takes the head and the letter from the arc\u2019s own end" }
+            ]},
+            { text: "verify", children: [
+              { text: "~20m: release z_one, olive \u2014 the full depth range measured in card pixels, sideways-is-one-card measured at three sizes, the round trip checked, the arcs measured for curvature and Z confirmed straight, suite green, no page errors" },
+              { text: "two old tests retired: both drove nested layers, which no longer exist" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "242 push_go",
+        expanded: false,
         nodes: [
           { text: "242 push_go", children: [
             { text: "prompt_restate", children: [

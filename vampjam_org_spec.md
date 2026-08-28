@@ -2089,7 +2089,37 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   This pair has now been round once each way, so the sign lives in PUSH_INV alone and nothing else
   in the page has an opinion about it — flipping either is one character.
   Suite green, no page errors. Still no new trace.
-- NEXT → add entry 243 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 243 z_one · b243 · lab.html — one layer of cards, moved hard toward and away; and the diagram's
+  X and Y bow round the viewpoint. (He named this one himself: z_one xy_curve.)
+  z_one: the nested layers are gone — no route, no stack, no dropping through a card. There is ONE
+  spread of 25 cards and toward/away move it nearer and further. Z_STEP 2.1 per nudge, which is
+  the exaggeration he asked for: one nudge more than doubles it. Z_MAX 4, so the range is ×19.4 in
+  to 1/19.4 out. Six was tried and both ends were useless — at ×86 a card is fourteen thousand
+  pixels of flat colour and at 1/86 the whole spread is a 60px smudge. At four the near end is a
+  wall of one colour with its number across it and the far end is the whole grid as a small
+  legible constellation.
+  z_pan: the pan is applied BEFORE the scale in the deck's transform, so it has to be multiplied
+  by the scale — otherwise one nudge sideways is a whole card at ×1 and a quarter of one at ×4.
+  Measured: 13 → 12 at ×1, at ×4.41 and at ×19.4, and the card you stand on stays the card you
+  stand on right through a near/far round trip.
+  Card names go back to plain numbers (no route to carry) and the depth line reads "start",
+  "+2 near", "−3 far". Hue keeps its golden angle; the layer-lightness cycle is gone with the
+  layers.
+  xy_curve + bow_arc: in the diagram, X and Y are ARCS now, bowing away from the viewpoint the way
+  a circle round his eye does — no displacement at the origin, growing as the square of the
+  distance out, so both arms of an axis curl back from him and the pair read as hoops rather than
+  rails. Z stays a straight arrow, because Z is the radius and a radius genuinely is straight.
+  The bend is done in 3-D before the projection, so it stays right whichever way the isometric
+  camera looks and the ticks ride the curves.
+  Two attempts are worth not repeating. Bowing by the true sagitta d²/2R with R small enough to
+  see dragged the tips a long way off, and because the chord tilted with them the arc barely
+  looked curved — the heads and letters ended up nowhere near where the axis pointed. Pinning both
+  ends instead kept the tips but put a visible kink in the last few units where the curve snapped
+  back to the pin. The version that works keeps the honest shape at a legible size (BOW 8 at the
+  tip) and takes the head and the letter FROM the arc's own end, so nothing needs pinning.
+  vj_239 and vj_240 retired — both tested nested-layer navigation, which no longer exists; vj_244
+  covers the one deck, its depth range, and the arcs. Suite green, no page errors, no new trace.
+- NEXT → add entry 244 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

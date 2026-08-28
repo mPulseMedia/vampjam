@@ -464,7 +464,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'push_go', bg: '#be123c', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'z_one', bg: '#4d7c0f', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1032,35 +1032,22 @@
   // a space you are travelling through.
   var LAY_N  = 5;
   var CARD_F = 0.46, GAP_F = 0.07;
-  // deep_room — you start in the MIDDLE of the stack, not at the top of it. Four
-  // layers down and a hard floor above was the wrong shape: he wants to go a long
-  // way closer AND a long way further from where he starts, and "where I start"
-  // should not be a wall in one direction. So the route is pre-seeded DEEP_START
-  // levels deep and runs to DEEP_MAX, which leaves 12 layers out and 13 in from
-  // the card the page opens on. In zoom terms that is a span of 25 nested spreads,
-  // which is 5^25 addresses — there is no practical end in either direction.
-  var DEEP_START = 12;              // how many layers are already above you at the start
-  var DEEP_MAX   = 25;              // how many there are in total
-  var LAY_ZOOM = 2.2;               // how far the old layer blows up as you drop through it
-  var LAY_MS   = 220;               // the drop, in milliseconds
-  var CENTRE = ((LAY_N * LAY_N) + 1) / 2;   // the middle card's number, 13 in a 5x5
-  // seed_vary — the layers above the starting one need DIFFERENT addresses. Seeded
-  // with the centre card all the way up, every layer out looked identical to the
-  // one before it — same numbers, same spread — and the only sign you had moved
-  // was the small line underneath. A fixed, repeatable scatter (the same every
-  // load, so a card keeps its number between sessions) makes each layer out its
-  // own place.
-  function seed_path() {
-    var a = [], h = 20250828;
-    for (var i = 0; i < DEEP_START; i++) {
-      h = (h * 1103515245 + 12345) & 0x7fffffff;
-      a.push(1 + (h % (LAY_N * LAY_N)));
-    }
-    return a;
-  }
-  var path  = seed_path();          // which card was entered at each layer above this one
-  var stack = [];                   // where you were standing on each of those layers
-  var drop  = null;                 // { dir, t0 } while a layer change is playing
+  // z_one — ONE layer of cards, and that is the whole space. The nested layers are
+  // gone: toward and away no longer drop you through a card into a fresh spread,
+  // they move the ONE spread nearer and further. And they do it hard — Z_STEP 2.1
+  // per nudge, so four nudges in is nineteen times bigger and four out is
+  // nineteen times smaller. Exaggerated is the point: he wants the in-and-out to
+  // read as unmistakably as the sideways ones do.
+  var Z_STEP = 2.1;                 // how much bigger one nudge toward you makes the deck
+  // z_room — four notches either way, x19 in to 1/19 out. Six was tried and both
+  // ends were useless: at x86 a card is fourteen thousand pixels of flat colour
+  // and at 1/86 the whole spread is a 60-pixel smudge. At four, the near end is a
+  // wall of one colour with its number across it (which is a fair reading of
+  // "right up against it") and the far end is the whole grid as a small legible
+  // constellation.
+  var Z_MAX  = 4;                   // notches either way: x19.4 in, x1/19.4 out
+  var zc   = 0;                     // which z notch the one deck is at
+  var zAnim = null;                 // { from, t0 } while a near/far nudge is landing
   var deckEl = document.getElementById('deck');
   function card_px() {
     var w = (frame && frame.clientWidth) || 320, h = (frame && frame.clientHeight) || 640;
@@ -1069,26 +1056,21 @@
   }
   // card_name — the integrated number: where you are is the whole route that got
   // you here, so 7.3.11 is the eleventh card of the third card of the seventh.
-  // name_tail — the route is now up to 25 long, and a card cannot wear a
-  // twenty-five part number. It wears the last NAME_TAIL parts, with a leading
-  // ellipsis when there is more above: enough to tell neighbours apart and to see
-  // the address change as you drop, without becoming a barcode.
-  var NAME_TAIL = 3;
-  function card_full(i, j) {
-    var n = (j + (LAY_N - 1) / 2) * LAY_N + (i + (LAY_N - 1) / 2) + 1;
-    return path.concat([n]);
-  }
+  // z_one: with one layer there is no route, so a card is just its number
   function card_name(i, j) {
-    var f = card_full(i, j);
-    var t = f.slice(-NAME_TAIL).join('.');
-    return f.length > NAME_TAIL ? '\u2026' + t : t;
+    return String((j + (LAY_N - 1) / 2) * LAY_N + (i + (LAY_N - 1) / 2) + 1);
   }
-  // deep_say — how far from where you started, which is the thing he actually
-  // wants to read off the card
+  // deep_say — how far in or out from where you started
   function deep_say() {
-    var d = path.length - DEEP_START;
-    return d === 0 ? 'start' : (d > 0 ? '+' + d + ' in' : d + ' out').replace('-', '\u2212');
+    return zc === 0 ? 'start' : (zc > 0 ? '+' + zc + ' near' : zc + ' far').replace('-', '\u2212');
   }
+  function z_at() {
+    if (!zAnim) return zc;
+    var t = Date.now() - zAnim.t0;
+    if (t >= NUDGE_MS) { zAnim = null; return zc; }
+    return zAnim.from + (zc - zAnim.from) * ease(t / NUDGE_MS);
+  }
+  function z_scale() { return Math.pow(Z_STEP, z_at()); }
   function deck_build() {
     if (!deckEl) return;
     var g = card_px(), half = (LAY_N - 1) / 2, out = '';
@@ -1098,11 +1080,8 @@
         var num  = (j + half) * LAY_N + (i + half) + 1;
         // card_hue: the golden angle, so no two neighbours are near each other on
         // the wheel; the depth tilts the lightness so each layer reads as its own
-        var hue  = Math.round((num * 137.508 + path.length * 47) % 360);
-        // a triangle, not a saw: stepping in and stepping out both change the
-        // lightness by the same 3 points, so no layer boundary ever jumps
-        var ph   = path.length % 8;
-        var lit  = 92 - (ph < 5 ? ph : 8 - ph) * 3;
+        var hue  = Math.round((num * 137.508) % 360);
+        var lit  = 90;
         out += '<div class="card' + (here ? ' here' : '') + '" style="' +
                '--h:' + hue + ';--s:58%;--l:' + lit + '%;' +
                'width:' + g.cw.toFixed(0) + 'px;height:' + g.ch.toFixed(0) + 'px;' +
@@ -1119,53 +1098,32 @@
   // cell, so nudging the phone right moves the deck left and the card on your
   // right arrives in the middle, which is push_back doing its job unchanged.
   function deck_draw(root) {
-    var g = card_px();
-    var t = drop ? Math.min(1, (Date.now() - drop.t0) / LAY_MS) : 1;
-    if (drop && t >= 1) drop = null;
-    root.setProperty('--cx', (cell_at('x') * g.px).toFixed(1) + 'px');
-    root.setProperty('--cy', (-cell_at('y') * g.py).toFixed(1) + 'px');
-    if (drop) {
-      // the incoming layer arrives from the size the card you dropped through was
-      var e = ease(t);
-      var from = drop.dir > 0 ? 1 / LAY_ZOOM : LAY_ZOOM;
-      root.setProperty('--dz', (from + (1 - from) * e).toFixed(3));
-      root.setProperty('--dop', (0.25 + 0.75 * e).toFixed(3));
-    } else {
-      root.setProperty('--dz', '1');
-      root.setProperty('--dop', '1');
-    }
+    var g = card_px(), z = z_scale();
+    // z_pan — the pan is applied BEFORE the scale in the transform, so it has to
+    // be multiplied by the scale itself or one nudge sideways would carry you a
+    // whole card at x1 and a quarter of one at x4.
+    root.setProperty('--cx', (cell_at('x') * g.px * z).toFixed(1) + 'px');
+    root.setProperty('--cy', (-cell_at('y') * g.py * z).toFixed(1) + 'px');
+    root.setProperty('--dz', z.toFixed(4));
+    root.setProperty('--dop', '1');
   }
-  // deck_deep — a nudge toward you drops you THROUGH the card you are standing on
-  // into a fresh spread inside it; a nudge away brings you back up to where you
-  // were standing when you left. The route is remembered, so the number on every
-  // card tells you the whole way down.
+  // deck_deep — z_one: toward and away move the ONE deck nearer and further, hard.
+  // Nothing is entered and nothing is left behind; the same twenty-five cards are
+  // simply closer or smaller, and the card you are standing on stays the card you
+  // are standing on.
   function deck_deep(dir) {
-    if (dir > 0) {
-      if (path.length >= DEEP_MAX) return false;
-      var half = (LAY_N - 1) / 2;
-      path.push((cell.y + half) * LAY_N + (-cell.x + half) + 1);
-      stack.push({ x: cell.x, y: cell.y });
-      cell.x = 0; cell.y = 0;
-    } else {
-      if (!path.length) return false;
-      path.pop();
-      // deep_room: coming up into a level you have visited puts you back exactly
-      // where you were standing; coming up into a seeded one puts you in its
-      // middle, because you were never anywhere else on it.
-      var back = stack.pop() || { x: 0, y: 0 };
-      cell.x = back.x; cell.y = back.y;
-    }
-    anim = null;
-    drop = { dir: dir, t0: Date.now() };
+    var was = zc;
+    zAnim = { from: z_at(), t0: Date.now() };
+    zc = Math.max(-Z_MAX, Math.min(Z_MAX, zc + dir));
     deck_build();
-    return true;
+    return zc !== was;
   }
   function nudge_fire(k, s, drive, rise) {
     var d = s * PUSH_INV[k];
     var moved;
     if (k === 'z') {
       moved = deck_deep(d);
-      lastBump = (d > 0 ? 'deeper' : 'back up') + (moved ? '' : ' (at the end)');
+      lastBump = (d > 0 ? 'nearer' : 'further') + (moved ? '' : ' (at the end)');
     } else {
       var lim = CELL_MAX[k], was = cell[k];
       anim = { k: k, from: cell_at(k), t0: Date.now() };
@@ -1176,7 +1134,7 @@
     }
     if (typeof mark_add === 'function') mark_add('bump', {
       way: lastBump, axis: k, at: card_here(),
-      cell: [cell.x, cell.y], deep: path.length, drive: drive, rise: rise });
+      cell: [cell.x, cell.y], z: zc, drive: drive, rise: rise });
     // nudge_fast: the fine-grained model has no say any more, so wipe it
     pos = { x: 0, y: 0, z: 0 };
     vel = { x: 0, y: 0, z: 0 };
@@ -1307,16 +1265,65 @@
     // axis_rule: each arm also carries a faint negative stub and a tick every
     // 5 cm, so how FAR along an axis the phone is can be read, not just which way.
     var axes = document.getElementById('pose_axes');
-    function arrow(v, colour, letter) {
-      var e = iso({ x: v.x * AX_LEN, y: v.y * AX_LEN, z: v.z * AX_LEN });
-      var n = Math.hypot(e.x, e.y) || 1;
-      var ux = e.x / n, uy = e.y / n;
+    // xy_curve — X and Y are not straight lines any more, they are ARCS. The phone
+    // orbits his head, so sliding it right does not run off along a straight rail:
+    // it travels round a sphere and comes back toward him at both ends. Drawing X
+    // and Y as arcs bowing away from the viewpoint says that in the picture
+    // instead of only in the maths. Z is the radius — the line from his eye to the
+    // phone — and a radius is genuinely straight, so it stays a straight arrow.
+    //
+    // The bow is done in 3-D before the projection, not as a 2-D curve after it:
+    // a point d along the axis is pushed back along Z by the sagitta of a circle
+    // of radius ORB_R, d²/2R, so it bends in the same space the plate turns in and
+    // stays right whichever way the isometric camera is looking.
+    // bow_arc — X and Y bow away from the viewpoint the way a circle round his eye
+    // does: no displacement at the origin, growing as the square of the distance
+    // out, so BOTH arms of an axis curl back from him and the whole thing reads as
+    // a hoop rather than a rail. BOW is the displacement at the tip.
+    //
+    // Two things were tried and are worth not repeating. Bowing by the true
+    // sagitta d^2/2R with R small enough to see dragged the tips a long way off,
+    // and because the chord tilted with them the arc barely looked curved at all.
+    // Pinning both ends instead kept the tips but put a kink in the last few units
+    // where the curve snapped back to the pin. This keeps the honest shape at a
+    // legible size, and the head and the letter are taken FROM the arc's own end,
+    // so nothing has to be pinned.
+    var BOW = 8;
+    function orb(v, d, L) {
+      var u = Math.abs(d) / L;
+      var sag = BOW * u * u;
+      return { x: v.x * d - az.x * sag, y: v.y * d - az.y * sag, z: v.z * d - az.z * sag };
+    }
+    function arc_path(v, to, step) {
+      var L = Math.abs(to), out = '';
+      for (var d = 0; ; d += step) {
+        if ((step > 0 && d > to) || (step < 0 && d < to)) d = to;
+        var p = iso(orb(v, d, L));
+        out += (out ? 'L' : 'M') + p.x.toFixed(1) + ',' + p.y.toFixed(1);
+        if (d === to) break;
+      }
+      return out;
+    }
+    function arrow(v, colour, letter, bend) {
+      // the tip, the head and the letter all come off the arc itself
+      var e   = iso(bend ? orb(v, AX_LEN, AX_LEN)
+                         : { x: v.x * AX_LEN, y: v.y * AX_LEN, z: v.z * AX_LEN });
+      var nb  = iso(bend ? orb(v, AX_LEN - 6, AX_LEN)
+                         : { x: v.x * (AX_LEN - 6), y: v.y * (AX_LEN - 6), z: v.z * (AX_LEN - 6) });
+      var dx  = e.x - nb.x, dy = e.y - nb.y;
+      var n   = Math.hypot(dx, dy) || 1;
+      var ux  = dx / n, uy = dy / n;
       var hx = e.x - ux * 7, hy = e.y - uy * 7;
       var lx = e.x + ux * 10, ly = e.y + uy * 10;
-      var back = iso({ x: -v.x * AX_LEN * 0.8, y: -v.y * AX_LEN * 0.8, z: -v.z * AX_LEN * 0.8 });
-      var out = '<line x1="0" y1="0" x2="' + back.x.toFixed(1) + '" y2="' + back.y.toFixed(1) +
-                '" stroke="' + colour + '" stroke-width="0.9" opacity="0.3"/>' +
-                '<line x1="0" y1="0" x2="' + hx.toFixed(1) + '" y2="' + hy.toFixed(1) + '" stroke="' + colour + '" stroke-width="1.4"/>' +
+      var back = iso(bend ? orb(v, -AX_LEN * 0.8, AX_LEN * 0.8)
+                          : { x: -v.x * AX_LEN * 0.8, y: -v.y * AX_LEN * 0.8, z: -v.z * AX_LEN * 0.8 });
+      var out = (bend
+                ? '<path d="' + arc_path(v, -AX_LEN * 0.8, -3) + '" fill="none" stroke="' + colour +
+                  '" stroke-width="0.9" opacity="0.3"/>' +
+                  '<path d="' + arc_path(v, AX_LEN - 7, 3) + '" fill="none" stroke="' + colour + '" stroke-width="1.4"/>'
+                : '<line x1="0" y1="0" x2="' + back.x.toFixed(1) + '" y2="' + back.y.toFixed(1) +
+                  '" stroke="' + colour + '" stroke-width="0.9" opacity="0.3"/>' +
+                  '<line x1="0" y1="0" x2="' + hx.toFixed(1) + '" y2="' + hy.toFixed(1) + '" stroke="' + colour + '" stroke-width="1.4"/>') +
                 '<polygon points="' + e.x.toFixed(1) + ',' + e.y.toFixed(1) + ' ' +
                   (hx - uy * 2.8).toFixed(1) + ',' + (hy + ux * 2.8).toFixed(1) + ' ' +
                   (hx + uy * 2.8).toFixed(1) + ',' + (hy - ux * 2.8).toFixed(1) + '" fill="' + colour + '" stroke="none"/>' +
@@ -1325,7 +1332,8 @@
                   ' font-family="-apple-system, sans-serif">' + letter + '</text>';
       for (var t = TICK; t <= AX_LEN - 4; t += TICK) {
         [t, -t].forEach(function (d) {
-          var p = iso({ x: v.x * d, y: v.y * d, z: v.z * d });
+          var p = iso(bend ? orb(v, d, d > 0 ? AX_LEN : AX_LEN * 0.8)
+                           : { x: v.x * d, y: v.y * d, z: v.z * d });
           out += '<line x1="' + (p.x - uy * 2.6).toFixed(1) + '" y1="' + (p.y + ux * 2.6).toFixed(1) +
                  '" x2="' + (p.x + uy * 2.6).toFixed(1) + '" y2="' + (p.y - ux * 2.6).toFixed(1) +
                  '" stroke="' + colour + '" stroke-width="0.9" opacity="0.55"/>';
@@ -1333,7 +1341,9 @@
       }
       return out;
     }
-    axes.innerHTML = arrow(ax, '#dc2626', 'X') + arrow(ay, '#16a34a', 'Y') + arrow(az, '#2563eb', 'Z');
+    axes.innerHTML = arrow(ax, '#dc2626', 'X', true) +
+                     arrow(ay, '#16a34a', 'Y', true) +
+                     arrow(az, '#2563eb', 'Z', false);
     // spin_arc — one arc per rotation, swept in the plane the rotation turns in:
     // tilt sweeps about X and is drawn in the Y-Z plane, turn about Y in Z-X,
     // swirl about Z in X-Y. Each is the axis's own colour, so the colour that
@@ -1875,11 +1885,11 @@
     pos = { x: 0, y: 0, z: 0 };
     run = { x: 0, y: 0, z: 0 };
     lead = { x: 0, y: 0, z: 0 };
-    anim = null; drop = null;
+    anim = null; zAnim = null;
     nBar = { x: 0, y: 0, z: 0 }; nArm = true; nQuiet = 0; nStir = 0;
     nSlow = { x: 0, y: 0, z: 0 };   // nudge_raw: relearn what zero is from here
-    if (!keepDepth) { path = seed_path(); stack = []; }  // card_deck: back to where you started
-    cell = { x: 0, y: 0, z: 0 };                        // and to the middle card of it
+    if (!keepDepth) zc = 0;         // z_one: back to the deck's resting size
+    cell = { x: 0, y: 0, z: 0 };    // and to the middle card of it
     deck_build();
     off  = { x: 0, y: 0, z: 0 };
     lastBump = '';
@@ -2284,10 +2294,10 @@
                moving: moving, held: lastMove, lock: +Math.max(0, lockLeft).toFixed(2),
                bump: lastBump, cell: { x: cell.x, y: cell.y, z: cell.z },
                landing: anim ? anim.k : '', armed: nArm, sinceNudge: nLast ? Date.now() - nLast : -1,
-               card: card_here(), deep: path.length - DEEP_START, depth: path.length,
-               route: path.slice(), dropping: !!drop, say: deep_say(),
-               deck: { n: LAY_N, max: DEEP_MAX, start: DEEP_START, out: DEEP_START,
-                       into: DEEP_MAX - DEEP_START, pitch: +card_px().px.toFixed(1) },
+               card: card_here(), deep: zc, say: deep_say(),
+               zoom: +z_scale().toFixed(3), zing: !!zAnim,
+               deck: { n: LAY_N, zmax: Z_MAX, zstep: Z_STEP,
+                       pitch: +card_px().px.toFixed(1) },
                watch: { a: +NUDGE_A, tau: NUDGE_TAU, quiet: NUDGE_QUIET,
                         rearm: NUDGE_REARM, rise: NUDGE_RISE, push: PUSH_INV,
                         spin: ORBIT_SPIN, tan: ORBIT_TAN, spinVeto: +spinVeto.toFixed(2) },
