@@ -1,24 +1,4 @@
 {
-  "audio": {
-    "label": "2026-08-28 2:32p San Francisco",
-    "url": "https://pub-33cfd8558d314eb58642c8550608850b.r2.dev/2026_08_28_san_francisco_2_33_49p.m4a",
-    "kind": "url"
-  },
-  "tags": [
-    {
-      "id": "t_1787952834820_lt1",
-      "t": 8.7,
-      "label": ""
-    },
-    {
-      "id": "t_1787952834820_lt2",
-      "t": 23.9,
-      "label": ""
-    },
-    {
-      "id": "t_1787952834820_lt3",
-      "t": 36.8,
-      "label": ""
-    }
-  ]
+  "deleted": true,
+  "tags": []
 }
