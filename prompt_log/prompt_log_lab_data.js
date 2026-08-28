@@ -9,8 +9,47 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "253 num_first",
+        id: "254 list_title",
         expanded: true,
+        nodes: [
+          { text: "254 list_title", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the session list rows look like the highlight rows, keeping their own icons." },
+              { text: "Put a title at the top of the session list \u2014 just \u2018Sessions\u2019 \u2014 as a title row." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Have the session list Rose look similar to the highlight Rose, but with the different icon choices. Make a title at the top of the session list. Just call it sessions and make it look like a title title row." }
+            ]},
+            { text: "list_title", children: [
+              { text: "a \u2018Sessions\u2019 row at the top, built as a list row so it lines up exactly, then told not to act like one" },
+              { text: "no link, no hover, nothing to tap \u2014 a heading that is accidentally pressable is worse than no heading" }
+            ]},
+            { text: "row_match", children: [
+              { text: "the two kinds of row already shared their height and gutters" },
+              { text: "what was missing was a hairline between every pair \u2014 the list had one only above Admin \u2014 and the same spacing inside the row" },
+              { text: "the tint on the row you are on was already the same in both places" }
+            ]},
+            { text: "name_roll", children: [
+              { text: "the row you are on now runs its name through its own width, slowly, exactly as the selected highlight\u2019s title does" },
+              { text: "session names are long and the list is narrow, so the row you most want to read whole is the one that gets cut off" },
+              { text: "measured travelling out and back on a name that overflows by 39 pixels" }
+            ]},
+            { text: "worth_remembering", children: [
+              { text: "the shared script loads before the page\u2019s own styles, so a rule it adds quietly loses to the page unless it is written more specifically" },
+              { text: "one of the two changes took and the other silently did not \u2014 only measuring the row showed it" }
+            ]},
+            { text: "verify", children: [
+              { text: "~14m: release list_title \u2014 the title row checked for weight, colour and that it cannot be pressed; height, padding, gap, hairline and selected tint measured against the highlight rows; the name watched travelling out and back; the whole recent suite re-verified, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "253 num_first",
+        expanded: false,
         nodes: [
           { text: "253 num_first", children: [
             { text: "prompt_restate", children: [

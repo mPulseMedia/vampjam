@@ -2349,7 +2349,31 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   ever waiting on a request that is never made. The visibilitychange flush resolves them too.
   Measured: on → wait (animation running, title "Saving…") → off, with exactly one POST.
   Suite: the last four builds re-verified green. No page errors. Still no new trace.
-- NEXT → add entry 254 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 254 list_title · b254 · drawer.js (+ v bump on all 10 pages) — the session list gets a heading and
+  the highlight rows' grammar.
+  list_title: a "Sessions" row at the top. Built as a jam_item so it inherits the row height and
+  gutters exactly, then told not to behave like one — no link, no hover, cursor default, 700 weight
+  in --fg. A heading that is accidentally tappable is worse than no heading.
+  row_match: the session rows already shared the highlight rows' height and gutters. What they were
+  missing was a hairline between every pair (they had one only above Admin) and the row's 5px gap;
+  padding is now 7px 12px on both. The current row's tint and the selected highlight's tint were
+  already the same variable. Measured side by side after the change.
+  a CSS ordering trap worth remembering: drawer.js is loaded in <head> and injects its stylesheet
+  when it runs, which is BEFORE the page's own <style> block further down the head. So an
+  equal-specificity rule from the drawer LOSES to the page. The gap took (no competing rule) while
+  the padding silently did not, and the measurement is the only reason that showed. Scoping to
+  `.session_drawer .jam_item` wins it back.
+  name_roll: the row you are on runs its name through its own width, slowly, exactly as the
+  selected highlight's title does — same 16px/s, same 1.4s hold, same fading tail, same
+  float-position trick (a frame is a fraction of a pixel; read scrollLeft back and it is rounded
+  away). Session names are long and the list is narrow, so the row you most want to read whole is
+  the one that is truncated. Measured travelling 0 → 39 → back on a name overflowing by 39px, with
+  the ellipsis turned off so the fade is the only ending.
+  the two loops are separate copies, in drawer.js and in the session pages. They share no module,
+  and one twenty-line loop twice is better than a module boundary invented to hold it.
+  drawer.js?v=140 → 141. Whole recent suite (245-255) re-verified green. No page errors.
+  Still no new trace.
+- NEXT → add entry 255 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

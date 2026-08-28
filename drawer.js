@@ -248,7 +248,10 @@
     all = all.slice().sort(function (x, y) { return x.date < y.date ? 1 : x.date > y.date ? -1 : 0; });   // newest first
     // list_order: Favorites on top, then New recording, then sessions
     // newest-first, with Admin tucked at the bottom
-    var rows = [];
+    // list_title — the list gets a heading, the way any list of things does. It is
+    // built as a jam_item so it inherits the row's height and gutters exactly, and
+    // then told not to behave like one: no hover, no press, nothing to tap.
+    var rows = ['<div class="jam_item jam_title"><span class="jam_name">Sessions</span></div>'];
     var favSeen = false;
     try { favSeen = localStorage.getItem('vampjam_fav_seen') === '1'; } catch (eF) {}
     if (favSeen) {
@@ -395,6 +398,36 @@
     wire_header();
   }
 
+  // name_roll — the row you are on runs its name through its own width, slowly,
+  // the same way the selected highlight's title does on a session page. Session
+  // names are long and the list is narrow, so the row you most want to read whole
+  // is the one that is truncated. (The session pages carry their own copy of this
+  // loop for their own rows; the two scripts share no module, and one small loop
+  // twice is better than a module boundary invented to hold twenty lines.)
+  // The position is kept as a FLOAT and assigned each frame: at this pace a frame
+  // is a fraction of a pixel, and reading scrollLeft back rounds it away.
+  var NAME_PXPS = 16, NAME_HOLD = 1400;
+  (function name_roll() {
+    var el = null, dir = 1, phase = 0, last = 0, pos = 0;
+    function tick(now) {
+      requestAnimationFrame(tick);
+      var d = drawer();
+      var field = (d && d.classList.contains('open'))
+        ? d.querySelector('.jam_item.current .jam_name') : null;
+      if (field !== el) { el = field; dir = 1; phase = NAME_HOLD; pos = 0; last = now; if (el) el.scrollLeft = 0; }
+      if (!el) return;
+      var over = el.scrollWidth - el.clientWidth;
+      if (over <= 2) { pos = 0; el.scrollLeft = 0; last = now; return; }
+      var dt = Math.min(120, now - last); last = now;
+      if (phase > 0) { phase -= dt; return; }
+      pos += dir * NAME_PXPS * dt / 1000;
+      if (pos >= over) { pos = over; dir = -1; phase = NAME_HOLD; }
+      else if (pos <= 0) { pos = 0; dir = 1; phase = NAME_HOLD; }
+      el.scrollLeft = pos;
+    }
+    requestAnimationFrame(tick);
+  })();
+
   // ---- drag: pull down (at top) to reveal, swipe up (when open) to close ----
   var drag = null;
   var last_scroll_at = 0;
@@ -517,6 +550,25 @@
       // by comparing the share buttons' right edges across rows, which is the only
       // way this ever gets noticed.
       '.jam_del_sp{flex:0 0 auto;width:43px;}' +
+      // row_match — the session rows wear the highlight rows' grammar: a hairline
+      // between every pair (they had one only above Admin), and the same 5px gap.
+      // Height and gutters already matched.
+      '.jam_item + .jam_item{border-top:1px solid var(--panel_3);}' +
+      // the page's own stylesheet sets .jam_item padding and sits AFTER this file in
+      // the head, so an equal-specificity rule here loses. Scoped to the drawer to
+      // win it back — the same reason the row already had to be measured rather
+      // than assumed.
+      '.session_drawer .jam_item{gap:5px;padding:7px 12px;}' +
+      // list_title — a heading, not a row you can press
+      '.jam_title{font-weight:700;color:var(--fg);letter-spacing:0.01em;' +
+        'min-height:46px;border-top:none;cursor:default;}' +
+      '.jam_title:hover{background:transparent;}' +
+      '.jam_title + .jam_item{border-top:1px solid var(--panel_3);}' +
+      // name_roll: the current row's name is scrolled, so it must not also
+      // ellipsise — the two together show a fading tail that never arrives
+      '.jam_item.current .jam_name{text-overflow:clip;' +
+        '-webkit-mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 12px),transparent 100%);' +
+        'mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 12px),transparent 100%);}' +
       '.jamc_overlay{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,0.5);' +
         'backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;}' +
       '.jamc_card{background:var(--panel);color:var(--fg);border-radius:14px;padding:20px 22px;' +
