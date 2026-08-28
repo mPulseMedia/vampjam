@@ -2458,7 +2458,39 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   11-row "Sessions" list from admin and from r2_setup, and both shares copy their own URL. Admin
   cycled through all three themes: body and CTA both move together now. Suites 254 and 255 green,
   256 (the lab) green and lab.html untouched. No page errors anywhere. Still no new trace.
-- NEXT → add entry 258 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 258 curve_flip · b258 · lab.html — the hoop cups the viewpoint instead of bulging away from it,
+  and right/left, up/down and toward/away are permanently reversed.
+  curve_flip (the bow): the X and Y arcs were bowing the wrong way. Both arms bent AWAY from the
+  viewpoint, which draws the FAR side of a sphere with him outside it looking in. He is at the
+  centre — the phone orbits his head — so the arms have to come round TOWARD him at both ends. One
+  sign on the sagitta: orb() adds az*sag now instead of subtracting it. The origin is still fixed
+  (sag is zero at d=0), so nothing is pinned and no kink comes back.
+  BOW 8 → 19, because at 8 the curve was arguable at a glance and the entire reason for drawing it
+  is that it should not be. Measured on the drawing: each arm's tip now ends up about 15px toward
+  the viewpoint of where a straight rail would have put it — 44% of the arm's own length — while
+  still starting exactly at the origin.
+  the arithmetic bends with it, which is the half he asked for that is not the picture. A phone
+  out along X or Y is no longer at the flat (x, y, z) a rail would give: it has ridden two arcs and
+  come round toward the viewpoint by each one's sagitta. sag_of() adds both to Z, from the SAME
+  BOW the axes are drawn with, so the plate can never sit off the hoop it is meant to be on. The
+  per-axis guide bars and their knobs ride the arcs too, so a knob is on the axis it reads rather
+  than beside it.
+  a note on reading the drawing: the middle of an arm sits on the FAR side of its own chord even
+  though the arm is curling toward him — that is just what a bow anchored at the origin looks like.
+  The first version of the test measured that mid-chord bulge and reported the sign backwards. Read
+  the TIP against a straight arm of the same length; that is the honest question.
+  perm_flip: PUSH_INV goes from { 1, 1, 1 } to { -1, -1, -1 }. That is the one place the resting
+  sign of a straight vector lives, so all three reverse at once and the five switches still flip
+  against it — every switch reads "off" for the way the page now behaves. Walked through with every
+  switch off: nudge right and the cards go left, nudge up and they go down, nudge toward him and he
+  goes further. Then each switch on in turn: exactly reversed again, and 256's suite still measures
+  every one of the five as exactly negating its own vector and nothing else.
+  one thing this shook out: the spoken caption for x and y read off the raw input sign while the
+  depth caption read off the result. While every sign was +1 the two agreed and the difference was
+  invisible; with the vectors reversed it would have said "right" every time the cards went left.
+  Both read off the result now.
+  60fps, lab suite 256 green, no page errors. Still no new trace.
+- NEXT → add entry 259 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

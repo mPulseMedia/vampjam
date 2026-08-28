@@ -9,8 +9,53 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "257 admin_same",
+        id: "258 curve_flip",
         expanded: true,
+        nodes: [
+          { text: "258 curve_flip", children: [
+            { text: "prompt_restate", children: [
+              { text: "In the 3D diagram AND in the calculations, curve X/Y and up/down the opposite way." },
+              { text: "From where I sit it should be concave, not convex \u2014 and more dramatically so." },
+              { text: "Keep the flip buttons, but permanently flip right/left, up/down and toward/away." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "In the 3-D diagram and the calculations that you use, I want you to curve the XY and up-and-down button to make it the opposite of what it is right now meaning if Z toward me when me in that position sees it, it should be concave not convex and more dramatically so. And keep those on off buttons or the flip buttons for the directions but permanently flip the right left up down and toward and away." }
+            ]},
+            { text: "the_bow", children: [
+              { text: "the arms were bending away from you, which draws the far side of a sphere with you outside it looking in" },
+              { text: "you are at the centre \u2014 the phone orbits your head \u2014 so both ends now come round toward you instead" },
+              { text: "and the bow is more than twice as deep, because at the old size it was arguable at a glance" },
+              { text: "measured: each arm\u2019s tip ends up about 15px toward you of where a straight rail would put it, 44% of the arm\u2019s own length" }
+            ]},
+            { text: "the_arithmetic", children: [
+              { text: "the numbers bend with the picture now, which was the half of it that isn\u2019t drawing" },
+              { text: "a phone out along X or Y has ridden two arcs, so it has come round toward you by each one\u2019s depth \u2014 that is added to Z from the same bow the axes are drawn with" },
+              { text: "the guide bars and their knobs ride the arcs too, so a knob sits on the axis it reads rather than beside it" }
+            ]},
+            { text: "perm_flip", children: [
+              { text: "right/left, up/down and toward/away are all reversed at rest now" },
+              { text: "one line does it \u2014 the single place the resting sign of a vector lives \u2014 so the five switches still flip against it and all five read \u2018off\u2019 for the way it now behaves" },
+              { text: "walked through with every switch off: nudge right and the cards go left, nudge up and they go down, nudge toward you and you go further" }
+            ]},
+            { text: "two_catches", children: [
+              { text: "the caption under the cards was reading the wrong end of the sum \u2014 it named the nudge you gave, not the way the cards went, so it would have said \u2018right\u2019 every time they went left. It reads the result now, like the depth caption always did." },
+              { text: "and my first test of the curve reported the sign backwards: the middle of an arm sits on the far side of its own chord even while the arm curls toward you. The tip is the honest thing to measure." }
+            ]},
+            { text: "verify", children: [
+              { text: "~18m: the bow measured off the drawing itself, before and after, both arms of both axes, and the origin checked to still be exactly on the origin" },
+              { text: "all six directions nudged with every switch off, then each of the three switches on in turn" },
+              { text: "the earlier lab suite still measures all five switches as exactly negating their own vector and nothing else" },
+              { text: "60fps, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "257 admin_same",
+        expanded: false,
         nodes: [
           { text: "257 admin_same", children: [
             { text: "prompt_restate", children: [

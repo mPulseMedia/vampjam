@@ -490,7 +490,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'vec_flip', bg: '#0e7490', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'curve_flip', bg: '#7c3aed', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1043,7 +1043,12 @@
   // nudge toward you and you go deeper. Flipping is one character per axis, and
   // this pair has now been round once each way, so the sign lives here alone and
   // nothing else in the page has an opinion about it.
-  var PUSH_INV = { x: 1, y: 1, z: 1 };
+  // curve_flip — right/left, up/down and toward/away are all permanently
+  // reversed here, on his say-so, walked out with the phone in hand. This is the
+  // ONE place the resting sign of a straight vector lives; the five switches
+  // below still flip against it, so the switches all still read "off" for the
+  // way it now behaves and "on" for the other way.
+  var PUSH_INV = { x: -1, y: -1, z: -1 };
   // vec_flip — one reverse switch per vector, five of them, each remembered across
   // reloads. Deciding a sign by feel means flipping it, walking around with the
   // phone, and flipping it back — and this page reloads itself whenever its source
@@ -1190,7 +1195,12 @@
       anim = { k: k, from: cell_at(k), t0: Date.now() };
       cell[k] = Math.max(-lim, Math.min(lim, was + d));
       moved = cell[k] !== was;
-      lastBump = BUMP_NAME[k][s > 0 ? 1 : 0] + (moved ? '' : ' (at the end)');
+      // curve_flip — the caption reads off d, not s: it names which way the DECK
+      // went, which is what he can see, and it is what the depth caption two
+      // lines up has always done. While the signs were all +1 the two agreed and
+      // the difference never showed; with the vectors permanently reversed it
+      // would have said "right" every time the cards went left.
+      lastBump = BUMP_NAME[k][d > 0 ? 1 : 0] + (moved ? '' : ' (at the end)');
       deck_build();
     }
     if (typeof mark_add === 'function') mark_add('bump', {
@@ -1349,11 +1359,18 @@
     // where the curve snapped back to the pin. This keeps the honest shape at a
     // legible size, and the head and the letter are taken FROM the arc's own end,
     // so nothing has to be pinned.
-    var BOW = 8;
+    // curve_flip — the bow used to go the other way: both arms of X and Y bent
+    // AWAY from the viewpoint, so the hoop read as the far side of a sphere with
+    // him outside it looking in. It is the near side. He is at the centre and the
+    // phone orbits HIM, so the arms of the axes have to come round TOWARD him at
+    // both ends: concave, cupping the viewpoint, not bulging away from it. One
+    // sign on the sagitta, and BOW more than doubled because at 8 the curve was
+    // arguable at a glance and the whole point of drawing it is that it is not.
+    var BOW = 19;
     function orb(v, d, L) {
       var u = Math.abs(d) / L;
       var sag = BOW * u * u;
-      return { x: v.x * d - az.x * sag, y: v.y * d - az.y * sag, z: v.z * d - az.z * sag };
+      return { x: v.x * d + az.x * sag, y: v.y * d + az.y * sag, z: v.z * d + az.z * sag };
     }
     function arc_path(v, to, step) {
       var L = Math.abs(to), out = '';
@@ -1449,14 +1466,23 @@
     function clamp_ax(v) { var u = v * POSE_SC; return Math.max(-AX_MAX, Math.min(AX_MAX, u)); }
     var mp = model_pos();
     var mv = { x: clamp_ax(mp.x), y: clamp_ax(mp.y), z: clamp_ax(mp.z) };
-    var mvp0 = iso(mv);
+    // curve_flip — the arithmetic bends with the picture. X and Y are arcs, so a
+    // phone that has travelled out along either of them is no longer at the flat
+    // (x, y, z) it would be on a rail: it has come round toward the viewpoint by
+    // the sagitta of each arc it has ridden. Adding both sagittas to Z is the
+    // whole of it, and it is the same BOW the axes are drawn with, so the plate
+    // can never sit off the hoop it is supposed to be travelling on.
+    function sag_of(d) { var u = Math.min(1, Math.abs(d) / AX_LEN); return BOW * u * u; }
+    var mvc = { x: mv.x, y: mv.y, z: mv.z + sag_of(mv.x) + sag_of(mv.y) };
+    var mvp0 = iso(mvc);
     // axis_read: a fat coloured bar from the origin to where the phone stands on
     // that axis, a knob at the end of it, and a dashed line joining the knob to
     // the phone — read one axis at a time without doing the projection yourself.
     var guide = '', knob = '';
-    [[ax, '#dc2626', mv.x], [ay, '#16a34a', mv.y], [az, '#2563eb', mv.z]].forEach(function (g) {
-      var v = g[0], colour = g[1], d = g[2];
-      var p = iso({ x: v.x * d, y: v.y * d, z: v.z * d });
+    [[ax, '#dc2626', mv.x, true], [ay, '#16a34a', mv.y, true], [az, '#2563eb', mv.z, false]].forEach(function (g) {
+      var v = g[0], colour = g[1], d = g[2], bendy = g[3];
+      // the knob sits ON the axis it reads, which is now an arc for X and Y
+      var p = iso(bendy ? orb(v, d, AX_LEN) : { x: v.x * d, y: v.y * d, z: v.z * d });
       if (Math.abs(d) > 0.6) {
         guide += '<line x1="0" y1="0" x2="' + p.x.toFixed(1) + '" y2="' + p.y.toFixed(1) +
                  '" stroke="' + colour + '" stroke-width="3" stroke-linecap="round" opacity="0.45"/>' +
@@ -1477,9 +1503,9 @@
     // the phone plate: a rectangle in its own x/y plane, standing where it has
     // travelled to rather than at the origin
     function corner(sx2, sy2) {
-      return { x: mv.x + px_.x * sx2 + py_.x * sy2,
-               y: mv.y + px_.y * sx2 + py_.y * sy2,
-               z: mv.z + px_.z * sx2 + py_.z * sy2 };
+      return { x: mvc.x + px_.x * sx2 + py_.x * sy2,
+               y: mvc.y + px_.y * sx2 + py_.y * sy2,
+               z: mvc.z + px_.z * sx2 + py_.z * sy2 };
     }
     var w2 = 10, h2 = 18;
     var cs = [corner(-w2, h2), corner(w2, h2), corner(w2, -h2), corner(-w2, -h2)];
