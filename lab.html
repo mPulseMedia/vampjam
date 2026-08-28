@@ -414,7 +414,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'blip_out', bg: '#7c2d12', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'nudge_hold', bg: '#065f46', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -502,8 +502,8 @@
     var per = v.pxPerM || 1;
     var mx =  px / (PAN_INV * per);
     var my = -py / (PAN_INV * per);
-    off.x += mx; off.y += my;      // blip_out: the drag moves where REST is, and
-    show.x += mx; show.y += my;    // the blip plays out from wherever that is
+    off.x += mx; off.y += my;      // nudge_hold: the drag slides under the lattice,
+    show.x += mx; show.y += my;    // and nudges carry on from wherever it left off
     return true;
   }
   function drag_end() { dragOn = false; }
@@ -774,36 +774,54 @@
   // sensor drift, a bad brake, a trapped axis and a half-detected wobble all die
   // at the end of the gesture they happened in instead of accumulating. Where the
   // world stands is `cell`, three integers, and integers do not drift.
-  // blip_out — what the page GIVES BACK is not your gesture. The moment a bump is
-  // recognised, everything measured about it is thrown away — how hard, how far,
-  // how long — and one canned signal is played instead: a short move out in that
-  // direction and straight back. The same shape, the same size, the same duration,
-  // every time, for every one of the six directions. Your bump is the trigger; the
-  // blip is the answer. Nothing accumulates, so there is nowhere for drift to go.
-  var BUMP_ZOOM = 1.6;              // the zoom at the peak of a blip toward you
-  // derive the depth amplitude from the zoom law, so changing Z_POWER cannot
-  // silently change what a bump toward you looks like
-  var BLIP_Z    = D0 * (1 - Math.pow(BUMP_ZOOM, -1 / Z_POWER));
-  var BLIP_FRAC = 0.25;             // a sideways blip peaks at a quarter of the screen
-  var BLIP_PAN  = BLIP_FRAC * PHONE_W;
-  var BLIP_AMP  = { x: BLIP_PAN, y: BLIP_PAN, z: BLIP_Z };
-  // the shape of the signal, in milliseconds: out fast, hold for an instant so the
-  // eye can land on it, then ease back. Asymmetric on purpose — out and back at
-  // the same speed reads as a wobble, not as a tick.
-  var BLIP_OUT = 90, BLIP_HOLD = 50, BLIP_IN = 180;
-  var BLIP_MS  = BLIP_OUT + BLIP_HOLD + BLIP_IN;
-  var blip = null;                  // { k, s, t0 } while one is playing
-  var off  = { x: 0, y: 0, z: 0 };  // what the finger has dragged: where rest IS
-  function ease(u) { return u * u * (3 - 2 * u); }        // smoothstep
-  // blip_at — where the canned signal stands right now, in metres on axis k
-  function blip_at(k) {
-    if (!blip || blip.k !== k) return 0;
-    var t = Date.now() - blip.t0;
-    if (t >= BLIP_MS) { blip = null; return 0; }
-    var u = t < BLIP_OUT ? ease(t / BLIP_OUT)
-          : t < BLIP_OUT + BLIP_HOLD ? 1
-          : 1 - ease((t - BLIP_OUT - BLIP_HOLD) / BLIP_IN);
-    return blip.s * BLIP_AMP[k] * u;
+  // nudge_hold — the two halves, together. Your bump is only the TRIGGER:
+  // everything measured about it — how hard, how far, how long — is thrown away,
+  // and one STANDARD nudge is delivered instead, the same size and the same shape
+  // every time. What is new here is that the nudge STAYS. It does not go out and
+  // come back; it carries the world one notch the way you nudged and leaves it
+  // there. Where the world stands is `cell`, three whole numbers, and a nudge is
+  // +1 or -1 on exactly one of them. Whole numbers do not drift, and the gesture
+  // that moved them is forgotten the instant it has been counted.
+  var cell = { x: 0, y: 0, z: 0 };
+  var CELL_MAX = { x: 9, y: 9, z: 5 };
+  var BUMP_ZOOM = 1.6;              // how much bigger one nudge toward you makes the world
+  // derive the depth notch from the zoom law, so changing Z_POWER cannot silently
+  // change what a nudge toward you is worth
+  var NUDGE_Z   = D0 * (1 - Math.pow(BUMP_ZOOM, -1 / Z_POWER));
+  // nudge_even — a sideways notch is a quarter of the SCREEN, at every zoom. Pan is
+  // metres times the zoom, so a notch fixed in metres would be a quarter screen at
+  // x1 and nine screens at x39 — one nudge would throw you clean off the picture
+  // the moment you had leaned in. So the metres per notch are divided by the zoom
+  // the LATTICE is at: a settled power of BUMP_ZOOM, so nothing chases itself.
+  var NUDGE_FRAC = 0.25;
+  var NUDGE_PAN  = NUDGE_FRAC * PHONE_W;
+  // the shape of the delivery: 210ms, fast off the mark and easing into its
+  // landing, so it reads as a nudge arriving rather than as a slide
+  var NUDGE_MS = 210;
+  var anim = null;                  // { k, from, t0 } while a nudge is landing
+  var off  = { x: 0, y: 0, z: 0 };  // what the finger has dragged, under the lattice
+  function ease(u) { var v = 1 - u; return 1 - v * v * v; }   // cubic ease-out
+  // cell_at — the value of axis k right now: the whole number it has reached, or
+  // the eased journey there while a nudge is still landing
+  function cell_at(k) {
+    if (!anim || anim.k !== k) return cell[k];
+    var t = Date.now() - anim.t0;
+    if (t >= NUDGE_MS) { anim = null; return cell[k]; }
+    return anim.from + (cell[k] - anim.from) * ease(t / NUDGE_MS);
+  }
+  // zoom_at — the magnification the lattice is at right now, straight off the same
+  // law view() uses. It is a pure function of the clock, so reading it here to
+  // scale the pan cannot start anything chasing itself.
+  function zoom_at() {
+    var d = Math.max(D_MIN, Math.min(D_MAX, D0 - DEPTH_INV * (cell_at('z') * NUDGE_Z)));
+    return Math.max(MULT_MIN, Math.min(MULT_MAX, Math.pow(D0 / d, Z_POWER)));
+  }
+  function nudge_m(k) {
+    // pan_settle: divide by the ACTUAL zoom, not by BUMP_ZOOM^z. The two are only
+    // equal for one step — the zoom law is not a power of the depth — so using the
+    // shorthand left a couple of pixels of pan snap on every nudge after the first.
+    return k === 'z' ? cell_at('z') * NUDGE_Z
+                     : cell_at(k) * NUDGE_PAN / zoom_at();
   }
   // bump_soft — 2cm of carry was tuned when a gesture had to be a whole slide.
   // A bump is a flick, and a gentle flick carries barely a centimetre, so it was
@@ -830,11 +848,15 @@
   function bump_fire() {
     var b = bump_read(run);
     if (b) {
-      // blip_out: throw the measurement away and play the standard signal
-      blip = { k: b.k, s: b.s, t0: Date.now() };
-      lastBump = BUMP_NAME[b.k][b.s > 0 ? 1 : 0];
+      // nudge_hold: throw the measurement away and deliver one standard notch,
+      // which stays where it lands
+      var lim = CELL_MAX[b.k], was = cell[b.k];
+      anim = { k: b.k, from: cell_at(b.k), t0: Date.now() };
+      cell[b.k] = Math.max(-lim, Math.min(lim, was + b.s));
+      lastBump = BUMP_NAME[b.k][b.s > 0 ? 1 : 0] + (cell[b.k] === was ? ' (at the end)' : '');
       if (typeof mark_add === 'function') mark_add('bump', {
-        way: lastBump, axis: b.k, ran: +Math.abs(run[b.k]).toFixed(4) });
+        way: BUMP_NAME[b.k][b.s > 0 ? 1 : 0], axis: b.k,
+        cell: [cell.x, cell.y, cell.z], ran: +Math.abs(run[b.k]).toFixed(4) });
     } else {
       lastBump = '';
       var big = Math.max(Math.abs(run.x), Math.abs(run.y), Math.abs(run.z));
@@ -1288,13 +1310,14 @@
   // clock, so a burst of samples with no frame between them still shapes the
   // move the same way — and so the levelling window keeps the picture alive.
   function smooth_step(dt) {
-    // blip_out: what is drawn is where the finger left it, plus the canned signal.
-    // No spring: the blip's own curve IS the animation, and a spring on top would
-    // smear the one thing that has to be identical every time. pos/vel/lead are
-    // evidence being gathered for the NEXT bump and are never drawn.
+    // nudge_hold: what is drawn is the lattice, plus whatever the finger has
+    // dragged. No spring — the nudge's own curve IS the animation, and a spring on
+    // top would smear the one thing that has to be identical every time. pos, vel
+    // and lead are evidence being gathered for the NEXT bump and are never drawn,
+    // so the world holds perfectly still through a gesture and moves when it ends.
     ['x', 'y', 'z'].forEach(function (k) {
       var was = show[k];
-      show[k]  = off[k] + blip_at(k);
+      show[k]  = off[k] + nudge_m(k);
       showV[k] = dt > 0 ? (show[k] - was) / dt : 0;
     });
   }
@@ -1506,10 +1529,10 @@
     root.setProperty('--turn', v.turn.toFixed(2) + 'deg');
     // crisp_deep: raise the picture's own resolution in steps as you close in.
     // shk_hold — it goes UP the instant the zoom needs it and comes DOWN only
-    // after a second of not needing it. A blip toward you takes the zoom to x1.6
-    // and back in a third of a second, and re-laying out a 700x1250 image twice
-    // inside one signal is the most expensive thing on the page for no gain at
-    // all: the picture is the same at the end as it was at the start.
+    // after a second of not needing it. Re-laying out a 700x1250 image is the most
+    // expensive thing on the page, and the zoom now moves in short landings that
+    // can cross a power-of-two boundary and come straight back over it; the hold
+    // keeps one nudge from costing two re-layouts.
     if (mult > shkPeak) { shkPeak = mult; shkAt = now; }
     else if (now - shkAt > 1000) { shkPeak = mult; shkAt = now; }
     var shk = Math.min(SHK_MAX, Math.max(1, Math.pow(2, Math.round(Math.log(shkPeak) / Math.LN2))));
@@ -1529,10 +1552,12 @@
     pos = { x: 0, y: 0, z: 0 };
     run = { x: 0, y: 0, z: 0 };
     lead = { x: 0, y: 0, z: 0 };
-    blip = null;                       // blip_out: any signal in flight is dropped
+    anim = null;
+    cell = { x: 0, y: 0, z: keepDepth ? cell.z : 0 };   // nudge_hold: back to the middle
     off  = { x: 0, y: 0, z: 0 };
     lastBump = '';
-    show = { x: 0, y: 0, z: 0 }; showV = { x: 0, y: 0, z: 0 };
+    var z = cell.z * NUDGE_Z;
+    show = { x: 0, y: 0, z: z }; showV = { x: 0, y: 0, z: 0 };
     // open the levelling window: hold still, this is the pose we measure from
     calLeft = CAL_MS / 1000; calSum = { x: 0, y: 0, z: 0 }; calN = 0; calSq = 0;
     if (motionOn) say('send', 'levelling \u2014 hold still\u2026');
@@ -1926,10 +1951,10 @@
       var v = view();
       return { px: v.ox, py: v.oy, mult: v.mult, dist: v.dist, roll: v.roll, tilt: v.tilt, turn: v.turn,
                moving: moving, held: lastMove, lock: +Math.max(0, lockLeft).toFixed(2),
-               bump: lastBump, blip: blip ? blip.k + (blip.s > 0 ? '+' : '-') : '',
-               blipAt: (blip ? Date.now() - blip.t0 : -1),
-               blipSpec: { out: BLIP_OUT, hold: BLIP_HOLD, back: BLIP_IN, ms: BLIP_MS,
-                           pan: +BLIP_PAN.toFixed(4), z: +BLIP_Z.toFixed(5), zoom: BUMP_ZOOM },
+               bump: lastBump, cell: { x: cell.x, y: cell.y, z: cell.z },
+               landing: anim ? anim.k : '',
+               nudge: { ms: NUDGE_MS, pan: +NUDGE_PAN.toFixed(4),
+                        z: +NUDGE_Z.toFixed(5), zoom: BUMP_ZOOM, max: CELL_MAX },
                show: { x: +show.x.toFixed(4), y: +show.y.toFixed(4), z: +show.z.toFixed(4) },
                cal: +Math.max(0, calLeft).toFixed(3),
                bias: { x: +bias.x.toFixed(4), y: +bias.y.toFixed(4), z: +bias.z.toFixed(4) },

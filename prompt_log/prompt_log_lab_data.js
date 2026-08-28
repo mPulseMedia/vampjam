@@ -9,8 +9,50 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "235 blip_out",
+        id: "236 nudge_hold",
         expanded: true,
+        nodes: [
+          { text: "236 nudge_hold", children: [
+            { text: "prompt_restate", children: [
+              { text: "What I missed: you want the thing actually nudged in the direction you nudged it." },
+              { text: "So: the standard nudge, but it moves the world and stays there." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, but the thing is the thing you missed is that I want the thing actually nudged in the direction that I have nudged it" }
+            ]},
+            { text: "nudge_hold", children: [
+              { text: "your bump is still only the trigger \u2014 how hard, how far, how long is thrown away and one standard nudge is delivered instead" },
+              { text: "but now it STAYS: it carries the world one notch the way you nudged it and leaves it there" },
+              { text: "235 sent the signal out and straight back, which was the half I got wrong" },
+              { text: "where the world stands is three whole numbers, and whole numbers do not drift" }
+            ]},
+            { text: "the_landing", children: [
+              { text: "210ms, fast off the mark and easing into its landing, so it reads as a nudge arriving rather than a slide" },
+              { text: "no spring anywhere \u2014 the curve is the whole animation, and a spring on top would smear the one thing that has to be identical every time" },
+              { text: "the world holds perfectly still through the gesture and moves when it ends" }
+            ]},
+            { text: "same_everywhere", children: [
+              { text: "a sideways nudge is a quarter of the screen at every zoom \u2014 measured 91 pixels at 1x, 2.6x and 7.1x, the same to the pixel" },
+              { text: "getting that exact took running the real zoom law rather than a shorthand; the shorthand was off by enough to snap the picture a couple of pixels at the start of every nudge inward" }
+            ]},
+            { text: "measured", children: [
+              { text: "all six directions deliver and hold; three nudges right land 91, 91 and 90 pixels and stay" },
+              { text: "gentle, violent and soft all give exactly 91 pixels" },
+              { text: "five seconds of shaking, light, medium and hard, moves nothing at all" },
+              { text: "reset returns to the middle; the finger drag still slides underneath and nudges carry on from there" }
+            ]},
+            { text: "verify", children: [
+              { text: "~11m: release nudge_hold, green \u2014 every direction measured for both distance and staying put, distance measured at three zooms, shake rejection measured, frame rate back to 54-56fps where it had been 21, suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "no new trace arrived with this one \u2014 nothing since the 11:43 batch" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "235 blip_out",
+        expanded: false,
         nodes: [
           { text: "235 blip_out", children: [
             { text: "prompt_restate", children: [

@@ -1893,7 +1893,36 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   gain at all — the picture is identical at the end to what it was at the start.
   swipe_pan survives: the finger drag moves where REST is, and the blip plays out from wherever
   the finger left it. Suite green, no page errors. No new trace with this one.
-- NEXT → add entry 236 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 236 nudge_hold · b236 · lab.html — the standard nudge, and it STAYS.
+  nudge_hold: the two halves he asked for across 234, 235 and this one, finally together. From
+  235: the bump is only the TRIGGER — how hard, how far, how long is all thrown away and one
+  standard nudge is delivered instead, identical every time. What 235 got wrong is that its
+  signal went out and came straight back; he wants the thing actually moved the way he nudged it.
+  So the nudge now carries the world one notch that way and LEAVES it there. Where the world
+  stands is `cell`, three whole numbers; a nudge is +1 or -1 on exactly one of them; whole
+  numbers do not drift, and the gesture is forgotten the instant it has been counted. CELL_MAX
+  9/9/5.
+  the delivery is 210ms on a cubic ease-out — fast off the mark, easing into its landing, so it
+  reads as a nudge arriving rather than as a slide. No spring anywhere: the curve IS the
+  animation, and a spring on top would smear the one thing that has to be identical every time.
+  pos, vel and lead survive only as evidence for the NEXT bump and are never drawn, so the world
+  holds perfectly still through a gesture and moves when it ends.
+  nudge_even + pan_settle + zoom_at: a sideways nudge is a quarter of the SCREEN at every zoom.
+  The metres per notch are divided by the zoom, and the first attempt divided by BUMP_ZOOM^z as
+  shorthand — but the zoom law is not a power of the depth ((D0/(D0−z))^Z_POWER; two notches is
+  ×2.59, not ×2.56), so the shorthand left a couple of pixels of pan snap on every nudge after
+  the first. zoom_at() now runs the actual law off cell_at('z'), which is a pure function of the
+  clock and so cannot start anything chasing itself. Measured 91px per nudge at ×1, ×2.59 and
+  ×7.08 — the same to the pixel.
+  measured: right, left, up, down, closer and away all deliver and hold; three nudges right land
+  91 + 91 + 90px and stay; gentle, violent and soft all give exactly 91px; five seconds of
+  shaking at 0.35, 0.55 and 0.9 m/s² each leave cell at 0,0,0 with zero pixels of wander; reset
+  returns to the middle. swipe_pan slides under the lattice and nudges carry on from where the
+  finger left off.
+  shk_hold earns its keep here: the zoom now moves in short landings that can cross a
+  power-of-two boundary, and holding --shk for a second took the shake-driven frame rate at ×1.6
+  from 21fps to 54-56. Suite green, no page errors. No new trace with this one.
+- NEXT → add entry 237 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
