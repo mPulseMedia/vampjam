@@ -29,12 +29,13 @@
     {
       "id": "t_1785955513193_2uqj",
       "t": 881.420081,
-      "label": "slower"
+      "label": "Song 2 - slower"
     },
     {
       "id": "t_1786683022184_x1tg",
       "t": 5630.956158518679,
-      "label": "Whaling"
+      "label": "Whaling",
+      "fav": true
     },
     {
       "id": "t_1786683508470_m3dm",
