@@ -1,1 +1,1 @@
-zoom_wide
+auto_commit
