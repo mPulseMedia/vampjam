@@ -9,8 +9,97 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "238 card_deck",
+        id: "240 nudge_raw",
         expanded: true,
+        nodes: [
+          { text: "240 nudge_raw", children: [
+            { text: "prompt_restate", children: [
+              { text: "I need shades of colour on the cards \u2014 the digit alone is not enough to tell things are moving." },
+              { text: "And small gestures still do not feel recognisable, in any of the six directions." },
+              { text: "Maybe a simple function that just reads the profile of the bump, efficiently." },
+              { text: "The signals have been heavily transformed from the raw accelerometer through several stages." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I guess I need shades of color on the cards to tell if things are moving. I can\u2019t quite make it with just the digit and the feeling doesn\u2019t feel right in terms of being able to make small gestures up down right left zoom forward zoom back seems like small little gestures I should be able to recognize. I think that\u2019s what we\u2019re looking for so maybe there\u2019s some simple function that just reads for the profile of the bomb does so efficiently and doesn\u2019t applied to a number of signals, and those signals have been rather efficiently. Tran, modified from raw accelerometer data through two points in the piece." }
+            ]},
+            { text: "nudge_raw", children: [
+              { text: "you were right about the chain. Everything else on the page rotates every reading twice and subtracts a calibrated offset before using it." },
+              { text: "that is correct for a world that has to stay put while the phone turns, and wrong for this: the attitude reading is noisy and runs a frame or two behind, so on a small fast nudge those rotations smear one axis into another" },
+              { text: "and the test that decides right from up was being handed the smeared version" },
+              { text: "the detector now reads the accelerometer exactly as it arrives, in the phone\u2019s own axes, and nothing touches it on the way" },
+              { text: "the proof: same build, same gesture, only the input swapped \u2014 a small UP nudge with the phone held at a tilt came back as \u2018deeper\u2019 the old way and \u2018up\u2019 the new way" }
+            ]},
+            { text: "nudge_prof", children: [
+              { text: "the function you asked for is two running averages and a subtraction" },
+              { text: "the slow one is whatever the phone thinks zero is right now \u2014 resting offset, drift, a hand slowly tilting \u2014 and it replaces the calibration entirely" },
+              { text: "the fast one is the gesture; the difference between them is a nudge and nothing else" },
+              { text: "three multiplies and an add per axis per reading, and it no longer cares which way the phone is pointing" }
+            ]},
+            { text: "card_hue", children: [
+              { text: "every card carries its own colour now, so movement is visible without reading a digit" },
+              { text: "the hue comes from the card\u2019s number by the golden angle, which puts neighbours far apart on the wheel \u2014 the closest two neighbours are 32 degrees apart, so what slides into the middle is plainly a different colour from what left" },
+              { text: "lightness carries the depth, stepping evenly in and out so no layer boundary ever jumps" },
+              { text: "the card you are on takes the same hue at full strength, with a ring to match" }
+            ]},
+            { text: "measured", children: [
+              { text: "0.4 fires in 66ms, 0.5 in 33ms, 0.85 and up in a single reading" },
+              { text: "all three axes read correctly at three different phone attitudes and through 14 degrees of attitude jitter" },
+              { text: "four strengths of shaking still move nothing" }
+            ]},
+            { text: "verify", children: [
+              { text: "~18m: release nudge_raw, orange \u2014 the old and new input paths A/B\u2019d on the same build, sensitivity re-swept, tilt and jitter trials on all three axes, hue separation and depth lightness measured, suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new. lab_gestures.json on main is unchanged." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "239 deep_room",
+        expanded: false,
+        nodes: [
+          { text: "239 deep_room", children: [
+            { text: "prompt_restate", children: [
+              { text: "You stop me after a few layers down in Z." },
+              { text: "Let me go a lot closer and a lot further from where I start." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "You\u2019re stopping me after going a few layers down in Z. I think you should let me go a lot closer and a lot further from where I start." }
+            ]},
+            { text: "deep_room", children: [
+              { text: "you now start in the MIDDLE of the stack rather than at the top of it" },
+              { text: "twelve layers out and thirteen in from the card the page opens on \u2014 twenty-five nested spreads, which is more addresses than you could visit" },
+              { text: "the old shape was wrong, not just small: \u2018where I start\u2019 was a wall in one direction" },
+              { text: "the two ends refuse cleanly instead of jamming" }
+            ]},
+            { text: "seed_vary", children: [
+              { text: "the layers above the start get their own scattered card numbers now" },
+              { text: "seeded with the middle card all the way up, every layer out looked identical to the last one and only the small line underneath told you anything had happened" },
+              { text: "the scatter is fixed, so a card keeps its number between sessions" }
+            ]},
+            { text: "what_the_card_says", children: [
+              { text: "the last three parts of the route, with a leading ellipsis \u2014 enough to tell neighbours apart and watch the address change as you drop" },
+              { text: "and underneath, how far you are from where you started: \u2018start\u2019, \u2018+6 in\u2019, \u2018\u22126 out\u2019" },
+              { text: "the numbers are clipped to their own cards now; a long one used to bleed across the gap and make two cards read as one" }
+            ]},
+            { text: "coming_back", children: [
+              { text: "a layer you have visited puts you back exactly where you were standing" },
+              { text: "one you have never wandered on puts you in its middle, because you were never anywhere else on it" },
+              { text: "measured: two layers in and back out retraces exactly, then keeps going past the start" }
+            ]},
+            { text: "verify", children: [
+              { text: "~9m: release deep_room, violet \u2014 twelve out and thirteen in measured layer by layer, the retrace measured, sensitivity and shake rejection re-measured unchanged, suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new. lab_gestures.json on main is unchanged: 21 takes from the 11:43 batch." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "238 card_deck",
+        expanded: false,
         nodes: [
           { text: "238 card_deck", children: [
             { text: "prompt_restate", children: [

@@ -1988,7 +1988,64 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   (that a reset presents the same thing as a load) is covered by the deck geometry checks in
   vj_239. Frame rate 58-59fps. Suite green, no page errors.
   still no new trace: lab_gestures.json on main is unchanged, 21 takes from the 11:43 batch.
-- NEXT → add entry 239 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 239 deep_room · b239 · lab.html — you start in the middle of the stack, not at the top of it.
+  deep_room: DEEP_MAX 4 with a hard floor above was the wrong SHAPE, not just too small. He wants
+  to go a long way closer AND a long way further from where he starts, and "where I start" should
+  not be a wall in one direction. So the route is pre-seeded DEEP_START 12 levels deep and runs to
+  DEEP_MAX 25: twelve layers out and thirteen in from the card the page opens on. At 25 cards a
+  layer that is 5^25 addresses — no practical end either way. Measured: 12 out and 13 in, each
+  landing on its own layer, and the ends refuse cleanly instead of jamming.
+  seed_vary: the seeded layers get a fixed, repeatable SCATTER of card numbers rather than the
+  centre card all the way up. Seeded with 13s, every layer out looked identical to the one before
+  — same numbers, same spread — and the only sign you had moved was the small line underneath.
+  The scatter comes from a fixed integer hash, so a card keeps its number between sessions.
+  name_tail: a 25-part route cannot go on a card, so a card wears the last three parts with a
+  leading ellipsis — enough to tell neighbours apart and to watch the address change as you drop,
+  without becoming a barcode. deep_say replaces the old "layer N" with the thing he actually wants
+  to read: "start", "+6 in", "−6 out" — distance from where he began, not absolute depth.
+  coming back up: a layer you have visited puts you back exactly where you were standing; a seeded
+  one puts you in its middle, because you were never anywhere else on it. Measured: wander in two
+  layers and back out and the route retraces exactly, then keeps going past the start.
+  name_clip: cards clip their own text. A three-part number at the old size bled across the gap
+  into the neighbour, which made two cards read as one. Font down from 0.15 to 0.128 of the card
+  width, overflow hidden, and the number kept on one line.
+  Sensitivity and shake rejection re-measured unchanged (0.4 fires in 50ms, 0.85+ in one sample,
+  four strengths of shaking move nothing). Suite green, no page errors.
+  still no new trace: lab_gestures.json on main is unchanged, 21 takes from the 11:43 batch.
+- 240 nudge_raw · b240 · lab.html — the detector stops going through the transform chain, and the
+  cards get colour.
+  nudge_raw: he was right to suspect the chain. Every other thing on the page rotates each sample
+  TWICE — by the live attitude, then back into the zero frame — and subtracts a calibrated bias
+  before using it. That is correct for a world that must stay put while the phone turns, and
+  wrong for this: deviceorientation is noisy and lags the accelerometer by a frame or two, so on
+  a SMALL fast nudge the two rotations smear one axis into another, and the dominance test — the
+  thing that decides right from up — was being handed exactly the smeared version.
+  A nudge needs none of it. The phone barely turns during one, so the phone's own axes ARE the
+  axes he means: +x right, +y up, +z out of the glass toward him. nudge_watch now takes
+  e.acceleration as it arrives and nothing touches it on the way.
+  A/B, same build, same gestures, only the input path swapped: a small UP nudge with the phone
+  held at beta 25 / gamma 15 came back as "deeper" on the rotated path and as "up" on the raw
+  one. That is the failure he has been feeling.
+  nudge_prof: the "simple function that reads the profile of the bump" is two exponential averages
+  and a subtraction. The SLOW one (900ms) is whatever the phone thinks zero is right now —
+  resting offset, slow drift, a hand gradually tilting; it replaces the calibrated bias entirely
+  and needs no levelling window. The FAST one (40ms) is the gesture. Their difference is a nudge
+  and nothing else: slower than the slow average is absorbed, faster than the fast one is smoothed
+  away, and what survives in the middle is exactly the shape of a wrist flick. Three multiplies
+  and an add per axis per sample, no attitude dependence, no calibration.
+  measured after the change: 0.4 m/s² fires in 66ms, 0.5 in 33ms, 0.85 and up in ONE sample; four
+  strengths of shaking still move nothing; and a nudge along each of the three phone axes reads
+  correctly at three attitudes and through 14° of attitude jitter.
+  card_hue: every card carries its own colour, so movement is visible without reading a digit.
+  Hue comes from the card's number by the golden angle, which puts NEIGHBOURS far apart on the
+  wheel — measured: 25 distinct hues on a layer, and the closest two neighbours are 32° apart, so
+  whatever slides into the middle is plainly a different colour from what left. Lightness carries
+  the DEPTH as a triangle wave over 8 layers rather than a saw, so stepping in and stepping out
+  both change it by the same 3 points and no layer boundary ever jumps. Measured: 80, 83, 86, 89
+  over four layers in a row. The card you are on takes the same hue at full saturation with a
+  matching ring.
+  Suite green, no page errors. Still no new trace: lab_gestures.json on main is unchanged.
+- NEXT → add entry 241 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
