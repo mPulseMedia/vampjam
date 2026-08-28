@@ -269,6 +269,40 @@
   .tag_row .tag_label {
     flex: 1 1 60px; min-width: 0;
   }
+  /* title_roll — the selected row's title runs through its own width, slowly, so
+     a long one can be read whole without opening it. Both edges are cropped to a
+     soft fade rather than an ellipsis: an ellipsis says "there is more and you
+     cannot have it", a fade says "there is more and it is coming past". The
+     scrolling itself is done in JS on the field's scrollLeft (the title is a real
+     input, so its text cannot be animated by CSS) and it stops the moment you
+     focus the field to type. */
+  .tag_row.active .tag_label {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+    text-overflow: clip;
+  }
+  .tag_row.active .tag_label:focus {
+    -webkit-mask-image: none; mask-image: none;
+  }
+  /* num_first — the number is a control now, so it gets a control's target and a
+     control's feedback. It keeps the muted weight: it is a label you can press,
+     not a button. */
+  .tag_num { cursor: pointer; padding: 6px 2px; }
+  .tag_num:active { color: var(--fg); }
+  /* fav_wait — grey and undulating while the save is in the air. Slow enough to
+     read as breathing rather than blinking; a blink says "error", a breath says
+     "working". */
+  .tag_fav.wait, button.ghost.tag_fav.wait {
+    color: var(--muted); opacity: 1;
+    animation: fav_breath 1.25s ease-in-out infinite;
+  }
+  @keyframes fav_breath {
+    0%, 100% { opacity: 0.30; transform: scale(0.92); }
+    50%      { opacity: 0.85; transform: scale(1.06); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tag_fav.wait, button.ghost.tag_fav.wait { animation: none; opacity: 0.5; }
+  }
   .tag_row .tag_end {
     font-variant-numeric: tabular-nums; color: var(--warn);
     cursor: pointer; padding: 5px 7px; border-radius: 7px;
@@ -722,6 +756,7 @@
   var tags         = load_json(STORAGE_TAGS, []);
   var sortMode     = 'time';   // Manual sort removed -- always time-ordered
   var activeTagId  = null;
+  var favPending   = {};      // fav_wait: hearts whose save has not landed yet
   // tap_select: the tap that SELECTS a highlight must not also focus its text.
   // The re-render swaps in an editable field mid-gesture, and the ghost click
   // that follows would land on it — this window swallows that focus.
@@ -931,18 +966,28 @@
     return is_editing_label() || !!saveDebounceTimer || saveInFlight ||
            (Date.now() - lastLocalEditAt < 20000);
   }
-  function queue_save_data_to_repo(msg) {
+  // save_done — anything that wants to know when the debounced save actually
+  // lands can pass a callback. Several edits inside one debounce window collapse
+  // into one save, so the waiters are a list and all are told together. A page
+  // with no worker (or a local-only recording) tells them immediately, or a heart
+  // would undulate for ever waiting on a request that is never made.
+  var saveWaiters = [];
+  function save_done(ok) {
+    var w = saveWaiters; saveWaiters = [];
+    w.forEach(function (f) { try { f(ok); } catch (e) {} });
+  }
+  function queue_save_data_to_repo(msg, onDone) {
     lastLocalEditAt = Date.now();
-    if (!WORKER_URL) return;
+    if (onDone) saveWaiters.push(onDone);
+    if (!WORKER_URL) { save_done(true); return; }
     if (msg) saveDebounceMsg = msg;
     if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
     saveDebounceTimer = setTimeout(function () {
       saveDebounceTimer = null;
       var m = saveDebounceMsg || 'sync tags';
       saveDebounceMsg = null;
-      save_data_to_repo(m).then(function () {
-      }).catch(function (err) {
-      });
+      save_data_to_repo(m).then(function () { save_done(true); })
+                          .catch(function () { save_done(false); });
     }, 3000);
   }
 
@@ -954,7 +999,8 @@
     if (document.visibilityState === 'hidden' && saveDebounceTimer) {
       clearTimeout(saveDebounceTimer); saveDebounceTimer = null;
       var mFlush = saveDebounceMsg || 'sync tags'; saveDebounceMsg = null;
-      save_data_to_repo(mFlush).catch(function () {});
+      save_data_to_repo(mFlush).then(function () { save_done(true); })
+                               .catch(function () { save_done(false); });
     }
   });
   function save_data_to_repo(message) {
@@ -1686,6 +1732,38 @@
   // Now one tap is the question and the answer.
   // The intent from a previous end-preview is cleared first, or a start you are
   // auditioning could be cut off by a stop that was queued for something else.
+
+  // title_roll — one loop for the whole page: whichever row is selected, if its
+  // title is wider than its field, walk it slowly from one end to the other,
+  // hold, walk back, hold. Driven off the clock rather than a per-frame step so
+  // the speed is the same on any device, and abandoned the moment the field is
+  // focused (you are editing) or the selection moves.
+  var ROLL_PXPS = 16;      // px per second — a reading pace, not a scroll
+  var ROLL_HOLD = 1400;    // ms paused at each end
+  (function title_roll() {
+    // the position is kept here as a FLOAT and assigned each frame. Reading it
+    // back off scrollLeft does not work: at 16px a second a frame is a quarter of
+    // a pixel, the element rounds that to zero on read, and the whole thing sits
+    // still while looking like it should be moving.
+    var el = null, dir = 1, phase = 0, last = 0, pos = 0;
+    function tick(now) {
+      requestAnimationFrame(tick);
+      var row = document.querySelector('.tag_row.active');
+      var field = row && row.querySelector('.tag_label');
+      if (field !== el) { el = field; dir = 1; phase = ROLL_HOLD; pos = 0; last = now; if (el) el.scrollLeft = 0; }
+      if (!el) return;
+      var over = el.scrollWidth - el.clientWidth;
+      if (over <= 2 || document.activeElement === el) { pos = 0; el.scrollLeft = 0; last = now; return; }
+      var dt = Math.min(120, now - last); last = now;
+      if (phase > 0) { phase -= dt; return; }
+      pos += dir * ROLL_PXPS * dt / 1000;
+      if (pos >= over) { pos = over; dir = -1; phase = ROLL_HOLD; }
+      else if (pos <= 0) { pos = 0; dir = 1; phase = ROLL_HOLD; }
+      el.scrollLeft = pos;
+    }
+    requestAnimationFrame(tick);
+  })();
+
   function nudge_tag(id, delta) {
     var tag = tags.filter(function (x) { return x.id === id; })[0];
     if (!tag) return;
@@ -1851,6 +1929,21 @@
       row.appendChild(handle);
 
       var amPlayingThis = isPlaying && !player.paused;
+
+      // num_first — the number leads the row, ahead of the play button, and a tap
+      // on it plays. Almost everything else on the row already means "play from
+      // here" (the title of an unselected row, the time); the number was the one
+      // piece that looked like a control and did nothing.
+      var numSpan = document.createElement('span');
+      numSpan.className = 'tag_num';
+      numSpan.textContent = tagNums[tag.id] || '';
+      numSpan.title = amPlayingThis ? 'Pause' : 'Play from here';
+      numSpan.addEventListener('click', function () {
+        if (amPlayingThis) { safe_pause(); }
+        else { autoplayBlocked = false; play_from_tag(tag); }
+      });
+      row.appendChild(numSpan);
+
       var playBtnRow = document.createElement('button');
       playBtnRow.className = 'play_tag';   // blocked_calm: no amber blocked state
       playBtnRow.title = amPlayingThis ? 'Pause' : 'Play from this tag';
@@ -1860,11 +1953,6 @@
         else { autoplayBlocked = false; play_from_tag(tag); }
       });
       row.appendChild(playBtnRow);
-
-      var numSpan = document.createElement('span');
-      numSpan.className = 'tag_num';
-      numSpan.textContent = tagNums[tag.id] || '';
-      row.appendChild(numSpan);
 
       var label = document.createElement('input');
       label.className = 'tag_label';
@@ -1961,17 +2049,28 @@
         }
       }
 
+      // fav_wait — a heart tap does not reach the repo for three seconds (the save
+      // is debounced) and then has to travel. In between the heart used to sit in
+      // its new state as though it were done, so the one moment you might close the
+      // page is the one moment it looks safe to. It goes grey and undulates until
+      // the save actually lands, then settles into on or off. The state itself is
+      // already committed locally — this is honesty about the round trip, not a
+      // spinner standing in for the result.
       var favBtn = document.createElement('button');
-      favBtn.className = 'ghost tag_fav' + (tag.fav ? ' on' : '');
-      favBtn.title = tag.fav ? 'Remove from favorites' : 'Add to favorites';
+      favBtn.className = 'ghost tag_fav' + (favPending[tag.id] ? ' wait' : (tag.fav ? ' on' : ''));
+      favBtn.title = favPending[tag.id] ? 'Saving\u2026' : (tag.fav ? 'Remove from favorites' : 'Add to favorites');
       favBtn.innerHTML = ICON_HEART;
       favBtn.addEventListener('click', function () {
         tag.fav = !tag.fav;
         fav_over_set(tag.id, tag.fav);
         try { if (tag.fav) localStorage.setItem('vampjam_fav_seen', '1'); } catch (e) {}
+        favPending[tag.id] = true;
         save_tags();
         render_tags();
-        queue_save_data_to_repo((tag.fav ? 'fav ' : 'unfav ') + (tag.label || 'moment'));
+        queue_save_data_to_repo((tag.fav ? 'fav ' : 'unfav ') + (tag.label || 'moment'), function () {
+          delete favPending[tag.id];
+          render_tags();
+        });
       });
       row.appendChild(favBtn);
 

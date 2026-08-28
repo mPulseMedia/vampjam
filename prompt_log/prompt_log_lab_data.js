@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "252 row_size",
+        id: "253 num_first",
         expanded: true,
+        nodes: [
+          { text: "253 num_first", children: [
+            { text: "prompt_restate", children: [
+              { text: "Put the number to the left of the play button, and treat a tap on it as play." },
+              { text: "On the selected row, ticker the title through the narrow window, slowly, edges cropped." },
+              { text: "When un-favouriting, show the heart undulating while it processes, then settle to on or off." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On the highlight, Rose put the number 12345 to the left of the play button and consider it a click on play if I click on the number just like most of the rest of the row. Also on the current they selected row do that thing with the text of the title where the right and the left edges are cropped as you\u2019ve got but it kind of what is it ticker tapes or cycle so I see the full width of the title passing through that more narrow window of visibility that I have and haven\u2019t moved slowly\nAnd when I\u2019m unhearing, something un favoring something I see the heart goes into this gray color maybe kind of show it undulating so that I understand that you know something is processing, and then it becomes either the offstage or the Allstate" }
+            ]},
+            { text: "num_first", children: [
+              { text: "the number leads the row now and a tap on it plays" },
+              { text: "almost everything else on the row already meant \u2018play from here\u2019 \u2014 the number was the one piece that looked like a control and did nothing" },
+              { text: "measured: tapping the third row\u2019s number takes the player to 34 seconds, where that highlight starts" }
+            ]},
+            { text: "title_roll", children: [
+              { text: "on the selected row the title travels slowly through its own width, pausing at each end, with both edges cropped to a soft fade" },
+              { text: "an ellipsis says \u2018there is more and you cannot have it\u2019; a fade says \u2018there is more and it is coming past\u2019" },
+              { text: "it stops dead the moment you tap into the field to type, and the fade lifts with it" }
+            ]},
+            { text: "fav_wait", children: [
+              { text: "a heart tap does not reach the server for three seconds, and then has to travel" },
+              { text: "the heart used to sit in its new state as though it were done \u2014 so the one moment you might close the page is the one moment it looks safe to" },
+              { text: "now it goes grey and breathes until the save actually lands, then settles into on or off" },
+              { text: "a breath rather than a blink: a blink says something went wrong, a breath says something is working" }
+            ]},
+            { text: "the_hard_part", children: [
+              { text: "the ticker sat perfectly still at first while looking like it should move" },
+              { text: "at that speed one frame is a quarter of a pixel, and the browser rounds a quarter pixel to nothing when you read it back, so every frame\u2019s progress was thrown away" },
+              { text: "keeping the position separately and writing it out each frame fixed it" }
+            ]},
+            { text: "verify", children: [
+              { text: "~21m: release num_first \u2014 the number tap measured to the second it lands on, the title watched travelling out and back and confirmed frozen under focus, the heart watched through grey-and-breathing into its settled state with exactly one save sent, the last four builds re-verified, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "252 row_size",
+        expanded: false,
         nodes: [
           { text: "252 row_size", children: [
             { text: "prompt_restate", children: [

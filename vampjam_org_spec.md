@@ -2320,7 +2320,36 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   the list. That is the trade he asked for.
   drawer.js?v=139 → 140. Row heights unchanged at 54px. nav_cass, icon_grow and title_lap all
   re-verified. No page errors. Still no new trace.
-- NEXT → add entry 253 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 253 num_first · b253 · all 8 session pages + session.html — the number leads the row and plays,
+  the selected title travels, and the heart waits for its save.
+  num_first: the number moves ahead of the play button and a tap on it plays. Almost everything
+  else on the row already means "play from here" — the title of an unselected row, the time — and
+  the number was the one piece that looked like a control and did nothing. It keeps its muted
+  weight: a label you can press, not a button. Measured: tapping the third row's number takes the
+  player from 0s/paused to 34s/playing, which is where that highlight starts.
+  title_roll: on the SELECTED row the title runs slowly through its own width, 16px a second with a
+  1.4s hold at each end, and both edges crop to a soft fade instead of an ellipsis — an ellipsis
+  says "there is more and you cannot have it", a fade says "there is more and it is coming past".
+  One loop for the page rather than one per row, driven off the clock so the pace is the same on
+  any device. It stops dead the moment the field is focused (you are editing, not reading) and the
+  fade lifts with it. Measured travelling 0 → 32 → back, holding still under focus.
+  the float. scrollLeft has to be driven from a float kept in the closure and ASSIGNED each frame.
+  At 16px a second a frame is a quarter of a pixel; read scrollLeft back and the element has
+  rounded it to zero, so `el.scrollLeft += …` sits perfectly still while looking like it should be
+  moving. First cut did exactly that and reported 0, 0, 0, 0 for six seconds.
+  fav_wait: a heart tap does not reach the repo for three seconds (the save is debounced) and then
+  has to travel. In between the heart sat in its new state as though it were done — so the one
+  moment you might close the page is the one moment it looks safe to. It now goes grey and
+  undulates (1.25s breath, not a blink: a blink says error, a breath says working) until the save
+  actually lands, then settles into on or off. Honest about the round trip, not a spinner standing
+  in for the result. Respects prefers-reduced-motion.
+  save_done: queue_save_data_to_repo takes an optional callback and keeps a LIST of waiters, since
+  several edits inside one debounce window collapse into a single save. A page with no worker, or a
+  local-only recording, resolves its waiters immediately — otherwise a heart would undulate for
+  ever waiting on a request that is never made. The visibilitychange flush resolves them too.
+  Measured: on → wait (animation running, title "Saving…") → off, with exactly one POST.
+  Suite: the last four builds re-verified green. No page errors. Still no new trace.
+- NEXT → add entry 254 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
