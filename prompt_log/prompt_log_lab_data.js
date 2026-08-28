@@ -9,8 +9,60 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "233 lens_none",
+        id: "234 bump_step",
         expanded: true,
+        nodes: [
+          { text: "234 bump_step", children: [
+            { text: "prompt_restate", children: [
+              { text: "What we want from the device is bumps." },
+              { text: "Bump up, bump right, bump back, bump down \u2014 and it moves one level." },
+              { text: "It is a communication of a bump in one direction, nothing more." },
+              { text: "Deliver one when we think we saw one, then recentre." },
+              { text: "Bumps aligned with the basic vectors first." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, the very end of that training set what I\u2019m looking for from the device Are it\u2019s called it bumps bumping up bumping to the right bumping back bumping up and it just moves at a level just one level. It\u2019s just a communication of a bump up or a bump down bump to the left bump to the right that\u2019s what we\u2019re looking for and that\u2019s what we deliver when we think we saw it and and then reset the probably is that when we kind of resent her to that, I don\u2019t know what that means but consider doing that so this is changing how our how when we move the phone, the image move and now wanting to move it in bumps first focusing on bumps aligned with the basic vectors" }
+            ]},
+            { text: "bump_step", children: [
+              { text: "one gesture is worth one step in one direction \u2014 how hard or how far you bumped changes nothing" },
+              { text: "where the world stands is three whole numbers now, and whole numbers do not drift" },
+              { text: "all the sensing underneath is the same and still doing its job; what changed is that its answer is read as a single yes on a single axis instead of a distance" },
+              { text: "the world holds still THROUGH the gesture and steps when it is over \u2014 measured: nothing moves mid-gesture, then 90 pixels" }
+            ]},
+            { text: "bump_centre", children: [
+              { text: "this is the recentre you were reaching for, and it is the point of the whole thing" },
+              { text: "after every bump the fine-grained model is wiped back to zero" },
+              { text: "so drift, a bad brake, a trapped axis and a half-seen wobble all die at the end of the gesture they happened in, instead of piling up across a take" },
+              { text: "the trapped right/left axis behind most of your resets cannot survive one gesture any more" }
+            ]},
+            { text: "bump_read", children: [
+              { text: "whichever axis carried the most, if it carried enough AND clearly beat the other two" },
+              { text: "one that lands between two axes is refused rather than guessed \u2014 you asked for the basic vectors" },
+              { text: "a refusal is recorded with its numbers, so the threshold gets tuned from your takes instead of my guess" }
+            ]},
+            { text: "step_even", children: [
+              { text: "a sideways bump is a quarter of the screen, at every zoom" },
+              { text: "otherwise a step fixed in real distance would be a quarter screen up close and nine screens once you had leaned in \u2014 one bump would throw you off the picture" },
+              { text: "a bump toward you is always 1.6 times bigger, and that is derived from the zoom law rather than set separately, so it cannot drift apart from it" },
+              { text: "measured 90, 92 and 98 pixels at 1x, 2.6x and 7.1x" }
+            ]},
+            { text: "still_works", children: [
+              { text: "the finger drag rides on top of the steps and is not pulled back; a bump after a drag adds its step on top" },
+              { text: "reset clears the steps, the drag and the levelling together" },
+              { text: "a gentle push and a violent push both give exactly one step; six seconds of shaking in place gives none" }
+            ]},
+            { text: "verify", children: [
+              { text: "~22m: release bump_step, red \u2014 all six directions fire and reverse, hold-still-then-step measured, screen distance per bump measured at three zooms, drag and reset measured, frame rate A/B\u2019d against the old continuous model and unchanged in kind, suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "no new trace arrived with this one \u2014 nothing since the 11:43 batch" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "233 lens_none",
+        expanded: false,
         nodes: [
           { text: "233 lens_none", children: [
             { text: "prompt_restate", children: [

@@ -414,7 +414,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'lens_none', bg: '#4338ca', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'bump_step', bg: '#b91c1c', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -502,8 +502,8 @@
     var per = v.pxPerM || 1;
     var mx =  px / (PAN_INV * per);
     var my = -py / (PAN_INV * per);
-    pos.x += mx; pos.y += my;
-    show.x += mx; show.y += my;
+    off.x += mx; off.y += my;      // bump_step: the drag is its own offset, so
+    show.x += mx; show.y += my;    // the spring does not pull it back to the lattice
     return true;
   }
   function drag_end() { dragOn = false; }
@@ -755,10 +755,85 @@
     lockLeft = LOCK_S;
     dir = { x: 0, y: 0, z: 0 };
     lastMove = name_move(run);
+    bump_fire();                 // one gesture, one step, then back to zero
     run = { x: 0, y: 0, z: 0 };
   }
   var run = { x: 0, y: 0, z: 0 };   // distance carried by the move in progress
   var lastMove = '';                // what the last finished move was
+  // bump_step — the world does not follow the phone any more. It sits on a
+  // LATTICE, and a gesture is worth exactly one step along one axis: bump right,
+  // the world goes one right; bump back, one left; bump toward you, one closer.
+  // How hard or how far you bumped changes nothing — one bump is one level. The
+  // sensing underneath is unchanged (deadband, shake test, dominance, direction
+  // latch, brake): all of that still decides whether a real push happened and
+  // which way it went. What changed is what we DO with the answer — we no longer
+  // integrate it into a distance, we read it as a single yes on a single axis.
+  //
+  // bump_centre — and after every bump the metre-scale model is wiped back to
+  // zero. That is the whole point of stepping: nothing is carried forward, so
+  // sensor drift, a bad brake, a trapped axis and a half-detected wobble all die
+  // at the end of the gesture they happened in instead of accumulating. Where the
+  // world stands is `cell`, three integers, and integers do not drift.
+  var cell = { x: 0, y: 0, z: 0 };  // where the world stands, in whole steps
+  var CELL_MAX = { x: 7, y: 7, z: 5 };
+  var BUMP_ZOOM = 1.6;              // how much bigger one step toward you makes the world
+  // derive the z step from the zoom law, so changing Z_POWER cannot silently
+  // change what a bump toward you is worth
+  var STEP_Z   = D0 * (1 - Math.pow(BUMP_ZOOM, -1 / Z_POWER));
+  // step_even — a sideways bump is a quarter of the SCREEN, at every zoom. Pan is
+  // metres times the zoom, so a step fixed in metres would be a quarter screen at
+  // x1 and nine screens at x39 — one bump would throw you clean off the picture
+  // the moment you leaned in. So the metres per step are divided by the zoom the
+  // LATTICE is at (an exact power of BUMP_ZOOM, not the springing display value,
+  // so pan and zoom settle together and nothing chases itself). What survives is
+  // the only thing that should be constant: one bump, one quarter screen.
+  var STEP_FRAC = 0.25;
+  var STEP_PAN  = STEP_FRAC * PHONE_W;
+  function step_pan() { return STEP_PAN / Math.pow(BUMP_ZOOM, cell.z); }
+  var STEP     = { x: STEP_PAN, y: STEP_PAN, z: STEP_Z };
+  var BUMP_MIN  = 0.02;             // metres the gesture must have carried to count at all
+  var BUMP_LEAD = 1.5;              // how far the winning axis must beat the runner-up
+  var off = { x: 0, y: 0, z: 0 };   // what the finger has dragged, on top of the lattice
+  var lastBump = '';
+  // bump_read — which single axis was that, and which way? Whichever carried the
+  // most, provided it carried enough AND clearly beat the other two. A gesture
+  // that lands between two axes is not a bump: he asked for bumps aligned with
+  // the basic vectors, so an ambiguous one is refused rather than guessed.
+  function bump_read(r) {
+    var m = [['x', Math.abs(r.x)], ['y', Math.abs(r.y)], ['z', Math.abs(r.z)]];
+    m.sort(function (p, q) { return q[1] - p[1]; });
+    if (m[0][1] < BUMP_MIN) return null;
+    if (m[1][1] > 0 && m[0][1] < m[1][1] * BUMP_LEAD) return null;
+    var k = m[0][0];
+    return { k: k, s: r[k] > 0 ? 1 : -1 };
+  }
+  var BUMP_NAME = { x: ['left', 'right'], y: ['down', 'up'], z: ['away', 'closer'] };
+  // bump_fire — take one step, then wipe the metre model. Called once, at the
+  // end of a move, from end_move.
+  function bump_fire() {
+    var b = bump_read(run);
+    if (b) {
+      var lim = CELL_MAX[b.k];
+      var was = cell[b.k];
+      cell[b.k] = Math.max(-lim, Math.min(lim, was + b.s));
+      lastBump = BUMP_NAME[b.k][b.s > 0 ? 1 : 0] + (cell[b.k] === was ? ' (at the end)' : '');
+      if (typeof mark_add === 'function') mark_add('bump', {
+        way: BUMP_NAME[b.k][b.s > 0 ? 1 : 0],
+        axis: b.k,
+        cell: [cell.x, cell.y, cell.z],
+        ran: +Math.abs(run[b.k]).toFixed(4) });
+    } else {
+      lastBump = '';
+      var big = Math.max(Math.abs(run.x), Math.abs(run.y), Math.abs(run.z));
+      if (big > 0.008 && typeof mark_add === 'function') mark_add('bump_none', {
+        run: [+run.x.toFixed(4), +run.y.toFixed(4), +run.z.toFixed(4)] });
+    }
+    // bump_centre: whatever the metres said, they have had their say
+    pos = { x: 0, y: 0, z: 0 };
+    vel = { x: 0, y: 0, z: 0 };
+    lead = { x: 0, y: 0, z: 0 };
+    return b;
+  }
   // name_move — categorise a finished move by whichever axis carried it
   function name_move(r) {
     var ax = Math.abs(r.x), ay = Math.abs(r.y), az2 = Math.abs(r.z);
@@ -1202,7 +1277,11 @@
   function smooth_step(dt) {
     var sdt = Math.min(0.05, dt);
     ['x', 'y', 'z'].forEach(function (k) {
-      var target = pos[k] + lead[k];
+      // bump_step: the target is where the lattice says, plus whatever the finger
+      // has dragged. pos/lead are evidence being gathered for the NEXT bump, and
+      // are not drawn — the world holds still through a gesture and steps when it
+      // is over, which is what makes a bump read as a bump.
+      var target = (k === 'z' ? cell.z * STEP_Z : cell[k] * step_pan()) + off[k];
       var wk = (k === 'z') ? SM_W_Z : SM_W;
       showV[k] += (wk * wk * (target - show[k]) - 2 * wk * showV[k]) * sdt;
       show[k]  += showV[k] * sdt;
@@ -1430,11 +1509,15 @@
   // too and puts the whole model back to ×1.
   function zero_here(keepDepth) {
     R0 = Rnow;
-    var z = keepDepth ? pos.z : 0;
+    var zc = keepDepth ? cell.z : 0;
     vel = { x: 0, y: 0, z: 0 };
-    pos = { x: 0, y: 0, z: z };
+    pos = { x: 0, y: 0, z: 0 };
     run = { x: 0, y: 0, z: 0 };
     lead = { x: 0, y: 0, z: 0 };
+    cell = { x: 0, y: 0, z: zc };      // bump_step: back to the middle of the lattice
+    off  = { x: 0, y: 0, z: 0 };
+    lastBump = '';
+    var z = zc * STEP.z;
     show = { x: 0, y: 0, z: z }; showV = { x: 0, y: 0, z: 0 };
     // open the levelling window: hold still, this is the pose we measure from
     calLeft = CAL_MS / 1000; calSum = { x: 0, y: 0, z: 0 }; calN = 0; calSq = 0;
@@ -1829,6 +1912,8 @@
       var v = view();
       return { px: v.ox, py: v.oy, mult: v.mult, dist: v.dist, roll: v.roll, tilt: v.tilt, turn: v.turn,
                moving: moving, held: lastMove, lock: +Math.max(0, lockLeft).toFixed(2),
+               cell: { x: cell.x, y: cell.y, z: cell.z }, bump: lastBump,
+               step: { xy: +STEP.x.toFixed(4), z: +STEP.z.toFixed(5), zoom: BUMP_ZOOM },
                show: { x: +show.x.toFixed(4), y: +show.y.toFixed(4), z: +show.z.toFixed(4) },
                cal: +Math.max(0, calLeft).toFixed(3),
                bias: { x: +bias.x.toFixed(4), y: +bias.y.toFixed(4), z: +bias.z.toFixed(4) },

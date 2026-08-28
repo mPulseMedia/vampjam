@@ -1823,7 +1823,47 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   which is the number to weigh against any future "show it twice" idea.
   Frame rate back to 55-61fps across the whole zoom range. Suite green, no page errors, no new
   trace with this one.
-- NEXT → add entry 234 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 234 bump_step · b234 · lab.html — the world no longer follows the phone. It steps.
+  bump_step: a gesture is now worth exactly ONE step along ONE axis. Bump right, the world goes
+  one right; bump back, one left; bump toward you, one closer. How hard or how far you bumped
+  changes nothing — one bump, one level. Where the world stands is `cell`, three integers, and
+  integers do not drift. Everything under the detector is unchanged and still doing its job:
+  deadband, rotation veto, shake test, axis dominance, direction latch, brake, settle lock. What
+  changed is what we DO with the answer — instead of integrating it into a distance we read it
+  as a single yes on a single axis.
+  bump_read: whichever axis carried the most, provided it carried at least BUMP_MIN 2cm AND beat
+  the runner-up by BUMP_LEAD 1.5×. A gesture that lands between two axes is refused rather than
+  guessed — he asked for bumps aligned with the basic vectors, so an ambiguous one is no bump.
+  A refusal files a bump_none mark with the three runs on it, so the threshold can be tuned from
+  his takes rather than from my guess.
+  bump_centre: this is the "recentre" he was reaching for and it is the point of the whole thing.
+  After every bump the metre-scale model — pos, vel, lead — is wiped to zero. Sensor drift, a bad
+  brake, a trapped axis and a half-detected wobble now all die at the end of the gesture they
+  happened in instead of accumulating across a take. The trapped right/left axis that caused most
+  of his resets cannot survive one gesture any more.
+  the world holds still THROUGH a gesture and steps when it is over: the display spring targets
+  the lattice, not the evidence, so there is no live tracking to disagree with. Measured: screen
+  x 0 → 0 mid-gesture → 90px after.
+  step_even: a sideways bump is a quarter of the SCREEN, at every zoom. Pan is metres × zoom, so
+  a step fixed in metres is a quarter screen at ×1 and nine screens at ×39 — one bump would throw
+  you clean off the picture the moment you leaned in. So the metres per step are divided by the
+  zoom the LATTICE is at (an exact power of BUMP_ZOOM, not the springing display value, so pan
+  and zoom settle together and nothing chases itself). Measured 90 / 92 / 98px at ×1 / ×2.6 / ×7.1.
+  a bump toward you is ×1.6, and STEP_Z is DERIVED from that through the zoom law
+  (D0·(1 − BUMP_ZOOM^(−1/Z_POWER))), so changing Z_POWER can never silently change what a bump
+  toward you is worth. CELL_MAX 7/7/5, so ±5 steps of depth spans ×10.5 in and ×10.5 out.
+  swipe_pan survives: the finger drag is its own offset `off` on top of the lattice, so the spring
+  does not pull it back. Measured: a 120px drag moves 120px, cell unchanged, and a bump after it
+  adds its 90px on top. Reset clears the lattice, the offset and the levelling all together.
+  measured: gentle push and violent push both give exactly one step. Six seconds of shaking in
+  place gives zero steps. All six directions fire and reverse correctly.
+  frame rate: unchanged in kind — A/B'd against the old continuous model at the same zooms, both
+  sit at 31/32fps under a synthetic shake-every-frame drive and 51-61fps idle. With bumps the
+  world is only in motion for the ~0.3s settle after a step, so the driven case barely occurs in
+  real use. The one number that got worse (27 → 21fps while shaking at ×1.6) is --shk 2 raster
+  cost, pre-existing and unrelated to the stepping.
+  Suite green, no page errors. No new trace with this one.
+- NEXT → add entry 235 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
