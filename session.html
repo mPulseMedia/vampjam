@@ -530,7 +530,14 @@
 </div>
 
 <header class="brand" style="position:relative;">
-  <button id="drawer_toggle" class="nav_left" onclick="vampjamDrawer.toggle()" aria-label="Sessions"><span>Sessions</span><svg class="drawer_caret" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  <!-- nav_gone — no Sessions button on a session page. It is fixed to the corner
+       of the VIEWPORT, so the moment the page is scrolled it stops being a header
+       control and becomes a lozenge floating over whatever happens to be under it
+       — in his screenshot, sitting squarely on top of the -2m transport button.
+       The session list is still one gesture away: swipe DOWN from the top of the
+       page and it pulls in, which is how drawer.js has always opened it. The
+       button was the affordance, not the route. It stays on Favorites, where
+       there is nothing else to go back to. -->
   <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
 </header>
 

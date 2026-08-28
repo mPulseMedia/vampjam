@@ -9,8 +9,44 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "245 nudge_hear",
+        id: "246 nav_gone",
         expanded: true,
+        nodes: [
+          { text: "246 nav_gone", children: [
+            { text: "prompt_restate", children: [
+              { text: "No need for the Sessions button in the top left here." },
+              { text: "(with a screenshot of it sitting on top of the transport buttons)" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "No need for the session button here in top left." }
+            ]},
+            { text: "nav_gone", children: [
+              { text: "gone from all nine session pages" },
+              { text: "it was pinned to the corner of the SCREEN rather than to the header, so the moment you scrolled it stopped being a header control and became a lozenge floating over whatever was underneath" },
+              { text: "in your screenshot that was the \u22122m and \u221215s buttons \u2014 and that scroll position is exactly where you sit when you are working down a tag list" }
+            ]},
+            { text: "what_it_costs", children: [
+              { text: "nothing that matters: the button was the signpost, not the road" },
+              { text: "the session list has always opened on a downward swipe from the top of the page, and that is untouched" },
+              { text: "measured with the button gone: the swipe still pulls the whole list in, and the \u22122m button is clear and tappable when scrolled" },
+              { text: "it stays on Favorites, where there is nothing else to go back to" }
+            ]},
+            { text: "worth_remembering", children: [
+              { text: "the drawer wants the page to have RESTED at the top for a third of a second before a pull counts as a reveal rather than the tail of a scroll" },
+              { text: "a test that scrolls to the top and swipes straight away gets nothing \u2014 that is the drawer working, not failing" }
+            ]},
+            { text: "verify", children: [
+              { text: "~9m: release nav_gone \u2014 the button confirmed gone and nothing else left in that corner, the transport button checked clear by hit-testing its centre rather than by eye, the swipe measured still opening the list, favourites confirmed keeping its button, the last two builds re-checked, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "245 nudge_hear",
+        expanded: false,
         nodes: [
           { text: "245 nudge_hear", children: [
             { text: "prompt_restate", children: [

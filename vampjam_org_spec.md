@@ -2162,7 +2162,26 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   end.
   All nine session pages carry the identical patch, read-all-then-write-all. fav_jump re-checked
   and still green. No page errors. Still no new trace.
-- NEXT → add entry 246 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 246 nav_gone · b246 · all 8 session pages + session.html — no Sessions button on a session page.
+  nav_gone: the button is fixed to the corner of the VIEWPORT, not to the header, so the moment the
+  page is scrolled it stops being a header control and becomes a lozenge floating over whatever
+  happens to be beneath it. In his screenshot it was sitting squarely on top of the −2m and −15s
+  transport buttons, which is exactly the position you scroll to when you are working through a
+  tag list. Removed from all nine session pages.
+  what it costs: nothing that matters. The button was the AFFORDANCE, not the route — drawer.js has
+  always opened the session list on a downward swipe from the top of the page, and that is
+  untouched. Measured: with the button gone, a swipe down still pulls the list in with all 18 rows
+  in it, and the −2m button is clear and tappable when scrolled (checked with elementFromPoint at
+  its centre, not by eye).
+  it stays on Favorites, where there is nothing else to go back to.
+  the two #drawer_toggle CSS rules are left in place: they cost nothing, and the id is what
+  drawer.js looks for when it wants to rotate the caret — it already guards for the button's
+  absence, so nothing had to change there.
+  test note: drawer.js requires the page to have RESTED at the top for SETTLE_MS (350ms) before a
+  pull counts as a reveal rather than the tail of a scroll. A test that scrolls to 0 and swipes
+  immediately gets nothing, and that is the drawer working, not failing.
+  fav_jump and nudge_hear re-checked and still green. No page errors. Still no new trace.
+- NEXT → add entry 247 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
