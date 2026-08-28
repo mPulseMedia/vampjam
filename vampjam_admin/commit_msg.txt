@@ -1,1 +1,1 @@
-lens_wide
+auto_commit
