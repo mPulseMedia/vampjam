@@ -10,45 +10,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css?v=1">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
 <script src="drawer.js?v=141"></script>
 <style>
-  :root {
-    --bg: #4a2a0e;
-    --panel: #5c3717;
-    --panel_2: #6b4423;
-    --panel_3: #7a4f2a;
-    --fg: #f5e5c5;
-    --muted: #c9a87e;
-    --accent: #e8b454;
-    --accent_2: #d4a95a;
-    --danger: #c75450;
-    --warn: #e8c794;
-  }
-  * { box-sizing: border-box; }
+  /* admin_same: the pre-theme fallback palette is in site.css now. */
   /* kbd_black: literal fallback so the page is never transparent (a
      transparent canvas is what iOS paints black), and body always
      covers the viewport so there is nothing else to show */
   /* tap_zoom: a stray double-tap must not zoom the page (a fat-fingered
      double press on a button did). 'manipulation' drops double-tap zoom
-     and keeps pinch-to-zoom and scrolling untouched. */
-  html, body { background: var(--bg, #ffffff); color: var(--fg, #1d1d1f); margin: 0; padding: 0; touch-action: manipulation; }
-  /* tap_zoom: touch-action does not inherit, so the things you actually tap
+     and keeps pinch-to-zoom and scrolling untouched. */  /* tap_zoom: touch-action does not inherit, so the things you actually tap
      say it too — the drag handles keep their own 'none'. */
   button, a, input, label, .jam_item, .tag_row, .mom_row { touch-action: manipulation; }
   body { min-height: 100vh; min-height: 100dvh; }
-  body { font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; --gutter: 16px; padding: 3px var(--gutter) 24px; max-width: 760px; margin: 0 auto; }
-  .brand { text-align: center; margin: 8px 0 6px; }
-  .brand .wordmark {
-    font-family: 'Sacramento', cursive;
-    font-size: 68px; line-height: 1; color: var(--fg);
-    display: inline-block; margin: 0;
-  }
-  .wordmark_sf {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 34px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
-  }
   .brand .tagline {
     color: var(--fg); opacity: 0.85; font-size: 13px;
     letter-spacing: 0.04em; margin-top: -2px;
@@ -413,44 +389,6 @@
   .jam_share { flex: 0 0 auto; background: transparent; color: var(--muted); border: none; border-radius: 7px;
                padding: 6px 6px; margin-left: 6px; min-height: 32px; cursor: pointer; line-height: 0; }
   .jam_share:hover { background: transparent; color: var(--fg); }
-  /* nav_share — the page's own share, top right of the control panel, mirroring
-     where the Sessions pill sits on the left: left is where you go, right is what
-     you send. It lives INSIDE the header rather than pinned to the viewport,
-     which is the whole lesson of nav_gone — a corner control fixed to the screen
-     stops being a header control the moment you scroll and becomes a lozenge
-     floating over the transport. It wears the same muted share button as every
-     other share on the site, only a size up, because it is the only one on the
-     row it is on. */
-  .nav_share {
-    position: absolute; right: 0;
-    top: max(12px, calc(env(safe-area-inset-top) + 6px));
-    background: transparent; color: var(--muted); border: none; border-radius: 7px;
-    padding: 7px; min-height: 40px; min-width: 40px; cursor: pointer; line-height: 0;
-    touch-action: manipulation;
-  }
-  .nav_share:hover { color: var(--fg); }
-  .nav_share:active { transform: scale(0.96); }
-  .nav_share svg { width: 26px; height: 26px; }
-  body.drawer_open .nav_share { opacity: 0; pointer-events: none; }
-  /* nav_cass — the way into the session list, top left, and the exact mirror of
-     nav_share on the right: same size, same target, same muted colour, same place
-     in the header. Left is where you go, right is what you send.
-     It is the cassette because that is already what a session looks like in the
-     list, so the icon means the same thing in both places rather than teaching a
-     second symbol. It replaces the wide "Sessions" pill: same job, but small
-     enough to live in the header band instead of being pinned to the viewport,
-     which is what had it sitting on top of the transport (nav_gone). */
-  .nav_cass {
-    position: absolute; left: 0;
-    top: max(12px, calc(env(safe-area-inset-top) + 6px));
-    background: transparent; color: var(--muted); border: none; border-radius: 7px;
-    padding: 7px; min-height: 40px; min-width: 40px; cursor: pointer; line-height: 0;
-    touch-action: manipulation;
-  }
-  .nav_cass:hover { color: var(--fg); }
-  .nav_cass:active { transform: scale(0.96); }
-  .nav_cass svg { width: 26px; height: 26px; }
-  body.drawer_open .nav_cass { opacity: 0; pointer-events: none; }
   details.about_page { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
   details.about_page summary { cursor: pointer; color: var(--fg); font-weight: 600; }
   details.about_page code { background: var(--panel_2); padding: 1px 6px; border-radius: 4px; color: var(--fg); }
@@ -495,41 +433,10 @@
   .sort_toggle button.active { background: var(--panel_3); color: var(--muted); font-weight: 500; }
 
 
-  /* ---- session drawer: slides the page down from the top edge ---- */
-  .session_drawer {
-    max-height: 0; overflow-y: auto; background: var(--bg);
-    transition: max-height 0.18s ease; position: relative; z-index: 90;
-  }
-  .session_drawer.open { max-height: 80vh; max-height: 80dvh; }
-  /* control_panel_shadow: the control panel (logo · name · transport · timeline)
-     casts a shadow UP from its top edge into the session list — row width, not
-     full bleed, and there the whole time the list is open. It rides the bottom
-     of the list's own scrollport, so it never scrolls away with the rows. */
-  .session_drawer::after {
-    content: ''; display: block; position: sticky; bottom: 0; z-index: 3;
-    width: min(760px, 100%); margin: 0 auto -16px; height: 16px;
-    border-radius: 0 0 14px 14px; pointer-events: none;
-    background: linear-gradient(to top, rgba(0,0,0,0.22), rgba(0,0,0,0.10) 45%, rgba(0,0,0,0));
-  }
-  .session_drawer.dragging { transition: none; }
-  .session_drawer .jam_menu {
-    position: static; top: auto; left: auto; min-width: 0;
-    background: var(--panel); border: none; border-radius: 14px; overflow: hidden;
-    box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20);
-    padding: 6px 0; margin: 12px auto 0; max-width: 760px;
-  }
   #drawer_toggle { transition: none; }
   .drawer_caret { transition: transform 0.3s ease; }
   /* row_time_hide: timestamps off the highlight rows for now */
   .tag_time { display: none; }
-  /* land_drawer — placed AFTER the base .session_drawer rules so it wins:
-     in landscape split the session list opens as a sheet over the LEFT half
-     only (caret tap or pull-down); the right half never moves */
-  @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
-    .session_drawer { position: fixed; top: 0; left: 0; width: 50vw; z-index: 95;
-                      box-shadow: 0 10px 26px rgba(0,0,0,0.3); border-radius: 0 0 14px 0; }
-    .session_drawer.open { max-height: 88vh; }
-  }
   #drawer_toggle.open .drawer_caret { transform: rotate(180deg); }
   /* tall landscape (no split): let the sticky player background + shadow reach
      the screen edges. Split landscape (max-height 520px) is EXCLUDED — there the
@@ -541,9 +448,6 @@
     }
   }
 
-  /* one_size: a single text size for the whole app — only the vampSF wordmark
-     (and glyph buttons whose icons scale with font-size) keep their own */
-  body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(svg):not(.play_tag):not(.ghost) { font-size: 17px !important; }
   button.ghost { font-size: 17px; }   /* the app size stays the default for ghosts */
   /* icon_big: every icon in a highlight row up 33% — triangle 26 -> 35,
      heart / share / x / nudge chevrons 17 -> 23 (they need !important to
@@ -559,7 +463,6 @@
      ui_grammar: the old .nav_left pill's styles came out with it. Admin and
      r2_setup still carry their own copies for their own back links; nothing
      here referenced these any more. */
-  .brand, .top_bar { padding-top: max(46px, calc(env(safe-area-inset-top) + 40px)); }
 </style>
 </head>
 <body>

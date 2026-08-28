@@ -2415,7 +2415,50 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   copies the page URL; record button reads REC, rgb(215,0,21) on white at weight 700, STOP and
   rec_pulse while recording, no counter under the button, the row below the bar just the grey
   duration with no blue now and no slash. No page errors. Still no new trace.
-- NEXT → add entry 257 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 257 admin_same · b257 · site.css (new), all 11 non-lab pages — one stylesheet for the whole
+  site, and the admin page stops being the odd one out.
+  the problem: there was never a shared stylesheet. Every page carried its own copy of the reset,
+  the page box, the wordmark, the header pair, the drawer and one_size inside its own <style>, and
+  the copies had drifted. On the admin page you could see it: a brown palette baked into :root that
+  ignored the theme entirely, a 62px wordmark where the rest of the site has 68, a 640px page box
+  where the rest has 760, and CTA buttons whose colours were the yellow theme's hexes typed in by
+  hand, so they stayed brown-on-gold whichever theme was chosen.
+  site.css: the rules that are the same everywhere now live in one file — the pre-theme fallback
+  palette, the reset, the page box, .brand and the wordmark, nav_room, the nav_cass/nav_share pair,
+  the session drawer, and one_size. Every page except lab.html links it. lab.html is the one page
+  that deliberately looks nothing like the site, and it links nothing.
+  it is linked BEFORE each page's own <style>, so a page rule still wins at equal specificity. That
+  ordering is what made it safe to delete the inline copies a page at a time — no page ever passed
+  through a state where it had neither.
+  what came out of the pages: the shared core deleted from all 11 (7-8 blocks each), the dead
+  .nav_left pill CSS that had outlived its markup on record.html and r2_setup.html, and the whole
+  recorder/steps/note block still sitting in admin.html from when admin held the recorder. Admin's
+  own stylesheet went from 147 lines to about 20 — an h1 and two buttons.
+  admin structure: the "admin" tagline became an <h1>Admin</h1>, which is what every other page
+  uses for its name (favorites has <h1>Favorites</h1>). Its CTAs take --accent / --on_accent /
+  --accent_hover, so they follow the theme now.
+  r2_setup came along: it was a second page with a baked-in brown palette, no theme.js at all, a
+  58px wordmark, and the last "‹ Admin" pill on the site. It now has the stylesheet, the theme, the
+  cassette-and-share pair and the drawer, exactly like everywhere else. Nothing links to it, but it
+  was going to be the next thing that looked wrong.
+  record.html: its wordmark was 58/29 against 68/34 everywhere else, because its top bar is
+  .top_bar and never carried .brand. It carries both classes now and takes the shared size.
+  a trap worth writing down: the first pass linked site.css into only 10 of the 12 pages — the
+  loop that inserted the <link> died partway on r2_setup.html, which has no theme.js to anchor to,
+  and record.html and session.html came after it alphabetically. Both then had their inline copies
+  deleted with nothing to replace them, and session.html rendered with a 16px wordmark and the
+  drawer stuck open. Caught by the screenshot diff, not by any assertion — worth remembering that a
+  partial-failure loop is more dangerous than one that fails on the first item.
+  verified by pixel diff, 390x800, every page shot before and after: favorites, session.html and
+  the dated session pages came out byte-identical — the whole refactor is invisible on the pages
+  that were already right. admin, r2_setup and record changed only where intended (record's larger
+  wordmark shifts its column down about 7px). Then measured on all 7: every page links site.css,
+  every wordmark 68px Sacramento, every body 760px, every cassette and share 40x40 at 16px from
+  their edge, zero .nav_left anywhere, zero pages with their own :root. The cassette opens the same
+  11-row "Sessions" list from admin and from r2_setup, and both shares copy their own URL. Admin
+  cycled through all three themes: body and CTA both move together now. Suites 254 and 255 green,
+  256 (the lab) green and lab.html untouched. No page errors anywhere. Still no new trace.
+- NEXT → add entry 258 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

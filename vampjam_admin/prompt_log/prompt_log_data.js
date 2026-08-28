@@ -9,8 +9,55 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "256 head_same",
+        id: "257 admin_same",
         expanded: true,
+        nodes: [
+          { text: "257 admin_same", children: [
+            { text: "prompt_restate", children: [
+              { text: "Admin should use the same CSS as the other pages." },
+              { text: "And the same structure." },
+              { text: "Only the lab should be totally different." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "admin should use the same css as the other pages, and have same structure. only lab should be totally different" }
+            ]},
+            { text: "what_was_wrong", children: [
+              { text: "there was never a shared stylesheet \u2014 every page carried its own copy of the same rules, and the copies had drifted apart" },
+              { text: "on admin you could see it: a brown palette baked in that ignored the theme, a smaller wordmark, a narrower page, and buttons whose colours were typed in by hand so they stayed gold in every theme" }
+            ]},
+            { text: "site_css", children: [
+              { text: "one stylesheet now holds everything the pages share \u2014 the palette, the reset, the page box, the wordmark, the header pair, the drawer" },
+              { text: "every page links it except the lab, which is meant to look nothing like the site and links nothing" },
+              { text: "admin\u2019s own stylesheet went from 147 lines to about 20 \u2014 a heading and two buttons" }
+            ]},
+            { text: "admin_structure", children: [
+              { text: "the \u2018admin\u2019 tagline is now a page name, the way every other page has one" },
+              { text: "and the two buttons follow the theme instead of staying gold" }
+            ]},
+            { text: "two_more_brought_along", children: [
+              { text: "the R2 setup page was a second page with a brown palette baked in and the last old back-pill on the site \u2014 it has the shared look and the cassette now" },
+              { text: "the record page\u2019s wordmark was smaller than everywhere else; it is the same size now" }
+            ]},
+            { text: "one_catch", children: [
+              { text: "the first pass linked the stylesheet into only 10 of the 12 pages \u2014 the loop died partway through" },
+              { text: "the two it missed had their old copies deleted with nothing to replace them, and a session page came up with a tiny wordmark and the list stuck open" },
+              { text: "the before-and-after screenshots caught it, not any test \u2014 a loop that fails halfway is worse than one that fails on the first thing" }
+            ]},
+            { text: "verify", children: [
+              { text: "~24m: every page shot before and after \u2014 favourites, the session page and all eight dated pages came out pixel-identical, so the whole change is invisible where things were already right" },
+              { text: "measured across seven pages: same stylesheet, same wordmark, same page width, same header buttons in the same place, no old pills, no page keeping its own palette" },
+              { text: "the cassette opens the same list from admin and from the R2 page, both shares copy their own link, and admin was cycled through all three themes" },
+              { text: "the earlier suites still green, the lab suite green and the lab itself untouched, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "256 head_same",
+        expanded: false,
         nodes: [
           { text: "256 head_same", children: [
             { text: "prompt_restate", children: [

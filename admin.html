@@ -7,156 +7,38 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css?v=1">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
 <script src="drawer.js?v=141"></script>
 <style>
-  :root {
-    --bg: #4a2a0e;
-    --panel: #5c3717;
-    --panel_2: #6b4423;
-    --panel_3: #7a4f2a;
-    --fg: #f5e5c5;
-    --muted: #c9a87e;
-    --accent: #e8b454;
-    --accent_2: #d4a95a;
-  }
-  * { box-sizing: border-box; }
-  html, body { background: var(--bg); color: var(--fg); margin: 0; padding: 0; }
-  /* tap_zoom: no double-tap zoom on a mis-hit; pinch still works */
-  html, body { touch-action: manipulation; }
-  /* tap_zoom: touch-action does not inherit, so the things you actually tap
-     say it too — the drag handles keep their own 'none'. */
-  button, a, input, label, .jam_item, .tag_row, .mom_row { touch-action: manipulation; }
-  body {
-    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    padding: 4px 16px 48px; max-width: 640px; margin: 0 auto;
-  }
+  /* admin_same: this page used to carry its own copy of the palette, the
+     reset, the page box and the wordmark — and the copy had drifted. The
+     palette was brown, baked in, ignoring the theme; the wordmark was 62px
+     where the rest of the site is 68; the page box was 640px where the rest
+     is 760. All of it comes from site.css now, exactly as it does on every
+     other page. What is left below is only what this page alone has. */
 
-  .brand { text-align: center; margin: 12px 0 4px; }
-  .brand .wordmark {
-    font-family: 'Sacramento', cursive; font-size: 62px; line-height: 1; color: var(--fg);
-  }
-  .wordmark_sf {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 34px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
-  }
-  .brand .tagline { color: var(--muted); font-size: 13px; letter-spacing: 0.04em; }
+  h1 { text-align: center; font-size: 22px; margin: 6px 0 14px; }
 
-  .back { display: inline-block; color: var(--accent_2); text-decoration: none; font-size: 13px; margin: 8px 0 4px; }
-  .back:hover { text-decoration: underline; }
-
-  h1 { font-size: 20px; margin: 18px 0 6px; }
-  .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
-
+  /* the two ways out of this page. admin_same: the colours were the yellow
+     theme's own hexes baked in, so the buttons stayed brown-on-gold whichever
+     theme was chosen — they are tokens now, like every other button. */
   .cta {
     display: block; text-align: center; text-decoration: none;
-    background: var(--accent); color: #2a1808; font-weight: 700; font-size: 16px;
+    background: var(--accent); color: var(--on_accent); font-weight: 700;
     padding: 15px 18px; border-radius: 12px; margin: 8px 0 28px;
-    box-shadow: 0 4px 14px rgba(232,180,84,0.22);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
   }
-  .cta:hover { background: #f0c97a; }
-  .cta .cta_sub { display: block; font-weight: 500; font-size: 12px; opacity: 0.8; margin-top: 2px; }
+  .cta:hover { background: var(--accent_hover); }
+  .cta:active { background: var(--accent_active); }
+  .cta .cta_sub { display: block; font-weight: 500; opacity: 0.8; margin-top: 2px; }
 
-  .section-label {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 1.5px; color: var(--muted); margin: 8px 0 14px;
-  }
+  /* dead_css: the recorder rules, the steps list, the note box and the back
+     link all lived here from when this page held the recorder. The recorder
+     is record.html now and nothing on this page uses any of them. */
 
-  ol.steps { list-style: none; counter-reset: step; padding: 0; margin: 0; }
-  ol.steps > li {
-    counter-increment: step; position: relative;
-    background: var(--panel); border: 1px solid var(--panel_3);
-    border-radius: 12px; padding: 16px 18px 16px 58px; margin-bottom: 12px;
-  }
-  ol.steps > li::before {
-    content: counter(step); position: absolute; left: 16px; top: 16px;
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--accent); color: #2a1808; font-weight: 700; font-size: 15px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  ol.steps .step_title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
-  ol.steps .step_body { color: var(--muted); font-size: 13.5px; line-height: 1.5; }
-  ol.steps .step_body code {
-    background: var(--panel_3); color: var(--fg);
-    padding: 1px 6px; border-radius: 4px; font-size: 12.5px;
-  }
-  ol.steps a { color: var(--accent_2); }
-
-  .note {
-    background: var(--panel_2); border-radius: 10px; padding: 12px 14px;
-    color: var(--muted); font-size: 12.5px; line-height: 1.5; margin-top: 20px;
-  }
-  .note b { color: var(--fg); }
-
-  .rec_card { background: var(--panel); border: 1px solid var(--panel_3); border-radius: 14px; padding: 18px; margin: 4px 0 26px; }
-  .rec_title { font-weight: 600; font-size: 15px; margin-bottom: 14px; }
-  .rec_stage { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-  .rec_btn { width: 74px; height: 74px; border-radius: 50%; border: none; background: var(--accent); color: var(--on_accent); font-size: 26px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
-  .rec_btn.recording { background: #d70015; color: #fff; animation: rec_pulse 1.2s ease-in-out infinite; }
-  @keyframes rec_pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(215,0,21,0.5); } 50% { box-shadow: 0 0 0 12px rgba(215,0,21,0); } }
-  .rec_time { font-variant-numeric: tabular-nums; font-size: 22px; font-weight: 600; }
-  .rec_hint { color: var(--muted); font-size: 13px; }
-  .rec_input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--panel_3); background: var(--bg); color: var(--fg); font: inherit; margin-bottom: 8px; }
-  .rec_up { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--accent); color: var(--on_accent); font-weight: 600; font-size: 15px; cursor: pointer; }
-  .rec_up:disabled { opacity: 0.5; }
-  .rec_result { margin-top: 10px; font-size: 13px; color: var(--muted); word-break: break-all; line-height: 1.5; }
-  .rec_result a { color: var(--accent_2); }
-
-  /* one_size: a single text size for the whole app — only the vampSF wordmark
-     (and glyph buttons whose icons scale with font-size) keep their own */
-  body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(svg) { font-size: 17px !important; }
-  .tag_numbers, .num_strip { height: 20px !important; }
-
-  /* head_same — the header pair, identical to every other page: 26px icon in a
-     40px target, muted, inside the header rather than pinned to the viewport.
-     Left is where you go, right is what you send. */
-  .nav_cass, .nav_share {
-    position: absolute;
-    top: max(12px, calc(env(safe-area-inset-top) + 6px));
-    background: transparent; color: var(--muted); border: none; border-radius: 7px;
-    padding: 7px; min-height: 40px; min-width: 40px; cursor: pointer; line-height: 0;
-    touch-action: manipulation;
-  }
-  .nav_cass { left: 0; }
-  .nav_share { right: 0; }
-  .nav_cass:hover, .nav_share:hover { color: var(--fg); }
-  .nav_cass:active, .nav_share:active { transform: scale(0.96); }
-  .nav_cass svg, .nav_share svg { width: 26px; height: 26px; }
-  body.drawer_open .nav_cass, body.drawer_open .nav_share { opacity: 0; pointer-events: none; }
-  /* nav_room — the pill owns the top band outright, so the wordmark starts
-     below it instead of running under it. Without this the big centred
-     wordmark reaches back far enough to sit under the pill on a phone. It goes
-     on the header, not on the wordmark: several pages set the wordmark's own
-     margin with a two-class rule that would win. */
-  .brand, .top_bar { padding-top: max(46px, calc(env(safe-area-inset-top) + 40px)); }
-  /* ---- session drawer: slides the page down from the top edge ---- */
-  .session_drawer {
-    max-height: 0; overflow-y: auto; background: var(--bg);
-    transition: max-height 0.18s ease; position: relative; z-index: 90;
-  }
-  .session_drawer.open { max-height: 80vh; max-height: 80dvh; }
-  /* control_panel_shadow: the page below casts a shadow UP from its top edge
-     into the session list — row width, not full bleed, the whole time the list
-     is open (it rides the bottom of the list's own scrollport). */
-  .session_drawer::after {
-    content: ''; display: block; position: sticky; bottom: 0; z-index: 3;
-    width: min(760px, 100%); margin: 0 auto -16px; height: 16px;
-    border-radius: 0 0 14px 14px; pointer-events: none;
-    background: linear-gradient(to top, rgba(0,0,0,0.22), rgba(0,0,0,0.10) 45%, rgba(0,0,0,0));
-  }
-  .session_drawer.dragging { transition: none; }
-  .session_drawer .jam_menu {
-    position: static; top: auto; left: auto; min-width: 0;
-    background: var(--panel); border: none; border-radius: 14px; overflow: hidden;
-    box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20);
-    padding: 6px 0; margin: 12px auto 0; max-width: 760px;
-  }
-  @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
-    .session_drawer { position: fixed; top: 0; left: 0; width: 50vw; z-index: 95;
-                      box-shadow: 0 10px 26px rgba(0,0,0,0.3); border-radius: 0 0 14px 0; }
-    .session_drawer.open { max-height: 88vh; }
-  }
+  /* the header pair, nav_room and the session drawer are in site.css */
 </style>
 </head>
 <body>
@@ -173,8 +55,9 @@
 <button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
 <button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
   <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
-  <div class="tagline">admin</div>
 </header>
+
+<h1>Admin</h1>
 
 <div id="theme_switch_mount"></div>
 

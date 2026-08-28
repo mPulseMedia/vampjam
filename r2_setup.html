@@ -7,18 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css?v=1">
+<script src="theme.js?v=2"></script>
+<script src="sessions.js?v=129"></script>
+<script src="drawer.js?v=141"></script>
 <style>
-  :root{
-    --bg:#4a2a0e; --panel:#5c3717; --panel_2:#6b4423; --panel_3:#7a4f2a;
-    --fg:#f5e5c5; --muted:#c9a87e; --accent:#e8b454; --accent_2:#d4a95a; --warn:#e8c794;
-  }
-  *{box-sizing:border-box;}
-  html,body{background:var(--bg);color:var(--fg);margin:0;padding:0;}
-  body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:4px 16px 56px;max-width:660px;margin:0 auto;}
-  .brand{text-align:center;margin:12px 0 2px;}
-  .brand .wordmark{font-family:'Sacramento',cursive;font-size:58px;line-height:1;color:var(--fg);}
-  .wordmark_sf{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:30px;font-weight:650;letter-spacing:0.5px;margin-left:3px;}
-  .brand .tagline{color:var(--muted);font-size:13px;letter-spacing:0.04em;}
+  /* admin_same: the palette, the reset, the page box and the wordmark all come
+     from site.css now — this page used to carry its own drifted copies. */
   .back{display:inline-block;color:var(--accent_2);text-decoration:none;font-size:13px;margin:8px 0 4px;}
   h1{font-size:20px;margin:14px 0 4px;}
   .sub{color:var(--muted);font-size:13px;margin-bottom:16px;}
@@ -42,48 +37,18 @@
   .note{background:var(--panel_2);border-radius:10px;padding:11px 14px;color:var(--muted);font-size:12px;line-height:1.5;margin-top:16px;}
   .note b{color:var(--fg);}
 
-  /* nav_left — ONE top-left control, in the same place on every vampsf page:
-     it is fixed to the viewport corner rather than sitting in the page, so it
-     does not move when the page does. On a session page it says Sessions and
-     pulls the list in, exactly as the swipe does. nav_hide: it disappears
-     while the list is open, because from there it has nowhere to go — the
-     swipe (or the control panel) is what takes you back. */
-  .nav_left {
-    position: fixed; z-index: 60;
-    top: max(12px, calc(env(safe-area-inset-top) + 6px));
-    left: max(12px, calc(env(safe-area-inset-left) + 10px));
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--panel, rgba(255,255,255,0.92));
-    color: var(--fg, #1d1d1f);
-    border: 1px solid var(--panel_3, rgba(0,0,0,0.12));
-    border-radius: 999px; padding: 0 13px 0 12px; margin: 0;
-    min-height: 34px; box-sizing: border-box;
-    font: inherit; font-size: 14px; font-weight: 600; line-height: 1;
-    text-decoration: none; cursor: pointer;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.26);
-    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    transition: opacity 0.22s ease;
-    touch-action: manipulation;
-  }
-  .nav_left:active { transform: scale(0.96); }
-  .nav_left svg { flex: 0 0 auto; width: 15px; height: 15px; }
-  body.drawer_open .nav_left { opacity: 0; pointer-events: none; }
-  /* nav_room — the pill owns the top band outright, so the wordmark starts
-     below it instead of running under it. Without this the big centred
-     wordmark reaches back far enough to sit under the pill on a phone. It goes
-     on the header, not on the wordmark: several pages set the wordmark's own
-     margin with a two-class rule that would win. */
-  .brand, .top_bar { padding-top: max(46px, calc(env(safe-area-inset-top) + 40px)); }
+  /* the header pair, nav_room and the session drawer are in site.css */
 </style>
 </head>
 <body>
 
-<header class="brand">
-  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
-  <div class="tagline">move audio to Cloudflare R2</div>
-</header>
+<div class="session_drawer" id="session_drawer"><div class="jam_menu"></div></div>
 
-<a class="nav_left" href="admin.html">&#8249; Admin</a>
+<header class="brand" style="position:relative;">
+<button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
+<button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
+  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
+</header>
 
 <h1>Six steps — then paste me one link</h1>
 <div class="sub">Do these on your Mac, logged into Cloudflare. Each step says what to click, what to type, and what you should see next.</div>

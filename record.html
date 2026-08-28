@@ -5,13 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>vampsf — Record</title>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css?v=1">
 <script src="theme.js?v=2"></script>
 <style>
-  * { box-sizing: border-box; }
   html { background: var(--bg, #ffffff); touch-action: manipulation; }
-  /* tap_zoom: touch-action does not inherit, so the things you actually tap
-     say it too — the drag handles keep their own 'none'. */
-  button, a, input, label, .jam_item, .tag_row, .mom_row { touch-action: manipulation; }   /* kbd_black + tap_zoom */
   body {
     margin: 0; background: var(--bg, #ffffff); color: var(--fg, #1d1d1f); min-height: 100vh; min-height: 100dvh; touch-action: manipulation;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -20,15 +17,8 @@
   }
   .top_bar { width: 100%; max-width: 560px; position: relative; text-align: center; min-height: 44px; margin-top: 4px; }
   /* nav_cass owns the placement now — see the shared block below */
-  .wordmark {
-    font-family: 'Sacramento', cursive;
-    font-size: 58px; line-height: 1; color: var(--fg);
-    display: inline-block; margin: 0;
-  }
-  .wordmark_sf {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 29px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
-  }
+  /* admin_same: the wordmark was 58/29 here and 68/34 on every other page —
+     it comes from site.css now, and the bar carries .brand so it matches. */
   .name_row {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     width: 100%; max-width: 560px; margin-top: 6px;
@@ -144,62 +134,18 @@
   }
   .status a { color: var(--accent); font-weight: 600; }
 
-  /* one_size: a single text size for the whole app — only the vampSF wordmark
-     (and glyph buttons whose icons scale with font-size) keep their own */
-  body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(svg) { font-size: 17px !important; }
   .tag_numbers, .num_strip { height: 20px !important; }
 
-  /* nav_left — ONE top-left control, in the same place on every vampsf page:
-     it is fixed to the viewport corner rather than sitting in the page, so it
-     does not move when the page does. On a session page it says Sessions and
-     pulls the list in, exactly as the swipe does. nav_hide: it disappears
-     while the list is open, because from there it has nowhere to go — the
-     swipe (or the control panel) is what takes you back. */
-  /* nav_cass — the cassette, same as every other page. This one has no session
-     list of its own to open (record.html carries no drawer), so it keeps the
-     journey it always had: back out to the session you were last on. Same icon,
-     same corner, same meaning — sessions are through here. */
-  .nav_cass {
-    position: absolute; left: 0;
-    top: max(12px, calc(env(safe-area-inset-top) + 6px));
-    background: transparent; color: var(--muted); border: none; border-radius: 7px;
-    padding: 7px; min-height: 40px; min-width: 40px; cursor: pointer; line-height: 0;
-    touch-action: manipulation;
-  }
-  .nav_cass:hover { color: var(--fg); }
-  .nav_cass:active { transform: scale(0.96); }
-  .nav_cass svg { width: 26px; height: 26px; }
-  .nav_left {
-    position: fixed; z-index: 60;
-    top: max(12px, calc(env(safe-area-inset-top) + 6px));
-    left: max(12px, calc(env(safe-area-inset-left) + 10px));
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--panel, rgba(255,255,255,0.92));
-    color: var(--fg, #1d1d1f);
-    border: 1px solid var(--panel_3, rgba(0,0,0,0.12));
-    border-radius: 999px; padding: 0 13px 0 12px; margin: 0;
-    min-height: 34px; box-sizing: border-box;
-    font: inherit; font-size: 14px; font-weight: 600; line-height: 1;
-    text-decoration: none; cursor: pointer;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.26);
-    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    transition: opacity 0.22s ease;
-    touch-action: manipulation;
-  }
-  .nav_left:active { transform: scale(0.96); }
-  .nav_left svg { flex: 0 0 auto; width: 15px; height: 15px; }
-  body.drawer_open .nav_left { opacity: 0; pointer-events: none; }
   /* nav_room — the pill owns the top band outright, so the wordmark starts
      below it instead of running under it. Without this the big centred
      wordmark reaches back far enough to sit under the pill on a phone. It goes
      on the header, not on the wordmark: several pages set the wordmark's own
      margin with a two-class rule that would win. */
-  .brand, .top_bar { padding-top: max(46px, calc(env(safe-area-inset-top) + 40px)); }
 </style>
 </head>
 <body>
 
-<div class="top_bar">
+<div class="brand top_bar">
   <button class="nav_cass" id="back_btn" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
   <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
 </div>

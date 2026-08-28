@@ -1,0 +1,123 @@
+/* site.css — admin_same: the one stylesheet every page of the site shares.
+   Until now each page carried its own near-copy of these rules in its own
+   <style>, and the copies had drifted: the admin page had a brown palette
+   baked into :root that ignored the theme entirely, a 62px wordmark where
+   the rest of the site has 68, and a 640px body where the rest has 760.
+   Those are the differences you could see.
+
+   What belongs here: the rules that are the same on every page — the reset,
+   the page box, the wordmark, the header pair (cassette left, share right),
+   the session drawer, and one_size. What stays in a page's own <style>: the
+   things only that page has.
+
+   It is linked BEFORE each page's <style>, so a page's own rule still wins
+   at equal specificity. That is deliberate — the remaining pages still hold
+   inline copies of some of these rules, and they can be deleted a page at a
+   time without any page ever going through a state where it has neither.
+
+   lab.html is the one page that does NOT link this. It is the experiment,
+   and it is meant to look nothing like the site. */
+
+/* the palette before theme.js speaks. theme.js sets these on the root element
+   itself, which beats a stylesheet, so this is only what a page wears for the
+   instant before it does — and what it wears if the script never arrives. Every
+   page used to carry its own copy of this block. */
+:root {
+  --bg: #4a2a0e;
+  --panel: #5c3717;
+  --panel_2: #6b4423;
+  --panel_3: #7a4f2a;
+  --fg: #f5e5c5;
+  --muted: #c9a87e;
+  --accent: #e8b454;
+  --accent_2: #d4a95a;
+  --danger: #c75450;
+  --warn: #e8c794;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  background: var(--bg, #ffffff); color: var(--fg, #1d1d1f);
+  margin: 0; padding: 0;
+  /* tap_zoom: no double-tap zoom on a mis-hit; pinch still works */
+  touch-action: manipulation;
+}
+/* tap_zoom: touch-action does not inherit, so the things you actually tap
+   say it too — the drag handles keep their own 'none'. */
+button, a, input, label, .jam_item, .tag_row, .mom_row { touch-action: manipulation; }
+
+body {
+  font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --gutter: 16px;
+  padding: 3px var(--gutter) 24px;
+  max-width: 760px; margin: 0 auto;
+}
+
+/* ---- the wordmark block at the top of every page ---- */
+.brand { text-align: center; margin: 8px 0 6px; }
+.brand .wordmark {
+  font-family: 'Sacramento', cursive;
+  font-size: 68px; line-height: 1; color: var(--fg);
+  display: inline-block; margin: 0;
+}
+.wordmark_sf {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 34px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
+}
+/* nav_room — the header pair owns the top band outright, so the wordmark
+   starts below it instead of running under it. It goes on the header, not on
+   the wordmark: several pages set the wordmark's own margin with a two-class
+   rule that would win. */
+.brand, .top_bar { padding-top: max(46px, calc(env(safe-area-inset-top) + 40px)); }
+
+/* ---- the header pair: left is where you go, right is what you send ----
+   26px glyph in a 40px target, muted, inside the header rather than pinned
+   to the viewport, and both step out of the way while the list is open. */
+.nav_cass, .nav_share {
+  position: absolute;
+  top: max(12px, calc(env(safe-area-inset-top) + 6px));
+  background: transparent; color: var(--muted); border: none; border-radius: 7px;
+  padding: 7px; min-height: 40px; min-width: 40px; cursor: pointer; line-height: 0;
+  touch-action: manipulation;
+}
+.nav_cass { left: 0; }
+.nav_share { right: 0; }
+.nav_cass:hover, .nav_share:hover { color: var(--fg); }
+.nav_cass:active, .nav_share:active { transform: scale(0.96); }
+.nav_cass svg, .nav_share svg { width: 26px; height: 26px; }
+body.drawer_open .nav_cass, body.drawer_open .nav_share { opacity: 0; pointer-events: none; }
+
+/* ---- session drawer: slides the page down from the top edge ---- */
+.session_drawer {
+  max-height: 0; overflow-y: auto; background: var(--bg);
+  transition: max-height 0.18s ease; position: relative; z-index: 90;
+}
+.session_drawer.open { max-height: 80vh; max-height: 80dvh; }
+/* control_panel_shadow: whatever is below casts a shadow UP from its top edge
+   into the session list — row width, not full bleed, the whole time the list
+   is open (it rides the bottom of the list's own scrollport). */
+.session_drawer::after {
+  content: ''; display: block; position: sticky; bottom: 0; z-index: 3;
+  width: min(760px, 100%); margin: 0 auto -16px; height: 16px;
+  border-radius: 0 0 14px 14px; pointer-events: none;
+  background: linear-gradient(to top, rgba(0,0,0,0.22), rgba(0,0,0,0.10) 45%, rgba(0,0,0,0));
+}
+.session_drawer.dragging { transition: none; }
+.session_drawer .jam_menu {
+  position: static; top: auto; left: auto; min-width: 0;
+  background: var(--panel); border: none; border-radius: 14px; overflow: hidden;
+  box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20);
+  padding: 6px 0; margin: 12px auto 0; max-width: 760px;
+}
+/* land_drawer — in landscape split the session list opens as a sheet over the
+   LEFT half only; the right half never moves */
+@media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
+  .session_drawer { position: fixed; top: 0; left: 0; width: 50vw; z-index: 95;
+                    box-shadow: 0 10px 26px rgba(0,0,0,0.3); border-radius: 0 0 14px 0; }
+  .session_drawer.open { max-height: 88vh; }
+}
+
+/* one_size: a single text size for the whole app — only the vampSF wordmark
+   (and glyph buttons whose icons scale with font-size) keep their own */
+body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(svg) { font-size: 17px !important; }
