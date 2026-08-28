@@ -1749,7 +1749,35 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   about 32MB, and 8 would be 56. Captured at ×6.3 the houses show crisp windows, brick texture
   and sharp roof edges where they were mush before. Whole lab suite re-run and green; no page
   errors.
-- NEXT → add entry 230 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 230 lens_glass · b230 · lab.html — you are looking through a magnifying glass now.
+  lens_glass: a 270px round window at the middle of the screen, clipped to a circle, holding a
+  SECOND copy of the whole world. Both copies read the same pan, swirl, lean and zoom from the
+  one view() law, so they can never disagree about where you are looking. Inside the circle is
+  a bright bevel, a dark rim and the shadow it throws; inside the glass a soft highlight across
+  the upper left, a faint streak and a small specular spot, all clipped to the lens so they
+  travel with it.
+  lens_gain: the RIM is the plain view — exactly what the page showed before the glass existed —
+  and the LENS multiplies it by --gain 1.8. The first attempt did it the other way round,
+  shrinking the OUTER world to a third, and that emptied the rim entirely: at x1 the picture is
+  only 352px wide, so a third of it hides behind a 270px window. The lens's PAN is multiplied by
+  the same gain, so the world point under the middle of the glass is the same one either side of
+  the edge — a boat in the rim is that boat, magnified, in the lens. --shk is keyed to
+  mult * 1.8 now, so the raster is taken for what the LENS shows rather than what the rim does.
+  rim_cheap: the rim copy was first dimmed with filter: brightness/saturate, and that halved the
+  frame rate — 60fps down to 15-40, worst frame 138ms. A CSS filter allocates an offscreen buffer
+  the size of the element it is on, and this element is the paper: 400% of the stage, scaled by up
+  to x39. Exactly the cost that crashed the browser back when the fade was a mask, wearing a
+  different hat. The filter is gone and the dimming is done by .haze instead — which also MOVED,
+  from a sibling of the stage into it, sitting between the rim (z0) and the lens (z2). Two things
+  fixed at once: the fog now dims the distance and no longer washes over the window you are
+  looking through, and it costs one constant-size paint that never grows with the zoom. Measured
+  back at 44-58fps with both worlds live, against 59-61 with the rim hidden.
+  gain_ease + flare_calm: gain came down from 2.6 to 1.8 (at 2.6 the glass at rest landed on open
+  sea and read as an empty porthole; at 1.8 it holds the hills, the water and the boats), and the
+  flare came down with it — it was tuned against a lens the haze was washing out, and once the
+  haze came off the glass it read as an opaque shiny dome.
+  Whole lab suite re-run and green, node --check clean, no page errors.
+- NEXT → add entry 231 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

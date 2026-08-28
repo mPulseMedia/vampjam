@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "229 swipe_pan",
+        id: "230 lens_glass",
         expanded: true,
+        nodes: [
+          { text: "230 lens_glass", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make it look like I am looking through a magnifying glass." },
+              { text: "A round lens, with a little lens flare." },
+              { text: "Through the lens, what is there now." },
+              { text: "Outside the lens, the same scene but further away \u2014 the edges of a wider view." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make it look like I'm looking through a magnifying glass meaning give it around lens and give it a little bit of a lens flare and I'm through the lens seeing what's there now and on the outer edge of the thing around the lens you just block that for now, we'll figure out something with it or actually you can show the show the same thing but make it look further away so you're just seeing the edges of a further away scene that's closer up in the magnifying glass lens" }
+            ]},
+            { text: "lens_glass", children: [
+              { text: "a round glass in the middle of the screen with a bright bevel, a dark rim and a shadow under it" },
+              { text: "the world is drawn twice \u2014 once wide behind the glass, once magnified inside it \u2014 and both read the same pan, swirl, lean and zoom, so they can never disagree" },
+              { text: "a soft highlight, a faint streak and a small bright spot on the glass, clipped to the circle so they travel with it" }
+            ]},
+            { text: "lens_gain", children: [
+              { text: "the rim is the plain view, exactly what the page showed before the glass; the lens magnifies it 1.8 times" },
+              { text: "the first try shrank the outer world instead and that emptied the rim \u2014 at rest the picture is barely wider than the window, so a third of it hid behind the glass" },
+              { text: "the lens pans by the same factor it magnifies, so a boat in the rim is that same boat, larger, in the lens \u2014 the scene is continuous across the edge" }
+            ]},
+            { text: "rim_cheap", children: [
+              { text: "the second world cost half the frame rate at first \u2014 60fps down to as low as 15" },
+              { text: "the dimming was a CSS filter, and a filter buffers the whole element it sits on: the paper is four screens wide and blows up to 39 times, the same cost that crashed the browser when the fade was a mask" },
+              { text: "the filter is gone; the fog does the dimming, and the fog moved to sit between the two worlds \u2014 so it softens the distance and no longer clouds the window you are looking through" },
+              { text: "back to 44-58fps with both worlds live" }
+            ]},
+            { text: "gain_ease", children: [
+              { text: "at 2.6 times the glass at rest sat on open sea and read as an empty porthole; at 1.8 it holds the hills, the water and the boats" },
+              { text: "the flare came down with it \u2014 it had been tuned against a lens the fog was washing out, and once the fog came off the glass it looked like a shiny opaque dome" }
+            ]},
+            { text: "verify", children: [
+              { text: "~12m: release lens_glass, teal \u2014 scale measured 1.8x inside against 1x outside at rest and 70x against 39x zoomed in, fog confirmed inside the stage, rim filter confirmed none, frame rate measured with the rim on and off, whole suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "no new trace arrived with this one \u2014 nothing since the 11:43 batch" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "229 swipe_pan",
+        expanded: false,
         nodes: [
           { text: "229 swipe_pan", children: [
             { text: "prompt_restate", children: [
