@@ -2204,7 +2204,33 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   one cached.
   Suite: fav_jump re-verified through the new button (the copied link followed and landed). No page
   errors. Still no new trace.
-- NEXT → add entry 248 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 248 nav_share · b248 · all 8 session pages + session.html + favorites.html + drawer.js — a share
+  for the page itself, top right of the control panel. And a standing rule.
+  nav_share: the same muted share button, one size up (21px icon in a 34px target), sitting at the
+  top right of the header, mirroring where the Sessions pill sits on the left — left is where you
+  go, right is what you send. It copies the page's URL with the WHOLE query stripped: this button
+  is "here is this session" / "here is my favourites", and if you arrived on a deep link the tag id
+  is as much a moment as the seconds are. Sharing a moment is the row's own button.
+  it lives INSIDE the header, not pinned to the viewport, which is the whole lesson of nav_gone
+  three builds ago — a corner control fixed to the screen stops being a header control the moment
+  you scroll and becomes a lozenge floating over the transport. Measured on both page types:
+  34×34, 16px from the right edge, 23px down, the same colour as every other share, and clear of
+  the wordmark.
+  wired once in drawer.js rather than nine times in nine pages. It has to wait for DOMContentLoaded
+  — drawer.js is loaded in <head>, so the button does not exist yet when the file runs, and the
+  first cut was inert while looking perfectly correct in every other respect. drawer.js?v=136 → 137.
+  ui_grammar (STANDING RULE, applies to every future build): he wants FEW conventions of display,
+  interaction and behaviour, and most things following them. Whenever a SMALL change would bring an
+  element on any page into compliance with the established grammar, make it — unprompted, in the
+  same build, without asking. Not large refactors; the little ones. The Admin page's zoom
+  experiment (lab.html) is exempt.
+  first pass under that rule: the ✎ next to the session title was the one raw text glyph on a page
+  otherwise made entirely of SVG icons, and it carried three inline styles nothing else needed. It
+  is now the same icon system as everything around it, with no inline styles and a proper
+  aria-label. Verified: it renders as an svg, has no leftover text, and nothing else on the page
+  moved (transport 6 buttons, highlight rows and top-left pills all unchanged).
+  fav_share re-verified through the row buttons. No page errors. Still no new trace.
+- NEXT → add entry 249 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

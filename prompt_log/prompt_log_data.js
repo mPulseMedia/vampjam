@@ -9,8 +9,50 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "247 fav_share",
+        id: "248 nav_share",
         expanded: true,
+        nodes: [
+          { text: "248 nav_share", children: [
+            { text: "prompt_restate", children: [
+              { text: "A share button on the control panel when viewing favorites or any session." },
+              { text: "Top right corner, looking like the other share buttons." },
+              { text: "And a standing rule: there is a UI grammar \u2014 few conventions, most things following them." },
+              { text: "Where a small change brings something into compliance, just do it. (The zoom experiment is exempt.)" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Put a share button on the control panel when viewing favorite or viewing any of the sessions and put the share button in the top right corner and make it look like the other share button\n\nOne of the things I\u2019m trying to do with the page with the pages except the Zoom experiment which I\u2019m building in the Admin page which we can ignore for the rest of it. There\u2019s a user interface grammar, meaning conventions of display interaction behavior, and what I like is when there are relatively few conventions and most things follow those conventions and so if it\u2019s not a large change, but little ones that bring some element on any page into compliance with that UI grammar, please do so" }
+            ]},
+            { text: "nav_share", children: [
+              { text: "the same share button, one size up, at the top right of the header \u2014 mirroring where the Sessions pill sits on the left: left is where you go, right is what you send" },
+              { text: "it copies the page\u2019s own link with the whole query stripped, because this button means \u2018here is this session\u2019; sharing a moment is the row\u2019s button" },
+              { text: "it sits inside the header rather than pinned to the screen \u2014 that is the lesson from removing the top-left button three builds ago" },
+              { text: "measured on both page types: same size, same distance from the edge, same colour as the other shares, clear of the wordmark" }
+            ]},
+            { text: "ui_grammar", children: [
+              { text: "written into the spec as a standing rule, so it applies to every build from here without you having to ask again" },
+              { text: "few conventions; most things follow them; small compliance fixes get made in the same build, unprompted" },
+              { text: "the zoom experiment is exempt" }
+            ]},
+            { text: "first_pass", children: [
+              { text: "the pencil next to the session title was the one raw text character on a page otherwise made entirely of drawn icons, and it carried three one-off styles nothing else needed" },
+              { text: "it is now the same icon system as everything around it" },
+              { text: "checked that nothing else on the page moved" }
+            ]},
+            { text: "one_catch", children: [
+              { text: "the button was inert at first while looking perfectly correct \u2014 the shared script runs before the page body exists, so it was looking for a button that had not been made yet" }
+            ]},
+            { text: "verify", children: [
+              { text: "~14m: release nav_share \u2014 position, size, colour and clearance measured on both page types, the copied link read back from the clipboard on three entry paths including a deep link, the pencil checked, yesterday\u2019s share buttons re-verified, script version bumped, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "247 fav_share",
+        expanded: false,
         nodes: [
           { text: "247 fav_share", children: [
             { text: "prompt_restate", children: [

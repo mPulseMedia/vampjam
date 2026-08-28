@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
-<script src="drawer.js?v=136"></script>
+<script src="drawer.js?v=137"></script>
 <style>
   :root {
     --bg: #4a2a0e;
@@ -379,6 +379,25 @@
   .jam_share { flex: 0 0 auto; background: transparent; color: var(--muted); border: none; border-radius: 7px;
                padding: 6px 6px; margin-left: 6px; min-height: 32px; cursor: pointer; line-height: 0; }
   .jam_share:hover { background: transparent; color: var(--fg); }
+  /* nav_share — the page's own share, top right of the control panel, mirroring
+     where the Sessions pill sits on the left: left is where you go, right is what
+     you send. It lives INSIDE the header rather than pinned to the viewport,
+     which is the whole lesson of nav_gone — a corner control fixed to the screen
+     stops being a header control the moment you scroll and becomes a lozenge
+     floating over the transport. It wears the same muted share button as every
+     other share on the site, only a size up, because it is the only one on the
+     row it is on. */
+  .nav_share {
+    position: absolute; right: 0;
+    top: max(12px, calc(env(safe-area-inset-top) + 6px));
+    background: transparent; color: var(--muted); border: none; border-radius: 7px;
+    padding: 6px; min-height: 34px; min-width: 34px; cursor: pointer; line-height: 0;
+    touch-action: manipulation;
+  }
+  .nav_share:hover { color: var(--fg); }
+  .nav_share:active { transform: scale(0.96); }
+  .nav_share svg { width: 21px; height: 21px; }
+  body.drawer_open .nav_share { opacity: 0; pointer-events: none; }
   details.about_page { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
   details.about_page summary { cursor: pointer; color: var(--fg); font-weight: 600; }
   details.about_page code { background: var(--panel_2); padding: 1px 6px; border-radius: 4px; color: var(--fg); }
@@ -529,6 +548,7 @@
 </div>
 
 <header class="brand" style="position:relative;">
+<button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
   <!-- nav_gone — no Sessions button on a session page. It is fixed to the corner
        of the VIEWPORT, so the moment the page is scrolled it stops being a header
        control and becomes a lozenge floating over whatever happens to be under it
@@ -542,7 +562,7 @@
 
 
 
-<h1 style="display:flex;align-items:center;justify-content:center;gap:6px;">2026-07-24 Sound Union <button class="ghost" id="audio_edit_btn" title="Change audio file" style="font-size:17px;padding:5px 7px;min-height:32px;">✎</button></h1>
+<h1 style="display:flex;align-items:center;justify-content:center;gap:6px;">2026-07-24 Sound Union <button class="ghost" id="audio_edit_btn" title="Change audio file" aria-label="Change audio file"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M14.5 6.5l3 3"/></svg></button></h1>
 
 <!-- audio edit form (hidden, toggled by pencil) -->
 <div class="audio_card" id="audio_card" style="display:none;">

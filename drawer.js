@@ -348,6 +348,33 @@
     });
   }
 
+  // nav_share — the page's own share button, wired once here rather than nine
+  // times in nine pages. It copies the page's URL with no query on it: this is
+  // "here is this session" / "here is my favourites", not "here is this second".
+  // Every page already loads drawer.js, so this is the cheapest place for it to
+  // live and the only place it has to be kept right.
+  // drawer.js is loaded in <head>, so the button does not exist yet when this
+  // runs — wait for the document before looking for it. (It did not, and the
+  // button was inert while looking perfectly correct in every other respect.)
+  function wire_page_share() {
+    var b = document.getElementById('page_share');
+    if (!b) return;
+    b.addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation();
+      // the whole query goes, not just the timestamp: this button is "here is this
+      // session", and if you arrived on a deep link the tag id is as much a
+      // moment as the seconds are. Sharing a moment is the row's own button.
+      var url = window.location.origin + window.location.pathname;
+      try { if (navigator.clipboard) navigator.clipboard.writeText(url); } catch (err) {}
+      if (typeof window.toast === 'function') window.toast('Link copied: ' + url);
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', wire_page_share);
+  } else {
+    wire_page_share();
+  }
+
   // ---- drag: pull down (at top) to reveal, swipe up (when open) to close ----
   var drag = null;
   var last_scroll_at = 0;
