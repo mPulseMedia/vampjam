@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 <script src="theme.js?v=2"></script>
+<script src="sessions.js?v=129"></script>
+<script src="drawer.js?v=141"></script>
 <style>
   :root {
     --bg: #4a2a0e;
@@ -106,48 +108,73 @@
   body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(svg) { font-size: 17px !important; }
   .tag_numbers, .num_strip { height: 20px !important; }
 
-  /* nav_left — ONE top-left control, in the same place on every vampsf page:
-     it is fixed to the viewport corner rather than sitting in the page, so it
-     does not move when the page does. On a session page it says Sessions and
-     pulls the list in, exactly as the swipe does. nav_hide: it disappears
-     while the list is open, because from there it has nowhere to go — the
-     swipe (or the control panel) is what takes you back. */
-  .nav_left {
-    position: fixed; z-index: 60;
+  /* head_same — the header pair, identical to every other page: 26px icon in a
+     40px target, muted, inside the header rather than pinned to the viewport.
+     Left is where you go, right is what you send. */
+  .nav_cass, .nav_share {
+    position: absolute;
     top: max(12px, calc(env(safe-area-inset-top) + 6px));
-    left: max(12px, calc(env(safe-area-inset-left) + 10px));
-    display: inline-flex; align-items: center; gap: 5px;
-    background: var(--panel, rgba(255,255,255,0.92));
-    color: var(--fg, #1d1d1f);
-    border: 1px solid var(--panel_3, rgba(0,0,0,0.12));
-    border-radius: 999px; padding: 0 13px 0 12px; margin: 0;
-    min-height: 34px; box-sizing: border-box;
-    font: inherit; font-size: 14px; font-weight: 600; line-height: 1;
-    text-decoration: none; cursor: pointer;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.26);
-    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    transition: opacity 0.22s ease;
+    background: transparent; color: var(--muted); border: none; border-radius: 7px;
+    padding: 7px; min-height: 40px; min-width: 40px; cursor: pointer; line-height: 0;
     touch-action: manipulation;
   }
-  .nav_left:active { transform: scale(0.96); }
-  .nav_left svg { flex: 0 0 auto; width: 15px; height: 15px; }
-  body.drawer_open .nav_left { opacity: 0; pointer-events: none; }
+  .nav_cass { left: 0; }
+  .nav_share { right: 0; }
+  .nav_cass:hover, .nav_share:hover { color: var(--fg); }
+  .nav_cass:active, .nav_share:active { transform: scale(0.96); }
+  .nav_cass svg, .nav_share svg { width: 26px; height: 26px; }
+  body.drawer_open .nav_cass, body.drawer_open .nav_share { opacity: 0; pointer-events: none; }
   /* nav_room — the pill owns the top band outright, so the wordmark starts
      below it instead of running under it. Without this the big centred
      wordmark reaches back far enough to sit under the pill on a phone. It goes
      on the header, not on the wordmark: several pages set the wordmark's own
      margin with a two-class rule that would win. */
   .brand, .top_bar { padding-top: max(46px, calc(env(safe-area-inset-top) + 40px)); }
+  /* ---- session drawer: slides the page down from the top edge ---- */
+  .session_drawer {
+    max-height: 0; overflow-y: auto; background: var(--bg);
+    transition: max-height 0.18s ease; position: relative; z-index: 90;
+  }
+  .session_drawer.open { max-height: 80vh; max-height: 80dvh; }
+  /* control_panel_shadow: the page below casts a shadow UP from its top edge
+     into the session list — row width, not full bleed, the whole time the list
+     is open (it rides the bottom of the list's own scrollport). */
+  .session_drawer::after {
+    content: ''; display: block; position: sticky; bottom: 0; z-index: 3;
+    width: min(760px, 100%); margin: 0 auto -16px; height: 16px;
+    border-radius: 0 0 14px 14px; pointer-events: none;
+    background: linear-gradient(to top, rgba(0,0,0,0.22), rgba(0,0,0,0.10) 45%, rgba(0,0,0,0));
+  }
+  .session_drawer.dragging { transition: none; }
+  .session_drawer .jam_menu {
+    position: static; top: auto; left: auto; min-width: 0;
+    background: var(--panel); border: none; border-radius: 14px; overflow: hidden;
+    box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20);
+    padding: 6px 0; margin: 12px auto 0; max-width: 760px;
+  }
+  @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
+    .session_drawer { position: fixed; top: 0; left: 0; width: 50vw; z-index: 95;
+                      box-shadow: 0 10px 26px rgba(0,0,0,0.3); border-radius: 0 0 14px 0; }
+    .session_drawer.open { max-height: 88vh; }
+  }
 </style>
 </head>
 <body>
 
-<header class="brand">
+<div class="session_drawer" id="session_drawer"><div class="jam_menu"></div></div>
+
+<!-- head_same — the same header every other page has: the cassette on the left,
+     the page's share on the right, the wordmark between them. Admin was the one
+     page still wearing the old "‹ Sessions" pill, and it was outside the header
+     rather than in it. The drawer comes with it, so the cassette here opens the
+     session list exactly as it does everywhere else instead of being a link that
+     merely goes somewhere similar. -->
+<header class="brand" style="position:relative;">
+<button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
+<button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
   <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
   <div class="tagline">admin</div>
 </header>
-
-<a class="nav_left" href="index.html">&#8249; Sessions</a>
 
 <div id="theme_switch_mount"></div>
 

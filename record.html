@@ -57,15 +57,23 @@
     display: flex; align-items: center; justify-content: center;
     display: none;   /* nothing to seek while recording */
   }
+  /* rec_red — the button is red all the time and says REC, rather than being a
+     pale disc with a red dot on it that turns red once you press it. The one
+     control on the page you came here to press should look like the one control
+     on the page you came here to press. Recording is now told by the pulse and by
+     the word changing to STOP, not by the button finally becoming its own colour. */
   .rec_btn {
     width: 92px; height: 92px; border-radius: 50%;
-    border: none; cursor: pointer; font-size: 38px; line-height: 1;
-    background: var(--panel_2); color: #d70015; flex: 0 0 auto;
+    border: none; cursor: pointer; flex: 0 0 auto;
+    font: 700 25px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    letter-spacing: 0.06em;
+    background: #d70015; color: #ffffff;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+    box-shadow: 0 4px 18px rgba(215,0,21,0.36);
   }
   .rec_btn.recording { background: #d70015; color: #fff; animation: rec_pulse 1.2s ease-in-out infinite; }
   @keyframes rec_pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(215,0,21,0.45); } 50% { box-shadow: 0 0 0 14px rgba(215,0,21,0); } }
+  .rec_state[hidden], .time_row .now[hidden] { display: none !important; }
   .rec_state { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 17px; min-height: 24px; font-variant-numeric: tabular-nums; }
   .rec_dot { width: 10px; height: 10px; border-radius: 50%; background: #d70015; opacity: 0; }
   .rec_state.on .rec_dot { opacity: 1; animation: dot_blink 1.2s ease-in-out infinite; }
@@ -208,16 +216,26 @@
     <button class="ctrl_btn" tabindex="-1">&minus;2m</button>
     <button class="ctrl_btn" tabindex="-1">&minus;15s</button>
     <button class="ctrl_btn" tabindex="-1">&minus;5s</button>
-    <button class="rec_btn" id="rec_btn" aria-label="Record">&#9679;</button>
+    <button class="rec_btn" id="rec_btn" aria-label="Record">REC</button>
     <button class="ctrl_btn" tabindex="-1">+5s</button>
     <button class="ctrl_btn" tabindex="-1">+15s</button>
     <button class="ctrl_btn" tabindex="-1">+2m</button>
   </div>
-  <div class="rec_state" id="rec_state"><span class="rec_dot"></span><span id="rec_time">0:00</span></div>
+  <!-- count_gone — the counter that sat under the button is gone. It said the same
+       thing as the counter below the bar, a few pixels higher, and the button now
+       says whether you are recording all by itself. The element stays (hidden) so
+       the code that writes to it every tick needs no guard and cannot be the thing
+       that breaks a recording. -->
+  <div class="rec_state" id="rec_state" hidden><span class="rec_dot"></span><span id="rec_time">0:00</span></div>
   <div class="bar_wrap" id="bar_wrap">
     <div class="num_strip" id="num_strip"></div>
     <div class="rec_bar" id="rec_bar"></div>
-    <div class="time_row"><span class="now" id="cur_time">0:00</span><span>/</span><span id="dur_time">0:00</span></div>
+    <!-- time_one — one counter, the grey one. The blue "now" and the slash in
+         front of it were a duration read as a position: while you are recording
+         there is no total to be a fraction of, so "0:00 / 0:12" was two numbers
+         where one is true. cur_time stays hidden for the same reason rec_state
+         does — the tick writes to it and does not need to know. -->
+    <div class="time_row"><span class="now" id="cur_time" hidden>0:00</span><span id="dur_time">0:00</span></div>
   </div>
   <button class="tag_btn" id="tag_btn" disabled>Tag the moment</button>
   <div class="mom_list" id="mom_list"></div>
@@ -489,7 +507,7 @@
       };
       mediaRec.start(5000);   // 5s slices so the local copy is never far behind
       startT = Date.now(); timer = setInterval(tick, 250); tick();
-      recBtn.classList.add('recording'); recBtn.innerHTML = '&#9632;';
+      recBtn.classList.add('recording'); recBtn.textContent = 'STOP';   // rec_red
       recState.classList.add('on');
       tagBtn.disabled = false;
       status.textContent = '';
@@ -501,7 +519,7 @@
     recDur = Math.round((Date.now() - startT) / 1000);
     if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
     clearInterval(timer);
-    recBtn.classList.remove('recording'); recBtn.innerHTML = '&#9679;';
+    recBtn.classList.remove('recording'); recBtn.textContent = 'REC';   // rec_red
     recState.classList.remove('on');
     tagBtn.disabled = true;
     render_bar();
