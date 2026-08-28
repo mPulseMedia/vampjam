@@ -2230,7 +2230,31 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   aria-label. Verified: it renders as an svg, has no leftover text, and nothing else on the page
   moved (transport 6 buttons, highlight rows and top-left pills all unchanged).
   fav_share re-verified through the row buttons. No page errors. Still no new trace.
-- NEXT → add entry 249 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 249 nav_cass · b249 · all 8 session pages + session.html + favorites.html + drawer.js — the
+  cassette in the top left, and it opens the session list.
+  (asked first: "takes you to the session page" could have meant the last session you were on —
+  index.html already does exactly that — or the list. He said the list.)
+  nav_cass: the exact mirror of nav_share put in last build. Same 21px icon in a 34px target, same
+  muted colour, same place in the header band, left instead of right. Left is where you go, right
+  is what you send. Measured on both page types: 34×34 at 16,23, mirroring the share to the pixel,
+  same computed colour, clear of the wordmark.
+  it is the CASSETTE because that is already what a session looks like in the list — the icon means
+  the same thing in both places rather than teaching a second symbol. Verified by comparing the
+  header icon's markup against a session row's icon in the open drawer: identical.
+  it replaces the wide "Sessions" pill on Favorites, which was the last .nav_left in the app. Same
+  job, but small enough to live in the header instead of being pinned to the viewport — which is
+  what had it sitting on the transport (nav_gone, 246). So session pages get a way into the list
+  back, in the form that caused the problem in the first place having been fixed rather than
+  removed. The swipe still works: two ways in, both verified.
+  it hides while the list is open, as the pill did — from there it has nowhere to go.
+  ui_grammar pass: with the pill gone from all ten pages, the whole .nav_left block was dead CSS
+  and came out with it (admin.html and r2_setup.html keep their own copies for their own back
+  links; nothing here referenced these). The nav_room comment was rewritten to describe the two
+  header controls that actually own that band now.
+  drawer.js?v=137 → 138; the click is wired once in drawer.js beside the share, after
+  DOMContentLoaded for the same reason. nav_share and fav_share re-verified. No page errors.
+  Still no new trace.
+- NEXT → add entry 250 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

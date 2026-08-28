@@ -356,6 +356,14 @@
   // drawer.js is loaded in <head>, so the button does not exist yet when this
   // runs — wait for the document before looking for it. (It did not, and the
   // button was inert while looking perfectly correct in every other respect.)
+  // nav_cass — the cassette in the top left opens the session list, and it is the
+  // only thing that has to know that. Wired here beside the share for the same
+  // reason: one place, ten pages.
+  function wire_page_sessions() {
+    var b = document.getElementById('page_sessions');
+    if (!b) return;
+    b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); toggle(); });
+  }
   function wire_page_share() {
     var b = document.getElementById('page_share');
     if (!b) return;
@@ -369,10 +377,11 @@
       if (typeof window.toast === 'function') window.toast('Link copied: ' + url);
     });
   }
+  function wire_header() { wire_page_sessions(); wire_page_share(); }
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', wire_page_share);
+    document.addEventListener('DOMContentLoaded', wire_header);
   } else {
-    wire_page_share();
+    wire_header();
   }
 
   // ---- drag: pull down (at top) to reveal, swipe up (when open) to close ----

@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "248 nav_share",
+        id: "249 nav_cass",
         expanded: true,
+        nodes: [
+          { text: "249 nav_cass", children: [
+            { text: "prompt_restate", children: [
+              { text: "Put the cassette tape icon in the top left of most pages." },
+              { text: "Not on the session list page itself." },
+              { text: "It takes you to the session page." },
+              { text: "(asked which \u2014 the last session you were on, or the list; you said the list)" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Have the cassett tape icon in the top left of most pages, except the session list page itself, that takes you to the session page." }
+            ]},
+            { text: "nav_cass", children: [
+              { text: "the exact mirror of the share button put in last time: same size, same colour, same place in the header band, left instead of right" },
+              { text: "left is where you go, right is what you send" },
+              { text: "measured on both page types: it mirrors the share to the pixel and stays clear of the wordmark" },
+              { text: "it hides while the list is open, because from there it has nowhere to go" }
+            ]},
+            { text: "why_the_cassette", children: [
+              { text: "it is already what a session looks like in the list, so the icon means the same thing in both places rather than teaching a second symbol" },
+              { text: "checked by comparing it against a session row\u2019s icon in the open list \u2014 identical" }
+            ]},
+            { text: "what_it_replaces", children: [
+              { text: "the wide Sessions pill on Favorites, which was the last one of its kind in the app" },
+              { text: "same job, but small enough to sit in the header rather than be pinned to the screen \u2014 which is what had it covering the transport three builds ago" },
+              { text: "so session pages get a way into the list back, with the thing that caused the trouble fixed rather than removed" },
+              { text: "the swipe still works too: two ways in, both checked" }
+            ]},
+            { text: "tidy_up", children: [
+              { text: "with the pill gone from all ten pages its styling was dead weight and came out with it" },
+              { text: "the admin and setup pages keep their own copies for their own back links" }
+            ]},
+            { text: "verify", children: [
+              { text: "~15m: release nav_cass \u2014 position, size, colour and mirroring measured on both page types, the icon compared against the list\u2019s own, the tap and the swipe both confirmed to open the list, the last two builds re-verified, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "248 nav_share",
+        expanded: false,
         nodes: [
           { text: "248 nav_share", children: [
             { text: "prompt_restate", children: [
