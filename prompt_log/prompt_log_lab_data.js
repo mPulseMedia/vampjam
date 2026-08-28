@@ -9,8 +9,54 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "237 nudge_fast",
+        id: "238 card_deck",
         expanded: true,
+        nodes: [
+          { text: "238 card_deck", children: [
+            { text: "prompt_restate", children: [
+              { text: "The latency is right. Now detect much smaller gestures." },
+              { text: "Normalise a big gesture to the same single nudge." },
+              { text: "Fill the surface with cards side by side with a gap, each with an integrated number." },
+              { text: "Each nudge moves me to the neighbour card \u2014 over, up or down." },
+              { text: "Going deeper passes me down a layer, to another spread of cards." },
+              { text: "This is the space I want to traverse with micro nudges." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "That latency is really impressive. It\u2019s very tight. I think that it should detect much smaller gestures, and when it receives a big gesture, just normalize it to the same badge and make the surface filled with cards next to one another with a gap, but with a number on it an integrated and each nudge actually moves me over to the Neighbor card or up to or down to, and if I go deeper, it passes me down a layer where there is another spread of cards this is the space I want to be traversing with micro nudges with my phone" }
+            ]},
+            { text: "card_deck", children: [
+              { text: "the painting steps aside: a layer is 25 cards side by side with a gap, three columns and three rows in view at once" },
+              { text: "you stand on one and it is highlighted, so a nudge has something to read against" },
+              { text: "the deck still tips and swirls with the phone" }
+            ]},
+            { text: "the_number", children: [
+              { text: "every card carries the whole route that got you here \u2014 9.14.13 is the thirteenth card of the fourteenth card of the ninth" },
+              { text: "and the layer it is on, under the number" }
+            ]},
+            { text: "deck_deep", children: [
+              { text: "a nudge toward you drops you THROUGH the card you are standing on into a fresh spread inside it" },
+              { text: "a nudge away brings you back up to exactly where you were standing when you left \u2014 not just the route, the spot" },
+              { text: "four layers down; the drop takes a fifth of a second and the new layer arrives from inside the old one, so it reads as passing through rather than a cut" }
+            ]},
+            { text: "nudge_small", children: [
+              { text: "the bar came down a long way, and the detector now uses its own much smaller floor instead of the one the old integrator needed \u2014 that floor was quietly eating exactly the micro nudges you are asking for" },
+              { text: "measured: 0.4 fires in 50ms, 0.5 in 33ms, and anything from 0.85 up in a SINGLE sample, about 17ms" },
+              { text: "and shaking still does nothing at all, at four different strengths" },
+              { text: "a tiny flick and a five-times-harder shove both move exactly one card" }
+            ]},
+            { text: "verify", children: [
+              { text: "~24m: release card_deck, teal \u2014 neighbour moves measured in both axes, the drop and the climb back measured with the route and the spot, sensitivity swept from 0.3 to 5.0, shake rejection swept at four strengths, 58-59fps, suite green, no page errors" },
+              { text: "one old test retired: it measured the painting\u2019s box, and the painting is gone" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new. lab_gestures.json on main is unchanged: 21 takes, all from the 11:43 batch." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "237 nudge_fast",
+        expanded: false,
         nodes: [
           { text: "237 nudge_fast", children: [
             { text: "prompt_restate", children: [

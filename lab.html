@@ -138,6 +138,39 @@
     pointer-events: none; -webkit-user-select: none; user-select: none;
   }
   .shot[data-missing] { display: none; }
+  .shot { display: none; }        /* card_deck: the painting steps aside for the cards */
+  /* card_deck — the space he wants to traverse: a spread of cards side by side
+     with a gap, one nudge to the neighbour, and a nudge inward drops you through
+     the card you are on into a whole new spread inside it. The deck is driven in
+     PIXELS off the card pitch rather than through the metre-and-zoom pipeline,
+     because a card lattice has no business being measured in metres — a nudge is
+     one card, and one card is one card at every depth.
+     It keeps the swirl and both leans, so the deck still tips with the phone. */
+  .deck {
+    position: absolute; left: 50%; top: 50%; z-index: 1;
+    width: 0; height: 0; pointer-events: none;
+    transform-style: preserve-3d;
+    transform: rotate(var(--rot, 0deg)) rotateX(var(--tilt, 0deg)) rotateY(var(--turn, 0deg))
+               translate3d(var(--cx, 0px), var(--cy, 0px), 0) scale(var(--dz, 1));
+    opacity: var(--dop, 1);
+  }
+  .card {
+    position: absolute; border-radius: 14px;
+    background: #ffffff; border: 1px solid rgba(30,41,59,0.14);
+    box-shadow: 0 6px 18px rgba(15,23,42,0.16), 0 1px 3px rgba(15,23,42,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font: 600 26px/1.1 ui-rounded, -apple-system, system-ui, sans-serif;
+    color: #334155; letter-spacing: -0.01em; text-align: center;
+    -webkit-user-select: none; user-select: none;
+  }
+  /* the card you are standing on, so a nudge has something to read against */
+  .card.here {
+    background: #eef4ff; border-color: rgba(37,99,235,0.55); color: #1d4ed8;
+    box-shadow: 0 0 0 2px rgba(37,99,235,0.35), 0 10px 26px rgba(15,23,42,0.22);
+  }
+  .card .n { display: block; }
+  .card .d { display: block; margin-top: 6px; font-size: 12px; font-weight: 500;
+             color: #94a3b8; letter-spacing: 0.06em; }
   /* lens_none — the magnifying glass is gone, every part of it: the round
      window, its ring, the highlight on the glass, the second copy of the world
      behind it and the gain that magnified one against the other. It made the page
@@ -150,8 +183,8 @@
     position: absolute; inset: 0; z-index: 1; pointer-events: none;
     background: radial-gradient(ellipse 78% 62% at 50% 56%,
                                 rgba(252,252,248,0) 0%,
-                                rgba(252,252,248,0.55) 62%,
-                                rgba(252,252,248,0.96) 100%);
+                                rgba(252,252,248,0.18) 66%,
+                                rgba(252,252,248,0.62) 100%);
   }
   /* star_off — the star is gone. It existed to be the one thing in the world
      when the world was blank graph paper; with a picture lying on the paper
@@ -349,6 +382,7 @@
        paper carries the swirl, both leans, the pan and the zoom. -->
   <div class="stage">
     <div class="grid" id="grid"><img class="shot" id="shot" alt="" src="lab_surface.svg"></div>
+    <div class="deck" id="deck"></div>
   </div>
   <div class="haze"></div>
   <div class="track" id="track">
@@ -414,7 +448,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'nudge_fast', bg: '#a21caf', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'card_deck', bg: '#0f766e', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -846,9 +880,21 @@
   // is the deadline: cross the threshold within that of leaving quiet, or the burst
   // is not a nudge and the detector simply waits for quiet again.
   var NUDGE_TAU   = 0.045;   // s: how fast the drive is averaged before it is judged
-  var NUDGE_A     = 0.85;    // m/s^2 of averaged drive that says "that was a nudge"
-  var NUDGE_LEAD  = 1.5;     // how far the winning axis must beat the runner-up
-  var NUDGE_QUIET = 0.30;    // m/s^2: below this the phone counts as still
+  // nudge_small — the bar comes down a long way. He is making micro nudges now,
+  // and a big one is normalised to the same single card anyway, so there is
+  // nothing to gain from demanding a hard one. What keeps this honest is not the
+  // height of the bar but the three tests around it: the axis has to be clearly
+  // the one being driven, it has to get there fast, and the detector has to have
+  // been quiet first.
+  var NUDGE_A     = 0.26;    // m/s^2 of averaged drive that says "that was a nudge"
+  // nudge_floor — the nudge detector uses its OWN deadband, far smaller than the
+  // one the old integrator needed. That deadband existed to stop drift creeping
+  // into a running position; there is no running position here, and subtracting
+  // 0.12 from every sample was quietly eating the small gestures this pass is
+  // about. 0.05 is enough to keep sensor floor noise out of the average.
+  var NUDGE_DEAD  = 0.05;
+  var NUDGE_LEAD  = 1.6;     // how far the winning axis must beat the runner-up
+  var NUDGE_QUIET = 0.15;    // m/s^2: below this the phone counts as still
   var NUDGE_REARM = 0.16;    // s of quiet needed before another nudge can fire
   var NUDGE_RISE  = 0.22;    // s: a nudge must reach the threshold this soon after leaving quiet
   var nBar  = { x: 0, y: 0, z: 0 };   // the fast average of the drive
@@ -862,9 +908,8 @@
     var w = Math.min(1, dt / NUDGE_TAU);
     var big = 0;
     ['x', 'y', 'z'].forEach(function (k) {
-      var dz = (k === 'z') ? DEAD_Z : DEAD;
       var a = az[k];
-      a = Math.abs(a) < dz ? 0 : (a - (a > 0 ? dz : -dz));
+      a = Math.abs(a) < NUDGE_DEAD ? 0 : (a - (a > 0 ? NUDGE_DEAD : -NUDGE_DEAD));
       a *= rotVeto;                       // a spin is not a nudge
       nBar[k] += (a - nBar[k]) * w;
       if (Math.abs(nBar[k]) > big) big = Math.abs(nBar[k]);
@@ -893,21 +938,121 @@
   // was — nudge toward you and the picture comes toward you — because that is the
   // one he did not describe; one word flips it.
   var PUSH_INV = { x: -1, y: -1, z: 1 };
+  // ---- card_deck ----------------------------------------------------------
+  // LAY_N cards per side, so a layer is LAY_N x LAY_N and you sit at its middle
+  // when you arrive. CARD_F is the card's share of the screen and GAP_F the space
+  // between two of them, both as a fraction of the viewport width: together they
+  // are the PITCH, which is what one nudge is worth. The card is deliberately
+  // smaller than the screen so its neighbours show at the edges — you can always
+  // see where the next nudge would take you.
+  // card_spread — the cards are deliberately well under half the window, so three
+  // columns and three rows are in view at once and a nudge visibly walks you from
+  // one to the next. At 62% of the width the card you were on filled the screen
+  // and its neighbours were slivers, which reads as one card moving rather than as
+  // a space you are travelling through.
+  var LAY_N  = 5;
+  var CARD_F = 0.46, GAP_F = 0.07;
+  var DEEP_MAX = 4;                 // how many layers down you may go
+  var LAY_ZOOM = 2.2;               // how far the old layer blows up as you drop through it
+  var LAY_MS   = 220;               // the drop, in milliseconds
+  var path  = [];                   // which card was entered at each layer above this one
+  var stack = [];                   // where you were standing on each of those layers
+  var drop  = null;                 // { dir, t0 } while a layer change is playing
+  var deckEl = document.getElementById('deck');
+  function card_px() {
+    var w = (frame && frame.clientWidth) || 320, h = (frame && frame.clientHeight) || 640;
+    var cw = w * CARD_F, ch = Math.min(h * 0.30, cw * 1.35);
+    return { cw: cw, ch: ch, px: cw + w * GAP_F, py: ch + w * GAP_F };
+  }
+  // card_name — the integrated number: where you are is the whole route that got
+  // you here, so 7.3.11 is the eleventh card of the third card of the seventh.
+  function card_name(i, j) {
+    var n = (j + (LAY_N - 1) / 2) * LAY_N + (i + (LAY_N - 1) / 2) + 1;
+    return path.concat([n]).join('.');
+  }
+  function deck_build() {
+    if (!deckEl) return;
+    var g = card_px(), half = (LAY_N - 1) / 2, out = '';
+    for (var j = half; j >= -half; j--) {
+      for (var i = -half; i <= half; i++) {
+        var here = (i === -cell.x && j === cell.y);
+        out += '<div class="card' + (here ? ' here' : '') + '" style="' +
+               'width:' + g.cw.toFixed(0) + 'px;height:' + g.ch.toFixed(0) + 'px;' +
+               'left:' + (i * g.px - g.cw / 2).toFixed(0) + 'px;' +
+               'top:' + (-j * g.py - g.ch / 2).toFixed(0) + 'px;' +
+               'font-size:' + (g.cw * 0.15).toFixed(0) + 'px">' +
+               '<span><span class="n">' + card_name(i, j) + '</span>' +
+               '<span class="d">' + (path.length ? 'layer ' + path.length : 'top') + '</span></span></div>';
+      }
+    }
+    deckEl.innerHTML = out;
+  }
+  // deck_go — one nudge sideways: slide the deck by one pitch. The deck moves by
+  // cell, so nudging the phone right moves the deck left and the card on your
+  // right arrives in the middle, which is push_back doing its job unchanged.
+  function deck_draw(root) {
+    var g = card_px();
+    var t = drop ? Math.min(1, (Date.now() - drop.t0) / LAY_MS) : 1;
+    if (drop && t >= 1) drop = null;
+    root.setProperty('--cx', (cell_at('x') * g.px).toFixed(1) + 'px');
+    root.setProperty('--cy', (-cell_at('y') * g.py).toFixed(1) + 'px');
+    if (drop) {
+      // the incoming layer arrives from the size the card you dropped through was
+      var e = ease(t);
+      var from = drop.dir > 0 ? 1 / LAY_ZOOM : LAY_ZOOM;
+      root.setProperty('--dz', (from + (1 - from) * e).toFixed(3));
+      root.setProperty('--dop', (0.25 + 0.75 * e).toFixed(3));
+    } else {
+      root.setProperty('--dz', '1');
+      root.setProperty('--dop', '1');
+    }
+  }
+  // deck_deep — a nudge toward you drops you THROUGH the card you are standing on
+  // into a fresh spread inside it; a nudge away brings you back up to where you
+  // were standing when you left. The route is remembered, so the number on every
+  // card tells you the whole way down.
+  function deck_deep(dir) {
+    if (dir > 0) {
+      if (path.length >= DEEP_MAX) return false;
+      var half = (LAY_N - 1) / 2;
+      path.push((cell.y + half) * LAY_N + (-cell.x + half) + 1);
+      stack.push({ x: cell.x, y: cell.y });
+      cell.x = 0; cell.y = 0;
+    } else {
+      if (!path.length) return false;
+      path.pop();
+      var back = stack.pop() || { x: 0, y: 0 };
+      cell.x = back.x; cell.y = back.y;
+    }
+    anim = null;
+    drop = { dir: dir, t0: Date.now() };
+    deck_build();
+    return true;
+  }
   function nudge_fire(k, s, drive, rise) {
     var d = s * PUSH_INV[k];
-    var lim = CELL_MAX[k], was = cell[k];
-    anim = { k: k, from: cell_at(k), t0: Date.now() };
-    cell[k] = Math.max(-lim, Math.min(lim, was + d));
-    lastBump = BUMP_NAME[k][s > 0 ? 1 : 0] + (cell[k] === was ? ' (at the end)' : '');
+    var moved;
+    if (k === 'z') {
+      moved = deck_deep(d);
+      lastBump = (d > 0 ? 'deeper' : 'back up') + (moved ? '' : ' (at the end)');
+    } else {
+      var lim = CELL_MAX[k], was = cell[k];
+      anim = { k: k, from: cell_at(k), t0: Date.now() };
+      cell[k] = Math.max(-lim, Math.min(lim, was + d));
+      moved = cell[k] !== was;
+      lastBump = BUMP_NAME[k][s > 0 ? 1 : 0] + (moved ? '' : ' (at the end)');
+      deck_build();
+    }
     if (typeof mark_add === 'function') mark_add('bump', {
-      way: BUMP_NAME[k][s > 0 ? 1 : 0], axis: k,
-      cell: [cell.x, cell.y, cell.z], drive: drive, rise: rise });
+      way: lastBump, axis: k, at: card_here(),
+      cell: [cell.x, cell.y], deep: path.length, drive: drive, rise: rise });
     // nudge_fast: the fine-grained model has no say any more, so wipe it
     pos = { x: 0, y: 0, z: 0 };
     vel = { x: 0, y: 0, z: 0 };
     lead = { x: 0, y: 0, z: 0 };
     run = { x: 0, y: 0, z: 0 };
   }
+  function card_here() { return card_name(-cell.x, cell.y); }
   // name_move — categorise a finished move by whichever axis carried it
   function name_move(r) {
     var ax = Math.abs(r.x), ay = Math.abs(r.y), az2 = Math.abs(r.z);
@@ -1567,6 +1712,7 @@
     root.setProperty('--rot', v.roll.toFixed(2) + 'deg');
     root.setProperty('--tilt', v.tilt.toFixed(2) + 'deg');
     root.setProperty('--turn', v.turn.toFixed(2) + 'deg');
+    deck_draw(root);                 // card_deck: the cards ride the same leans
     // crisp_deep: raise the picture's own resolution in steps as you close in.
     // shk_hold — it goes UP the instant the zoom needs it and comes DOWN only
     // after a second of not needing it. Re-laying out a 700x1250 image is the most
@@ -1592,9 +1738,11 @@
     pos = { x: 0, y: 0, z: 0 };
     run = { x: 0, y: 0, z: 0 };
     lead = { x: 0, y: 0, z: 0 };
-    anim = null;
+    anim = null; drop = null;
     nBar = { x: 0, y: 0, z: 0 }; nArm = true; nQuiet = 0; nStir = 0;
-    cell = { x: 0, y: 0, z: keepDepth ? cell.z : 0 };   // nudge_hold: back to the middle
+    if (!keepDepth) { path = []; stack = []; }          // card_deck: back to the top layer
+    cell = { x: 0, y: 0, z: 0 };                        // and to the middle card of it
+    deck_build();
     off  = { x: 0, y: 0, z: 0 };
     lastBump = '';
     var z = cell.z * NUDGE_Z;
@@ -1994,6 +2142,8 @@
                moving: moving, held: lastMove, lock: +Math.max(0, lockLeft).toFixed(2),
                bump: lastBump, cell: { x: cell.x, y: cell.y, z: cell.z },
                landing: anim ? anim.k : '', armed: nArm, sinceNudge: nLast ? Date.now() - nLast : -1,
+               card: card_here(), deep: path.length, route: path.slice(), dropping: !!drop,
+               deck: { n: LAY_N, max: DEEP_MAX, pitch: +card_px().px.toFixed(1) },
                watch: { a: +NUDGE_A, tau: NUDGE_TAU, quiet: NUDGE_QUIET,
                         rearm: NUDGE_REARM, rise: NUDGE_RISE, push: PUSH_INV },
                nudge: { ms: NUDGE_MS, pan: +NUDGE_PAN.toFixed(4),

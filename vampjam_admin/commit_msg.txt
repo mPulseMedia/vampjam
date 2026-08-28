@@ -1,1 +1,1 @@
-auto_commit
+card_deck

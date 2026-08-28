@@ -1955,7 +1955,40 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   NO NEW TRACE ARRIVED — lab_gestures.json on main is still the 11:43 batch of 21 takes, byte for
   byte. The up×3/down×3/right×3/left×3/away×3/forward×3 recording has not synced, so everything
   here is built from his description and verified against synthetic gestures, not against it.
-- NEXT → add entry 238 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 238 card_deck · b238 · lab.html — the space to traverse: a spread of numbered cards, one nudge
+  to the neighbour, one nudge inward to a whole spread inside the card you are on.
+  card_deck: the painting steps aside. A layer is 5×5 = 25 cards laid side by side with a gap,
+  each carrying its number, and you stand on one — highlighted, so a nudge has something to read
+  against. The deck is driven in PIXELS off the card pitch rather than through the metre-and-zoom
+  pipeline: a card lattice has no business being measured in metres, and one card must be one
+  card at every depth. It keeps the swirl and both leans, so the deck still tips with the phone.
+  card_name is the integrated number he asked for — the whole route that got you here. 9.14.13 is
+  the thirteenth card of the fourteenth card of the ninth, and every card in view carries its own
+  full address plus the layer it is on.
+  deck_deep: a nudge toward you drops you THROUGH the card you are standing on into a fresh
+  spread inside it; a nudge away brings you back up to exactly where you were standing when you
+  left (the position is stacked, not just the route). DEEP_MAX 4. The drop is 220ms: the incoming
+  layer arrives from 1/LAY_ZOOM and fades up, the reverse going out, so it reads as passing
+  through rather than as a cut. At the top a nudge away says "at the end" and does nothing.
+  card_spread: cards are 46% of the window wide with a 7% gap, so three columns and three rows
+  are in view at once. The first cut had them at 62%, where the card you were on filled the
+  screen and its neighbours were slivers — that reads as one card moving, not as a space you are
+  travelling through. haze_light came with it: the vignette had been tuned for a picture running
+  off the edges and was fogging the outer cards.
+  nudge_small + nudge_floor: NUDGE_A 0.85 → 0.26, and the detector now uses its OWN deadband
+  (0.05) instead of the integrator's 0.12. That deadband existed to keep drift out of a running
+  position; there is no running position any more, and it was quietly eating exactly the micro
+  nudges this pass is about. Measured sensitivity: 0.4 m/s² fires in 50ms, 0.5 in 33ms, 0.85 and
+  up in ONE SAMPLE (~17ms). 0.3 still does nothing. Five seconds of shaking at 0.20, 0.35, 0.55
+  and 0.9 m/s² each still move nothing — what keeps this honest is not the height of the bar but
+  the three tests around it: dominance (now ×1.6), the 220ms rise deadline, and having to be
+  quiet first.
+  normalising holds: a 0.4 m/s² flick and a 5.0 m/s² shove both move exactly one card.
+  vj_226 is retired — it measured the picture's box and lean, and the picture is gone. Its job
+  (that a reset presents the same thing as a load) is covered by the deck geometry checks in
+  vj_239. Frame rate 58-59fps. Suite green, no page errors.
+  still no new trace: lab_gestures.json on main is unchanged, 21 takes from the 11:43 batch.
+- NEXT → add entry 239 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
