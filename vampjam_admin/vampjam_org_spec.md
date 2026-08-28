@@ -2490,7 +2490,29 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   invisible; with the vectors reversed it would have said "right" every time the cards went left.
   Both read off the result now.
   60fps, lab suite 256 green, no page errors. Still no new trace.
-- NEXT → add entry 259 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 259 list_css · b259 · site.css, all 11 non-lab pages — the session list styles move to the shared
+  sheet, because the list is shared and its styling was not.
+  the bug he saw: open the list from the admin page and it came up as raw HTML — blue underlined
+  links, boxy buttons, no row height, no card. From a session page it was fine. 257 gave admin the
+  drawer and the shared core, but the rules that make a session ROW look like a row (.jam_item,
+  .jam_link, .jam_name, .jam_ico, .jam_share, .jam_menu, the confirm sheet) were never part of that
+  core — they were sitting in each session page's own <style>, and admin had none of them.
+  the real shape of the mistake: drawer.js writes this markup and every page loads it, so the
+  markup is shared and the styling for it has to be too. It was only ever "the session pages'" CSS
+  by accident of where the drawer was first built. Anything that gains the drawer from now on
+  inherits the look with it rather than having to be handed a copy.
+  what moved: the whole .jam_* family plus .jam_menu_overlay, the confirm sheet, and the caret
+  transition — out of all 11 pages, into site.css. drawer.js keeps injecting the rules only it
+  knows about (the remove control, the hairlines, the title row, the scrolling name) on top.
+  ?v=2 on the stylesheet, so the change actually arrives.
+  verified by opening the list from six different pages and reading 17 measurements off the same
+  row in each — row height, padding, gap, link decoration and colour and weight, icon colour, the
+  share button and its right edge, the title row, the card's radius, background and border, the
+  hairline. Every page now matches session.html exactly, which is the one he said was right. Then
+  screenshotted the open list from admin, from session.html and from r2_setup and diffed the drawer
+  band: pixel-identical, both pairs. Every page shot again against the state shipped in 257 and 258
+  — nothing else moved. Suites 254, 255 and 258 green, no page errors. Still no new trace.
+- NEXT → add entry 260 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

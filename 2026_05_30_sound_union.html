@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=1">
+<link rel="stylesheet" href="site.css?v=2">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
 <script src="drawer.js?v=141"></script>
@@ -100,13 +100,6 @@
   }
   .tag_marker:hover { transform: translateX(-50%) scale(1.4); }
   .tag_marker::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; }
-  .jam_confirm_overlay { position: fixed; inset: 0; z-index: 120; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; }
-  .jam_confirm_card { background: var(--panel); color: var(--fg); border-radius: 14px; padding: 20px 22px; max-width: 320px; width: 84%; box-shadow: 0 12px 40px rgba(0,0,0,0.45); }
-  .jam_confirm_msg { margin-bottom: 16px; font-size: 16px; }
-  .jam_confirm_row { display: flex; gap: 10px; justify-content: flex-end; }
-  .jam_confirm_row button { border: none; border-radius: 10px; padding: 10px 16px; font-size: 15px; cursor: pointer; }
-  .jam_confirm_cancel { background: var(--panel_3); color: var(--fg); }
-  .jam_confirm_yes { background: var(--danger); color: #fff; }
   .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
   /* circle_gone: the numbers above the bar do this job now (and seek on tap) */
   .tag_marker { display: none; }
@@ -359,36 +352,6 @@
   }
   .toast.show { opacity: 1; }
 
-  /* ---- jam menu ---- */
-  .jam_menu_overlay {
-    display: none; position: fixed; inset: 0; z-index: 80;
-    background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-  }
-  .jam_menu_overlay.open { display: block; }
-  .jam_menu {
-    position: absolute; top: 60px; left: 12px;
-    background: var(--panel); border: 1px solid var(--panel_3);
-    border-radius: 12px; padding: 6px; min-width: 220px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  }
-  .jam_item { display: flex; align-items: center; min-height: 54px; box-sizing: border-box; padding: 0 12px; }
-  .jam_item:hover { background: var(--row_active); }
-  .jam_item.current { background: var(--row_active); }
-  .jam_item.jam_admin { border-top: 1px solid var(--panel_3); }
-  .jam_link { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px;
-              color: var(--fg); text-decoration: none; font-size: 17px; font-weight: 400; padding: 6px 0; }
-  .jam_link.current { color: var(--accent); font-weight: 600; }
-  .jam_link .menu_sub { display: inline; font-size: 17px; color: var(--muted); font-weight: 400; margin: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .jam_left { display: flex; align-items: center; gap: 12px; min-width: 0; }
-  .jam_name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .jam_ico { flex: 0 0 auto; display: inline-flex; color: var(--accent); }
-  .jam_item.jam_admin .jam_ico { color: var(--muted); }
-  .jam_count { color: var(--muted); font-size: 14px; margin-left: 5px; }
-  .jam_item.jam_new .jam_ico { color: var(--accent); }
-  .jam_ico svg { display: block; }
-  .jam_share { flex: 0 0 auto; background: transparent; color: var(--muted); border: none; border-radius: 7px;
-               padding: 6px 6px; margin-left: 6px; min-height: 32px; cursor: pointer; line-height: 0; }
-  .jam_share:hover { background: transparent; color: var(--fg); }
   details.about_page { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
   details.about_page summary { cursor: pointer; color: var(--fg); font-weight: 600; }
   details.about_page code { background: var(--panel_2); padding: 1px 6px; border-radius: 4px; color: var(--fg); }
@@ -433,11 +396,8 @@
   .sort_toggle button.active { background: var(--panel_3); color: var(--muted); font-weight: 500; }
 
 
-  #drawer_toggle { transition: none; }
-  .drawer_caret { transition: transform 0.3s ease; }
   /* row_time_hide: timestamps off the highlight rows for now */
   .tag_time { display: none; }
-  #drawer_toggle.open .drawer_caret { transform: rotate(180deg); }
   /* tall landscape (no split): let the sticky player background + shadow reach
      the screen edges. Split landscape (max-height 520px) is EXCLUDED — there the
      player stays inside the left column or it paints over the highlights. */

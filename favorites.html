@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>vampsf — Favorites</title>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=1">
+<link rel="stylesheet" href="site.css?v=2">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
 <script src="drawer.js?v=141"></script>
@@ -13,30 +13,6 @@
   html, body { touch-action: manipulation; }
   h1 { text-align: center; font-size: 22px; margin: 6px 0 14px; }
   .now_name { text-align: center; color: var(--muted); font-size: 14px; min-height: 20px; margin: 8px 0 2px; }
-  .jam_menu {
-    position: absolute; top: 60px; left: 12px;
-    background: var(--panel); border: 1px solid var(--panel_3);
-    border-radius: 12px; padding: 6px; min-width: 220px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  }
-  .jam_item { display: flex; align-items: center; min-height: 54px; box-sizing: border-box; padding: 0 12px; }
-  .jam_item:hover { background: var(--row_active); }
-  .jam_item.current { background: var(--row_active); }
-  .jam_item.jam_admin { border-top: 1px solid var(--panel_3); }
-  .jam_link { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px;
-              color: var(--fg); text-decoration: none; font-size: 17px; font-weight: 400; padding: 6px 0; }
-  .jam_link.current { color: var(--accent); font-weight: 600; }
-  .jam_link .menu_sub { display: inline; font-size: 17px; color: var(--muted); font-weight: 400; margin: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .jam_left { display: flex; align-items: center; gap: 12px; min-width: 0; }
-  .jam_name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .jam_ico { flex: 0 0 auto; display: inline-flex; color: var(--accent); }
-  .jam_item.jam_admin .jam_ico { color: var(--muted); }
-  .jam_count { color: var(--muted); font-size: 14px; margin-left: 5px; }
-  .jam_item.jam_new .jam_ico { color: var(--accent); }
-  .jam_ico svg { display: block; }
-  .jam_share { flex: 0 0 auto; background: transparent; color: var(--muted); border: none; border-radius: 7px;
-               padding: 6px 6px; margin-left: 6px; min-height: 32px; cursor: pointer; line-height: 0; }
-  .jam_share:hover { background: transparent; color: var(--fg); }
   details.about_page { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
   details.about_page summary { cursor: pointer; color: var(--fg); font-weight: 600; }
   details.about_page code { background: var(--panel_2); padding: 1px 6px; border-radius: 4px; color: var(--fg); }
@@ -78,9 +54,6 @@
   .sort_toggle button.active { background: var(--panel_3); color: var(--muted); font-weight: 500; }
 
 
-  #drawer_toggle { transition: none; }
-  .drawer_caret { transition: transform 0.3s ease; }
-  #drawer_toggle.open .drawer_caret { transform: rotate(180deg); }
   /* simple player: big play + a plain seek bar (no fisheye here) */
   .fav_player { display: flex; align-items: center; justify-content: center; margin: 4px 0 10px; }
   .fav_play {

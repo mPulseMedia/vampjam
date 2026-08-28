@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "258 curve_flip",
+        id: "259 list_css",
         expanded: true,
+        nodes: [
+          { text: "259 list_css", children: [
+            { text: "prompt_restate", children: [
+              { text: "Going from admin to the session list, the CSS is messed up." },
+              { text: "It is fine going from one session to the session list." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "when I go from admin to session list, the css is messed up. it\u2019s fine when I go from one session to the session list." }
+            ]},
+            { text: "what_was_wrong", children: [
+              { text: "the list came up as raw HTML from admin \u2014 blue underlined links, boxy buttons, no row height, no card" },
+              { text: "the rules that make a session row look like a row were living in each session page\u2019s own stylesheet, and admin had never had them" },
+              { text: "yesterday\u2019s build gave admin the list but not the look that goes with it" }
+            ]},
+            { text: "the_real_shape_of_it", children: [
+              { text: "the shared script writes those rows, and every page loads it \u2014 so the markup was shared and the styling for it was not" },
+              { text: "it was only ever \u2018the session pages\u2019 CSS\u2019 by accident of where the list was first built" },
+              { text: "it is in the shared stylesheet now, so anything that gains the list from here on inherits the look with it" }
+            ]},
+            { text: "verify", children: [
+              { text: "~11m: opened the list from six different pages and read seventeen measurements off the same row in each \u2014 row height, padding, gap, link colour and weight, icon colour, the share button and its right edge, the title row, the card, the hairline" },
+              { text: "every page now matches the session page exactly, which is the one you said was right" },
+              { text: "then screenshotted the open list from admin, from a session and from the R2 page and compared them pixel by pixel \u2014 identical" },
+              { text: "every page shot again against what shipped yesterday: nothing else moved. Earlier suites green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "258 curve_flip",
+        expanded: false,
         nodes: [
           { text: "258 curve_flip", children: [
             { text: "prompt_restate", children: [
