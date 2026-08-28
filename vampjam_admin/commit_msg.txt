@@ -1,1 +1,1 @@
-blip_out
+auto_commit
