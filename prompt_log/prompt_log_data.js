@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "241 orbit_frame",
+        id: "242 push_go",
         expanded: true,
+        nodes: [
+          { text: "242 push_go", children: [
+            { text: "prompt_restate", children: [
+              { text: "Invert what happens when I nudge right, and when I nudge left." },
+              { text: "Same for up and down \u2014 flip the way you animate it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I nudge Wright, I want you to inverse what happens and when I left, I want you to inverse the direction of things where things the way things move so when I\u2019m judging to the left or right or up or down, I want you to flip the way you animating it" }
+            ]},
+            { text: "push_go", children: [
+              { text: "nudge the phone RIGHT and the cards now slide right past you, so the card on your LEFT arrives in the middle" },
+              { text: "nudge UP and the cards slide up, so the card BELOW arrives" },
+              { text: "the opposite of what it did before, where the picture took the blow in the direction it was struck from" },
+              { text: "toward and away are untouched: toward you still goes deeper" }
+            ]},
+            { text: "measured", children: [
+              { text: "right moves the cards 192 pixels one way, left the same 192 the other" },
+              { text: "up and down move them 250 pixels each way" },
+              { text: "right then left puts you back on the card you started on" }
+            ]},
+            { text: "note", children: [
+              { text: "this pair has now been round once each way, so the sign lives in one place and flipping either is a single character" }
+            ]},
+            { text: "verify", children: [
+              { text: "~4m: release push_go, crimson \u2014 all four directions measured in pixels and in cards, depth confirmed unchanged, the there-and-back checked, suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "241 orbit_frame",
+        expanded: false,
         nodes: [
           { text: "241 orbit_frame", children: [
             { text: "prompt_restate", children: [

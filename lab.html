@@ -464,7 +464,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'orbit_frame', bg: '#1e40af', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'push_go', bg: '#be123c', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1009,13 +1009,15 @@
     nudge_fire(k, nBar[k] > 0 ? 1 : -1, +m[0][1].toFixed(3), +nStir.toFixed(3));
   }
   // nudge_fire — deliver one standard notch.
-  // push_back — which way the WORLD goes when the phone is nudged. Nudge the phone
-  // UP and the painting goes DOWN the screen; nudge it right and the painting goes
-  // left. The phone is the hand and the picture is the thing being knocked, so the
-  // picture takes the blow in the direction it was struck FROM. Depth is left as it
-  // was — nudge toward you and the picture comes toward you — because that is the
-  // one he did not describe; one word flips it.
-  var PUSH_INV = { x: -1, y: -1, z: 1 };
+  // push_go — the four sideways directions are flipped, on his say-so. What it
+  // does now, plainly: nudge the phone RIGHT and the cards slide right past you,
+  // so the card on your LEFT arrives in the middle; nudge UP and the cards slide
+  // up, so the card BELOW arrives. That is the opposite of push_back, which had
+  // the picture taking the blow. Depth is untouched, as it has been throughout:
+  // nudge toward you and you go deeper. Flipping is one character per axis, and
+  // this pair has now been round once each way, so the sign lives here alone and
+  // nothing else in the page has an opinion about it.
+  var PUSH_INV = { x: 1, y: 1, z: 1 };
   // ---- card_deck ----------------------------------------------------------
   // LAY_N cards per side, so a layer is LAY_N x LAY_N and you sit at its middle
   // when you arrive. CARD_F is the card's share of the screen and GAP_F the space

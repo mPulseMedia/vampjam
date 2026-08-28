@@ -2077,7 +2077,19 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   ever sent alpha.
   Sensitivity and shake rejection unchanged (0.4 in 66ms, 0.85+ in one sample, four strengths of
   shaking move nothing). Suite green, no page errors. Still no new trace.
-- NEXT → add entry 242 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 242 push_go · b242 · lab.html — the four sideways directions flip.
+  push_go: PUSH_INV goes from { x: -1, y: -1, z: +1 } to { x: +1, y: +1, z: +1 }. Plainly, what it
+  does now: nudge the phone RIGHT and the cards slide right past you, so the card on your LEFT
+  arrives in the middle; nudge UP and the cards slide up, so the card BELOW arrives. That is the
+  opposite of push_back (237), which had the picture taking the blow in the direction it was
+  struck from. Depth is untouched, as it has been throughout: nudge toward you and you go deeper,
+  nudge away and you come back up.
+  Measured: right → cards +192px, left → −192px, up → −250px, down → +250px, and right-then-left
+  returns to the card you started on. Depth unchanged at +1 in and −1 out.
+  This pair has now been round once each way, so the sign lives in PUSH_INV alone and nothing else
+  in the page has an opinion about it — flipping either is one character.
+  Suite green, no page errors. Still no new trace.
+- NEXT → add entry 243 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
