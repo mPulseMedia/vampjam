@@ -1,1 +1,1 @@
-swipe_pan
+auto_commit
