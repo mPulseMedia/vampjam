@@ -9,8 +9,50 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "240 nudge_raw",
+        id: "241 orbit_frame",
         expanded: true,
+        nodes: [
+          { text: "241 orbit_frame", children: [
+            { text: "prompt_restate", children: [
+              { text: "In real life my head is mounted and mostly still; I move the phone around it." },
+              { text: "The phone is not on a Cartesian plane \u2014 it is orbiting my head." },
+              { text: "That should be the baseline. Make the maths work that way." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "She one thing that might be helping helping with the math and that is in real life. I\u2019m my head is mounted and I move the phone around it occasionally the head moves and move it angle then it becomes largely settled. But unlike a Cartesian plane, the phone is actually kind of orbiting my head and that should be kind of the baseline is what I experience of it and so we\u2019ve got to make it working that way." }
+            ]},
+            { text: "orbit_spin", children: [
+              { text: "this is the find of the whole stretch, and it explains what you have been feeling" },
+              { text: "a nudge sideways on a sphere IS a rotation \u2014 swinging the phone one card\u2019s width at arm\u2019s length turns it through 45 to 80 degrees a second" },
+              { text: "and the page was throwing away anything past twelve degrees a second and killing everything past seventy" },
+              { text: "that filter was written to reject a phone being spun in place, and it was rejecting exactly the gesture you make" },
+              { text: "proof, same build, same gestures, only the filter swapped: the old way EVERY sideways and vertical swing returned nothing at all \u2014 right, left, up, down, all four dead \u2014 while the two in-and-out ones came through fine" },
+              { text: "which is your complaint word for word: the small up/down/right/left ones do not register but the zoom sort of does" },
+              { text: "now only a twist of the wrist counts against you; the turning that an arc naturally produces is let through" }
+            ]},
+            { text: "orbit_pull", children: [
+              { text: "swinging on an arc pulls the phone toward the centre \u2014 toward your head \u2014 which is the same direction as \u2018bring it closer\u2019" },
+              { text: "so every sideways nudge carried a phantom closer-nudge riding on it, and on a small gesture the phantom is a fair share of the real thing" },
+              { text: "an arc can only pull inward, never push out, so the guard is one-sided: a closer reading is refused while the phone is swinging" },
+              { text: "nothing is estimated or subtracted \u2014 the claim is simply not believed when the geometry says it cannot be" },
+              { text: "measured: a pure sideways swing with its full inward pull now reads \u2018right\u2019, never \u2018deeper\u2019" }
+            ]},
+            { text: "also", children: [
+              { text: "this makes sense of yesterday\u2019s change too \u2014 reading in the phone\u2019s own frame is exactly right for an orbit, because the phone\u2019s axes are the tangent plane and the radius" },
+              { text: "the test hook can now send a turn that is not a twist; without that no test could tell the two filters apart" }
+            ]},
+            { text: "verify", children: [
+              { text: "~15m: release orbit_frame, navy \u2014 old and new filters A/B\u2019d on the same build with the same gestures, all six directions measured under a realistic arc, the twist veto swept from 0 to 220 deg/s, sensitivity and shake rejection unchanged, suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "240 nudge_raw",
+        expanded: false,
         nodes: [
           { text: "240 nudge_raw", children: [
             { text: "prompt_restate", children: [

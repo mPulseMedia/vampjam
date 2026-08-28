@@ -464,7 +464,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'nudge_raw', bg: '#c2410c', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'orbit_frame', bg: '#1e40af', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -945,6 +945,33 @@
   // axis per sample, and no dependence on the attitude at all.
   var NUDGE_SLOW = 0.90;     // s: the running zero the gesture is measured against
   var nSlow = { x: 0, y: 0, z: 0 };
+  // orbit_frame — the real geometry. His head is the fixed point and the phone
+  // ORBITS it at arm's length, screen kept square to his nose. It is not a
+  // Cartesian box he is reaching around in; it is a sphere he is sliding the phone
+  // over. Two things follow, and both were working against him.
+  //
+  // orbit_spin — a nudge sideways on a sphere IS a rotation. Swinging the phone
+  // one card's width at arm's length turns it through something like forty degrees
+  // a second, and rotVeto was throwing away anything past twelve and everything
+  // past seventy. The veto was built to reject a phone being spun in place, and it
+  // was rejecting exactly the gesture he is making. So the nudge detector vetoes
+  // only rotation about the SCREEN NORMAL — alpha, a twist of the wrist, which no
+  // orbit produces — and lets pitch and yaw through, because on a sphere they come
+  // with the territory. (The lanes and the diagram keep the old all-axis veto;
+  // they are describing a world that holds still, which is a different job.)
+  //
+  // orbit_pull — swinging on an arc pulls the phone toward the centre: centripetal
+  // acceleration, v²/r, pointing at his head, which in the phone's own axes is +z,
+  // which is the "toward you" direction. So EVERY sideways or vertical nudge came
+  // with a phantom toward-you nudge riding on it, and on a small gesture the
+  // phantom is a fair fraction of the real thing. It is one-sided — an arc can
+  // only pull inward, never push out — so away needs no such guard, and the fix is
+  // one-sided too: a toward-you reading is not believed while the phone is
+  // swinging. Nothing is subtracted or estimated; the claim is simply refused when
+  // the geometry says it cannot be trusted.
+  var ORBIT_SPIN = 90;       // deg/s about the screen normal before a twist is vetoed
+  var ORBIT_TAN  = 0.22;     // m/s^2 of sideways drive that makes a +z reading suspect
+  var spinVeto = 1;
   // nudge_watch — called on every sample, on the RAW reading, before anything else
   function nudge_watch(raw, dt) {
     var w = Math.min(1, dt / NUDGE_TAU);
@@ -955,10 +982,14 @@
       nSlow[k] += (v - nSlow[k]) * ws;    // what zero is right now
       var a = v - nSlow[k];               // the gesture, and only the gesture
       a = Math.abs(a) < NUDGE_DEAD ? 0 : (a - (a > 0 ? NUDGE_DEAD : -NUDGE_DEAD));
-      a *= rotVeto;                       // a spin is not a nudge
+      a *= spinVeto;                      // orbit_spin: only a twist is not a nudge
       nBar[k] += (a - nBar[k]) * w;
       if (Math.abs(nBar[k]) > big) big = Math.abs(nBar[k]);
     });
+    // orbit_pull: a toward-you reading that arrives while the phone is swinging is
+    // the arc pulling inward, not his arm coming in. Refuse it.
+    var tan = Math.max(Math.abs(nBar.x), Math.abs(nBar.y));
+    var pulled = (nBar.z > 0 && tan > ORBIT_TAN);
     if (big < NUDGE_QUIET) {
       nQuiet += dt; nStir = 0;
       if (nQuiet > NUDGE_REARM) nArm = true;
@@ -968,8 +999,10 @@
     if (!nArm) return;
     if (nStir > NUDGE_RISE) return;       // swoop_out: too slow to be a nudge
     if (big < NUDGE_A) return;
-    var m = [['x', Math.abs(nBar.x)], ['y', Math.abs(nBar.y)], ['z', Math.abs(nBar.z)]];
+    var m = [['x', Math.abs(nBar.x)], ['y', Math.abs(nBar.y)],
+             ['z', pulled ? 0 : Math.abs(nBar.z)]];
     m.sort(function (p, q) { return q[1] - p[1]; });
+    if (m[0][1] < NUDGE_A) return;                               // orbit_pull may have taken the leader
     if (m[1][1] > 0 && m[0][1] < m[1][1] * NUDGE_LEAD) return;   // between two axes: not a nudge
     var k = m[0][0];
     nArm = false; nLast = Date.now();
@@ -1449,6 +1482,10 @@
     var rr = e.rotationRate || {};
     var rot = Math.hypot(rr.alpha || 0, rr.beta || 0, rr.gamma || 0);
     rotVeto = Math.max(0, Math.min(1, 1 - (rot - ROT_OPEN) / (ROT_SHUT - ROT_OPEN)));
+    // orbit_spin: the nudge detector's own veto — a twist about the screen normal
+    // only. Pitch and yaw are what an orbit is made of and must get through.
+    var twist = Math.abs(rr.alpha || 0);
+    spinVeto = twist <= ORBIT_SPIN ? 1 : Math.max(0, 1 - (twist - ORBIT_SPIN) / ORBIT_SPIN);
     var iv = e.interval || 0.0166;
     var dt = iv < 1 ? iv : iv / 1000;
     // nudge_raw: the nudge is read here, off the untouched reading, before the
@@ -2226,11 +2263,15 @@
     // pose the phone (degrees) — rotation alone must not move the world
     pose: function (alpha, beta, gamma) { on_orientation({ alpha: alpha, beta: beta, gamma: gamma }); },
     // n samples of acceleration in the PHONE's own axes, as the phone sends them
-    shove: function (ax, ay, az, rot, n) {
+    // rot is the twist about the screen normal (alpha). spin, when given, is
+    // { a, b, g } so a test can send a yaw or a pitch that is NOT a twist — which
+    // is what an orbit produces, and what orbit_spin has to let through.
+    shove: function (ax, ay, az, rot, n, spin) {
+      var rr = spin ? { alpha: spin.a || 0, beta: spin.b || 0, gamma: spin.g || 0 }
+                    : { alpha: rot || 0, beta: 0, gamma: 0 };
       for (var i = 0; i < (n || 30); i++) {
         on_motion({ acceleration: { x: ax, y: ay, z: az },
-                    rotationRate: { alpha: rot || 0, beta: 0, gamma: 0 },
-                    interval: 0.0166 });
+                    rotationRate: rr, interval: 0.0166 });
       }
       return { pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) }, veto: +rotVeto.toFixed(2) };
     },
@@ -2246,7 +2287,8 @@
                deck: { n: LAY_N, max: DEEP_MAX, start: DEEP_START, out: DEEP_START,
                        into: DEEP_MAX - DEEP_START, pitch: +card_px().px.toFixed(1) },
                watch: { a: +NUDGE_A, tau: NUDGE_TAU, quiet: NUDGE_QUIET,
-                        rearm: NUDGE_REARM, rise: NUDGE_RISE, push: PUSH_INV },
+                        rearm: NUDGE_REARM, rise: NUDGE_RISE, push: PUSH_INV,
+                        spin: ORBIT_SPIN, tan: ORBIT_TAN, spinVeto: +spinVeto.toFixed(2) },
                nudge: { ms: NUDGE_MS, pan: +NUDGE_PAN.toFixed(4),
                         z: +NUDGE_Z.toFixed(5), zoom: BUMP_ZOOM, max: CELL_MAX },
                show: { x: +show.x.toFixed(4), y: +show.y.toFixed(4), z: +show.z.toFixed(4) },

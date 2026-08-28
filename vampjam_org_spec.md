@@ -2045,7 +2045,39 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   over four layers in a row. The card you are on takes the same hue at full saturation with a
   matching ring.
   Suite green, no page errors. Still no new trace: lab_gestures.json on main is unchanged.
-- NEXT → add entry 241 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 241 orbit_frame · b241 · lab.html — his head is the fixed point and the phone ORBITS it. This is
+  the biggest find of the whole stretch.
+  orbit_frame: he is not reaching around a Cartesian box, he is sliding the phone over a sphere
+  centred on his head, screen kept square to his nose. Two consequences, and BOTH were working
+  against him.
+  orbit_spin — a nudge sideways on a sphere IS a rotation. Swinging the phone one card's width at
+  arm's length turns it through something like 45-80 deg/s, and rotVeto (hypot of all three rates,
+  ROT_OPEN 12, ROT_SHUT 70) was scaling anything past 12 down and killing everything past 70. The
+  veto was written to reject a phone being spun in place and it was rejecting exactly the gesture
+  he makes. A/B on the same build, same gestures, only the veto swapped: under the old veto EVERY
+  sideways and vertical orbit nudge returned NOTHING — right, left, up and down, all four dead —
+  while the two radial ones (which barely turn the phone) came through fine. That is precisely the
+  complaint: "small gestures up down right left" don't register but zoom sort of does. The nudge
+  detector now vetoes only rotation about the SCREEN NORMAL (alpha, a wrist twist, which no orbit
+  produces), from ORBIT_SPIN 90 deg/s. Measured: accepted at 0/45/90/140 deg/s of twist, refused
+  at 220. The lanes and the diagram keep the old all-axis veto — they describe a world that holds
+  still, which is a different job.
+  orbit_pull — swinging on an arc pulls the phone toward the centre: v²/r pointing at his head,
+  which in the phone's own axes is +z, which is "toward you". So every sideways or vertical nudge
+  carried a phantom toward-you nudge, and on a small gesture the phantom is a fair fraction of the
+  real thing. It is one-sided (an arc can only pull inward, never push out) so the guard is
+  one-sided too: a +z reading is refused while sideways drive exceeds ORBIT_TAN 0.22. Nothing is
+  estimated or subtracted — the claim is refused when the geometry says it cannot be trusted.
+  Measured: a pure sideways swing carrying its full inward pull now reads "right", never "deeper";
+  a genuine radial pull still reads "deeper" in ONE sample and a push "back up" in one.
+  This also retro-justifies 240: reading in the phone's own frame is exactly right for an orbit,
+  because the phone's axes ARE the tangent plane and the radius.
+  shove_spin: __lab.shove takes an optional { a, b, g } so a test can send a yaw or pitch that is
+  not a twist — without it no test could tell orbit_spin from the old veto, since the old hook only
+  ever sent alpha.
+  Sensitivity and shake rejection unchanged (0.4 in 66ms, 0.85+ in one sample, four strengths of
+  shaking move nothing). Suite green, no page errors. Still no new trace.
+- NEXT → add entry 242 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
