@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "230 lens_glass",
+        id: "231 lens_wide",
         expanded: true,
+        nodes: [
+          { text: "231 lens_wide", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the lens take up almost the whole phone screen." },
+              { text: "Still see the edges of the circular rim." },
+              { text: "Some scene in the corners, but mostly what is through the lens." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "But make the lens take up, almost the full screen of the phone almost the full view port I mean, I want to see edges of the circular magnifying glass rim, and I\u2019m ready to see some stuff in the corners but mostly we\u2019re seeing what\u2019s through the lens" }
+            ]},
+            { text: "lens_wide", children: [
+              { text: "the glass is now 90% of the shorter side of the window \u2014 351px on your phone, reaching to within 20px of each edge" },
+              { text: "the wider scene survives in the four corners and thin strips top and bottom, which is enough to say \u2018the same place, further back\u2019" },
+              { text: "the diameter is set in one place now, so the glass and its rim can never fall out of step" },
+              { text: "sized against both the width and the height, so it stays a circle whichever way you hold it" }
+            ]},
+            { text: "flare_scale", children: [
+              { text: "the marks on the glass are sized to the glass, so a lens 1.7 times wider carried a highlight 1.7 times wider and it fogged the middle of the picture" },
+              { text: "the highlight is held to the top-left quarter now, the streak falls off sooner, and the bright spot is smaller \u2014 a point of light on a big piece of glass should read as a point" }
+            ]},
+            { text: "verify", children: [
+              { text: "~5m: lens and ring measured 351x351 and concentric, scale still 1.8x inside against 1x outside, frame rate unchanged at 39-56fps with both worlds live, suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "no new trace arrived with this one \u2014 nothing since the 11:43 batch" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "230 lens_glass",
+        expanded: false,
         nodes: [
           { text: "230 lens_glass", children: [
             { text: "prompt_restate", children: [

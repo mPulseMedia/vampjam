@@ -142,6 +142,12 @@
      diameter and OUT is how much further away the world outside it sits: at 3,
      the rim shows the same scene at a third the size, which reads as depth
      rather than as a second picture. */
+  /* lens_wide — the glass is nearly the whole window: you are looking THROUGH it,
+     not at it sitting on a page. Only the four corners and a thin margin are left
+     for the wider scene, which is all the context the rim needs to say "the same
+     place, further back". Sized against BOTH axes so it stays a circle whatever
+     the phone is. */
+  .stage { --lens_d: min(90vw, 90vh); }
   .lens {
     position: absolute; left: 50%; top: 50%; z-index: 2;
     width: var(--lens_d, 270px); height: var(--lens_d, 270px);
@@ -172,15 +178,15 @@
   .flare {
     position: absolute; inset: 0; pointer-events: none; z-index: 3;
     background:
-      radial-gradient(closest-side at 30% 24%, rgba(255,255,255,0.24), rgba(255,255,255,0) 62%),
-      linear-gradient(128deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.03) 22%,
-                              rgba(255,255,255,0) 46%, rgba(255,255,255,0) 72%,
-                              rgba(255,255,255,0.09) 92%);
+      radial-gradient(38% 30% at 27% 21%, rgba(255,255,255,0.26), rgba(255,255,255,0) 70%),
+      linear-gradient(128deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.02) 16%,
+                              rgba(255,255,255,0) 38%, rgba(255,255,255,0) 78%,
+                              rgba(255,255,255,0.07) 94%);
     mix-blend-mode: screen;
   }
   .flare::after {
-    content: ''; position: absolute; left: 26%; top: 19%;
-    width: 15%; height: 8%; border-radius: 50%;
+    content: ''; position: absolute; left: 22%; top: 15%;
+    width: 11%; height: 5.5%; border-radius: 50%;
     background: radial-gradient(closest-side, rgba(255,255,255,0.62), rgba(255,255,255,0));
     transform: rotate(-32deg);
   }
@@ -476,7 +482,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'lens_glass', bg: '#155e75', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'lens_wide', bg: '#166534', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);

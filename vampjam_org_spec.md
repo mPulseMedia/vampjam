@@ -1777,7 +1777,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   flare came down with it — it was tuned against a lens the haze was washing out, and once the
   haze came off the glass it read as an opaque shiny dome.
   Whole lab suite re-run and green, node --check clean, no page errors.
-- NEXT → add entry 231 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 231 lens_wide · b231 · lab.html — the glass is nearly the whole window now.
+  lens_wide: --lens_d goes from a fixed 270px to min(90vw, 90vh), set once on .stage so the lens
+  and its ring can never fall out of step. On a 390-wide phone that is 351px: the circle reaches
+  to within 20px of each edge and the wider scene survives only in the four corners and thin
+  strips top and bottom — which is all the context the rim needs to say "the same place, further
+  back". Sized against both axes so it stays a circle on any phone, in either orientation.
+  flare_scale: the marks on the glass are sized in PERCENT of the glass, so blowing the lens up
+  1.7× in diameter blew the highlight up with it and it fogged the middle of the picture. The
+  soft highlight is now an explicit 38%×30% ellipse held in the top-left quarter rather than a
+  closest-side gradient that grows without limit, the streak falls off sooner (16%/38% against
+  22%/46%), and the specular spot is smaller (11%×5.5% against 15%×8%) — a bright point on a
+  big piece of glass reads as a point, not as a patch.
+  Frame rate unchanged by the widening: 39-56fps with both worlds live against 61 with the rim
+  hidden, same as before. Suite green, no page errors.
+- NEXT → add entry 232 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
