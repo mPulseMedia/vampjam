@@ -2119,7 +2119,33 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   tip) and takes the head and the letter FROM the arc's own end, so nothing needs pinning.
   vj_239 and vj_240 retired — both tested nested-layer navigation, which no longer exists; vj_244
   covers the one deck, its depth range, and the arcs. Suite green, no page errors, no new trace.
-- NEXT → add entry 244 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 244 fav_jump · b244 · favorites.html + all 8 session pages + session.html — the session name on a
+  favourite row takes you to that session, landing on that highlight.
+  fav_jump: .fav_sess becomes an <a> pointing at `<session>.html?tag=<tag id>&t=<seconds>`. It gets
+  a dotted underline and a real 140x46 tap target (padding out, negative margin back, so the row
+  height does not change), and it stops its own click so a tap on the name never also starts the
+  audio on the favourites page on its way out.
+  the tag's OWN id goes on the link, not just its time, and that matters twice: a highlight that
+  has been nudged since still resolves to the right one, and two highlights a second apart can no
+  longer be confused. Measured against exactly that case — a decoy highlight one second from the
+  favourite — and it lands on the right one.
+  session side: url_tag_id() reads ?tag= from the query or the hash, and handle_url_time matches by
+  id first, falling back to the old within-2-seconds time match so every ?t= link ever shared
+  behaves exactly as it did (verified: a bare ?t= still invents a highlight where it lands, 4 tags
+  become 5). When an id IS given and is not found, it lands at the time and creates NOTHING — a
+  bare ?t= inventing a highlight is fine for a share link, but doing it for a dead favourite would
+  quietly litter the session with empty ones. Measured: a link to a removed highlight leaves the
+  session at 4 tags with nothing active.
+  and it SCROLLS: the active row is brought to the middle of the screen after render. Arriving with
+  the highlight three screens down is the same as not arriving at it.
+  All nine session pages carry the identical patch, applied read-all-then-write-all so a failure on
+  any one of them writes none.
+  test harness note worth keeping: python's SimpleHTTPRequestHandler does not answer Range
+  requests, so a browser cannot seek in an audio file it serves and EVERY ?t= test sits at zero for
+  reasons that have nothing to do with the page. /tmp/rangesrv.py (port 8902) answers Range and the
+  same test then lands on 20s exactly. This wasted a pass; it will not again.
+  Suite green on the lab page (untouched), no page errors anywhere. Still no new trace.
+- NEXT → add entry 245 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

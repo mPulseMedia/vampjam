@@ -145,10 +145,18 @@
   .fav_row.playing { background: var(--row_active); }
   .fav_play_sm { flex: 0 0 auto; background: none; border: none; color: var(--accent); font-size: 17px; padding: 8px; cursor: pointer; line-height: 0; }
   .fav_main { flex: 1 1 60px; min-width: 0; }
-  .fav_sess {
+  /* fav_jump — the session name on the right of a row is a LINK to that session,
+     landing on this very highlight. It sits where a thumb already rests, so it
+     gets a real tap target and something to press against rather than reading as
+     a caption you happen to be able to hit. */
+  a.fav_sess {
     flex: 0 1 auto; color: var(--muted); font-size: 12px; text-align: right;
     max-width: 42%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    text-decoration: none; border-bottom: 1px dotted var(--panel_3);
+    padding: 10px 2px; margin: -10px 0; cursor: pointer;
   }
+  a.fav_sess:hover { color: var(--fg); border-bottom-color: var(--muted); }
+  a.fav_sess:active { color: var(--accent); }
   .fav_name {
     width: 100%; background: transparent; border: none; outline: none;
     color: var(--fg); font: inherit; font-size: 17px; padding: 2px 0;
@@ -386,10 +394,19 @@
       main.appendChild(name);
       row.appendChild(main);
 
-      // session name rides the same line as the title, tucked in by the heart
-      var sess = document.createElement('span');
+      // session name rides the same line as the title, tucked in by the heart —
+      // fav_jump: and it takes you there, to this highlight. The tag's OWN id
+      // goes on the link, not just its time, so it still lands on the right one
+      // after the highlight has been nudged or a neighbour has moved next to it.
+      var sess = document.createElement('a');
       sess.className = 'fav_sess';
       sess.textContent = f.src.name;
+      sess.title = 'Open this moment in ' + f.src.name;
+      sess.href = f.src.page + '?tag=' + encodeURIComponent(f.tag.id) +
+                  '&t=' + Math.max(0, Math.round(f.tag.t));
+      // the row itself plays; the link navigates. Say so, so a tap on the name
+      // never also starts the audio here on its way out.
+      sess.addEventListener('click', function (e) { e.stopPropagation(); });
       row.appendChild(sess);
 
       var tm = document.createElement('span');

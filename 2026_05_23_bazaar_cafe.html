@@ -1725,12 +1725,35 @@
     render_tags();
     render_tag_markers();
   }
+  // fav_jump — a link may NAME the highlight it means, as ?tag=<id>, which is what
+  // the favourites page sends. Matching by id rather than by time matters twice: a
+  // highlight that has been nudged since the link was made is still the right one,
+  // and two highlights within a couple of seconds of each other can no longer be
+  // confused for one another. Falls back to the old time match, so every ?t= link
+  // ever shared still behaves exactly as it did.
+  function url_tag_id() {
+    try {
+      var qp = new URLSearchParams(window.location.search);
+      if (qp.get('tag')) return qp.get('tag');
+      var hp = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+      if (hp.get('tag')) return hp.get('tag');
+    } catch (e) {}
+    return null;
+  }
   function handle_url_time(t) {
     if (t == null) return;
     seek_to(t);
-    var match = tags.filter(function (x) { return Math.abs(x.t - t) < 2; })[0];
+    var want = url_tag_id();
+    var match = (want && tags.filter(function (x) { return x.id === want; })[0]) ||
+                tags.filter(function (x) { return Math.abs(x.t - t) < 2; })[0];
     if (match) {
       activeTagId = match.id;
+    } else if (want) {
+      // fav_jump: the link named a highlight that is not here any more. Land at
+      // the time and leave the session alone — a bare ?t= invents a highlight
+      // where it lands, and doing that for a dead link would quietly litter
+      // somebody's session with empty ones.
+      activeTagId = null;
     } else {
       var maxOrder = tags.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
       var tag = {
@@ -1744,6 +1767,19 @@
     }
     render_tags();
     render_tag_markers();
+    // fav_jump: bring the highlight you were sent to into view, not just into
+    // the accent colour — arriving with it three screens down is the same as not
+    // arriving at it.
+    if (activeTagId) {
+      (function (id) {
+        setTimeout(function () {
+          var row = tagList && tagList.querySelector('.tag_row[data-tag-id="' + id + '"]');
+          if (!row) return;
+          try { row.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+          catch (e) { try { row.scrollIntoView(); } catch (e2) {} }
+        }, 60);
+      })(activeTagId);
+    }
     // try to autoplay; on failure paint the active tag's play button yellow
     var p = player.play();
     if (p && typeof p.catch === 'function') {

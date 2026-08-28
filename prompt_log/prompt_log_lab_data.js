@@ -9,8 +9,47 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "243 z_one",
+        id: "244 fav_jump",
         expanded: true,
+        nodes: [
+          { text: "244 fav_jump", children: [
+            { text: "prompt_restate", children: [
+              { text: "On the favorites page, clicking a session name on the right of a row" },
+              { text: "should go to that session, and to that highlight." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On favorites page, if I click on a session name on right side of row, go to that session and to the current highlight" }
+            ]},
+            { text: "fav_jump", children: [
+              { text: "the session name on the right of each favourite row is a link now, with a dotted underline and a proper thumb-sized target" },
+              { text: "it carries the highlight\u2019s OWN id, not just its time \u2014 so it still lands on the right one after the highlight has been nudged, and a neighbour a second away cannot be picked by mistake" },
+              { text: "tested against exactly that: a decoy one second from the favourite, and it lands on the favourite" },
+              { text: "a tap on the name never also starts the audio on the favourites page on its way out" }
+            ]},
+            { text: "on_arrival", children: [
+              { text: "the session opens at that moment, the highlight is picked out, and it is SCROLLED to the middle of the screen" },
+              { text: "arriving with it three screens down is the same as not arriving at it" }
+            ]},
+            { text: "careful_about", children: [
+              { text: "every share link you have ever sent still behaves exactly as it did \u2014 the old time-based match is still there underneath" },
+              { text: "but a link to a highlight that has since been removed now lands at the time and creates NOTHING; inventing an empty highlight is fine for a share link and would quietly litter a session for a dead favourite" }
+            ]},
+            { text: "worth_remembering", children: [
+              { text: "the little test server does not answer range requests, so a browser cannot seek in audio it serves and every timed-link test sat at zero for reasons that had nothing to do with the page" },
+              { text: "a range-answering server is in place now; the same test then lands on the exact second" }
+            ]},
+            { text: "verify", children: [
+              { text: "~26m: release fav_jump \u2014 the link built and clicked end to end with real audio, the id-versus-time case measured against a decoy, the dead-link case measured, old share links confirmed unchanged, the scroll confirmed, all nine session pages patched identically, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "243 z_one",
+        expanded: false,
         nodes: [
           { text: "243 z_one", children: [
             { text: "prompt_restate", children: [
