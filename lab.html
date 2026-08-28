@@ -138,78 +138,19 @@
     pointer-events: none; -webkit-user-select: none; user-select: none;
   }
   .shot[data-missing] { display: none; }
-  /* lens_glass — the round window you are looking through. LENS_D is its
-     diameter and OUT is how much further away the world outside it sits: at 3,
-     the rim shows the same scene at a third the size, which reads as depth
-     rather than as a second picture. */
-  /* lens_back — lens_wide is undone. At 90% of the window the glass stopped being
-     something you hold up and look through and became the page itself with a ring
-     drawn round it. Back to the 270px window, where the rim still carries a scene
-     and the glass is an object sitting on it. */
-  .lens {
-    position: absolute; left: 50%; top: 50%; z-index: 2;
-    width: var(--lens_d, 270px); height: var(--lens_d, 270px);
-    transform: translate(-50%, -50%);
-    border-radius: 50%; overflow: hidden;
-    background: #fcfcf8;
-  }
-  /* lens_gain — the RIM is the plain view, exactly what the page showed before
-     the glass existed, only dimmed; the LENS magnifies it by a fixed factor. That
-     way nothing is lost outside — shrinking the outside instead just emptied the
-     rim, because at x1 the picture is barely wider than the window. The lens's
-     pan is multiplied by the same gain, so the world point under the middle of
-     the glass is the same one either side of the edge. */
-  /* rim_cheap — the rim copy carries NO filter. A CSS filter allocates an
-     offscreen buffer the size of the element it is on, and this element is 400%
-     of the stage scaled by up to x39 — the same cost that crashed the browser
-     when the fade was a mask. The dimming is done instead by .haze, one
-     screen-sized overlay sitting between the rim and the lens, so it costs one
-     constant-size paint and never grows with the zoom. */
-  .grid_out .shot_out { width: 352px; height: 626px; transform: translate(-50%, -50%); }
-  .lens .grid {
-    transform: rotate(var(--rot, 0deg)) rotateX(var(--tilt, 0deg)) rotateY(var(--turn, 0deg))
-               translate3d(calc(var(--sx, 0px) * var(--gain, 1.8)), calc(var(--sy, 0px) * var(--gain, 1.8)), 0)
-               scale(calc(var(--sc, 1) * var(--gain, 1.8)));
-  }
-  /* flare_lit — a glass highlight across the upper left and a small specular
-     spot, both inside the lens so they travel with it and clip to its edge */
-  .flare {
-    position: absolute; inset: 0; pointer-events: none; z-index: 3;
-    background:
-      radial-gradient(closest-side at 30% 24%, rgba(255,255,255,0.24), rgba(255,255,255,0) 62%),
-      linear-gradient(128deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.03) 22%,
-                              rgba(255,255,255,0) 46%, rgba(255,255,255,0) 72%,
-                              rgba(255,255,255,0.09) 92%);
-    mix-blend-mode: screen;
-  }
-  .flare::after {
-    content: ''; position: absolute; left: 26%; top: 19%;
-    width: 15%; height: 8%; border-radius: 50%;
-    background: radial-gradient(closest-side, rgba(255,255,255,0.62), rgba(255,255,255,0));
-    transform: rotate(-32deg);
-  }
-  /* lens_ring — the glass edge: a bright bevel, a dark rim and the shadow it
-     throws onto the scene behind it */
-  .lens_ring {
-    position: absolute; left: 50%; top: 50%; z-index: 4; pointer-events: none;
-    width: var(--lens_d, 270px); height: var(--lens_d, 270px);
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    box-shadow:
-      0 0 0 2px rgba(255,255,255,0.85),
-      0 0 0 9px rgba(58,66,74,0.92),
-      0 0 0 11px rgba(255,255,255,0.35),
-      0 10px 26px rgba(0,0,0,0.38),
-      inset 0 0 22px rgba(0,0,0,0.20),
-      inset 0 6px 14px rgba(255,255,255,0.16);
-  }
+  /* lens_none — the magnifying glass is gone, every part of it: the round
+     window, its ring, the highlight on the glass, the second copy of the world
+     behind it and the gain that magnified one against the other. It made the page
+     read as a thing seen through an instrument instead of a place you are moving
+     around in, which is the wrong feeling for what this is. One world, full
+     bleed, as it was before. */
   /* the distance dissolving into the background: one screen-sized overlay in
      the paper's own colour, cheap to paint and independent of the paper's size */
   .haze {
     position: absolute; inset: 0; z-index: 1; pointer-events: none;
     background: radial-gradient(ellipse 78% 62% at 50% 56%,
-                                rgba(252,252,248,0.30) 0%,
-                                rgba(252,252,248,0.62) 62%,
+                                rgba(252,252,248,0) 0%,
+                                rgba(252,252,248,0.55) 62%,
                                 rgba(252,252,248,0.96) 100%);
   }
   /* star_off — the star is gone. It existed to be the one thing in the world
@@ -404,19 +345,12 @@
 <body>
 
 <div class="frame_window" id="frame">
-  <!-- lens_glass — the same world twice. The outer copy is the scene as it is
-       from further back, dimmed, so the rim has context in it; the lens holds the
-       scene at full magnification, clipped to a circle. Both read the same pan,
-       swirl and leans, so they can never disagree about where you are looking. -->
+  <!-- one world, filling the window. The stage carries the perspective; the
+       paper carries the swirl, both leans, the pan and the zoom. -->
   <div class="stage">
-    <div class="grid grid_out" id="grid_out"><img class="shot shot_out" alt="" src="lab_surface.svg"></div>
-    <div class="haze"></div>
-    <div class="lens">
-      <div class="grid" id="grid"><img class="shot" id="shot" alt="" src="lab_surface.svg"></div>
-      <div class="flare"></div>
-    </div>
-    <div class="lens_ring"></div>
+    <div class="grid" id="grid"><img class="shot" id="shot" alt="" src="lab_surface.svg"></div>
   </div>
+  <div class="haze"></div>
   <div class="track" id="track">
     <div class="cell cell_1"></div>
     <div class="cell cell_2"></div>
@@ -480,7 +414,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'lens_back', bg: '#9a3412', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'lens_none', bg: '#4338ca', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1483,7 +1417,7 @@
     // crisp_deep: raise the picture's own resolution in steps as you close in
     // the lens magnifies by GAIN on top of the zoom, so the picture has to be
     // rendered for what the LENS will show, not for what the rim shows
-    var shk = Math.min(SHK_MAX, Math.max(1, Math.pow(2, Math.round(Math.log(mult * 1.8) / Math.LN2))));
+    var shk = Math.min(SHK_MAX, Math.max(1, Math.pow(2, Math.round(Math.log(mult) / Math.LN2))));
     if (shk !== shkNow) { shkNow = shk; root.setProperty('--shk', String(shk)); }
     draw_pose(mult, now);
     requestAnimationFrame(paint_world);

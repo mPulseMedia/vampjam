@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "232 lens_back",
+        id: "233 lens_none",
         expanded: true,
+        nodes: [
+          { text: "233 lens_none", children: [
+            { text: "prompt_restate", children: [
+              { text: "Undo the whole lens thing \u2014 anything to do with a magnifying glass or a circle." },
+              { text: "It is creating a weird effect. Back it up." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "All in anything having to do with a magnifying glass, Len Circle thing OK, I want you to totally undo the whole lens thing. It\u2019s just creating this weird fact I wanna back up." }
+            ]},
+            { text: "lens_none", children: [
+              { text: "all of it is out: the round window, the ring, the highlight, the second copy of the world, and the magnification of one against the other" },
+              { text: "one world again, filling the screen, exactly as it was before the glass" },
+              { text: "the fog went back to what it was too \u2014 clear in the middle, closing in at the edges \u2014 and the picture is drawn for the plain zoom again rather than for what the lens was showing" }
+            ]},
+            { text: "why_it_was_wrong", children: [
+              { text: "the glass sat still while the world slid underneath it, so your eye held on to the ring and the motion became something happening inside a porthole" },
+              { text: "this page is for seeing whether a gesture lands where you expect, and that is easier to read when the picture simply fills the window" }
+            ]},
+            { text: "kept_from_the_detour", children: [
+              { text: "nothing of the glass, but two things worth remembering" },
+              { text: "a CSS filter buffers the whole element it sits on \u2014 as dangerous on the paper as the mask that crashed the browser" },
+              { text: "drawing the world twice costs about half the frame rate; the number to weigh against any future \u2018show it twice\u2019 idea" }
+            ]},
+            { text: "verify", children: [
+              { text: "~6m: release lens_none, indigo \u2014 zero lens, ring or highlight left in the page, one world, fog back outside the stage, frame rate back to 55-61fps across the whole zoom range, suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "no new trace arrived with this one \u2014 nothing since the 11:43 batch" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "232 lens_back",
+        expanded: false,
         nodes: [
           { text: "232 lens_back", children: [
             { text: "prompt_restate", children: [

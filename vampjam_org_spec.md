@@ -1804,7 +1804,26 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   as the same one, and the glass has to look like it is sitting on top of something.
   Nothing else from lens_glass is touched — two worlds, gain 1.8, the fog between them, no
   filter on the rim. Suite green, no page errors. No new trace with this one.
-- NEXT → add entry 233 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 233 lens_none · b233 · lab.html — the magnifying glass is gone entirely. "It's just creating
+  this weird fact I wanna back up."
+  Everything from 230-232 comes out: the round .lens window, the .lens_ring bevel, the .flare
+  highlight and its specular spot, the .grid_out second copy of the world, the .lens .grid gain
+  rule and the --gain and --lens_d variables. One .grid again, one <img>, full bleed. The .haze
+  goes back to what it was before the glass — a sibling of the stage, transparent at its centre
+  (0 at 0%, 0.55 at 62%, 0.96 at 100%) rather than the flat 0.30 floor it grew when it was doing
+  the rim's dimming. --shk is keyed to plain mult again rather than mult × the lens gain.
+  why: it made the page read as a thing seen through an instrument rather than a place you are
+  moving around in. The glass sat still while the world slid under it, so the eye anchored on
+  the ring and the motion became something happening inside a porthole. Everything the page is
+  for — a gesture landing where you expect it to — is easier to see when the picture simply
+  fills the window.
+  what stays from that stretch: nothing of the glass, but the two lessons are worth keeping. A
+  CSS filter buffers the whole element it sits on, so it is as dangerous on the paper as a mask
+  was. And a second copy of the world costs roughly half the frame rate — 60fps down to 15-40 —
+  which is the number to weigh against any future "show it twice" idea.
+  Frame rate back to 55-61fps across the whole zoom range. Suite green, no page errors, no new
+  trace with this one.
+- NEXT → add entry 234 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
