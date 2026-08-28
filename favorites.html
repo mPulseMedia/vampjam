@@ -182,21 +182,54 @@
   .fav_row { display: flex; align-items: center; gap: 7px; padding: 8px 12px; min-height: 56px; }
   .fav_row.playing { background: var(--row_active); }
   .fav_play_sm { flex: 0 0 auto; background: none; border: none; color: var(--accent); font-size: 17px; padding: 8px; cursor: pointer; line-height: 0; }
-  .fav_main { flex: 1 1 60px; min-width: 0; }
+  /* title_lap — the title may run into the FIRST QUARTER of the session name.
+     A favourite is its title; the session it came from is context. So the title
+     borrows the first 25% of that column (10.5% of the row, the column being 42%)
+     and sits above it, and where it does overrun it fades out rather than
+     colliding — an ellipsis on top of a date reads as a bug, a dissolve reads as
+     "there is more of this". The session name keeps its own ellipsis and stays
+     right-aligned, so its END — the part that tells you which session — is never
+     the part that goes. */
+  .fav_main {
+    flex: 1 1 60px; min-width: 0;
+    /* title_lap: -10% of the row against a column fixed at 40% of the same row is
+       a quarter of the column — but the row's 7px flex gap sits between them and
+       eats the first 7px of any negative margin, so it has to be paid back or the
+       lap comes out at 20% instead of 25%. Measured, not assumed. */
+    margin-right: calc(-10% - 7px); position: relative; z-index: 1;
+    -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 34px), transparent 100%);
+            mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 34px), transparent 100%);
+  }
   /* fav_jump — the session name on the right of a row is a LINK to that session,
      landing on this very highlight. It sits where a thumb already rests, so it
      gets a real tap target and something to press against rather than reading as
      a caption you happen to be able to hit. */
   a.fav_sess {
-    flex: 0 1 auto; color: var(--muted); font-size: 12px; text-align: right;
-    max-width: 42%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    /* title_lap: the overlap is built from these two numbers rather than guessed.
+       The column is FIXED at 40% of the row (it used to size to its text, which
+       is why a percentage lap could not be trusted), and the title's -10% is
+       measured against that same row: 10/40 is a quarter, exactly, at any screen
+       size. Its right edge does not move, so the END of the name — the part that
+       tells you which session — stays put. */
+    flex: 0 0 40%;
+    color: var(--muted); font-size: 12px; text-align: right;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    /* lap_cross — the date gives way over exactly the band the title laps into.
+       Fading only the title left the two interleaving at half strength, which
+       reads as a rendering fault; fading BOTH across the same quarter makes it a
+       crossfade — the title dissolving out as the date dissolves in — and either
+       one is legible on its own ground. */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 25%);
+            mask-image: linear-gradient(to right, transparent 0, #000 25%);
     text-decoration: none; border-bottom: 1px dotted var(--panel_3);
     padding: 10px 2px; margin: -10px 0; cursor: pointer;
   }
   a.fav_sess:hover { color: var(--fg); border-bottom-color: var(--muted); }
   a.fav_sess:active { color: var(--accent); }
   .fav_name {
+    /* title_lap: no ellipsis on the title any more — the fade is the ellipsis */
     width: 100%; background: transparent; border: none; outline: none;
+    text-overflow: clip;
     color: var(--fg); font: inherit; font-size: 17px; padding: 2px 0;
     border-bottom: 1px dashed transparent;
   }

@@ -2278,7 +2278,27 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   exists to stop; both are pinned to 24 now rather than one being left at 1em.
   drawer.js?v=138 → 139. Measured every size in the DOM after the change. nav_cass, nav_share and
   fav_share re-verified. No page errors. Still no new trace.
-- NEXT → add entry 251 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 251 title_lap · b251 · favorites.html — a favourite's title may run into the first quarter of the
+  session name.
+  title_lap: a favourite IS its title; the session it came from is context. So the title borrows
+  the first 25% of that column and sits above it. The arithmetic is built rather than guessed: the
+  session column is FIXED at 40% of the row (it used to size to its text, which is why a percentage
+  lap could not be trusted) and the title's margin is -10% of that same row, so 10/40 is a quarter
+  exactly, at any screen size, with nothing having to measure anything at runtime. The column's
+  RIGHT edge does not move, so the end of the name — the part that tells you which session — stays
+  put and keeps its own ellipsis.
+  the flex gap had to be paid back. The row has gap: 7px, and the gap eats the first 7px of any
+  negative margin, so -10% came out as 20% of the column instead of 25%. calc(-10% - 7px) puts it
+  on 25.0% — measured in the page, not assumed, which is the only reason it was caught.
+  lap_cross: fading only the title left the two interleaving at half strength, which reads as a
+  rendering fault ("A medium2026-08-07"). Both are masked across the same quarter now — the title
+  dissolving out as the date dissolves in — so each is legible on its own ground. The title's
+  text-overflow goes to clip with it: the fade IS the ellipsis, and an ellipsis inside a fade is
+  two endings for one sentence.
+  Measured at 34px of lap on a 134px column = 25%, on three titles from short to overlong, with the
+  session name ending in the same place on every row. fav_share re-verified. No page errors.
+  Still no new trace.
+- NEXT → add entry 252 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

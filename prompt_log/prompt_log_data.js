@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "250 icon_grow",
+        id: "251 title_lap",
         expanded: true,
+        nodes: [
+          { text: "251 title_lap", children: [
+            { text: "prompt_restate", children: [
+              { text: "On favourites rows, let the highlight title overlap the first 25% of the date." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "on favorites rows, let the highlight title overlap the first 25% of the date..." }
+            ]},
+            { text: "title_lap", children: [
+              { text: "the title now runs into the first quarter of the session name and sits above it" },
+              { text: "a favourite IS its title; the session it came from is context" },
+              { text: "the end of the session name never moves, so the part that tells you WHICH session always survives" },
+              { text: "the quarter is built from two numbers rather than guessed, so it holds at any screen size" }
+            ]},
+            { text: "lap_cross", children: [
+              { text: "fading only the title left the two interleaving at half strength, which just looks broken" },
+              { text: "both fade across the same quarter now \u2014 the title dissolving out as the date dissolves in \u2014 so each is readable on its own ground" },
+              { text: "and the title\u2019s ellipsis is gone: the fade is the ellipsis, and two endings for one sentence is one too many" }
+            ]},
+            { text: "one_catch", children: [
+              { text: "the gap between the two columns quietly ate the first 7 pixels of the overlap, so it came out at 20% instead of 25%" },
+              { text: "caught only because the overlap was measured in the page rather than assumed from the rule" }
+            ]},
+            { text: "verify", children: [
+              { text: "~9m: release title_lap \u2014 the overlap measured at exactly a quarter on three titles from short to overlong, the session name confirmed ending in the same place on every row, the share buttons re-verified, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "250 icon_grow",
+        expanded: false,
         nodes: [
           { text: "250 icon_grow", children: [
             { text: "prompt_restate", children: [
