@@ -9,8 +9,54 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "236 nudge_hold",
+        id: "237 nudge_fast",
         expanded: true,
+        nodes: [
+          { text: "237 nudge_fast", children: [
+            { text: "prompt_restate", children: [
+              { text: "Rewire the three axes. You recorded up x3, down x3, right x3, left x3, away x3, forward x3." },
+              { text: "These are nudges, not movements \u2014 the device returns to where it was." },
+              { text: "Nudge the phone up and the painting should move DOWN the screen; nudge it down and it moves up." },
+              { text: "Tighten the loop: as little delay as possible between the nudge and the response." },
+              { text: "Ignore swoops and other shapes. Only nudges." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, I\u2019m going to interrupt and completely rewire the signal coming as it relates to the three axis axis because in the most recent recording what I\u2019ve done is bumped my device in a small way in the direction of up three times down three times right three times left three times away three times forward three times but now these are nudges not movements with my device. I just nudge it, but what I wanted to map to is that it actually moves the paper the painting it moves it down on the screen because the screen has been bumped up or it moves it up on the screen because the screen has been bumped down and I think all I\u2019m looking for is a very tight loop so that I can immediately respond to, and move the object in that direction in a one unit unit in that direction and although my device, I\u2019ve returned to its original location it\u2019s like I\u2019ve nudged the object or the image of the object so tighten the code as close as you can so that there\u2019s really low Fidelity between when it detect that this looks like a nudge, you know not a swoop cause now we\u2019re ignoring Whoop and other shapes. We\u2019re just looking for nudges." }
+            ]},
+            { text: "nudge_fast", children: [
+              { text: "the answer now comes on the LEADING edge \u2014 measured at two samples, about 33 milliseconds, against roughly 400 before" },
+              { text: "every version until now waited for the gesture to finish, brake and go quiet before deciding; a nudge is recognisable from its first fiftieth of a second" },
+              { text: "after it fires the detector goes deaf until your hand is still again, which is what stops the return stroke and the settle from each firing one of their own" },
+              { text: "measured: every direction fires once, the return is ignored, and three of each gives exactly three" }
+            ]},
+            { text: "push_back", children: [
+              { text: "nudge the phone up and the painting goes DOWN the screen; nudge it right and the painting goes left" },
+              { text: "the phone is the hand and the picture is the thing being knocked, so it takes the blow in the direction it was struck from" },
+              { text: "measured on all four sides" },
+              { text: "depth is left as it was \u2014 nudge toward you and the picture comes toward you \u2014 because that is the one you did not describe. One word flips it." }
+            ]},
+            { text: "swoop_out", children: [
+              { text: "a burst has to reach the threshold within a fifth of a second of your hand leaving still, or it is not a nudge" },
+              { text: "a slow swoop right over a second and a half now moves nothing; it used to be a full slide" },
+              { text: "five seconds of shaking, light, medium or hard, still moves nothing" }
+            ]},
+            { text: "also", children: [
+              { text: "the landing came down from 210 to 160ms \u2014 it is the second half of the time between your wrist and your eye" },
+              { text: "three nudges is 273 pixels, which pushes the picture most of the way off at 1x; say the word if that notch is too big" }
+            ]},
+            { text: "verify", children: [
+              { text: "~16m: release nudge_fast, magenta \u2014 latency counted in samples for all six directions, the up/down/left/right mapping measured in pixels, three-of-each measured, swoop and shake rejection measured, suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 the new recording has not arrived. lab_gestures.json on main is still the 11:43 batch of 21 takes, byte for byte." },
+              { text: "so this one is built from your description and checked against synthetic gestures, not against your six-direction take" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "236 nudge_hold",
+        expanded: false,
         nodes: [
           { text: "236 nudge_hold", children: [
             { text: "prompt_restate", children: [

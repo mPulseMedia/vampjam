@@ -1922,7 +1922,40 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   shk_hold earns its keep here: the zoom now moves in short landings that can cross a
   power-of-two boundary, and holding --shk for a second took the shake-driven frame rate at ×1.6
   from 21fps to 54-56. Suite green, no page errors. No new trace with this one.
-- NEXT → add entry 237 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 237 nudge_fast · b237 · lab.html — fire on the leading edge, and the picture takes the blow.
+  nudge_fast: every version until now waited for the gesture to FINISH — brake to a stop, go
+  quiet, then classify what had been integrated. That is a quarter to half a second of delay on
+  every nudge, and it is the wrong shape of answer anyway: a nudge is over before it has finished
+  and is recognisable from its first 50ms. The loop is now a 45ms average of the drive, a
+  threshold on it (NUDGE_A 0.85 m/s²) and a dominance test (×1.5 over the runner-up). The instant
+  one axis crosses and is clearly the one being driven, the nudge is delivered. Measured at TWO
+  SAMPLES — about 33ms — on all six directions, against roughly 400ms before.
+  the refractory window is what makes it safe: on firing the detector DISARMS and stays disarmed
+  until the phone has been quiet (below 0.30 m/s²) for NUDGE_REARM 160ms. That is what stops the
+  return stroke, the brake and the settle from each firing a nudge of their own — measured: every
+  direction fires once and the return stroke is ignored; three of each gives exactly three.
+  swoop_out: NUDGE_RISE 220ms is a deadline — a burst must reach the threshold within that of
+  leaving quiet or it is not a nudge and the detector just waits for quiet again. A slow swoop
+  right over a second and a half now moves nothing (it used to be a full slide). Shaking at 0.35,
+  0.55 and 0.9 m/s² for five seconds still moves nothing.
+  push_back: PUSH_INV = { x: -1, y: -1, z: +1 }. Nudge the phone UP and the painting goes DOWN
+  the screen; nudge it right and the painting goes left. The phone is the hand and the picture is
+  the thing being knocked, so the picture takes the blow in the direction it was struck from.
+  Measured: phone up → +91px (down), phone down → −90px (up), phone right → −90px (left), phone
+  left → +91px (right). DEPTH IS LEFT AS IT WAS — nudge toward you and the picture comes toward
+  you (×1.6), nudge away and it goes away (×0.63) — because that is the one he did not describe;
+  PUSH_INV.z is one character.
+  the landing tightens too: NUDGE_MS 210 → 160, since the delivery is the second half of the time
+  between his wrist and his eye.
+  the old path is gone: bump_read, BUMP_MIN, BUMP_LEAD and the call to bump_fire from end_move
+  are all removed. end_move is now only bookkeeping for the lanes and the marks; nothing about
+  where the world goes is decided there any more.
+  worth watching: three nudges is 273px at ×1, which pushes a 352px-wide picture most of the way
+  off. NUDGE_FRAC 0.25 is the knob if that reads as too big a notch. Suite green, no page errors.
+  NO NEW TRACE ARRIVED — lab_gestures.json on main is still the 11:43 batch of 21 takes, byte for
+  byte. The up×3/down×3/right×3/left×3/away×3/forward×3 recording has not synced, so everything
+  here is built from his description and verified against synthetic gestures, not against it.
+- NEXT → add entry 238 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
