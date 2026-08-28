@@ -1,1 +1,1 @@
-star_off
+auto_commit
