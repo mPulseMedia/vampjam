@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "254 list_title",
+        id: "255 vec_flip",
         expanded: true,
+        nodes: [
+          { text: "255 vec_flip", children: [
+            { text: "prompt_restate", children: [
+              { text: "A tiny reverse button on the Admin lab page for each vector." },
+              { text: "Right/left, up/down, closer/further, clockwise/counter-clockwise, and right-edge-away/left-edge-away." },
+              { text: "Also make the 3D diagram and the readout chart half as big." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Make a button on the Admin lab page that reverses the direction of each of the vectors so give me a reverse a tiny reverse button for the right left a tiny reverse for up down a tiny reverse for closer further tiny reverse for clockwise, counterclockwise, tiny reverse for rotating right edge away rotating left edge away. Also make the 3-D diagram and the read out chart half as big as they are currently." }
+            ]},
+            { text: "vec_flip", children: [
+              { text: "five tiny switches in a row under Record, one per vector, lit blue when reversed" },
+              { text: "they are remembered, because the page reloads itself whenever I change it \u2014 a sign held only in memory would be gone before you finished walking around with the phone" },
+              { text: "each measured on its own axis with the other four left alone: every one came back exactly negated, none of them leaked into another" },
+              { text: "then reloaded, and the two that were on came back on" }
+            ]},
+            { text: "panel_half", children: [
+              { text: "the diagram and the chart are half the size they were, and the chart moved up to follow" },
+              { text: "they are things to glance at, and at full size they were taking a third of the screen from the thing they describe" },
+              { text: "the chart still draws internally at full resolution and is shown at half \u2014 shrinking the drawing itself would blur the one thing whose job is showing a small wobble" }
+            ]},
+            { text: "one_catch", children: [
+              { text: "the swirl switch looked completely dead at first" },
+              { text: "the test was rotating the phone the wrong way \u2014 sideways rather than in the plane of the screen \u2014 so nothing moved either way" }
+            ]},
+            { text: "verify", children: [
+              { text: "~16m: release vec_flip, teal \u2014 all five switches measured one at a time in the page, the reload checked, the panel sizes measured and confirmed not to overlap, frame rate 57fps, lab suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "254 list_title",
+        expanded: false,
         nodes: [
           { text: "254 list_title", children: [
             { text: "prompt_restate", children: [

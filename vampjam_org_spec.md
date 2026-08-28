@@ -2373,7 +2373,26 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   and one twenty-line loop twice is better than a module boundary invented to hold it.
   drawer.js?v=140 → 141. Whole recent suite (245-255) re-verified green. No page errors.
   Still no new trace.
-- NEXT → add entry 255 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 255 vec_flip · b255 · lab.html — a reverse switch per vector, and both panels at half size.
+  vec_flip: five tiny switches in the rig under Record — L R, U D, N F, the swirl and the
+  edge-away rotation — each reversing exactly one vector. Deciding a sign by feel means flipping
+  it, walking around with the phone, and flipping it back, and this page RELOADS ITSELF whenever
+  its source changes, so a sign held only in memory is gone before the walk is over. They live in
+  localStorage and come back lit. Each is applied at the single point its sign is already used, so
+  there is still exactly one place in the code that knows which way an axis goes.
+  measured, each one on its own axis with the other four untouched: right ±191.9px, up ∓250.1px,
+  closer ±1 layer, swirl ±40°, edge-away ±40.56° — every one exactly negated, none of them
+  bleeding into another. Then reloaded and the two that were on came back on.
+  a test note worth keeping: __lab.pose is (alpha, beta, gamma) — alpha is the swirl in the
+  screen's own plane and gamma is the side rotation that pushes one edge away. The first cut of the
+  swirl test posed gamma and read 0 both ways, which looked exactly like a dead switch.
+  panel_half: the diagram 178→89 and the chart 178×168→89×84, and the chart moved up to follow the
+  diagram. They are instruments to glance at, not to read, and at full size they were taking a
+  third of the screen away from the thing they describe. The canvas KEEPS its 178×168 backing store
+  and is drawn at half that by CSS — halving the buffer would halve the resolution of the one
+  thing on the page whose whole job is showing a small wobble. Checked they do not overlap.
+  Frame rate 57fps. Lab suite green, no page errors. Still no new trace.
+- NEXT → add entry 256 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

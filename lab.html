@@ -249,8 +249,11 @@
      about it, blue near-far and the swirl about it. */
   .trace {
     position: fixed; z-index: 6; right: max(18px, calc(env(safe-area-inset-right) + 8px));
-    top: max(212px, calc(env(safe-area-inset-top) + 200px));
-    width: 178px; height: 168px; border-radius: 14px;
+    top: max(122px, calc(env(safe-area-inset-top) + 110px));   /* panel_half: follows the diagram up */
+    /* panel_half — the diagram and the chart at half their old size. They are
+       instruments to glance at, not things to read, and at 178px they were taking
+       a third of the screen away from the thing they are describing. */
+    width: 89px; height: 84px; border-radius: 10px;
     background: rgba(255,255,255,0.88);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
@@ -259,7 +262,7 @@
   .pose {
     position: fixed; z-index: 6; right: max(18px, calc(env(safe-area-inset-right) + 8px));
     top: max(24px, calc(env(safe-area-inset-top) + 12px));
-    width: 178px; height: 178px; border-radius: 14px;
+    width: 89px; height: 89px; border-radius: 10px;      /* panel_half */
     background: rgba(255,255,255,0.86);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
@@ -307,6 +310,23 @@
     touch-action: manipulation;
   }
   .rig [hidden] { display: none !important; }
+  /* vec_flip — five in a row across the rig's width, small because they are set
+     once and then left alone, but each still a real target. Off is quiet; ON is
+     filled, because "this axis is reversed" is a thing you must be able to see at
+     a glance while walking around with the phone. */
+  .flips { display: flex; gap: 5px; }
+  .flips button {
+    flex: 1 1 0; min-width: 0; min-height: 32px; padding: 0;
+    border: 1px solid var(--panel_3, rgba(0,0,0,0.14));
+    background: rgba(255,255,255,0.9); color: var(--muted, #86868b);
+    border-radius: 8px; font: 600 13px/1 -apple-system, system-ui, sans-serif;
+    cursor: pointer; touch-action: manipulation;
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  }
+  .flips button.on {
+    background: #1d4ed8; border-color: #1d4ed8; color: #fff;
+  }
+  .flips button:active { transform: scale(0.95); }
   /* grade_two — plain buttons, the same shape as Record. Green only exists while
      the tape is running, because a grade is about a take; Red is out at all
      times, because it is also the reset and that has to be reachable whenever
@@ -431,6 +451,9 @@
   <button id="g_copy" class="g_small" hidden>Copy last</button>
   <button id="g_send" class="g_small" hidden>Send</button>
   <span class="g_count" id="g_count" hidden></span>
+  <!-- vec_flip — five tiny reverse switches, one per vector, under the controls
+       they change the meaning of. A lit one is reversed; they survive a reload. -->
+  <div class="flips" id="flips"></div>
 </div>
 <a class="corner_back" id="back_btn" href="admin.html">&#8249; Admin</a>
 <span class="build_tag" id="build_tag"></span>
@@ -459,12 +482,15 @@
   <g id="pose_read" font-family="-apple-system, sans-serif"></g>
   <text id="pose_lbl" font-size="0.01" fill="none"></text>
 </svg>
-<canvas class="trace" id="trace" width="178" height="168" hidden></canvas>
+<canvas class="trace" id="trace" width="178" height="168" hidden></canvas><!-- panel_half: the
+     canvas keeps its 178x168 backing store and is DRAWN at half that by the CSS
+     above. Halving the buffer instead would halve the resolution of the one thing
+     on the page whose whole job is showing a small wobble. -->
 
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'z_one', bg: '#4d7c0f', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'vec_flip', bg: '#0e7490', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1018,6 +1044,41 @@
   // this pair has now been round once each way, so the sign lives here alone and
   // nothing else in the page has an opinion about it.
   var PUSH_INV = { x: 1, y: 1, z: 1 };
+  // vec_flip — one reverse switch per vector, five of them, each remembered across
+  // reloads. Deciding a sign by feel means flipping it, walking around with the
+  // phone, and flipping it back — and this page reloads itself whenever its source
+  // changes, so a sign held only in memory is gone before the walk is over. They
+  // live in localStorage and are applied at the single point each sign is used, so
+  // there is still exactly one place in the code that knows which way an axis goes.
+  var FLIP_KEY = 'vampjam_lab_flip';
+  var FLIPS = [
+    { k: 'x',    lab: 'L\u2009R',  tip: 'Reverse right / left' },
+    { k: 'y',    lab: 'U\u2009D',  tip: 'Reverse up / down' },
+    { k: 'z',    lab: 'N\u2009F',  tip: 'Reverse closer / further' },
+    { k: 'roll', lab: '\u21bb',    tip: 'Reverse clockwise / counter-clockwise' },
+    { k: 'turn', lab: '\u25e8',    tip: 'Reverse right-edge-away / left-edge-away' }
+  ];
+  var flip = { x: 1, y: 1, z: 1, roll: 1, turn: 1 };
+  try {
+    var savedFlip = JSON.parse(localStorage.getItem(FLIP_KEY) || '{}');
+    FLIPS.forEach(function (f) { if (savedFlip[f.k] === -1) flip[f.k] = -1; });
+  } catch (e) {}
+  function flip_save() { try { localStorage.setItem(FLIP_KEY, JSON.stringify(flip)); } catch (e) {} }
+  (function flip_ui() {
+    var wrap = document.getElementById('flips');
+    if (!wrap) return;
+    FLIPS.forEach(function (f) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = f.lab;
+      b.title = f.tip;
+      b.setAttribute('aria-label', f.tip);
+      function paint() { b.classList.toggle('on', flip[f.k] === -1); b.setAttribute('aria-pressed', flip[f.k] === -1); }
+      b.addEventListener('click', function () { flip[f.k] = -flip[f.k]; flip_save(); paint(); });
+      paint();
+      wrap.appendChild(b);
+    });
+  })();
   // ---- card_deck ----------------------------------------------------------
   // LAY_N cards per side, so a layer is LAY_N x LAY_N and you sit at its middle
   // when you arrive. CARD_F is the card's share of the screen and GAP_F the space
@@ -1119,7 +1180,7 @@
     return zc !== was;
   }
   function nudge_fire(k, s, drive, rise) {
-    var d = s * PUSH_INV[k];
+    var d = s * PUSH_INV[k] * flip[k];   // vec_flip
     var moved;
     if (k === 'z') {
       moved = deck_deep(d);
@@ -1838,7 +1899,8 @@
     var lim = w * 3;
     return {
       w: w, cam: cam, dist: dist, mult: mult, pxPerM: pxPerM,
-      roll: PAN_INV * screen_roll(), tilt: screen_pitch(), turn: screen_turn(),
+      roll: flip.roll * PAN_INV * screen_roll(), tilt: screen_pitch(),
+      turn: flip.turn * screen_turn(),                      // vec_flip
       ox: Math.max(-lim, Math.min(lim,  PAN_INV * cam.x * pxPerM)),
       oy: Math.max(-lim, Math.min(lim, -PAN_INV * cam.y * pxPerM))
     };
