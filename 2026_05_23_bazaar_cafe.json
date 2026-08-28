@@ -13,7 +13,8 @@
     {
       "id": "t_img_5674",
       "t": 2704,
-      "label": "on the seas"
+      "label": "on the seas",
+      "fav": true
     },
     {
       "id": "t_1787712991926_nfaq",
@@ -23,7 +24,7 @@
     {
       "id": "t_img_5676",
       "t": 3086,
-      "label": "IMG_5676",
+      "label": "Sunlight blue",
       "fav": true
     },
     {
@@ -49,12 +50,8 @@
     {
       "id": "t_1779648398193_43kz",
       "t": 4053.480944,
-      "label": "fsdfgsdfg"
-    },
-    {
-      "id": "t_img_5681",
-      "t": 4058,
-      "label": "IMG_5681"
+      "label": "Whisper",
+      "fav": true
     },
     {
       "id": "t_img_5682",

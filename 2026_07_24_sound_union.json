@@ -23,8 +23,7 @@
     {
       "id": "t_1785955411493_jjh9",
       "t": 3.425455,
-      "label": "Song 1",
-      "fav": true
+      "label": "Song 1"
     },
     {
       "id": "t_1785955513193_2uqj",
@@ -34,13 +33,13 @@
     {
       "id": "t_1786683022184_x1tg",
       "t": 5630.956158518679,
-      "label": "Whaling"
+      "label": "Whaling",
+      "fav": true
     },
     {
       "id": "t_1786683508470_m3dm",
       "t": 5690.696580767023,
-      "label": "Light sweet",
-      "fav": true
+      "label": "Light sweet"
     },
     {
       "id": "t_1786684175608_om8f",
@@ -50,12 +49,24 @@
     {
       "id": "t_1786684364282_tct6",
       "t": 6354.474404052344,
-      "label": "Musical: see where I go"
+      "label": "Musical: see where I go",
+      "fav": true
+    },
+    {
+      "id": "t_1787910055989_v44w",
+      "t": 6571.182210643674,
+      "label": "soft solo"
+    },
+    {
+      "id": "t_1787910049656_w5nf",
+      "t": 6595.3490495843425,
+      "label": "weasing"
     },
     {
       "id": "t_1785955755010_pvss",
       "t": 8936.0198,
-      "label": "Song n - even slower but strong beat"
+      "label": "Even slower but strong beat",
+      "fav": true
     }
   ]
 }
