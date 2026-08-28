@@ -414,7 +414,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'bump_step', bg: '#b91c1c', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'blip_out', bg: '#7c2d12', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -502,8 +502,8 @@
     var per = v.pxPerM || 1;
     var mx =  px / (PAN_INV * per);
     var my = -py / (PAN_INV * per);
-    off.x += mx; off.y += my;      // bump_step: the drag is its own offset, so
-    show.x += mx; show.y += my;    // the spring does not pull it back to the lattice
+    off.x += mx; off.y += my;      // blip_out: the drag moves where REST is, and
+    show.x += mx; show.y += my;    // the blip plays out from wherever that is
     return true;
   }
   function drag_end() { dragOn = false; }
@@ -774,26 +774,43 @@
   // sensor drift, a bad brake, a trapped axis and a half-detected wobble all die
   // at the end of the gesture they happened in instead of accumulating. Where the
   // world stands is `cell`, three integers, and integers do not drift.
-  var cell = { x: 0, y: 0, z: 0 };  // where the world stands, in whole steps
-  var CELL_MAX = { x: 7, y: 7, z: 5 };
-  var BUMP_ZOOM = 1.6;              // how much bigger one step toward you makes the world
-  // derive the z step from the zoom law, so changing Z_POWER cannot silently
-  // change what a bump toward you is worth
-  var STEP_Z   = D0 * (1 - Math.pow(BUMP_ZOOM, -1 / Z_POWER));
-  // step_even — a sideways bump is a quarter of the SCREEN, at every zoom. Pan is
-  // metres times the zoom, so a step fixed in metres would be a quarter screen at
-  // x1 and nine screens at x39 — one bump would throw you clean off the picture
-  // the moment you leaned in. So the metres per step are divided by the zoom the
-  // LATTICE is at (an exact power of BUMP_ZOOM, not the springing display value,
-  // so pan and zoom settle together and nothing chases itself). What survives is
-  // the only thing that should be constant: one bump, one quarter screen.
-  var STEP_FRAC = 0.25;
-  var STEP_PAN  = STEP_FRAC * PHONE_W;
-  function step_pan() { return STEP_PAN / Math.pow(BUMP_ZOOM, cell.z); }
-  var STEP     = { x: STEP_PAN, y: STEP_PAN, z: STEP_Z };
-  var BUMP_MIN  = 0.02;             // metres the gesture must have carried to count at all
+  // blip_out — what the page GIVES BACK is not your gesture. The moment a bump is
+  // recognised, everything measured about it is thrown away — how hard, how far,
+  // how long — and one canned signal is played instead: a short move out in that
+  // direction and straight back. The same shape, the same size, the same duration,
+  // every time, for every one of the six directions. Your bump is the trigger; the
+  // blip is the answer. Nothing accumulates, so there is nowhere for drift to go.
+  var BUMP_ZOOM = 1.6;              // the zoom at the peak of a blip toward you
+  // derive the depth amplitude from the zoom law, so changing Z_POWER cannot
+  // silently change what a bump toward you looks like
+  var BLIP_Z    = D0 * (1 - Math.pow(BUMP_ZOOM, -1 / Z_POWER));
+  var BLIP_FRAC = 0.25;             // a sideways blip peaks at a quarter of the screen
+  var BLIP_PAN  = BLIP_FRAC * PHONE_W;
+  var BLIP_AMP  = { x: BLIP_PAN, y: BLIP_PAN, z: BLIP_Z };
+  // the shape of the signal, in milliseconds: out fast, hold for an instant so the
+  // eye can land on it, then ease back. Asymmetric on purpose — out and back at
+  // the same speed reads as a wobble, not as a tick.
+  var BLIP_OUT = 90, BLIP_HOLD = 50, BLIP_IN = 180;
+  var BLIP_MS  = BLIP_OUT + BLIP_HOLD + BLIP_IN;
+  var blip = null;                  // { k, s, t0 } while one is playing
+  var off  = { x: 0, y: 0, z: 0 };  // what the finger has dragged: where rest IS
+  function ease(u) { return u * u * (3 - 2 * u); }        // smoothstep
+  // blip_at — where the canned signal stands right now, in metres on axis k
+  function blip_at(k) {
+    if (!blip || blip.k !== k) return 0;
+    var t = Date.now() - blip.t0;
+    if (t >= BLIP_MS) { blip = null; return 0; }
+    var u = t < BLIP_OUT ? ease(t / BLIP_OUT)
+          : t < BLIP_OUT + BLIP_HOLD ? 1
+          : 1 - ease((t - BLIP_OUT - BLIP_HOLD) / BLIP_IN);
+    return blip.s * BLIP_AMP[k] * u;
+  }
+  // bump_soft — 2cm of carry was tuned when a gesture had to be a whole slide.
+  // A bump is a flick, and a gentle flick carries barely a centimetre, so it was
+  // being thrown away. 1.2cm still leaves it well clear of a tremor, which the
+  // shake test kills long before it reaches this line.
+  var BUMP_MIN  = 0.012;            // metres the gesture must have carried to count at all
   var BUMP_LEAD = 1.5;              // how far the winning axis must beat the runner-up
-  var off = { x: 0, y: 0, z: 0 };   // what the finger has dragged, on top of the lattice
   var lastBump = '';
   // bump_read — which single axis was that, and which way? Whichever carried the
   // most, provided it carried enough AND clearly beat the other two. A gesture
@@ -813,15 +830,11 @@
   function bump_fire() {
     var b = bump_read(run);
     if (b) {
-      var lim = CELL_MAX[b.k];
-      var was = cell[b.k];
-      cell[b.k] = Math.max(-lim, Math.min(lim, was + b.s));
-      lastBump = BUMP_NAME[b.k][b.s > 0 ? 1 : 0] + (cell[b.k] === was ? ' (at the end)' : '');
+      // blip_out: throw the measurement away and play the standard signal
+      blip = { k: b.k, s: b.s, t0: Date.now() };
+      lastBump = BUMP_NAME[b.k][b.s > 0 ? 1 : 0];
       if (typeof mark_add === 'function') mark_add('bump', {
-        way: BUMP_NAME[b.k][b.s > 0 ? 1 : 0],
-        axis: b.k,
-        cell: [cell.x, cell.y, cell.z],
-        ran: +Math.abs(run[b.k]).toFixed(4) });
+        way: lastBump, axis: b.k, ran: +Math.abs(run[b.k]).toFixed(4) });
     } else {
       lastBump = '';
       var big = Math.max(Math.abs(run.x), Math.abs(run.y), Math.abs(run.z));
@@ -1275,16 +1288,14 @@
   // clock, so a burst of samples with no frame between them still shapes the
   // move the same way — and so the levelling window keeps the picture alive.
   function smooth_step(dt) {
-    var sdt = Math.min(0.05, dt);
+    // blip_out: what is drawn is where the finger left it, plus the canned signal.
+    // No spring: the blip's own curve IS the animation, and a spring on top would
+    // smear the one thing that has to be identical every time. pos/vel/lead are
+    // evidence being gathered for the NEXT bump and are never drawn.
     ['x', 'y', 'z'].forEach(function (k) {
-      // bump_step: the target is where the lattice says, plus whatever the finger
-      // has dragged. pos/lead are evidence being gathered for the NEXT bump, and
-      // are not drawn — the world holds still through a gesture and steps when it
-      // is over, which is what makes a bump read as a bump.
-      var target = (k === 'z' ? cell.z * STEP_Z : cell[k] * step_pan()) + off[k];
-      var wk = (k === 'z') ? SM_W_Z : SM_W;
-      showV[k] += (wk * wk * (target - show[k]) - 2 * wk * showV[k]) * sdt;
-      show[k]  += showV[k] * sdt;
+      var was = show[k];
+      show[k]  = off[k] + blip_at(k);
+      showV[k] = dt > 0 ? (show[k] - was) / dt : 0;
     });
   }
 
@@ -1294,7 +1305,7 @@
   // its own centre, up for positive and down for negative, and carries no line,
   // no label and no number — the shape and the colour are the whole message.
   // crisp_deep: how much bigger than its drawn size the picture is rendered
-  var SHK_MAX = 6, shkNow = 1;
+  var SHK_MAX = 6, shkNow = 1, shkPeak = 1, shkAt = 0;
   var TRACE_N = 240;
   var trace = new Array(TRACE_N);
   var traceAt = 0;
@@ -1493,10 +1504,15 @@
     root.setProperty('--rot', v.roll.toFixed(2) + 'deg');
     root.setProperty('--tilt', v.tilt.toFixed(2) + 'deg');
     root.setProperty('--turn', v.turn.toFixed(2) + 'deg');
-    // crisp_deep: raise the picture's own resolution in steps as you close in
-    // the lens magnifies by GAIN on top of the zoom, so the picture has to be
-    // rendered for what the LENS will show, not for what the rim shows
-    var shk = Math.min(SHK_MAX, Math.max(1, Math.pow(2, Math.round(Math.log(mult) / Math.LN2))));
+    // crisp_deep: raise the picture's own resolution in steps as you close in.
+    // shk_hold — it goes UP the instant the zoom needs it and comes DOWN only
+    // after a second of not needing it. A blip toward you takes the zoom to x1.6
+    // and back in a third of a second, and re-laying out a 700x1250 image twice
+    // inside one signal is the most expensive thing on the page for no gain at
+    // all: the picture is the same at the end as it was at the start.
+    if (mult > shkPeak) { shkPeak = mult; shkAt = now; }
+    else if (now - shkAt > 1000) { shkPeak = mult; shkAt = now; }
+    var shk = Math.min(SHK_MAX, Math.max(1, Math.pow(2, Math.round(Math.log(shkPeak) / Math.LN2))));
     if (shk !== shkNow) { shkNow = shk; root.setProperty('--shk', String(shk)); }
     draw_pose(mult, now);
     requestAnimationFrame(paint_world);
@@ -1509,16 +1525,14 @@
   // too and puts the whole model back to ×1.
   function zero_here(keepDepth) {
     R0 = Rnow;
-    var zc = keepDepth ? cell.z : 0;
     vel = { x: 0, y: 0, z: 0 };
     pos = { x: 0, y: 0, z: 0 };
     run = { x: 0, y: 0, z: 0 };
     lead = { x: 0, y: 0, z: 0 };
-    cell = { x: 0, y: 0, z: zc };      // bump_step: back to the middle of the lattice
+    blip = null;                       // blip_out: any signal in flight is dropped
     off  = { x: 0, y: 0, z: 0 };
     lastBump = '';
-    var z = zc * STEP.z;
-    show = { x: 0, y: 0, z: z }; showV = { x: 0, y: 0, z: 0 };
+    show = { x: 0, y: 0, z: 0 }; showV = { x: 0, y: 0, z: 0 };
     // open the levelling window: hold still, this is the pose we measure from
     calLeft = CAL_MS / 1000; calSum = { x: 0, y: 0, z: 0 }; calN = 0; calSq = 0;
     if (motionOn) say('send', 'levelling \u2014 hold still\u2026');
@@ -1912,8 +1926,10 @@
       var v = view();
       return { px: v.ox, py: v.oy, mult: v.mult, dist: v.dist, roll: v.roll, tilt: v.tilt, turn: v.turn,
                moving: moving, held: lastMove, lock: +Math.max(0, lockLeft).toFixed(2),
-               cell: { x: cell.x, y: cell.y, z: cell.z }, bump: lastBump,
-               step: { xy: +STEP.x.toFixed(4), z: +STEP.z.toFixed(5), zoom: BUMP_ZOOM },
+               bump: lastBump, blip: blip ? blip.k + (blip.s > 0 ? '+' : '-') : '',
+               blipAt: (blip ? Date.now() - blip.t0 : -1),
+               blipSpec: { out: BLIP_OUT, hold: BLIP_HOLD, back: BLIP_IN, ms: BLIP_MS,
+                           pan: +BLIP_PAN.toFixed(4), z: +BLIP_Z.toFixed(5), zoom: BUMP_ZOOM },
                show: { x: +show.x.toFixed(4), y: +show.y.toFixed(4), z: +show.z.toFixed(4) },
                cal: +Math.max(0, calLeft).toFixed(3),
                bias: { x: +bias.x.toFixed(4), y: +bias.y.toFixed(4), z: +bias.z.toFixed(4) },

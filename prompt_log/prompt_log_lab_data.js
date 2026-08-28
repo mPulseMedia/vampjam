@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "234 bump_step",
+        id: "235 blip_out",
         expanded: true,
+        nodes: [
+          { text: "235 blip_out", children: [
+            { text: "prompt_restate", children: [
+              { text: "I had the basic idea wrong." },
+              { text: "Look for bumps from you; when one is detected, IGNORE the bump you gave." },
+              { text: "Give back the standardised bump signal instead \u2014 short, in each of those directions." },
+              { text: "Get that working first." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, you\u2019re missing the basic idea here. The idea is that you look for bumps from me and when you detect one you then ignore the bump I gave and you give me the standardized bump signal and it\u2019s a short signal in all of those direction so let\u2019s get that working first" }
+            ]},
+            { text: "blip_out", children: [
+              { text: "your bump is now only the trigger; everything measured about it is thrown away \u2014 how hard, how far, how long, where it ended" },
+              { text: "what you get back is one canned signal: a short move out in that direction and straight back to where it started" },
+              { text: "the same shape, the same size, the same length, every time, in all six directions" },
+              { text: "234 had it backwards \u2014 it read your gesture and then moved somewhere and stayed. That is still the world following the phone, just in whole numbers." }
+            ]},
+            { text: "the_signal", children: [
+              { text: "out in 90ms, hold 50ms so your eye can land on it, ease back over 180ms \u2014 a third of a second end to end" },
+              { text: "asymmetric on purpose: out and back at the same speed reads as a wobble, not as a tick" },
+              { text: "sideways it reaches a quarter of the screen; toward and away it reaches 1.6 times bigger and 1.6 times smaller" },
+              { text: "measured 90 or 91 pixels on all four of right, left, up and down, and exactly back to rest afterwards" }
+            ]},
+            { text: "nothing_accumulates", children: [
+              { text: "five bumps right in a row leave rest exactly where it was" },
+              { text: "there is no running position for drift to get into at all \u2014 the strongest form yet of the recentre you asked for" }
+            ]},
+            { text: "bump_soft", children: [
+              { text: "the threshold came down: a gentle flick carries barely a centimetre and was being thrown away" },
+              { text: "still well clear of a tremor \u2014 five seconds of shaking, light, medium and hard, gives no blips and no wander at all" }
+            ]},
+            { text: "verify", children: [
+              { text: "~14m: release blip_out, umber \u2014 all six directions fire the identical signal and return exactly to rest, gentle/violent/long-and-slow all give the same 91px, shaking gives none, drag still works underneath, suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "no new trace arrived with this one \u2014 nothing since the 11:43 batch" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "234 bump_step",
+        expanded: false,
         nodes: [
           { text: "234 bump_step", children: [
             { text: "prompt_restate", children: [

@@ -1863,7 +1863,37 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   real use. The one number that got worse (27 → 21fps while shaking at ×1.6) is --shk 2 raster
   cost, pre-existing and unrelated to the stepping.
   Suite green, no page errors. No new trace with this one.
-- NEXT → add entry 235 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 235 blip_out · b235 · lab.html — 234 had it backwards. The bump is the TRIGGER, not the motion.
+  blip_out: the moment a bump is recognised, everything measured about it is thrown away — how
+  hard, how far, how long, where it ended — and ONE canned signal is played instead: a short move
+  out in that direction and straight back to where it started. Same shape, same size, same
+  duration, every time, for all six directions. 234 read the gesture and then moved to a new
+  place and stayed there, which is still the world following the phone, only in whole numbers.
+  This is the phone TELLING the page something and the page answering in its own fixed voice.
+  the signal: out 90ms on a smoothstep, hold 50ms so the eye can land on it, ease back over
+  180ms. 320ms end to end. Asymmetric on purpose — out and back at the same speed reads as a
+  wobble, not as a tick. Sideways it peaks at a quarter of the screen (measured 90-91px on all
+  four of right, left, up, down); toward and away it peaks at ×1.6 and ×0.63 zoom, and that
+  amplitude is DERIVED from the zoom law (D0·(1 − BUMP_ZOOM^(−1/Z_POWER))) so changing Z_POWER
+  can never silently change what a bump toward you looks like.
+  the lattice is gone, and so is the display spring. The spring existed to chase a moving target;
+  the blip's own curve IS the animation, and a spring on top of it would smear the one thing that
+  has to be identical every time. show is now simply "where the finger left it, plus the signal".
+  pos, vel and lead survive as evidence being gathered for the NEXT bump and are never drawn.
+  nothing accumulates: five bumps right in a row leave rest at exactly x0 y0 zoom ×1. There is no
+  running position for drift to get into at all — the strongest form yet of the recentre he asked
+  for in 234.
+  bump_soft: BUMP_MIN drops from 2cm to 1.2cm. 2cm was tuned when a gesture had to be a whole
+  slide; a bump is a flick and a gentle flick carries barely a centimetre, so it was being thrown
+  away (measured: a gentle push fired nothing before, fires now). Well clear of a tremor — five
+  seconds of shaking at 0.35, 0.55 and 0.9 m/s² each give zero blips and zero pixels of wander.
+  shk_hold: --shk now rises the instant the zoom needs it and falls only after a second of not
+  needing it. A blip toward you takes the zoom to ×1.6 and back inside a third of a second, and
+  re-laying out a 704×1252 image twice per signal is the most expensive thing on the page for no
+  gain at all — the picture is identical at the end to what it was at the start.
+  swipe_pan survives: the finger drag moves where REST is, and the blip plays out from wherever
+  the finger left it. Suite green, no page errors. No new trace with this one.
+- NEXT → add entry 236 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
