@@ -1723,7 +1723,33 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   directions need their own exponents rather than one shared one. Playwright: no .pin or
   .pin_dot in the document ✓; the push table above ✓; three-way capture at the floor, at rest
   and pushed in ✓; whole lab suite re-run and green; no page errors.
-- NEXT → add entry 229 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 229 swipe_pan — lab.html + lab_surface.svg, release swipe_pan / sienna) a finger can move
+  the surface, and the surface is worth moving over. swipe_pan: the old up/down flick between
+  three coloured cards had no job left — there is one world now, not a stack of pages — so the
+  same gestures pan the paper instead. A drag is converted back through the swirl (the paper's
+  axes are turned on screen, so a screen delta is not a paper delta) and then through the scale,
+  because a pixel buys less world when zoomed in; it is written into BOTH pos and show so the
+  surface tracks the finger exactly instead of lagging the spring. Measured: a +120/+80 drag
+  moves the surface exactly 120px/80px on screen, and at ×2.18 the same 120px drag moves the
+  world 1.08 cm where at ×1 it would move 2.18 — the finger stays glued to the picture at every
+  scale. It stays in the plane of the paper by construction, since --sx/--sy live inside the
+  rotate and the two leans.
+  lab_surface.svg replaces the PNG: an illustrated coastal town, 1800×3200, 224KB, generated —
+  a gradient dusk sky with 420 stars, a sun, three hill bands, a sea with 260 glints and seven
+  boats, 46 skewed fields with furrow lines, a river, 70 houses each with brick or tile
+  patterning and individually lit or dark windows, 150 trees, 38 birds, a lighthouse casting a
+  beam, sixteen little place labels and a compass rose with fifteen-degree ticks. Plenty to go
+  in and find.
+  crisp_deep: and it stays sharp, which took a real fix. An <img> inside a transformed ancestor
+  is rasterised at its LAYOUT size and then scaled by the transform, so the SVG blurred exactly
+  when he leaned in — the one thing choosing SVG was meant to avoid. The element is now laid out
+  --shk times bigger and scaled back down by the same factor, so the raster is taken large and
+  the zoom magnifies a picture that already has the detail. --shk steps in powers of two (rare
+  re-layout) and caps at SHK_MAX 6, because the memory goes with its square: 6 is 2112×3756,
+  about 32MB, and 8 would be 56. Captured at ×6.3 the houses show crisp windows, brick texture
+  and sharp roof edges where they were mush before. Whole lab suite re-run and green; no page
+  errors.
+- NEXT → add entry 230 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

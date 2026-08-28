@@ -123,7 +123,16 @@
     position: absolute; left: 50%; top: 50%;
     /* nearly the whole window at x1, so a reset presents the picture rather
        than a stamp in the middle of a field */
-    width: 352px; height: auto; transform: translate(-50%, -50%);
+    /* crisp_deep — an <img> inside a transformed ancestor is rasterised at its
+       LAYOUT size and then scaled by the transform, so an SVG blurs exactly when
+       you lean in to look at it, which is the one thing it was chosen to avoid.
+       So the element is laid out --shk times bigger and scaled back down by the
+       same factor: the raster is taken at the larger size and the ancestor's zoom
+       then magnifies a picture that already has the detail. --shk steps in powers
+       of two so the re-layout is rare, and is capped, because the memory goes up
+       with its square. */
+    width: calc(352px * var(--shk, 1)); height: calc(626px * var(--shk, 1));
+    transform: translate(-50%, -50%) scale(calc(1 / var(--shk, 1)));
     border-radius: 3px; background: #ffffff;
     box-shadow: 0 4px 14px rgba(0,0,0,0.28), 0 1px 3px rgba(0,0,0,0.22);
     pointer-events: none; -webkit-user-select: none; user-select: none;
@@ -331,7 +340,7 @@
 
 <div class="frame_window" id="frame">
   <div class="stage"><div class="grid" id="grid"><img class="shot" id="shot" alt=""
-       src="lab_surface.png"></div></div>
+       src="lab_surface.svg"></div></div>
   <div class="track" id="track">
     <div class="cell cell_1"></div>
     <div class="cell cell_2"></div>
@@ -396,7 +405,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'star_off', bg: '#164e63', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'swipe_pan', bg: '#7c2d12', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -462,36 +471,52 @@
     else go(idx, true);
   }
 
+  // ---- swipe_pan: a finger drags the SURFACE, in its own plane ----
+  // The old up/down flick between three coloured cards has no job left — there is
+  // one world now, not a stack of pages — so the same gestures move the paper
+  // instead. A drag is converted back through the swirl (the paper's axes are
+  // turned on screen, so a screen delta is not a paper delta) and then through
+  // the scale, because a pixel is worth less world when you are zoomed in. It is
+  // written into BOTH the model and the drawn position, so the surface tracks the
+  // finger exactly rather than lagging a spring behind it.
+  var dragOn = false, dragX = 0, dragY = 0;
+  function drag_start(x, y) { dragOn = true; dragX = x; dragY = y; }
+  function drag_move(x, y) {
+    if (!dragOn) return false;
+    var dx = x - dragX, dy = y - dragY;
+    dragX = x; dragY = y;
+    if (!dx && !dy) return true;
+    var v = view();
+    var r = (v.roll || 0) * Math.PI / 180;          // undo the swirl
+    var px =  dx * Math.cos(r) + dy * Math.sin(r);
+    var py = -dx * Math.sin(r) + dy * Math.cos(r);
+    var per = v.pxPerM || 1;
+    var mx =  px / (PAN_INV * per);
+    var my = -py / (PAN_INV * per);
+    pos.x += mx; pos.y += my;
+    show.x += mx; show.y += my;
+    return true;
+  }
+  function drag_end() { dragOn = false; }
+
   window.addEventListener('touchstart', function (e) {
     if (e.target.closest && e.target.closest('.rig, .corner_back')) return;
-    if (e.touches.length === 1) start(e.touches[0].clientY);
+    if (e.touches.length === 1) drag_start(e.touches[0].clientX, e.touches[0].clientY);
   }, { passive: true });
   window.addEventListener('touchmove', function (e) {
-    if (move(e.touches[0].clientY) && e.cancelable) e.preventDefault();
+    if (drag_move(e.touches[0].clientX, e.touches[0].clientY) && e.cancelable) e.preventDefault();
   }, { passive: false });
-  window.addEventListener('touchend', end, { passive: true });
-  window.addEventListener('touchcancel', end, { passive: true });
+  window.addEventListener('touchend', drag_end, { passive: true });
+  window.addEventListener('touchcancel', drag_end, { passive: true });
 
-  // mouse + keyboard, so the same thing works on a laptop
+  // mouse, so the same thing works on a laptop
   var mouseDown = false;
   window.addEventListener('mousedown', function (e) {
     if (e.target.closest && e.target.closest('.rig, .corner_back')) return;
-    mouseDown = true; start(e.clientY);
+    mouseDown = true; drag_start(e.clientX, e.clientY);
   });
-  window.addEventListener('mousemove', function (e) { if (mouseDown) move(e.clientY); });
-  window.addEventListener('mouseup', function () { if (mouseDown) { mouseDown = false; end(); } });
-  var wheelLock = 0;
-  window.addEventListener('wheel', function (e) {
-    var now = Date.now();
-    if (now - wheelLock < 420) return;
-    if (Math.abs(e.deltaY) < 8) return;
-    wheelLock = now;
-    go(idx + (e.deltaY > 0 ? 1 : -1), true);
-  }, { passive: true });
-  window.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); go(idx + 1, true); }
-    if (e.key === 'ArrowUp'   || e.key === 'PageUp')   { e.preventDefault(); go(idx - 1, true); }
-  });
+  window.addEventListener('mousemove', function (e) { if (mouseDown) drag_move(e.clientX, e.clientY); });
+  window.addEventListener('mouseup', function () { if (mouseDown) { mouseDown = false; drag_end(); } });
 
   document.getElementById('back_btn').addEventListener('click', function () {
     window.location.href = 'admin.html';
@@ -1180,6 +1205,8 @@
   // axis, and how far the phone is turned about it. Each lane fills solid from
   // its own centre, up for positive and down for negative, and carries no line,
   // no label and no number — the shape and the colour are the whole message.
+  // crisp_deep: how much bigger than its drawn size the picture is rendered
+  var SHK_MAX = 6, shkNow = 1;
   var TRACE_N = 240;
   var trace = new Array(TRACE_N);
   var traceAt = 0;
@@ -1378,6 +1405,9 @@
     root.setProperty('--rot', v.roll.toFixed(2) + 'deg');
     root.setProperty('--tilt', v.tilt.toFixed(2) + 'deg');
     root.setProperty('--turn', v.turn.toFixed(2) + 'deg');
+    // crisp_deep: raise the picture's own resolution in steps as you close in
+    var shk = Math.min(SHK_MAX, Math.max(1, Math.pow(2, Math.round(Math.log(mult) / Math.LN2))));
+    if (shk !== shkNow) { shkNow = shk; root.setProperty('--shk', String(shk)); }
     draw_pose(mult, now);
     requestAnimationFrame(paint_world);
   }

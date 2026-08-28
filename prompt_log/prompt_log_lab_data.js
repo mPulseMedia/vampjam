@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "228 star_off",
+        id: "229 swipe_pan",
         expanded: true,
+        nodes: [
+          { text: "229 swipe_pan", children: [
+            { text: "prompt_restate", children: [
+              { text: "Let me swipe the image left, right, up, down or at an angle." },
+              { text: "Keep it in the plane, parallel with the paper." },
+              { text: "Make the image really colourful and beautiful with lots of tiny details to zoom in on." },
+              { text: "Make it an SVG so it stays crisp close in." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Let me swipe the image to its left or right or upper down or at some angle, but keep it in the plane flat with the or parallel with the paper. Also make the image really colorful and beautiful and interesting with lots of tiny details so I can zoom in on it and do it at make it an SVG so that it is really crisp even as I go in really close." }
+            ]},
+            { text: "swipe_pan", children: [
+              { text: "your finger drags the surface now, any direction, and it stays in the paper\u2019s plane" },
+              { text: "the picture stays stuck to your finger at every zoom \u2014 a 120px drag is 120px on screen whether you are far out or right in" },
+              { text: "the old three-card flick is retired; there is one world now, not a stack of pages" }
+            ]},
+            { text: "new_picture", children: [
+              { text: "an illustrated coastal town at dusk \u2014 stars, a setting sun, hills, a sea with boats, fields, a river, seventy houses with lit and dark windows, trees, birds, a lighthouse with its beam, little place names and a compass rose" },
+              { text: "plenty to go in and find" }
+            ]},
+            { text: "crisp_deep", children: [
+              { text: "an SVG alone was not enough \u2014 inside a 3D transform the browser draws it once at its small size and then blows that up, so it blurred exactly when you leaned in" },
+              { text: "it is now drawn several times larger and scaled back down, so the zoom magnifies a picture that already has the detail" },
+              { text: "at six times in, the windows, brickwork and roof edges are sharp where they were mush" }
+            ]},
+            { text: "verify", children: [
+              { text: "~9m: release swipe_pan, sienna \u2014 drag measured exact at two zooms, crispness captured at \u00d76.3, whole suite green" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "228 star_off",
+        expanded: false,
         nodes: [
           { text: "228 star_off", children: [
             { text: "prompt_restate", children: [
