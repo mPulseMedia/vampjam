@@ -9,8 +9,36 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "226 flat_zero",
+        id: "227 zoom_wide",
         expanded: true,
+        nodes: [
+          { text: "227 zoom_wide", children: [
+            { text: "prompt_restate", children: [
+              { text: "When moving forward or away, double the amount you scale the image." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When moving forward or away double the amount that you scale, the Image" }
+            ]},
+            { text: "zoom_wide", children: [
+              { text: "doubled \u2014 4 cm toward the eye now gives \u00d73 where it gave \u00d71.75, and 8 cm gives \u00d711 where it gave \u00d73.3" },
+              { text: "the top of the range arrives around 11 cm of hand instead of 17" },
+              { text: "the floor drops with it, or a doubled response would hit bottom three centimetres out" },
+              { text: "I had halved this a few builds ago to stop the twitch \u2014 but the twitch was really the noise floor and the spring, and those are fixed, so the response could go back up and past where it was" }
+            ]},
+            { text: "paper_size", children: [
+              { text: "checked whether the paper needs to be bigger to cover the window at the new floor" },
+              { text: "captured and timed three sizes side by side: they look the same and cost 42, 28 and 24 frames a second" },
+              { text: "so it stays as it is, and the frames are not spent" }
+            ]},
+            { text: "verify", children: [
+              { text: "~4m: release zoom_wide, rust \u2014 five pushes measured at roughly double their old scale; a full pull away reaches the floor; whole suite green" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "226 flat_zero",
+        expanded: false,
         nodes: [
           { text: "226 flat_zero", children: [
             { text: "prompt_restate", children: [

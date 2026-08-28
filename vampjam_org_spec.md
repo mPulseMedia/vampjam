@@ -1694,7 +1694,22 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   beta ±30 still leans ±51 ✓; three-way capture (load / after reset / tilted) ✓; vj_207 and
   vj_208c updated off the retired 45-degree base; whole lab suite re-run and green; no page
   errors.
-- NEXT → add entry 227 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- (log 227 zoom_wide — lab.html, release zoom_wide / rust) Z_POWER 4.6 → 9.2, doubling the
+  magnification the same hand movement buys: 4 cm toward the eye goes x1.75 → x3.06, 8 cm
+  x3.30 → x10.9, and the ×39 ceiling now arrives around 11 cm instead of 17. The exponent had
+  been halved in z_calm to stop the axis feeling twitchy, but what actually fixed the twitch was
+  the larger deadband on z and the softer spring — so the exponent could go back up and past
+  where it started, which is what he asked for. MULT_MIN 0.45 → 0.30 with it, or a doubled
+  exponent hits the floor three centimetres out.
+  paper_size: whether the paper needs to grow to cover the window at the new floor was measured
+  rather than assumed — 400%, 500% and 600% captured and timed back to back at ×0.30 with a
+  25-degree lean. They look identical (the pale wash in the corner is the distance haze doing
+  its job, not a paper edge) and cost 42 / 28 / 24 fps. So 400% stays, and the 14 fps that
+  growing it would have cost is not spent.
+  Playwright: pushes of 4 / 6 / 8 / 10 / 12 samples now land x1.25 / 1.48 / 1.81 / 2.31 / 3.05
+  against roughly half those before; a full pull away reaches the 0.30 floor; three-way capture
+  at the floor, at rest and pushed in; whole lab suite re-run and green; no page errors.
+- NEXT → add entry 228 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

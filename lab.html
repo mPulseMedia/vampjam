@@ -413,7 +413,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'flat_zero', bg: '#3f6212', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'zoom_wide', bg: '#9a3412', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -550,14 +550,23 @@
   // scale_blow — the depth response is three times what it was: the exponent
   // went 2.2 -> 6.6, and the ceiling and floor opened up to match, so a hand's
   // width of toward-and-away covers the whole range instead of a slice of it.
-  var Z_POWER    = 4.6;
+  // zoom_wide — double the depth response: the exponent doubles, which doubles
+  // the magnification the same hand movement buys. 4 cm toward the eye goes from
+  // x1.75 to x3.06, 8 cm from x3.30 to x10.9, and the ceiling arrives by about
+  // 11 cm instead of 17. It was halved in z_calm to stop the axis being twitchy;
+  // what actually fixed the twitch was the larger deadband and the softer spring
+  // on z, so the exponent can go back up and past where it was.
+  var Z_POWER    = 9.2;
   // paper_floor — the paper is a fixed 400% that SHRINKS with the zoom, so the
   // bottom of the range is set by coverage now: 0.45 still leaves 180% of the
   // window covered when it is leaning. It is also the cheapest end to paint —
   // a big element full of small squares is a lot of lines — so the floor buys
   // frames as well as coverage. The ceiling is unchanged: that is the end he
   // cares about.
-  var MULT_MIN   = 0.45, MULT_MAX = 39;
+  // and the floor drops with it, or a doubled exponent would hit bottom three
+  // centimetres out. 400% of the viewport at x0.30 is still 120% covered, and
+  // the haze takes the rim.
+  var MULT_MIN   = 0.30, MULT_MAX = 39;
   var DEAD       = 0.12;     // m/s^2 ignored: the noise floor at rest (from his takes)
   // z_calm — near/far is the worst axis and he is right that it is. Three
   // reasons, and one fix each. (1) Gravity points mostly along the screen's
