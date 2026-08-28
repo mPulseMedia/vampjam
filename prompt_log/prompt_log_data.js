@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "244 fav_jump",
+        id: "245 nudge_hear",
         expanded: true,
+        nodes: [
+          { text: "245 nudge_hear", children: [
+            { text: "prompt_restate", children: [
+              { text: "On a highlight row, clicking < or >" },
+              { text: "should play from the new time." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On highlight row, when I click in < and > , play at that new time" }
+            ]},
+            { text: "nudge_hear", children: [
+              { text: "the chevrons still move the start a second either way, and the playhead now goes with it and plays from there" },
+              { text: "moving a start is an act of listening \u2014 the question is \u2018does it begin here?\u2019 \u2014 and answering it used to mean nudge, reach for play, listen, nudge again" },
+              { text: "one tap is now the question and the answer" }
+            ]},
+            { text: "two_details", children: [
+              { text: "a stop that had been queued by an earlier end-preview is cleared first, or it could cut off the start you are auditioning for a reason that has nothing to do with what you just pressed" },
+              { text: "the chevrons survive their own tap \u2014 landing exactly on the new start keeps this the playing highlight, so its row keeps its buttons and you can keep going" }
+            ]},
+            { text: "measured", children: [
+              { text: "five taps both ways: 0:20, 0:21, 0:22, 0:21, 0:19" },
+              { text: "the playhead landed within a tenth of the new start every time" },
+              { text: "and it was playing, not sitting still \u2014 the test starts from paused so that is a real result" }
+            ]},
+            { text: "verify", children: [
+              { text: "~8m: release nudge_hear \u2014 five taps measured in both directions with real audio, the buttons checked still present afterwards, all nine session pages patched identically, yesterday\u2019s favourites jump re-checked and still green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "244 fav_jump",
+        expanded: false,
         nodes: [
           { text: "244 fav_jump", children: [
             { text: "prompt_restate", children: [

@@ -1773,6 +1773,13 @@
       }
     }
   }
+  // nudge_hear — the two chevrons move a highlight's start a second either way,
+  // and now the playhead goes with it and plays from there. Moving a start is an
+  // act of LISTENING — you are asking "does it begin here?" — and answering that
+  // meant nudging, then reaching for the row's play button, then nudging again.
+  // Now one tap is the question and the answer.
+  // The intent from a previous end-preview is cleared first, or a start you are
+  // auditioning could be cut off by a stop that was queued for something else.
   function nudge_tag(id, delta) {
     var tag = tags.filter(function (x) { return x.id === id; })[0];
     if (!tag) return;
@@ -1781,6 +1788,9 @@
     queue_save_data_to_repo('nudge tag start');
     render_tags();
     render_tag_markers();
+    playbackIntent = null;
+    seek_to(tag.t);
+    safe_play();
   }
   function next_tag_by_time(tag) {
     var sorted = tags.slice().sort(function (a, b) { return a.t - b.t; });

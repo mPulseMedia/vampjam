@@ -2145,7 +2145,24 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   reasons that have nothing to do with the page. /tmp/rangesrv.py (port 8902) answers Range and the
   same test then lands on 20s exactly. This wasted a pass; it will not again.
   Suite green on the lab page (untouched), no page errors anywhere. Still no new trace.
-- NEXT → add entry 245 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 245 nudge_hear · b245 · all 8 session pages + session.html — the chevrons on a highlight row now
+  play from the new start.
+  nudge_hear: nudge_tag already moved a highlight's start a second either way; it now seeks the
+  playhead to the new start and plays from there. Moving a start is an act of LISTENING — the
+  question is "does it begin here?" — and answering it meant nudge, reach for the row's play
+  button, listen, nudge again. One tap is now the question and the answer.
+  playbackIntent is cleared first: a preview_end queued from an earlier tap would otherwise stop
+  playback partway through the start you are auditioning, for a reason that has nothing to do with
+  what you just pressed.
+  the chevrons survive their own tap. seek_to lands currentTime exactly on tag.t, so
+  update_playing_tag makes this the playing highlight, so its row keeps the chevrons and you can
+  keep tapping. Measured across five taps in both directions: 0:20 → 0:21 → 0:22 → 0:21 → 0:19,
+  the playhead landing within a tenth of the new start every time, playing rather than paused
+  (started from PAUSED, so "it plays now" is a real result), and both chevrons still present at the
+  end.
+  All nine session pages carry the identical patch, read-all-then-write-all. fav_jump re-checked
+  and still green. No page errors. Still no new trace.
+- NEXT → add entry 246 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
