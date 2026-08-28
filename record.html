@@ -19,7 +19,7 @@
     padding: max(10px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
   }
   .top_bar { width: 100%; max-width: 560px; position: relative; text-align: center; min-height: 44px; margin-top: 4px; }
-  /* nav_left owns the placement now — see the shared block below */
+  /* nav_cass owns the placement now — see the shared block below */
   .wordmark {
     font-family: 'Sacramento', cursive;
     font-size: 58px; line-height: 1; color: var(--fg);
@@ -29,12 +29,6 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-size: 29px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
   }
-  .back_btn {
-    display: flex; align-items: center; gap: 4px;
-    background: none; border: none; padding: 8px 12px 8px 0; margin-left: -4px;
-    color: var(--muted); font: inherit; font-size: 16px; cursor: pointer;
-  }
-  .back_btn svg { width: 16px; height: 16px; }
   .name_row {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     width: 100%; max-width: 560px; margin-top: 6px;
@@ -153,6 +147,20 @@
      pulls the list in, exactly as the swipe does. nav_hide: it disappears
      while the list is open, because from there it has nowhere to go — the
      swipe (or the control panel) is what takes you back. */
+  /* nav_cass — the cassette, same as every other page. This one has no session
+     list of its own to open (record.html carries no drawer), so it keeps the
+     journey it always had: back out to the session you were last on. Same icon,
+     same corner, same meaning — sessions are through here. */
+  .nav_cass {
+    position: absolute; left: 0;
+    top: max(12px, calc(env(safe-area-inset-top) + 6px));
+    background: transparent; color: var(--muted); border: none; border-radius: 7px;
+    padding: 7px; min-height: 40px; min-width: 40px; cursor: pointer; line-height: 0;
+    touch-action: manipulation;
+  }
+  .nav_cass:hover { color: var(--fg); }
+  .nav_cass:active { transform: scale(0.96); }
+  .nav_cass svg { width: 26px; height: 26px; }
   .nav_left {
     position: fixed; z-index: 60;
     top: max(12px, calc(env(safe-area-inset-top) + 6px));
@@ -184,10 +192,7 @@
 <body>
 
 <div class="top_bar">
-  <button class="back_btn nav_left" id="back_btn" aria-label="Sessions">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-    <span>Sessions</span>
-  </button>
+  <button class="nav_cass" id="back_btn" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
   <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
 </div>
 

@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
-<script src="drawer.js?v=138"></script>
+<script src="drawer.js?v=139"></script>
 <style>
   * { box-sizing: border-box; }
   html, body { background: var(--bg); color: var(--fg); margin: 0; padding: 0; }
@@ -65,12 +65,12 @@
     position: absolute; right: 0;
     top: max(12px, calc(env(safe-area-inset-top) + 6px));
     background: transparent; color: var(--muted); border: none; border-radius: 7px;
-    padding: 6px; min-height: 34px; min-width: 34px; cursor: pointer; line-height: 0;
+    padding: 7px; min-height: 40px; min-width: 40px; cursor: pointer; line-height: 0;
     touch-action: manipulation;
   }
   .nav_share:hover { color: var(--fg); }
   .nav_share:active { transform: scale(0.96); }
-  .nav_share svg { width: 21px; height: 21px; }
+  .nav_share svg { width: 26px; height: 26px; }
   body.drawer_open .nav_share { opacity: 0; pointer-events: none; }
   /* nav_cass — the way into the session list, top left, and the exact mirror of
      nav_share on the right: same size, same target, same muted colour, same place
@@ -84,12 +84,12 @@
     position: absolute; left: 0;
     top: max(12px, calc(env(safe-area-inset-top) + 6px));
     background: transparent; color: var(--muted); border: none; border-radius: 7px;
-    padding: 6px; min-height: 34px; min-width: 34px; cursor: pointer; line-height: 0;
+    padding: 7px; min-height: 40px; min-width: 40px; cursor: pointer; line-height: 0;
     touch-action: manipulation;
   }
   .nav_cass:hover { color: var(--fg); }
   .nav_cass:active { transform: scale(0.96); }
-  .nav_cass svg { width: 21px; height: 21px; }
+  .nav_cass svg { width: 26px; height: 26px; }
   body.drawer_open .nav_cass { opacity: 0; pointer-events: none; }
   details.about_page { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
   details.about_page summary { cursor: pointer; color: var(--fg); font-weight: 600; }
@@ -238,8 +238,8 @@
 <div class="session_drawer" id="session_drawer"><div class="jam_menu"></div></div>
 
 <header class="brand" style="position:relative;">
-<button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
-<button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
+<button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
+<button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
   <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
 </header>
 
@@ -272,7 +272,7 @@
       listEl  = document.getElementById('fav_list'),
       toastEl = document.getElementById('toast');
 
-  var ICON_HEART = '<svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.2-1.1C6.2 15.1 3.2 12.4 3.2 9.1c0-2.6 2-4.6 4.6-4.6 1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.6 2 4.6 4.6 0 3.3-3 6-7.6 10.1L12 20.3z"/></svg>';
+  var ICON_HEART = '<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.2-1.1C6.2 15.1 3.2 12.4 3.2 9.1c0-2.6 2-4.6 4.6-4.6 1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.6 2 4.6 4.6 0 3.3-3 6-7.6 10.1L12 20.3z"/></svg>';
   var ICON_PLAY  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';
   var ICON_PAUSE = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4.2" height="16" rx="1"/><rect x="13.8" y="4" width="4.2" height="16" rx="1"/></svg>';
 
@@ -305,7 +305,7 @@
   // the button its own row would have back in its session, and what it copies is
   // the deep link fav_jump already builds — session, tag id and time — so what
   // someone else opens is this exact moment, not the top of the session.
-  var ICON_SHARE = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
+  var ICON_SHARE = '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
   function fav_link(f) {
     return new URL(f.src.page + '?tag=' + encodeURIComponent(f.tag.id) +
                    '&t=' + Math.max(0, Math.round(f.tag.t)), window.location.href).href;

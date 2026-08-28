@@ -2254,7 +2254,31 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   drawer.js?v=137 → 138; the click is wired once in drawer.js beside the share, after
   DOMContentLoaded for the same reason. nav_share and fav_share re-verified. No page errors.
   Still no new trace.
-- NEXT → add entry 250 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 250 icon_grow · b250 · record.html + all 8 session pages + session.html + favorites.html +
+  drawer.js — the cassette reaches the Recording page, and four icon families go up a quarter.
+  record.html: the "< Sessions" pill becomes the cassette, same corner, same 26px-in-40px target as
+  everywhere else. It has no session list of its own to open (record.html carries no drawer), so it
+  keeps the journey it always had — index.html#sessions, out to the session you were last on. Same
+  icon, same corner, same meaning: sessions are through here. The button keeps its id and its
+  handler, including the "stop the recording first" behaviour. ui_grammar: the .back_btn class went
+  with the pill — it was the last one-off top-left control in the app, and nothing selected it by
+  class.
+  icon_grow, ×1.25 everywhere the four appear:
+    header pair (nav_cass, nav_share) 21 → 26px, targets 34 → 40px
+    list rows: cassette 20 → 25, share 17 → 21, heart 19 → 24, trash 16 → 20
+    highlight rows: 23 → 29px
+    favourite rows: heart 19 → 24, share 17 → 24
+  The gear and the plus stay as they were: they label one-off rows rather than being part of the
+  working vocabulary of what a thing IS (cassette, heart) and what you can DO with it (share,
+  trash).
+  two notes on what came along. On a highlight row the heart, the share, the delete and the two
+  chevrons all share ONE size rule, so the row grows as a set — separating them would mean inventing
+  classes for no benefit, and a row of controls at two sizes is worse than a row at one. And on a
+  favourite row the heart was 19 while the share was 17, a near-miss of exactly the kind the grammar
+  exists to stop; both are pinned to 24 now rather than one being left at 1em.
+  drawer.js?v=138 → 139. Measured every size in the DOM after the change. nav_cass, nav_share and
+  fav_share re-verified. No page errors. Still no new trace.
+- NEXT → add entry 251 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

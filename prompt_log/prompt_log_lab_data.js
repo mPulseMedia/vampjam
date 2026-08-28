@@ -9,8 +9,47 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "249 nav_cass",
+        id: "250 icon_grow",
         expanded: true,
+        nodes: [
+          { text: "250 icon_grow", children: [
+            { text: "prompt_restate", children: [
+              { text: "The Recording page still has a [Sessions] button instead of the cassette." },
+              { text: "Make the cassette, share, heart and trash icons 25% larger." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "the Recording page has a [sessions] button instead of the cassett. Make teh casset, share, heart,  and trash icons 25% larger" }
+            ]},
+            { text: "record_page", children: [
+              { text: "the pill is now the cassette, same corner and same size as every other page" },
+              { text: "it has no session list of its own to open, so it keeps the trip it always made \u2014 back out to the session you were last on" },
+              { text: "same icon, same corner, same meaning: sessions are through here" },
+              { text: "it still stops a recording in progress before it takes you anywhere" }
+            ]},
+            { text: "icon_grow", children: [
+              { text: "the two header icons, the four in the session list, the ones on a highlight row and the ones on a favourite row \u2014 all a quarter larger" },
+              { text: "the tap targets grew with them" },
+              { text: "the gear and the plus stayed \u2014 they label one-off rows rather than being part of the working vocabulary" }
+            ]},
+            { text: "two_things_that_came_along", children: [
+              { text: "on a highlight row the heart, share, delete and the two chevrons share one size, so the row grew as a set \u2014 a row of controls at two sizes is worse than a row at one" },
+              { text: "on a favourite row the heart was 19 and the share 17, a near-miss of the kind the grammar exists to stop; both are the same number now" }
+            ]},
+            { text: "tidy_up", children: [
+              { text: "the Recording page\u2019s own button styling went with its pill \u2014 the last one-off top-left control in the app" }
+            ]},
+            { text: "verify", children: [
+              { text: "~13m: release icon_grow \u2014 every size measured in the page after the change rather than assumed, the Recording button confirmed to be a cassette in the right corner at the right size, the last three builds re-verified, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "249 nav_cass",
+        expanded: false,
         nodes: [
           { text: "249 nav_cass", children: [
             { text: "prompt_restate", children: [
