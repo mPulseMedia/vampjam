@@ -9,8 +9,41 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "263 plate_arc",
+        id: "264 z_response",
         expanded: true,
+        nodes: [
+          { text: "264 z_response", children: [
+            { text: "prompt_restate", children: [
+              { text: "Flip the near/far response." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Flip the near far response" }
+            ]},
+            { text: "z_response", children: [
+              { text: "nudge toward you and the deck now goes further; nudge away and it comes nearer" },
+              { text: "right/left and up/down are untouched \u2014 only depth turned round" }
+            ]},
+            { text: "flip_carry", children: [
+              { text: "this is the third time a resting sign has changed, and the trap is well understood now: a switch you had stored against the old meaning silently cancels the change" },
+              { text: "the fix so far was to wipe all five switches, which works but throws away the other four settings you may have chosen on purpose" },
+              { text: "so it migrates instead \u2014 your other switches come across and only the one whose meaning actually changed is dropped" },
+              { text: "checked with your shape of state: a saved set with the swirl reversed and near/far reversed. after the upgrade the swirl is still on and near/far is off" }
+            ]},
+            { text: "verify", children: [
+              { text: "~9m: toward reads \u2018further\u2019 and away reads \u2018nearer\u2019; the other four directions unchanged; the N F switch still reverses from the new resting behaviour rather than restoring the old one" },
+              { text: "a browser that has never seen the page comes up with all five switches off, as before" },
+              { text: "the diagram follows the deck, so the plate travels away on a toward-nudge \u2014 picture and deck agree, which is the thing that has to be true" },
+              { text: "three earlier suites green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "263 plate_arc",
+        expanded: false,
         nodes: [
           { text: "263 plate_arc", children: [
             { text: "prompt_restate", children: [

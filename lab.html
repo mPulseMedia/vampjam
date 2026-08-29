@@ -521,7 +521,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'plate_arc', bg: '#0f766e', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'z_response', bg: '#4338ca', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -993,7 +993,9 @@
   // had been asked for. This is the second one. The key version goes with it, for
   // the same reason it did last time: a change to what "off" means is worthless
   // if the switches people already stored quietly undo it.
-  var PUSH_INV = { x: 1, y: 1, z: 1 };
+  // z_response — near/far reversed, on his say-so. Right/left and up/down are
+  // left exactly as they are; only the depth response turns round.
+  var PUSH_INV = { x: 1, y: 1, z: -1 };
   // vec_flip — one reverse switch per vector, five of them, each remembered across
   // reloads. Deciding a sign by feel means flipping it, walking around with the
   // phone, and flipping it back — and this page reloads itself whenever its source
@@ -1007,7 +1009,16 @@
   // "off" means has to clear what people had stored against the old meaning, or
   // only a fresh browser ever sees it. The key carries the meaning's version now:
   // bump it and every switch comes back off, against the new resting behaviour.
-  var FLIP_KEY = 'vampjam_lab_flip_3';
+  // flip_carry — the key version has to move whenever the resting meaning of a
+  // switch changes, or a switch stored against the old meaning silently cancels
+  // the change. That has now happened twice. But bumping the key wholesale throws
+  // away the other four settings too, which he may have chosen deliberately, so
+  // this migrates instead: the previous generation's switches are carried across
+  // and only the one whose meaning actually changed is dropped. NEUTERED names the
+  // key(s) that changed meaning in THIS step — nothing else is touched.
+  var FLIP_KEY  = 'vampjam_lab_flip_4';
+  var FLIP_PREV = 'vampjam_lab_flip_3';
+  var NEUTERED  = { z: true };
   var FLIPS = [
     { k: 'x',    lab: 'L\u2009R',  tip: 'Reverse right / left' },
     { k: 'y',    lab: 'U\u2009D',  tip: 'Reverse up / down' },
@@ -1017,7 +1028,17 @@
   ];
   var flip = { x: 1, y: 1, z: 1, roll: 1, turn: 1 };
   try {
-    var savedFlip = JSON.parse(localStorage.getItem(FLIP_KEY) || '{}');
+    var savedFlip = JSON.parse(localStorage.getItem(FLIP_KEY) || 'null');
+    if (!savedFlip) {
+      // flip_carry: first run on the new meaning — take the old settings across,
+      // minus the ones whose meaning has changed under them
+      var old = JSON.parse(localStorage.getItem(FLIP_PREV) || '{}');
+      savedFlip = {};
+      FLIPS.forEach(function (f) {
+        if (!NEUTERED[f.k] && old[f.k] === -1) savedFlip[f.k] = -1;
+      });
+      localStorage.setItem(FLIP_KEY, JSON.stringify(savedFlip));
+    }
     FLIPS.forEach(function (f) { if (savedFlip[f.k] === -1) flip[f.k] = -1; });
   } catch (e) {}
   function flip_save() { try { localStorage.setItem(FLIP_KEY, JSON.stringify(flip)); } catch (e) {} }

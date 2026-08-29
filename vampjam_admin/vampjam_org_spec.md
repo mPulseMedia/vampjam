@@ -2688,7 +2688,26 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   plate's travel projected onto each drawn axis arm; the sign agreement checked line by line
   against the angle readouts; the toward-nudge direction measured. Suites 256, 262 and 263 green,
   no page errors. Still no new trace — the Send button shipped last build is on the phone now.
-- NEXT → add entry 264 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 264 z_response · b264 · lab.html — near/far's response reversed, and the switches migrated
+  instead of wiped.
+  z_response: PUSH_INV.z from +1 to -1. Right/left and up/down are untouched — only the depth
+  response turns round. Nudge toward you and the deck goes further; nudge away and it comes nearer.
+  flip_carry — the third time a resting sign has changed, and the trap is now well understood: a
+  switch stored against the OLD meaning silently cancels the change, which is exactly what swallowed
+  258 whole. The fix so far has been to bump the storage key, which works but throws away the other
+  four settings too, and those he may have chosen deliberately. So this migrates: on first run under
+  the new key the previous generation's switches are read across, and only the ones whose meaning
+  actually changed are dropped. NEUTERED names them — this step it is just z.
+  verified with his shape of state: a saved set with the swirl reversed AND near/far reversed under
+  key _3. After the upgrade the swirl is still on, near/far is off, and the stored object under _4
+  is {"roll":-1} — the one that changed meaning gone, the one that did not kept. A browser that has
+  never seen the page comes up with all five off, as before.
+  then walked it: toward now reads "further" and away reads "nearer"; right, left, up and down are
+  unchanged; and the N F switch still reverses the new resting behaviour rather than restoring the
+  old one. The diagram's plate follows the deck, so it now travels away on a toward-nudge — the
+  picture and the deck agree, which is the thing that has to be true.
+  Suites 256, 263 and 264 green, no page errors. Still no new trace.
+- NEXT → add entry 265 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
