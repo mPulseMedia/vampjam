@@ -1,1 +1,1 @@
-rec_same
+auto_commit
