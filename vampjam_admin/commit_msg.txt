@@ -1,1 +1,1 @@
-open_view
+auto_commit
