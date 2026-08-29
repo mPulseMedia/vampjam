@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "271 open_view",
+        id: "272 day_phone",
         expanded: true,
+        nodes: [
+          { text: "272 day_phone", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make each day the same proportions as my iPhone screen." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Make each day on the calendar, the same proportions as as the proportions of the screen of my iPhone" }
+            ]},
+            { text: "day_phone", children: [
+              { text: "a day\u2019s height was two invented numbers fighting each other; it is now just the width times your screen\u2019s own ratio" },
+              { text: "so on your phone a day is a little phone \u2014 and zooming into one frames it like a screen instead of letterboxing it" },
+              { text: "and it holds on any device without a second number to maintain: checked on two phone sizes and in landscape, where the days turn with the phone" }
+            ]},
+            { text: "one_detail_that_mattered", children: [
+              { text: "the ratio comes from the WINDOW, not from the stage the calendar sits in \u2014 the stage is a few percent off the window\u2019s own shape" },
+              { text: "my first cut used the stage and missed by 4%, which is small but it is the one number this was about" }
+            ]},
+            { text: "and_it_exposed_something", children: [
+              { text: "the taller days made an old problem visible: the month was centred in the whole window while the controls own a band at the bottom, so the last week sat behind them with a matching gap left at the top" },
+              { text: "the month centres in the glass above the band now \u2014 121px clear above and 121px below, on every size I tried" }
+            ]},
+            { text: "verify", children: [
+              { text: "~13m: three screen sizes, the day\u2019s ratio matching the screen\u2019s to within a thousandth each time" },
+              { text: "a day still in exactly the same pixel selected as unselected; the scroll-when-needed behaviour unchanged three notches in" },
+              { text: "three suites green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "271 open_view",
+        expanded: false,
         nodes: [
           { text: "271 open_view", children: [
             { text: "prompt_restate", children: [

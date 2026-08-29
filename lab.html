@@ -561,7 +561,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'open_view', bg: '#0891b2', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'day_phone', bg: '#c2410c', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1279,13 +1279,34 @@
   var zAnim = null;                 // { from, t0 } while a near/far nudge is landing
   // hold_still: where the month stands. It is a position the page keeps, not a
   // function of the selection, which is the whole point.
-  var deckOff = { x: 0, y: 0 };
+  var deckOff = { x: 0, y: 0 };     // set to deck_home() once the band is measurable
   var deckEl = document.getElementById('deck');
+  // day_phone — a day has the same proportions as the screen it is being read on.
+  // Not a fixed 3:4 or a guessed 1.3, but this phone's own ratio, taken from the
+  // window: on his iPhone a day is a little iPhone. Two things fall out of it that
+  // are worth having. Zooming all the way into one day fills the glass exactly,
+  // with no letterboxing at the top or bars down the sides — the day IS the
+  // screen. And it holds on any device without a second number to maintain: turn
+  // the phone to landscape and the days turn with it.
   function card_px() {
-    var w = (frame && frame.clientWidth) || 320, h = (frame && frame.clientHeight) || 640;
-    var cw = w * CARD_F, ch = Math.min(h * 0.34, cw * 1.30);
+    var w = (frame && frame.clientWidth) || 320;
+    // the ratio comes from the WINDOW, not from the stage element: he asked for
+    // the proportions of his phone's screen, and the stage is a few percent off
+    // the window's own shape. Measured, that was the difference between 2.19 and
+    // the screen's 2.10 — small, but it is the one number this is supposed to be.
+    var vw = window.innerWidth || w, vh = window.innerHeight || (w * 2);
+    var cw = w * CARD_F, ch = cw * (vh / vw);
     return { cw: cw, ch: ch, px: cw + w * GAP_F, py: ch + w * GAP_F };
   }
+  // band_room — the controls own a band along the bottom now, so the month is
+  // centred in the glass ABOVE it rather than in the whole window. Without this
+  // the taller days push the last week down behind the controls while leaving a
+  // matching gap at the top.
+  function band_h() {
+    var r = document.querySelector('.rig');
+    return r ? r.getBoundingClientRect().height : 0;
+  }
+  function deck_home() { return { x: 0, y: -band_h() / 2 }; }
   // cal_month: a card is a day, so its name is its date
   function card_name(i, j) {
     var d = cal_date(i, j);
@@ -1383,14 +1404,19 @@
     // screen and it never moves at all. Zoomed in, it scrolls the way a page
     // scrolls to keep the caret visible, one edge at a time.
     var W = (frame && frame.clientWidth) || 320, H = (frame && frame.clientHeight) || 640;
+    // band_room: the region a day actually has to be inside is the glass minus the
+    // control band, measured from the deck's own origin at the centre of the window
+    var band = band_h();
+    var top = -H / 2, bot = H / 2 - band;
     var sel = { x: -cell_at('x') * g.px * z, y: cell_at('y') * g.py * z };   // where the day sits in the deck
-    var mx = Math.min(W * 0.38, g.cw * z * 0.72), my = Math.min(H * 0.38, g.ch * z * 0.72);
+    var mx = Math.min(W * 0.38, g.cw * z * 0.72);
+    var my = Math.min((bot - top) * 0.38, g.ch * z * 0.72);
     var lo, hi;
     lo = -W / 2 + mx - sel.x; hi = W / 2 - mx - sel.x;
     if (lo > hi) { deckOff.x = -sel.x; }                     // wider than the glass: centre it
     else deckOff.x = Math.max(lo, Math.min(hi, deckOff.x));
-    lo = -H / 2 + my - sel.y; hi = H / 2 - my - sel.y;
-    if (lo > hi) { deckOff.y = -sel.y; }
+    lo = top + my - sel.y; hi = bot - my - sel.y;
+    if (lo > hi) { deckOff.y = (top + bot) / 2 - sel.y; }
     else deckOff.y = Math.max(lo, Math.min(hi, deckOff.y));
     var cx = deckOff.x, cy = deckOff.y;
     root.setProperty('--cx', cx.toFixed(1) + 'px');
@@ -2187,7 +2213,7 @@
     nBar = { x: 0, y: 0, z: 0 }; nArm = true; nQuiet = 0; nStir = 0;
     nSlow = { x: 0, y: 0, z: 0 };   // nudge_raw: relearn what zero is from here
     if (!keepDepth) zc = Z_HOME;    // cal_open: back to the whole month
-    deckOff = { x: 0, y: 0 };       // hold_still: and the month back to square
+    deckOff = deck_home();          // hold_still: and the month back to square
     cell = { x: 0, y: 0, z: 0 };    // and to the middle card of it
     deck_build();
     off  = { x: 0, y: 0, z: 0 };
@@ -2594,6 +2620,7 @@
   // no press needed. Motion still has to be switched on for the sensor, but that
   // is a separate thing from there being something to look at.
   deck_build();
+  deckOff = deck_home();          // band_room: the month centres above the controls
   draw_start();
 
   // test hook

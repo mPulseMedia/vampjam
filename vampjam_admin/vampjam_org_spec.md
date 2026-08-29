@@ -2883,7 +2883,27 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   they are closed by default behind one small button and remembered — a setting he had open should
   still be open when the page reloads itself, which this page does constantly.
   Suites 256, 263, 267 and 269 green, no page errors. Still no new trace.
-- NEXT → add entry 272 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 272 day_phone · b272 · lab.html — a day has the proportions of the screen it is read on.
+  day_phone: ch was `min(h * 0.34, cw * 1.30)` — two invented numbers fighting each other. It is
+  now simply `cw * (screen height / screen width)`. On his iPhone a day is a little iPhone.
+  two things fall out of it worth having. Zooming into one day frames it like a screen rather than
+  letterboxing it. And it holds on any device with no second number to maintain — verified at
+  390x820, at 430x932 and in landscape at 820x390, the day's ratio matching the screen's to within
+  a thousandth in all three, including the landscape case where the days turn with the phone.
+  a detail that mattered: the ratio is taken from the WINDOW, not from the stage element. The stage
+  is a few percent off the window's own shape, which is the difference between a day at 2.19 and the
+  screen's 2.10 — small, but it is the one number this build is about. The first cut used the stage
+  and missed by 4%.
+  band_room: the taller days made an existing problem visible — the month was centred in the whole
+  window while the controls own a band along the bottom, so the last week sat behind them with a
+  matching gap left at the top. The month now centres in the glass ABOVE the band, and the
+  keep-the-selection-visible clamp measures against that region rather than the whole window.
+  Measured: 121px clear above the month and 121px between the month and the band, on all three
+  screen sizes.
+  verified: the three screen sizes above; a day still in exactly the same pixel selected as
+  unselected; the scroll-when-needed behaviour unchanged three notches in. Suites 256, 263 and 269
+  green, no page errors. Still no new trace.
+- NEXT → add entry 273 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
