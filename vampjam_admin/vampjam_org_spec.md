@@ -2972,7 +2972,22 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   percentage of the glass printed at each notch, and all five lab suites green. Suite 269's
   hold_still section was rewritten to assert the new contract rather than the one it replaced.
   No page errors. Still no new trace.
-- NEXT → add entry 275 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 275 month_name · b275 · lab.html — SEPTEMBER across the top.
+  on the GLASS, not in the deck, and that is the whole decision. Inside the deck the title would
+  shrink to nothing at the whole-month zoom and sail off the screen the moment he came in on a day
+  — which is precisely when knowing which month you are in matters most. Fixed to the top of the
+  window it holds: measured at four zooms from the whole month to the full day, the title stays at
+  exactly (130, 16), 130px wide, every time.
+  the text comes from CAL_MONTH, like the dates and the span bars do, so changing the month cannot
+  leave the title behind. Uppercase is done with text-transform rather than by typing SEPTEMBER, so
+  the page's own data stays "September" and only the display shouts.
+  set at 15px with 0.22em of tracking, letterspaced wide enough to read as a title rather than as a
+  word, over a soft light halo so it stays legible against the graph paper at any zoom.
+  checked for collisions against everything else fixed at the top — the Admin pill, the release
+  badge and the watching indicator, all of which live down the left, and the diagram panel on the
+  right. No overlaps, and the title is centred on the glass to within a pixel.
+  Suites 256, 263, 269 and 271 green, no page errors. Still no new trace.
+- NEXT → add entry 276 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

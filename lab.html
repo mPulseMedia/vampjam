@@ -249,6 +249,21 @@
   }
   .g_count { flex: 0 0 auto; font-size: 10px; color: rgba(0,0,0,0.45); min-width: 30px; text-align: right; }
 
+  /* month_name — the month's name across the top of the GLASS, not inside the
+     deck. In the deck it would shrink to nothing at the whole-month zoom and sail
+     off the screen the moment you came in on a day; on the glass it holds, which
+     is the one thing a month label has to do. Letter-spaced and set wide because
+     at this size it reads as a title rather than as a word. */
+  .month_name {
+    position: fixed; z-index: 6; left: 0; right: 0;
+    top: max(18px, calc(env(safe-area-inset-top) + 8px));
+    text-align: center; pointer-events: none;
+    font: 700 15px/1 -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(15,23,42,0.55);
+    text-shadow: 0 1px 0 rgba(252,252,248,0.9), 0 0 8px rgba(252,252,248,0.9);
+  }
+
   /* ---- the control band along the bottom ---- */
   /* bar_low — every control on one band along the bottom, at his word. It was a
      168px column floating in the lower right, which put the switches over the
@@ -444,6 +459,9 @@
   <div class="flips" id="flips" hidden></div>
 </div>
 <a class="corner_back" id="back_btn" href="admin.html">&#8249; Admin</a>
+<!-- month_name: which month this is, on the glass rather than in the deck, so it
+     is still there when you have zoomed into a single day -->
+<div class="month_name" id="month_name"></div>
 <span class="build_tag" id="build_tag"></span>
 <div class="watch" id="watch" hidden><span class="watch_dot"></span><span id="watch_msg">watching</span></div>
 <svg class="pose" id="pose" viewBox="-62 -62 124 124" hidden aria-hidden="true">
@@ -475,7 +493,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'mid_full', bg: '#0d9488', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'month_name', bg: '#9333ea', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -928,6 +946,10 @@
   var CAL_MONTH = 8;                       // September, zero-based, for the "other month" wash
   var DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // month_name: the full names, for the title. Taken from CAL_MONTH like everything
+  // else on this page, so changing the month cannot leave the title behind.
+  var MON_FULL = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
   // cal_fill — some days are nearly empty and some are stacked, because a month
   // where every day carries the same load teaches nothing about navigating one.
   // Keyed by day-of-month within September.
@@ -2309,6 +2331,10 @@
   // no press needed. Motion still has to be switched on for the sensor, but that
   // is a separate thing from there being something to look at.
   deck_build();
+  (function month_title() {
+    var el = document.getElementById('month_name');
+    if (el) el.textContent = MON_FULL[CAL_MONTH];
+  })();
   draw_start();
 
   // test hook

@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "274 mid_full",
+        id: "275 month_name",
         expanded: true,
+        nodes: [
+          { text: "275 month_name", children: [
+            { text: "prompt_restate", children: [
+              { text: "Put the word SEPTEMBER at the top." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Put word SEPTEMBER at the top" }
+            ]},
+            { text: "on_the_glass_not_in_the_calendar", children: [
+              { text: "that is the whole decision. inside the deck it would shrink to nothing at the whole-month zoom and sail off the screen the moment you came in on a day" },
+              { text: "which is exactly when knowing which month you are in matters most" },
+              { text: "fixed to the top of the window it holds \u2014 measured at four zooms, it does not move by a pixel" }
+            ]},
+            { text: "two_small_things", children: [
+              { text: "the text comes from the calendar\u2019s own month, so changing the month cannot leave the title behind" },
+              { text: "and the shouting is done by the styling rather than by typing it in capitals, so the page\u2019s data still says September" }
+            ]},
+            { text: "verify", children: [
+              { text: "~6m: checked against everything else fixed at the top \u2014 the Admin pill, the build badge, the watching dot and the diagram panel. no overlaps, centred to within a pixel" },
+              { text: "four suites green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "274 mid_full",
+        expanded: false,
         nodes: [
           { text: "274 mid_full", children: [
             { text: "prompt_restate", children: [
