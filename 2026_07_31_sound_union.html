@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=2">
+<link rel="stylesheet" href="site.css?v=3">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
 <script src="drawer.js?v=141"></script>
@@ -412,8 +412,8 @@
   /* icon_big: every icon in a highlight row up 33% — triangle 26 -> 35,
      heart / share / x / nudge chevrons 17 -> 23 (they need !important to
      clear the one_size rule above, which does not exclude them) */
-  .play_tag { font-size: 35px !important; }
-  .tag_row button.ghost { font-size: 29px; }
+  /* icon_row: both sizes live in site.css now, with .play_tag excluded from
+     one_size so it is no longer overruled. */
   .tag_numbers, .num_strip { height: 20px !important; }
 
   /* nav_room — the two header controls own the top band outright, so the

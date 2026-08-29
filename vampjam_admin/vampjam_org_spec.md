@@ -2817,7 +2817,27 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   verified: 35 days and 8 bars drawn, the month centred to the pixel, one nudge per day and per
   week with the focal day centred every time, both edges clamped, the zoom walked in and the day's
   entries read back as text. Suites 256, 263 and 267 green, no page errors. Still no new trace.
-- NEXT → add entry 269 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 269 icon_row · b269 · site.css, 9 session pages — one row-icon size, and the rule that had been
+  quietly preventing it.
+  what he saw: the highlight rows' icons are smaller than the session rows'. Measured: 17px against
+  29px, on rows the eye compares directly every time the list slides over the highlights.
+  the cause, and it is a good one to have written down. Those icons are SVGs sized in em, so their
+  font-size IS their icon size. The pages already asked for 29px (and 35px for the play triangle) —
+  icon_grow set that back in build 251. But one_size is `body :not(…):not(…) … { font-size: 17px
+  !important }`, and that selector is BOTH !important and far more specific than any class, so it
+  beat every one of them. `.play_tag` even carried its own !important and still lost, because
+  between two !important rules specificity still decides. The pages have been asking for 29 and
+  getting 17 ever since one_size moved into the shared sheet.
+  the fix is to exclude them rather than to fight them: `.play_tag` and `.ghost` join one_size's
+  exclusion list, the highlight row's sizes move into site.css where the row grammar already lives,
+  and a ghost button ANYWHERE ELSE — the audio pencil, the local-file picker — is a text control
+  rather than a row icon and is given back the app size explicitly. The dead per-page rules came out
+  of all nine pages. ?v=3 on the stylesheet.
+  measured after: play, heart, share and remove all 29x29, the same as the session row's cassette
+  and share, in targets of the same height. Ghost buttons outside a highlight row checked on three
+  pages and still 17px with 17px icons. Every page shot against the previous build: pixel-identical
+  apart from record.html's clock. No page errors. Still no new trace.
+- NEXT → add entry 270 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

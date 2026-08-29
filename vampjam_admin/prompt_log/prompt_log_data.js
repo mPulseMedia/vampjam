@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "268 cal_month",
+        id: "269 icon_row",
         expanded: true,
+        nodes: [
+          { text: "269 icon_row", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the highlight rows\u2019 icons match the icon sizes on the session rows." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Make the row of highlights match icon sizes on session rows" }
+            ]},
+            { text: "they_were_17_against_29", children: [
+              { text: "and the pages had been ASKING for 29 since build 251 \u2014 they just never got it" }
+            ]},
+            { text: "why_that_happened", children: [
+              { text: "those icons are drawn in em, so their font-size is their icon size" },
+              { text: "and the one-text-size rule is both !important and far more specific than any class, so it beat every request the pages made" },
+              { text: "the play triangle even carried its own !important and still lost \u2014 between two !important rules, specificity still decides" },
+              { text: "so the fix is to exclude them from that rule rather than to fight it" }
+            ]},
+            { text: "and_one_thing_kept_deliberately_small", children: [
+              { text: "a ghost button anywhere else \u2014 the audio pencil, the file picker \u2014 is a text control, not a row icon, so it is given back the app size explicitly rather than growing with them" }
+            ]},
+            { text: "verify", children: [
+              { text: "~12m: play, heart, share and remove all 29x29 now, same as the session row\u2019s cassette and share, in targets of the same height" },
+              { text: "ghost buttons outside a highlight row checked on three pages \u2014 still small" },
+              { text: "every page shot against the previous build: pixel-identical apart from the clock on the record page" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "268 cal_month",
+        expanded: false,
         nodes: [
           { text: "268 cal_month", children: [
             { text: "prompt_restate", children: [
