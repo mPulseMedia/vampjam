@@ -9,8 +9,56 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "272 day_phone",
+        id: "273 lab_true",
         expanded: true,
+        nodes: [
+          { text: "273 lab_true", children: [
+            { text: "prompt_restate", children: [
+              { text: "It looks really good." },
+              { text: "Refactor everything relating to this page to match what we now have." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "It looks really good. Please refactor everything that relates to this page to get what we now have." }
+            ]},
+            { text: "what_the_code_still_thought_it_was", children: [
+              { text: "a photograph lying on graph paper, viewed through a magnifier law, inside a three-page swipe carousel" },
+              { text: "what it actually is: a calendar you navigate by nudging a phone" }
+            ]},
+            { text: "the_carousel", children: [
+              { text: "three EMPTY cells, a column of dots and a \u2018swipe up / down\u2019 hint, on a page where swiping had done nothing for a long time" },
+              { text: "and the finger-drag went with it \u2014 it fed a pan that has been overwritten by the deck for eleven builds" }
+            ]},
+            { text: "the_optics", children: [
+              { text: "every frame the page computed a camera position in metres, a viewing distance, a magnification and a pan \u2014 and threw all of it away" },
+              { text: "the proof was on the readout: it said scale x1.00 while the deck sat at 0.48, because the number came from the dead pipeline rather than from the screen. it reads 0.48 now" },
+              { text: "sixteen constants and functions went with it, including one that was running on every single sensor sample to compute three numbers nothing read" }
+            ]},
+            { text: "the_photograph", children: [
+              { text: "hidden since the cards arrived, but still fetching its image file on every load and still carrying the machinery that kept it sharp under zoom" }
+            ]},
+            { text: "and_the_prose", children: [
+              { text: "the three longest comment blocks on the page described things that no longer exist" },
+              { text: "they are replaced by what is true, which is shorter. stale names went too" }
+            ]},
+            { text: "how_i_kept_it_safe", children: [
+              { text: "a fixed reference run \u2014 cold load, then a right nudge, an up nudge and a depth nudge \u2014 capturing the day you land on, the cell, the depth, the zoom, the month\u2019s size and position, the selected day\u2019s rectangle, all six CSS variables, the whole readout line and the bar count, plus two screenshots" },
+              { text: "run before the first cut and after every sweep" },
+              { text: "every field identical throughout, except the one that was wrong" },
+              { text: "the screenshots differ by 487 pixels in twelve sparse rows \u2014 all of them the dot column I deliberately removed" },
+              { text: "one thing I got wrong along the way: my first cut at the optics took out a span of the file rather than named declarations, and swallowed the lattice with it. the page threw on load, I reverted and did it by name instead" }
+            ]},
+            { text: "verify", children: [
+              { text: "~41m: 2733 lines to 2420, 60fps, all five lab suites green, no page errors at any stage" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "272 day_phone",
+        expanded: false,
         nodes: [
           { text: "272 day_phone", children: [
             { text: "prompt_restate", children: [

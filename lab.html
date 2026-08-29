@@ -45,8 +45,8 @@
     perspective: 460px; perspective-origin: 50% 50%;
     transform-style: preserve-3d;
   }
-  /* frame_shadow — the white frame casting onto the cell below it: strongest
-     from the top edge, present on all four. It rides ABOVE the cells. */
+  /* frame_shadow — the window's own edge, pressed onto the calendar underneath:
+     strongest from the top, present on all four sides. It rides above the deck. */
   .frame_shadow {
     position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 3;
     box-shadow:
@@ -56,20 +56,6 @@
       inset -12px 0 16px -12px rgba(0,0,0,0.30);
   }
 
-  .track {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column;
-    will-change: transform;
-    transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-  .track.dragging { transition: none; }
-
-  .cell {
-    flex: 0 0 100%; height: 100%; position: relative;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 74px; font-weight: 700; letter-spacing: 0.02em;
-    user-select: none; -webkit-user-select: none;
-  }
   /* dot_steady — the dot sits dead centre of every card. When the phone's
      motion sensors are running it is pushed the OTHER way from every wobble,
      so it holds still in the room while the screen jiggles around it. */
@@ -111,41 +97,13 @@
       repeating-linear-gradient(to bottom, rgba(38,86,140,0.32) 0 1px, transparent 1px 30px),
       repeating-linear-gradient(to right,  rgba(38,86,140,0.32) 0 1px, transparent 1px 30px);
   }
-  /* shot_on — something real lying ON the paper, at the world origin, so moving
-     the phone moves you around and INTO a picture instead of around a dot. It is
-     a child of the paper, so it inherits the pan, the zoom, the swirl and both
-     leans for free — no second transform to keep in step. Sized in the paper's
-     own units: 340 there is about one screen wide at x1, so the whole thing is
-     in view when you are zeroed and you walk into it as you come closer.
-     If the file is missing the image simply does not paint and the paper is
-     exactly as it was. Swap lab_surface.png for any picture. */
-  .shot {
-    position: absolute; left: 50%; top: 50%;
-    /* nearly the whole window at x1, so a reset presents the picture rather
-       than a stamp in the middle of a field */
-    /* crisp_deep — an <img> inside a transformed ancestor is rasterised at its
-       LAYOUT size and then scaled by the transform, so an SVG blurs exactly when
-       you lean in to look at it, which is the one thing it was chosen to avoid.
-       So the element is laid out --shk times bigger and scaled back down by the
-       same factor: the raster is taken at the larger size and the ancestor's zoom
-       then magnifies a picture that already has the detail. --shk steps in powers
-       of two so the re-layout is rare, and is capped, because the memory goes up
-       with its square. */
-    width: calc(352px * var(--shk, 1)); height: calc(626px * var(--shk, 1));
-    transform: translate(-50%, -50%) scale(calc(1 / var(--shk, 1)));
-    border-radius: 3px; background: #ffffff;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.28), 0 1px 3px rgba(0,0,0,0.22);
-    pointer-events: none; -webkit-user-select: none; user-select: none;
-  }
-  .shot[data-missing] { display: none; }
-  .shot { display: none; }        /* card_deck: the painting steps aside for the cards */
-  /* card_deck — the space he wants to traverse: a spread of cards side by side
-     with a gap, one nudge to the neighbour, and a nudge inward drops you through
-     the card you are on into a whole new spread inside it. The deck is driven in
-     PIXELS off the card pitch rather than through the metre-and-zoom pipeline,
-     because a card lattice has no business being measured in metres — a nudge is
-     one card, and one card is one card at every depth.
-     It keeps the swirl and both leans, so the deck still tips with the phone. */
+  /* shot_gone — the photograph that used to lie on the paper is out. It has been
+     display:none since the deck arrived, and the element was still being parsed,
+     still fetching its image file on every load, and still carrying the
+     crisp_deep raster machinery that existed only to keep it sharp under zoom. */
+  /* the deck — the month itself. It is driven in PIXELS off the day pitch: a
+     nudge is one day, and one day is one day at every depth. It keeps the swirl
+     and both leans, so the month still tips with the phone. */
   .deck {
     position: absolute; left: 50%; top: 50%; z-index: 1;
     width: 0; height: 0; pointer-events: none;
@@ -209,12 +167,6 @@
   }
   .card.here .cal_num { color: #1d4ed8; }
   .card.here .cal_ev { color: #1e293b; }
-  /* lens_none — the magnifying glass is gone, every part of it: the round
-     window, its ring, the highlight on the glass, the second copy of the world
-     behind it and the gain that magnified one against the other. It made the page
-     read as a thing seen through an instrument instead of a place you are moving
-     around in, which is the wrong feeling for what this is. One world, full
-     bleed, as it was before. */
   /* the distance dissolving into the background: one screen-sized overlay in
      the paper's own colour, cheap to paint and independent of the paper's size */
   .haze {
@@ -228,32 +180,10 @@
      when the world was blank graph paper; with a picture lying on the paper
      there is something to look at, and a marker sitting on top of it is just in
      the way. Its shadow machinery went with it. */
-  /* lab_build: every card wears the same colour, and the colour changes with
-     each build — if it looks different from last time, the update landed. */
-  .cell { background: transparent; color: #1d1d1f; }
-
-  /* which cell you are on, in the frame itself */
-  .dots {
-    position: fixed; right: max(20px, calc(env(safe-area-inset-right) + 6px));
-    top: 50%; transform: translateY(-50%);
-    display: flex; flex-direction: column; gap: 7px; z-index: 6;
-  }
-  .dot { width: 6px; height: 6px; border-radius: 50%; background: #1d1d1f; opacity: 0.18; }
-  .dot.on { opacity: 0.75; }
-
 
   /* lab_release — a solid square in the corner wearing this release's colour,
      with this release's name inside it. New colour + new name every ship. */
 
-  .hint {
-    position: fixed; z-index: 6; left: 50%; transform: translateX(-50%);
-    bottom: max(26px, calc(env(safe-area-inset-bottom) + 14px));
-    font-size: 14px; font-weight: 600; color: #1d1d1f;
-    background: rgba(255,255,255,0.86); border-radius: 999px; padding: 7px 14px;
-    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
-    pointer-events: none; transition: opacity 0.4s;
-  }
   /* thumb_reach: Set zero gets pressed constantly, so it sits low on the right,
      just above the recorder bar, where a right thumb lands without a stretch. */
 
@@ -306,15 +236,11 @@
   @keyframes g_pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.72; } }
   /* take_clear: the bar says which of the four states it is in, in colour and
      in words — idle, recording, sending, sent-and-ready. */
-  .g_status { font-size: 10px; line-height: 1.25; color: rgba(0,0,0,0.55); text-align: center; min-height: 12px;
-              display: flex; align-items: center; justify-content: center; gap: 4px; }
-  .g_led { width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,0.22); flex: 0 0 auto; }
   .g_recent { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; min-height: 0; }
   .g_chip.g_wait { border-color: #b45309; color: #b45309; font-weight: 600; }
   .g_chip { font-size: 9px; font-weight: 600; color: rgba(0,0,0,0.55);
             background: rgba(0,0,0,0.06); border-radius: 999px; padding: 2px 6px;
             max-width: 88px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .g_row { display: flex; align-items: center; gap: 4px; }
   .g_small {
     flex: 1 1 auto; min-width: 0; border: none; border-radius: 7px; padding: 5px 4px;
     font: inherit; font-size: 10px; font-weight: 600; cursor: pointer;
@@ -323,7 +249,7 @@
   }
   .g_count { flex: 0 0 auto; font-size: 10px; color: rgba(0,0,0,0.45); min-width: 30px; text-align: right; }
 
-  /* ---- rig_right: the whole interface, stacked off the right edge ---- */
+  /* ---- the control band along the bottom ---- */
   /* bar_low — every control on one band along the bottom, at his word. It was a
      168px column floating in the lower right, which put the switches over the
      right-hand days and left the whole bottom of the glass empty. The band is
@@ -483,20 +409,12 @@
   <!-- one world, filling the window. The stage carries the perspective; the
        paper carries the swirl, both leans, the pan and the zoom. -->
   <div class="stage">
-    <div class="grid" id="grid"><img class="shot" id="shot" alt="" src="lab_surface.svg"></div>
+    <div class="grid" id="grid"></div>
     <div class="deck" id="deck"></div>
   </div>
   <div class="haze"></div>
-  <div class="track" id="track">
-    <div class="cell cell_1"></div>
-    <div class="cell cell_2"></div>
-    <div class="cell cell_3"></div>
-  </div>
   <div class="frame_shadow"></div>
 </div>
-
-<div class="dots" id="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
-<div class="hint" id="hint">swipe up / down</div>
 
 <!-- rig_right — everything you touch, stacked off the right edge and lifted a
      little off the corner: one wide Record, and while the tape runs the three
@@ -517,7 +435,6 @@
     <button id="flip_pop" class="flip_pop" aria-expanded="false"
             aria-controls="flips" title="Show the reverse switches">⇅</button>
   </div>
-  <div class="g_status" id="g_status" hidden></div>
   <div class="g_recent" id="g_recent" hidden></div>
   <button id="g_copy" class="g_small" hidden>Copy last</button>
   <button id="g_send" class="g_small" hidden>Send</button>
@@ -548,9 +465,6 @@
        It rides ABOVE the plate, or the phone hides the very thing it is doing. -->
   <g id="pose_spin" fill="none"></g>
   <g id="pose_knob"></g>
-  <!-- read_split: one named line per thing being read, instead of two crowded
-       rows of initials sitting on top of each other. -->
-  <g id="pose_read" font-family="-apple-system, sans-serif"></g>
   <text id="pose_lbl" font-size="0.01" fill="none"></text>
 </svg>
 <canvas class="trace" id="trace" width="178" height="168" hidden></canvas><!-- panel_half: the
@@ -561,7 +475,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'day_phone', bg: '#c2410c', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'lab_true', bg: '#334155', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -570,169 +484,38 @@
     if (tag) tag.textContent = LAB_RELEASE.name;
   })();
 
-  var N = 3;
-  var idx = 0;                 // which cell is showing
-  var track = document.getElementById('track');
+  // page_gone — the three-cell swipe carousel is gone: three EMPTY cells, a row
+  // of dots and a "swipe up / down" hint, on a page where swiping had done
+  // nothing for a very long time. It was the shape of the first sketch, kept
+  // alive only because the frame element it lived in is still the stage.
+  //
+  // drag_gone — and the finger-drag of the paper went with it. It moved `off`,
+  // which moved `show`, which fed the pan that paper_lock has been overwriting
+  // from the deck since build 261. Dragging the page had been doing nothing
+  // visible for eleven builds; it was costing three listeners and a piece of
+  // state that read as though it mattered.
   var frame = document.getElementById('frame');
-  var dots  = document.getElementById('dots');
-  var hint  = document.getElementById('hint');
-
-  function cell_h() { return frame.clientHeight || window.innerHeight; }
-  function paint(px) {
-    track.style.transform = 'translate3d(0,' + px + 'px,0)';
-  }
-  function go(i, animate) {
-    idx = Math.max(0, Math.min(N - 1, i));
-    track.classList.toggle('dragging', !animate);
-    paint(-idx * cell_h());
-    Array.prototype.forEach.call(dots.children, function (d, k) {
-      d.classList.toggle('on', k === idx);
-    });
-    if (idx > 0 && hint) { hint.style.opacity = '0'; }
-  }
-  go(0, false);
-  requestAnimationFrame(function () { track.classList.remove('dragging'); });
-  window.addEventListener('resize', function () { go(idx, false); requestAnimationFrame(function () { track.classList.remove('dragging'); }); });
-
-  // ---- drag: the cells follow the finger, then snap to the nearest page ----
-  // close_light's lesson: a short push is enough — 40px, or 8% of the cell.
-  function snap_px() { return Math.min(40, cell_h() * 0.08); }
-  var drag = null;
-  function start(y) { drag = { y0: y, base: -idx * cell_h(), active: false }; }
-  function move(y) {
-    if (!drag) return false;
-    var dy = y - drag.y0;
-    if (!drag.active) {
-      if (Math.abs(dy) < 5) return false;
-      drag.active = true;
-      track.classList.add('dragging');
-    }
-    var px = drag.base + dy;
-    // rubber-band at the two ends
-    var min = -(N - 1) * cell_h(), max = 0;
-    if (px > max) px = max + (px - max) * 0.35;
-    if (px < min) px = min + (px - min) * 0.35;
-    paint(px);
-    return true;
-  }
-  function end() {
-    if (!drag) return;
-    var wasActive = drag.active;
-    var moved = (parseFloat(track.style.transform.replace(/.*,\s*(-?[\d.]+)px,.*/, '$1')) || 0) - drag.base;
-    drag = null;
-    track.classList.remove('dragging');
-    if (!wasActive) { go(idx, true); return; }
-    if (moved <= -snap_px()) go(idx + 1, true);        // pushed up -> next page
-    else if (moved >= snap_px()) go(idx - 1, true);    // pulled down -> previous
-    else go(idx, true);
-  }
-
-  // ---- swipe_pan: a finger drags the SURFACE, in its own plane ----
-  // The old up/down flick between three coloured cards has no job left — there is
-  // one world now, not a stack of pages — so the same gestures move the paper
-  // instead. A drag is converted back through the swirl (the paper's axes are
-  // turned on screen, so a screen delta is not a paper delta) and then through
-  // the scale, because a pixel is worth less world when you are zoomed in. It is
-  // written into BOTH the model and the drawn position, so the surface tracks the
-  // finger exactly rather than lagging a spring behind it.
-  var dragOn = false, dragX = 0, dragY = 0;
-  function drag_start(x, y) { dragOn = true; dragX = x; dragY = y; }
-  function drag_move(x, y) {
-    if (!dragOn) return false;
-    var dx = x - dragX, dy = y - dragY;
-    dragX = x; dragY = y;
-    if (!dx && !dy) return true;
-    var v = view();
-    var r = (v.roll || 0) * Math.PI / 180;          // undo the swirl
-    var px =  dx * Math.cos(r) + dy * Math.sin(r);
-    var py = -dx * Math.sin(r) + dy * Math.cos(r);
-    var per = v.pxPerM || 1;
-    var mx =  px / (PAN_INV * per);
-    var my = -py / (PAN_INV * per);
-    off.x += mx; off.y += my;      // nudge_hold: the drag slides under the lattice,
-    show.x += mx; show.y += my;    // and nudges carry on from wherever it left off
-    return true;
-  }
-  function drag_end() { dragOn = false; }
-
-  window.addEventListener('touchstart', function (e) {
-    if (e.target.closest && e.target.closest('.rig, .corner_back')) return;
-    if (e.touches.length === 1) drag_start(e.touches[0].clientX, e.touches[0].clientY);
-  }, { passive: true });
-  window.addEventListener('touchmove', function (e) {
-    if (drag_move(e.touches[0].clientX, e.touches[0].clientY) && e.cancelable) e.preventDefault();
-  }, { passive: false });
-  window.addEventListener('touchend', drag_end, { passive: true });
-  window.addEventListener('touchcancel', drag_end, { passive: true });
-
-  // mouse, so the same thing works on a laptop
-  var mouseDown = false;
-  window.addEventListener('mousedown', function (e) {
-    if (e.target.closest && e.target.closest('.rig, .corner_back')) return;
-    mouseDown = true; drag_start(e.clientX, e.clientY);
-  });
-  window.addEventListener('mousemove', function (e) { if (mouseDown) drag_move(e.clientX, e.clientY); });
-  window.addEventListener('mouseup', function () { if (mouseDown) { mouseDown = false; drag_end(); } });
+  var hint  = null;                 // page_gone: nothing left to hint at
 
   document.getElementById('back_btn').addEventListener('click', function () {
     window.location.href = 'admin.html';
   });
 
-  // ---- world_view: the screen is a window onto a world that does not move ----
+  // ---- one_scale: what the page measures in ----------------------------------
   //
-  // His model, followed literally:
-  //   · a zero pose is captured when he says so (phone flat, or comfortably
-  //     angled at his face). Everything is measured in THAT frame.
-  //   · turning the phone right/left, or tipping its top toward/away, must not
-  //     move the world at all. Rotation is not a translation.
-  //   · sliding the phone one screen width to the right slides the world one
-  //     screen width to the left — 1:1 at the reference distance.
-  //   · moving the phone toward the eye raises the multiple (one screen width
-  //     of hand movement can sweep three screen widths of world) and draws the
-  //     world larger; moving it away drops the multiple below one and draws the
-  //     world smaller. multiple = D0 / D, the plain magnifier law.
+  // It used to measure in METRES. There was a world at a reference distance, a
+  // camera position integrated from the accelerometer, and a magnifier law
+  // turning distance into a multiple — thirty-odd lines of optics and a dozen
+  // constants tuned against arm's reach. Every part of that has been replaced,
+  // one build at a time, and this is the sweep that takes the last of it out:
   //
-  // How rotation gets ignored properly: the accelerometer reports in the
-  // PHONE's axes, so a tilted phone would smear a sideways slide across two
-  // axes. Each sample is rotated out of the phone frame into the world by the
-  // current orientation, then into the zero frame — after which only the three
-  // translations remain, and any amount of turning leaves them untouched.
+  //   the position   became a LATTICE — cell.x, cell.y and zc, whole steps only
+  //   the multiple   became Z_STEP per notch, which the deck already owned
+  //   the pan        became the deck's own, and the paper was locked to it
   //
-  // The honest caveat, unchanged: position comes from integrating acceleration
-  // twice, which drifts. Two things keep it usable — a zero-velocity update
-  // (when the phone reads still for 0.35s, velocity is forced to zero, the
-  // standard dead-reckoning trick) and a slow leak (~2.5s) that eases the world
-  // home rather than letting it wander off. Inside one gesture it holds.
-  var PHONE_W    = 0.071;    // metres across a phone: the 1:1 yardstick
-  var D0         = 0.35;     // metres: the reference viewing distance
-  var D_MIN      = 0.10, D_MAX = 1.20;
-  // depth_wide: plain D0/D only spans about 3x within arm's reach, and he wants
-  // the far end dense and the near end down to a couple of lines on the whole
-  // screen. Raising the ratio to a power stretches that range without needing
-  // the phone to travel any further: (D0/D)^2.2 gives ~0.25x at arm's length
-  // and ~13x when it is brought right in.
-  // scale_blow — the depth response is three times what it was: the exponent
-  // went 2.2 -> 6.6, and the ceiling and floor opened up to match, so a hand's
-  // width of toward-and-away covers the whole range instead of a slice of it.
-  // zoom_wide — double the depth response: the exponent doubles, which doubles
-  // the magnification the same hand movement buys. 4 cm toward the eye goes from
-  // x1.75 to x3.06, 8 cm from x3.30 to x10.9, and the ceiling arrives by about
-  // 11 cm instead of 17. It was halved in z_calm to stop the axis being twitchy;
-  // what actually fixed the twitch was the larger deadband and the softer spring
-  // on z, so the exponent can go back up and past where it was.
-  // doubled again. The whole range is now inside about six centimetres of hand:
-  // 2 cm toward the eye is x2.95, 4 cm is x9.3, and the ceiling arrives by 6.5.
-  var Z_POWER    = 18.4;
-  // paper_floor — the paper is a fixed 400% that SHRINKS with the zoom, so the
-  // bottom of the range is set by coverage now: 0.45 still leaves 180% of the
-  // window covered when it is leaning. It is also the cheapest end to paint —
-  // a big element full of small squares is a lot of lines — so the floor buys
-  // frames as well as coverage. The ceiling is unchanged: that is the end he
-  // cares about.
-  // and the floor drops with it, or a doubled exponent would hit bottom three
-  // centimetres out. 400% of the viewport at x0.30 is still 120% covered, and
-  // the haze takes the rim.
-  var MULT_MIN   = 0.30, MULT_MAX = 39;
+  // So there is one scale on this page and one position, and both belong to the
+  // deck. What follows is only what is still true.
+
   // nudge_core — everything that used to live here is gone: DEAD and DEAD_Z, the
   // brake decay, the latch and stop velocities, the still window, the velocity
   // and coast time constants, the move threshold and its maximum duration, the
@@ -758,53 +541,33 @@
   var motionOn = false;
   var R0 = null;             // zero-pose rotation matrix — the DIAGRAM's plate only
   var Rnow = null;
-  var show  = { x: 0, y: 0, z: 0 }; // what is drawn: the lattice, plus the drag
-  var showV = { x: 0, y: 0, z: 0 };
-  // bump_step — the world does not follow the phone any more. It sits on a
-  // LATTICE, and a gesture is worth exactly one step along one axis: bump right,
-  // the world goes one right; bump back, one left; bump toward you, one closer.
-  // How hard or how far you bumped changes nothing — one bump is one level. The
-  // sensing underneath is unchanged (deadband, shake test, dominance, direction
-  // latch, brake): all of that still decides whether a real push happened and
-  // which way it went. What changed is what we DO with the answer — we no longer
-  // integrate it into a distance, we read it as a single yes on a single axis.
+  // nudge_hold — the whole idea of the page in one paragraph. Your bump is only
+  // the TRIGGER: everything measured about it — how hard, how far, how long — is
+  // thrown away, and one STANDARD nudge is delivered instead, the same size and
+  // the same shape every time. And the nudge STAYS. It does not go out and come
+  // back; it carries you one day and leaves you there.
   //
-  // bump_centre — and after every bump the metre-scale model is wiped back to
-  // zero. That is the whole point of stepping: nothing is carried forward, so
-  // sensor drift, a bad brake, a trapped axis and a half-detected wobble all die
-  // at the end of the gesture they happened in instead of accumulating. Where the
-  // world stands is `cell`, three integers, and integers do not drift.
-  // nudge_hold — the two halves, together. Your bump is only the TRIGGER:
-  // everything measured about it — how hard, how far, how long — is thrown away,
-  // and one STANDARD nudge is delivered instead, the same size and the same shape
-  // every time. What is new here is that the nudge STAYS. It does not go out and
-  // come back; it carries the world one notch the way you nudged and leaves it
-  // there. Where the world stands is `cell`, three whole numbers, and a nudge is
-  // +1 or -1 on exactly one of them. Whole numbers do not drift, and the gesture
-  // that moved them is forgotten the instant it has been counted.
+  // Where you are is `cell`, three whole numbers, and a nudge is +1 or -1 on
+  // exactly one of them. Whole numbers do not drift, so sensor drift, a bad
+  // reading and a half-detected wobble all die at the end of the gesture they
+  // happened in instead of accumulating — and the gesture itself is forgotten the
+  // instant it has been counted.
   var cell = { x: 0, y: 0, z: 0 };
   // cal_month: the lattice is the month, so its limits are the month's own edges —
   // three days either side of the middle column, two weeks either side of the
   // middle row. You cannot nudge off the calendar.
   var CELL_MAX = { x: 3, y: 2, z: 5 };
-  var BUMP_ZOOM = 1.6;              // how much bigger one nudge toward you makes the world
-  // derive the depth notch from the zoom law, so changing Z_POWER cannot silently
-  // change what a nudge toward you is worth
-  var NUDGE_Z   = D0 * (1 - Math.pow(BUMP_ZOOM, -1 / Z_POWER));
   // nudge_even — a sideways notch is a quarter of the SCREEN, at every zoom. Pan is
   // metres times the zoom, so a notch fixed in metres would be a quarter screen at
   // x1 and nine screens at x39 — one nudge would throw you clean off the picture
   // the moment you had leaned in. So the metres per notch are divided by the zoom
   // the LATTICE is at: a settled power of BUMP_ZOOM, so nothing chases itself.
-  var NUDGE_FRAC = 0.25;
-  var NUDGE_PAN  = NUDGE_FRAC * PHONE_W;
   // the shape of the delivery: fast off the mark and easing into its landing, so
   // it reads as a nudge arriving rather than as a slide. 160ms, down from 210 —
   // the whole point of this pass is the tight loop, and the landing is the second
   // half of the time between his wrist and his eye.
   var NUDGE_MS = 160;
   var anim = null;                  // { k, from, t0 } while a nudge is landing
-  var off  = { x: 0, y: 0, z: 0 };  // what the finger has dragged, under the lattice
   function ease(u) { var v = 1 - u; return 1 - v * v * v; }   // cubic ease-out
   // cell_at — the value of axis k right now: the whole number it has reached, or
   // the eased journey there while a nudge is still landing
@@ -817,17 +580,6 @@
   // zoom_at — the magnification the lattice is at right now, straight off the same
   // law view() uses. It is a pure function of the clock, so reading it here to
   // scale the pan cannot start anything chasing itself.
-  function zoom_at() {
-    var d = Math.max(D_MIN, Math.min(D_MAX, D0 - DEPTH_INV * (cell_at('z') * NUDGE_Z)));
-    return Math.max(MULT_MIN, Math.min(MULT_MAX, Math.pow(D0 / d, Z_POWER)));
-  }
-  function nudge_m(k) {
-    // pan_settle: divide by the ACTUAL zoom, not by BUMP_ZOOM^z. The two are only
-    // equal for one step — the zoom law is not a power of the depth — so using the
-    // shorthand left a couple of pixels of pan snap on every nudge after the first.
-    return k === 'z' ? cell_at('z') * NUDGE_Z
-                     : cell_at(k) * NUDGE_PAN / zoom_at();
-  }
   var lastBump = '';
   // nudge_fast — fire on the LEADING EDGE. Everything before this waited for the
   // gesture to FINISH: brake to a stop, go quiet, then classify what had been
@@ -1158,18 +910,6 @@
       });
     });
   })();
-  // ---- card_deck ----------------------------------------------------------
-  // LAY_N cards per side, so a layer is LAY_N x LAY_N and you sit at its middle
-  // when you arrive. CARD_F is the card's share of the screen and GAP_F the space
-  // between two of them, both as a fraction of the viewport width: together they
-  // are the PITCH, which is what one nudge is worth. The card is deliberately
-  // smaller than the screen so its neighbours show at the edges — you can always
-  // see where the next nudge would take you.
-  // card_spread — the cards are deliberately well under half the window, so three
-  // columns and three rows are in view at once and a nudge visibly walks you from
-  // one to the next. At 62% of the width the card you were on filled the screen
-  // and its neighbours were slivers, which reads as one card moving rather than as
-  // a space you are travelling through.
   // ---- cal_month ----------------------------------------------------------
   // The deck is a month. September 2026, Monday-first, seven columns by five
   // rows: Aug 31 in the top-left corner through Oct 4 in the bottom-right, with
@@ -1576,9 +1316,10 @@
     return { m: mat_from(-yaw, pitch, PLATE_INV * flip.dplate * roll),
              pitch: pitch, yaw: -yaw, roll: roll };
   }
-  // pose_scale — 1 cm of hand travel is POSE_SC/100 units in the diagram, an
-  // axis arm is AX_LEN units long, and a tick every TICK units marks 5 cm.
-  var POSE_SC = 300, AX_LEN = 46, AX_MAX = 44, TICK = 15;
+  // pose_scale — an axis arm is AX_LEN units long, the plate is clamped at AX_MAX,
+  // and a tick every TICK units divides the arm into thirds. (POSE_SC went with
+  // the metres: the plate is placed by angle and by notch now, not by distance.)
+  var AX_LEN = 46, AX_MAX = 44, TICK = 15;
   // model_flip — the diagram's depiction of travel is reversed on X and Y and
   // left alone on Z, which he had right already. Drawing and numbers both go
   // through this, so the picture and the figures can never disagree.
@@ -1891,16 +1632,10 @@
                    -cB * sG,       sB,               cB * cG
     ];
   }
-  function mul_vec(m, v) {
-    return { x: m[0]*v.x + m[1]*v.y + m[2]*v.z,
-             y: m[3]*v.x + m[4]*v.y + m[5]*v.z,
-             z: m[6]*v.x + m[7]*v.y + m[8]*v.z };
-  }
-  function mul_t_vec(m, v) {   // transpose(m) * v
-    return { x: m[0]*v.x + m[3]*v.y + m[6]*v.z,
-             y: m[1]*v.x + m[4]*v.y + m[7]*v.z,
-             z: m[2]*v.x + m[5]*v.y + m[8]*v.z };
-  }
+  // mul_gone: the two matrix-times-vector helpers existed to rotate an
+  // acceleration sample out of the phone frame and into the zero frame. Nothing
+  // has rotated a sample since nudge_core — the detector reads the phone's own
+  // axes on purpose — and rel_matrix does the only multiply left, inline.
 
   function on_orientation(e) {
     if (e.alpha == null && e.beta == null && e.gamma == null) return;
@@ -1947,31 +1682,12 @@
     var twist = Math.abs(rr.alpha || 0);
     spinVeto = twist <= ORBIT_SPIN ? 1 : Math.max(0, 1 - (twist - ORBIT_SPIN) / ORBIT_SPIN);
     nudge_watch(a, dt);
-    smooth_step(dt);
   }
-  // smooth_move: chase the model. Driven off the sensor clock, not the paint
-  // clock, so a burst of samples with no frame between them still shapes the
-  // move the same way — and so the levelling window keeps the picture alive.
-  function smooth_step(dt) {
-    // nudge_hold: what is drawn is the lattice, plus whatever the finger has
-    // dragged. No spring — the nudge's own curve IS the animation, and a spring on
-    // top would smear the one thing that has to be identical every time. pos, vel
-    // and lead are evidence being gathered for the NEXT bump and are never drawn,
-    // so the world holds perfectly still through a gesture and moves when it ends.
-    ['x', 'y', 'z'].forEach(function (k) {
-      var was = show[k];
-      show[k]  = off[k] + nudge_m(k);
-      showV[k] = dt > 0 ? (show[k] - was) / dt : 0;
-    });
-  }
-
   // lane_view — a rolling four seconds, one lane per axis, six lanes stacked.
   // Each sample is [x, y, z, tilt, turn, swirl]: where the world stands on that
   // axis, and how far the phone is turned about it. Each lane fills solid from
   // its own centre, up for positive and down for negative, and carries no line,
   // no label and no number — the shape and the colour are the whole message.
-  // crisp_deep: how much bigger than its drawn size the picture is rendered
-  var SHK_MAX = 6, shkNow = 1, shkPeak = 1, shkAt = 0;
   var TRACE_N = 240;
   var trace = new Array(TRACE_N);
   var traceAt = 0;
@@ -2075,23 +1791,15 @@
   //         (+x right, +y up, +z toward the eye), lead term folded in
   //   dist  how far the eye is from the surface
   //   mult  the magnifier: how much world one phone-width of hand sweeps
-  //   ox/oy pixels the world is offset on screen (flip_axes: it travels WITH
-  //         the phone)
   // roll_hold — how far the screen has swirled about the line from your eye,
   // measured from the zero pose. The phone's own up direction, expressed in the
   // zero frame, gives the angle straight away: at zero it is world up and the
   // answer is 0. Pitch and yaw are deliberately absent — tipping the phone
   // toward or away, or turning it left and right, still changes nothing.
-  // view_switch — the two directions the paper answers to, each with its own
-  // sign, because they have been reversed independently and will be again.
-  //   PAN_INV    left/right, up/down and the swirl counter-turn
-  //   DEPTH_INV  the magnifier
-  // depth_back: DEPTH_INV goes back to +1 — bringing the phone toward the eye
-  // makes the paper BIGGER again, and taking it away makes it smaller. This is
-  // the third time this one sign has moved, which is exactly why it is a named
-  // switch and not a buried minus. Pan and swirl are untouched.
+  // PAN_INV — the swirl counter-turn's sign. It used to govern the pan as well,
+  // which the deck owns now; and DEPTH_INV governed the magnifier, which went
+  // with the optics. One sign left, and the lean row's own switch multiplies it.
   var PAN_INV   = 1;
-  var DEPTH_INV = 1;
   function screen_roll() {
     var m = rel_matrix(); if (!m) return 0;
     return Math.atan2(-m[1], m[4]) * 180 / Math.PI;
@@ -2142,21 +1850,24 @@
     var m = rel_matrix(); if (!m) return 0;
     return lean(Math.atan2(m[2], m[8]) * 180 / Math.PI, TURN_INV);
   }
+  // one_scale — view() used to run a whole optics pipeline on every frame: a
+  // camera position in metres, a viewing distance, a magnification from the
+  // magnifier law, pixels-per-metre and a clamped pan. Every one of those outputs
+  // was then thrown away, because paper_lock has set the pan and the scale from
+  // the DECK since build 261. The proof was on the readout: it said "scale x1.00"
+  // while the deck sat at 0.476, because the number it printed came from the dead
+  // pipeline rather than from anything on the screen.
+  //
+  // What is left is what is actually read: the three leans, and the deck's own
+  // scale under the name the rest of the page already calls it by.
   function view() {
-    var w = frame.clientWidth || 320;
-    var cam = { x: show.x, y: show.y, z: show.z };
-    var dist = Math.max(D_MIN, Math.min(D_MAX, D0 - DEPTH_INV * cam.z));
-    var mult = Math.max(MULT_MIN, Math.min(MULT_MAX, Math.pow(D0 / dist, Z_POWER)));
-    var pxPerM = (w / PHONE_W) * mult;
-    var lim = w * 3;
     return {
-      w: w, cam: cam, dist: dist, mult: mult, pxPerM: pxPerM,
+      w: frame.clientWidth || 320,
+      mult: z_scale(),                     // the one magnification there is
       // flip_row: the lean row. Each is the shipped sign times his switch.
       roll: flip.roll * PAN_INV * screen_roll(),
       tilt: flip.tilt * screen_pitch(),
-      turn: flip.turn * screen_turn(),
-      ox: Math.max(-lim, Math.min(lim,  PAN_INV * cam.x * pxPerM)),
-      oy: Math.max(-lim, Math.min(lim, -PAN_INV * cam.y * pxPerM))
+      turn: flip.turn * screen_turn()
     };
   }
 
@@ -2168,8 +1879,7 @@
     // the two instrument panels and the leans.
     if (!drawing) return;
     var v = view();
-    var w = v.w, dist = v.dist, mult = v.mult;
-    var sx = v.ox, sy = v.oy;
+    var mult = v.mult;
     // nudge_core — the lanes carry the detector's own averaged drive per axis:
     // the exact three numbers nudge_watch compares against its threshold. They
     // used to carry where the world had been panned to, which only ever moved in
@@ -2181,23 +1891,12 @@
     trace_push([nBar.x / (NUDGE_A * 2), nBar.y / (NUDGE_A * 2), nBar.z / (NUDGE_A * 2), 0]);
     trace_draw(now);
     var root = document.documentElement.style;
-    root.setProperty('--sx', sx.toFixed(1) + 'px');
-    root.setProperty('--sy', sy.toFixed(1) + 'px');
-    root.setProperty('--sc', mult.toFixed(3));
+    // the three leans go on first; deck_draw then sets the pan and the scale for
+    // the deck and the paper together, which is why they are not set here
     root.setProperty('--rot', v.roll.toFixed(2) + 'deg');
     root.setProperty('--tilt', v.tilt.toFixed(2) + 'deg');
     root.setProperty('--turn', v.turn.toFixed(2) + 'deg');
-    deck_draw(root);                 // card_deck: the cards ride the same leans
-    // crisp_deep: raise the picture's own resolution in steps as you close in.
-    // shk_hold — it goes UP the instant the zoom needs it and comes DOWN only
-    // after a second of not needing it. Re-laying out a 700x1250 image is the most
-    // expensive thing on the page, and the zoom now moves in short landings that
-    // can cross a power-of-two boundary and come straight back over it; the hold
-    // keeps one nudge from costing two re-layouts.
-    if (mult > shkPeak) { shkPeak = mult; shkAt = now; }
-    else if (now - shkAt > 1000) { shkPeak = mult; shkAt = now; }
-    var shk = Math.min(SHK_MAX, Math.max(1, Math.pow(2, Math.round(Math.log(shkPeak) / Math.LN2))));
-    if (shk !== shkNow) { shkNow = shk; root.setProperty('--shk', String(shk)); }
+    deck_draw(root);
     draw_pose(mult, now);
     requestAnimationFrame(paint_world);
   }
@@ -2216,10 +1915,7 @@
     deckOff = deck_home();          // hold_still: and the month back to square
     cell = { x: 0, y: 0, z: 0 };    // and to the middle card of it
     deck_build();
-    off  = { x: 0, y: 0, z: 0 };
     lastBump = '';
-    var z = cell.z * NUDGE_Z;
-    show = { x: 0, y: 0, z: z }; showV = { x: 0, y: 0, z: 0 };
     // nudge_core — there is no levelling any anymore. The detector carries its own
     // running zero (nSlow, the slow average), which relearns what rest looks like
     // from wherever the phone is, so there is nothing to hold still FOR. The
@@ -2302,7 +1998,6 @@
   // the pose at the START of the hold, since that is the frame he cares about.
   var GEST_KEY = 'vampjam_gestures';
   var SYNC_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
-  var REPO_RAW = 'https://raw.githubusercontent.com/mPulseMedia/vampjam/main/';
   var API_URL  = 'https://api.github.com/repos/mPulseMedia/vampjam/contents/lab_gestures.json?ref=main';
 
   var gRec  = document.getElementById('g_rec');
@@ -2663,15 +2358,7 @@
     tick();
   })();
 
-  // shot_on: if there is no picture, say so once and leave the paper alone
-  (function () {
-    var sh = document.getElementById('shot');
-    if (sh) sh.addEventListener('error', function () { sh.setAttribute('data-missing', '1'); });
-  })();
-
   window.__lab = {
-    go: go,
-    at: function () { return idx; },
     steady: function () { start_world(); },
     zero: function (keepDepth) { zero_here(keepDepth !== false); },
     reset: function () { zero_here(false); },
@@ -2705,10 +2392,10 @@
                watch: { a: +NUDGE_A, tau: NUDGE_TAU, quiet: NUDGE_QUIET,
                         rearm: NUDGE_REARM, rise: NUDGE_RISE, push: PUSH_INV,
                         spin: ORBIT_SPIN, tan: ORBIT_TAN, spinVeto: +spinVeto.toFixed(2) },
-               nudge: { ms: NUDGE_MS, pan: +NUDGE_PAN.toFixed(4),
-                        z: +NUDGE_Z.toFixed(5), zoom: BUMP_ZOOM, max: CELL_MAX },
-               show: { x: +show.x.toFixed(4), y: +show.y.toFixed(4), z: +show.z.toFixed(4) },
-               showV: { x: +showV.x.toFixed(4), y: +showV.y.toFixed(4), z: +showV.z.toFixed(4) },
+               nudge: { ms: NUDGE_MS, max: CELL_MAX },
+               // hold_still: where the month is standing, which is the only
+               // position the page keeps now
+               off: { x: +deckOff.x.toFixed(1), y: +deckOff.y.toFixed(1) },
                // nudge_core: what the detector is holding, which is now the only
                // running state the motion path has
                bar: { x: +nBar.x.toFixed(4), y: +nBar.y.toFixed(4), z: +nBar.z.toFixed(4) },

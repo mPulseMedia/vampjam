@@ -2903,7 +2903,46 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   verified: the three screen sizes above; a day still in exactly the same pixel selected as
   unselected; the scroll-when-needed behaviour unchanged three notches in. Suites 256, 263 and 269
   green, no page errors. Still no new trace.
-- NEXT → add entry 273 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 273 lab_true · b273 · lab.html — the page's code says what the page is.
+  the ask: refactor everything about this page to match what it has become. It became a calendar
+  you navigate by nudging a phone; the code still described a photograph lying on graph paper,
+  viewed through a magnifier law, inside a three-page swipe carousel.
+  what came out, in four sweeps, each measured against a fixed reference before and after:
+  page_gone — the carousel: three EMPTY cells, a column of dots and a "swipe up / down" hint, on a
+  page where swiping had done nothing for a long time. It was the shape of the first sketch, alive
+  only because the frame element it lived in is still the stage.
+  drag_gone — the finger-drag of the paper went with it. It moved `off`, which moved `show`, which
+  fed the pan that paper_lock has been overwriting from the deck since build 261. Dragging the page
+  had been doing nothing visible for eleven builds.
+  one_scale — the optics. view() ran a whole pipeline every frame: a camera position in metres, a
+  viewing distance, a magnification from the magnifier law, pixels-per-metre and a clamped pan —
+  and every output was discarded, because the deck sets the pan and the scale. The proof was on the
+  readout, which said "scale x1.00" while the deck sat at 0.476: the number came from the dead
+  pipeline rather than from anything on the screen. It reads x0.48 now. Out with it went PHONE_W,
+  D0, D_MIN/D_MAX, Z_POWER, MULT_MIN/MAX, DEPTH_INV, NUDGE_Z, BUMP_ZOOM, NUDGE_PAN, NUDGE_FRAC,
+  show, showV, off, nudge_m, zoom_at and smooth_step — the last of which was being called on EVERY
+  sensor sample to compute three numbers nothing read.
+  shot_gone — the photograph that used to lie on the paper. display:none since the deck arrived,
+  but still parsed, still fetching its image file on every load, and still carrying the crisp_deep
+  raster machinery (SHK_MAX, shkNow, shkPeak, the --shk variable and its power-of-two ladder) that
+  existed only to keep it sharp under zoom.
+  mul_gone — the two matrix-times-vector helpers, which rotated an acceleration sample out of the
+  phone frame. Nothing has rotated a sample since nudge_core.
+  and the prose. The three biggest comment blocks on the page described things that no longer
+  exist: the world_view essay on metres and the magnifier law, bump_step's account of a world
+  following the phone, and card_deck's spread of coloured cards. They are replaced by what is
+  actually true, which is shorter. Stale names went too: POSE_SC (the metres-to-diagram scale),
+  REPO_RAW, the pose_read group, .g_row, .g_status, .track/.cell/.dots/.hint.
+  the verification, and this is the part that matters for a refactor this size: a fixed reference
+  run — cold load, then a right nudge, an up nudge and a depth nudge — capturing the card name, the
+  cell, the depth, the zoom, the month's size and origin, the selected day's rectangle, all six CSS
+  variables, the full readout line and the bar count, plus two screenshots. Run before the first
+  cut and after every sweep. Every field identical throughout except the one that was wrong (the
+  scale readout). The screenshots differ by 487 pixels across twelve sparse rows, all of them the
+  dot column that was deliberately removed.
+  lab.html 2733 → 2420 lines. 60fps. All five lab suites green — 256, 263, 267, 269 and 270 — and
+  no page errors at any stage. Still no new trace.
+- NEXT → add entry 274 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
