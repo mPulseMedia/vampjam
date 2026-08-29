@@ -365,6 +365,7 @@
     cursor: pointer; touch-action: manipulation;
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
   }
+  .flip_gap { flex: 1 1 0; min-width: 0; }
   .flips button.on {
     background: #1d4ed8; border-color: #1d4ed8; color: #fff;
   }
@@ -534,7 +535,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'flip_row', bg: '#0369a1', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'edge_near', bg: '#7e22ce', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1060,7 +1061,8 @@
       { k: 'dz',     lab: 'N\u2009F',  tip: 'Diagram: reverse closer / further' },
       { k: 'dtilt',  lab: '\u2934',    tip: 'Diagram: reverse tilt top' },
       { k: 'dturn',  lab: '\u25e8',    tip: 'Diagram: reverse right-edge-away / left-edge-away' },
-      { k: 'dswirl', lab: '\u21bb',    tip: 'Diagram: reverse the flat swirl' } ] },
+      { k: 'dswirl', lab: '\u21bb',    tip: 'Diagram: reverse the flat swirl' },
+      { k: 'dplate', lab: '\u25f1',    tip: 'Diagram: reverse which edge of the plate comes toward you' } ] },
     { name: 'lean', tip: 'when I turn or tilt, which way the paper leans', keys: [
       { k: 'tilt',   lab: '\u2934',    tip: 'Paper: reverse the lean when I tilt the top' },
       { k: 'turn',   lab: '\u25e8',    tip: 'Paper: reverse right-edge-away / left-edge-away' },
@@ -1068,7 +1070,7 @@
   ];
   var FLIPS = FLIP_ROWS.reduce(function (a, r) { return a.concat(r.keys); }, []);
   var flip = { x: 1, y: 1, z: 1, roll: 1, turn: 1, tilt: 1,
-               dx: 1, dy: 1, dz: 1, dtilt: 1, dturn: 1, dswirl: 1 };
+               dx: 1, dy: 1, dz: 1, dtilt: 1, dturn: 1, dswirl: 1, dplate: 1 };
   try {
     var savedFlip = JSON.parse(localStorage.getItem(FLIP_KEY) || 'null');
     if (!savedFlip) {
@@ -1114,6 +1116,15 @@
           paint();
           r.appendChild(b);
         });
+        // row_even — a line with fewer switches than the others gets invisible
+        // spacers, so the last one is 40px like every other button instead of
+        // stretching to fill the line. Spacers rather than a fixed width, because
+        // the columns then stay aligned whatever width the rig ends up being.
+        for (var pad = keys.length; pad < per; pad++) {
+          var sp = document.createElement('span');
+          sp.className = 'flip_gap';
+          r.appendChild(sp);
+        }
         wrap.appendChild(r);
       });
     });
@@ -1347,13 +1358,30 @@
   // incapable of contradicting itself. MODEL_INV.x therefore stays +1: putting a
   // second sign there would have flipped the position back and split the pair.
   var ROLL_INV = -1;
+  // edge_near: the plate's drawn turn is the reverse of the angle it reports, so
+  // the rectangle leans the way the phone in his hand actually leans.
+  var PLATE_INV = -1;
   function flip_yaw(m) {
     var deg = 180 / Math.PI;
     // flip_row: the show row's three rotations, each the shipped sign times his switch
     var pitch = TILT_INV  * flip.dtilt  * Math.asin(Math.max(-1, Math.min(1, m[7]))) * deg;
     var yaw   = SWIRL_INV * flip.dswirl * Math.atan2(-m[1], m[4]) * deg;
     var roll  = ROLL_INV  * flip.dturn  * Math.atan2(-m[6], m[8]) * deg;
-    return { m: mat_from(-yaw, pitch, roll), pitch: pitch, yaw: -yaw, roll: roll };
+    // edge_near — the plate's DRAWN turn, separate from the turn it REPORTS.
+    //
+    // Carrying the phone round to the right, screen kept square to his nose, brings
+    // its right edge TOWARD him — that is what an orbit is. The diagram had the
+    // right edge going away, so the rectangle was rotating the opposite way to the
+    // real one in his hand while sitting in the correct place on the arc.
+    //
+    // That is a sign on the plate's own matrix, not on the angle: the angle is
+    // right (the position it drives lands correctly on the arc, and "turn side"
+    // reads correctly), only the rectangle built FROM it was mirrored. So the sign
+    // goes inside mat_from and nowhere else — the position, the turn arc and the
+    // readout are all untouched. Flipping dturn instead would have fixed the
+    // rectangle and dragged the position across the diagram with it.
+    return { m: mat_from(-yaw, pitch, PLATE_INV * flip.dplate * roll),
+             pitch: pitch, yaw: -yaw, roll: roll };
   }
   // pose_scale — 1 cm of hand travel is POSE_SC/100 units in the diagram, an
   // axis arm is AX_LEN units long, and a tick every TICK units marks 5 cm.

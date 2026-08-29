@@ -2757,7 +2757,32 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   landed with a grep, and put a cache-buster on the harness URL so a stale page can never be the
   suspect.
   Suites 256 and 263 green, no page errors. Still no new trace.
-- NEXT → add entry 267 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 267 edge_near · b267 · lab.html — the plate leans the way the phone in his hand leans, and a
+  switch of its own for it.
+  what he saw: carrying the phone round to the right brings its right edge TOWARD him — that is what
+  an orbit is, the screen staying square to his nose — and the diagram had the right edge going
+  away. The rectangle was rotating the opposite way to the real one in his hand while sitting in the
+  correct place on the arc.
+  edge_near: this is a sign on the plate's DRAWN turn, not on the turn it REPORTS, and that
+  distinction is the whole of the fix. The angle was right — the position it drives lands correctly
+  on the arc, and "turn side" reads correctly — only the rectangle built FROM it was mirrored. So
+  PLATE_INV goes inside mat_from and nowhere else, and the position, the turn arc and the readout
+  are untouched. Flipping dturn instead would have fixed the rectangle and dragged the position
+  across the diagram with it, which is the coupling 266 warned about.
+  and a switch for it, dplate (◱), in the show group where the rest of the diagram's signs live.
+  Off is the new behaviour, as always.
+  a note on how this was measured, because the pose labels have burned me twice. "Carried to the
+  right" is NOT taken from what I pose — it is taken from the diagram's OWN readout: sweep until
+  "right / left" reads positive, then ask which edge of the plate is nearer the viewer, by
+  projecting its four corners onto the drawn +Z arrow. The first run of the test labelled the pose
+  by hand and reported the result exactly backwards. Against that measure: before, the LEFT edge was
+  nearer when the diagram said right; now the RIGHT edge is, the plate's centre is unchanged to a
+  tenth of a pixel ([19.7,20.6] → [19.8,20.6]), and both readouts are identical.
+  row_even: the show group is seven switches now, so its last line holds one. It gets invisible
+  spacers so that button is 40px like every other rather than stretching across the line — spacers
+  rather than a fixed width, so the columns stay aligned whatever width the rig ends up.
+  Suites 256, 263 and 267 green, no page errors. Still no new trace.
+- NEXT → add entry 268 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

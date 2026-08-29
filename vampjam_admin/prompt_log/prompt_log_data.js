@@ -9,8 +9,48 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "266 flip_row",
+        id: "267 edge_near",
         expanded: true,
+        nodes: [
+          { text: "267 edge_near", children: [
+            { text: "prompt_restate", children: [
+              { text: "Moving the phone right brings its right edge closer to me, but the diagram shows that edge moving away." },
+              { text: "Flip it, and give it a button in the matrix I just added." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I move my phone to the right, the right edge of my phone pulls closer to me but in the 3-D diagram the right edge move away. Can you flip that in the 3-D diagram and make a button for it down in that button Matrix that I just added it." }
+            ]},
+            { text: "what_was_wrong", children: [
+              { text: "the rectangle was rotating the opposite way to the real phone in your hand, while sitting in the correct place on the arc" }
+            ]},
+            { text: "why_it_is_one_sign_and_not_the_obvious_one", children: [
+              { text: "the ANGLE was right \u2014 the position it drives lands correctly on the arc, and the turn readout reads correctly. only the rectangle built from it was mirrored" },
+              { text: "so the sign goes on the plate\u2019s drawing and nowhere else. the position, the arc and the readout are untouched" },
+              { text: "flipping the existing turn button instead would have fixed the rectangle and dragged the position across the diagram with it \u2014 the coupling I warned about last build" }
+            ]},
+            { text: "the_button", children: [
+              { text: "\u25f1 in the show group, where the rest of the diagram\u2019s signs live. off is the new behaviour, as always" },
+              { text: "the group is seven switches now, so its last line holds one \u2014 it gets invisible spacers so that button stays a normal size instead of stretching across the line" }
+            ]},
+            { text: "one_thing_about_how_i_checked_it", children: [
+              { text: "my pose labels have been wrong twice now, so \u2018carried to the right\u2019 is taken from the diagram\u2019s OWN readout, not from what I pose" },
+              { text: "sweep until it says right, then ask which edge of the plate is nearer you by projecting its corners onto the drawn toward-you arrow" },
+              { text: "the first run of that test labelled the pose by hand and reported the answer exactly backwards" }
+            ]},
+            { text: "verify", children: [
+              { text: "~14m: against that measure \u2014 before, the left edge was nearer when the diagram said right; now the right edge is" },
+              { text: "the plate\u2019s centre is unchanged to a tenth of a pixel and both readouts are identical, so nothing but the lean moved" },
+              { text: "the new switch puts it back, three suites green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "266 flip_row",
+        expanded: false,
         nodes: [
           { text: "266 flip_row", children: [
             { text: "prompt_restate", children: [
