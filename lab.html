@@ -154,67 +154,61 @@
                translate3d(var(--cx, 0px), var(--cy, 0px), 0) scale(var(--dz, 1));
     opacity: var(--dop, 1);
   }
-  /* card_hue — every card carries its own colour, so movement is visible without
-     reading a digit. Hue comes from the card's number by the golden angle, which
-     puts neighbours far apart on the wheel: whatever slides into the middle is a
-     different colour from what left, at a glance and out of the corner of an eye.
-     Lightness carries the DEPTH, so a layer in and a layer out are different
-     places even before you read the number. */
+  /* cal_month — a day, not a playing card: white, squared off, its date in the
+     corner and its hours stacked under it. The colour that used to identify a
+     card is gone, because a calendar identifies a day by its NUMBER and its
+     contents, and 35 hues would be noise on top of that. */
   .card {
-    position: absolute; border-radius: 14px;
-    background: hsl(var(--h, 0) var(--s, 0%) var(--l, 100%));
-    border: 1px solid hsl(var(--h, 0) 45% 62% / 0.45);
-    box-shadow: 0 6px 18px rgba(15,23,42,0.16), 0 1px 3px rgba(15,23,42,0.12);
-    display: flex; align-items: center; justify-content: center;
-    font: 600 26px/1.1 ui-rounded, -apple-system, system-ui, sans-serif;
-    color: #334155; letter-spacing: -0.02em; text-align: center;
-    /* name_clip — a three-part address is wide, and a card is not. Clip it to its
-       own edges so a long number can never bleed across the gap into its
-       neighbour, which made two cards read as one. */
-    overflow: hidden; padding: 0 8px; box-sizing: border-box;
+    position: absolute; border-radius: 5px;
+    background: #ffffff; border: 1px solid #d8dde4;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.10);
+    display: block; overflow: hidden;
+    padding: var(--pad, 6px); box-sizing: border-box;
+    color: #334155; text-align: left;
+    font: 500 var(--evf, 8px)/1.28 -apple-system, system-ui, sans-serif;
     -webkit-user-select: none; user-select: none;
   }
-  .card .n { white-space: nowrap; }
-  /* card_focus — which card you are on has to be unmistakable, because it is the
-     only thing a nudge changes. Three things say it at once, and they say it in
-     three different visual channels so no one of them has to carry it alone:
-     the neighbours step back, the card you are on comes forward, and a fixed
-     bracket on the glass marks the place they arrive at. */
-  .card:not(.here) {
-    filter: saturate(0.35);
-    opacity: 0.42;
-    box-shadow: 0 2px 6px rgba(15,23,42,0.10);
+  .cal_out { background: #f3f5f8; color: #9aa3b0; }
+  .cal_out .cal_num { color: #b3bbc6; }
+  .cal_num {
+    display: block; font-size: var(--num, 14px); font-weight: 700; line-height: 1;
+    color: #1f2937; letter-spacing: -0.02em;
   }
+  .cal_num i { font-style: normal; font-size: 0.5em; font-weight: 600; margin-left: 0.25em;
+               color: #64748b; letter-spacing: 0.04em; text-transform: uppercase; }
+  /* the day's own list starts BELOW whatever span bars cross this day, so a bar
+     never lies over an hour — --lane is how far down that is, and it is worked
+     out per day from how many spans touch it */
+  .cal_list { display: block; margin-top: var(--lane, 4px); }
+  .cal_ev {
+    display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 0.18em; color: #475569;
+  }
+  /* cal_span — one element lying across the days it covers, so it reads as one
+     thing that spans rather than as several things that coincide */
+  .cal_bar {
+    position: absolute; z-index: 2; border-radius: 999px;
+    display: flex; align-items: center; overflow: hidden;
+    padding: 0 0.5em; box-sizing: border-box;
+    color: #ffffff; font-weight: 700; letter-spacing: -0.01em;
+    font-family: -apple-system, system-ui, sans-serif;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.18);
+  }
+  .cal_bar span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+
+  /* day_here — the corner brackets are gone, at his word. The day you are on says
+     so itself instead: full strength while its neighbours are washed back, a blue
+     ring standing off its edge, a tinted ground, and its date in the same blue.
+     It lifts above the span bars too, so a bar can never cross the ring. */
+  .card:not(.here) { opacity: 0.52; filter: saturate(0.6); }
   .card.here {
-    background: hsl(var(--h, 0) 72% 74%);
-    border: 2px solid hsl(var(--h, 0) 60% 34%);
-    color: hsl(var(--h, 0) 70% 18%);
-    box-shadow: 0 0 0 5px hsl(var(--h, 0) 60% 42% / 0.7),
-                0 18px 44px rgba(15,23,42,0.34);
-    z-index: 2;
+    opacity: 1; filter: none; z-index: 3;
+    background: #eef4ff; border-color: #1d4ed8;
+    box-shadow: 0 0 0 max(2px, calc(var(--num, 14px) * 0.16)) rgba(29,78,216,0.45),
+                0 6px 20px rgba(15,23,42,0.28);
   }
-  /* here_mark — a bracket at the centre of the GLASS, not on a card. It never
-     moves, so the cards visibly travel through it, and the one inside it is the
-     one you are on. A property of a card can only ever say "this one is special";
-     a fixed mark says "this is the place, and something is standing in it". */
-  .here_mark {
-    position: absolute; left: 50%; top: 50%; z-index: 3;
-    pointer-events: none; transform: translate(-50%, -50%);
-    width: var(--hm_w, 160px); height: var(--hm_h, 200px);
-  }
-  .here_mark i {
-    position: absolute; width: 22px; height: 22px; display: block;
-    border: 3px solid rgba(15,23,42,0.55);
-  }
-  .here_mark i:nth-child(1) { left: -9px;  top: -9px;    border-right: none; border-bottom: none; border-radius: 8px 0 0 0; }
-  .here_mark i:nth-child(2) { right: -9px; top: -9px;    border-left:  none; border-bottom: none; border-radius: 0 8px 0 0; }
-  .here_mark i:nth-child(3) { right: -9px; bottom: -9px; border-left:  none; border-top:    none; border-radius: 0 0 8px 0; }
-  .here_mark i:nth-child(4) { left: -9px;  bottom: -9px; border-right: none; border-top:    none; border-radius: 0 0 0 8px; }
-  .card .n { color: hsl(var(--h, 0) 45% 30%); }
-  .card.here .n { color: hsl(var(--h, 0) 72% 20%); }
-  .card.here .d { color: hsl(var(--h, 0) 40% 34%); }
-  .card .d { display: block; margin-top: 6px; font-size: 12px; font-weight: 500;
-             color: #94a3b8; letter-spacing: 0.06em; }
+  .card.here .cal_num { color: #1d4ed8; }
+  .card.here .cal_ev { color: #1e293b; }
   /* lens_none — the magnifying glass is gone, every part of it: the round
      window, its ring, the highlight on the glass, the second copy of the world
      behind it and the gain that magnified one against the other. It made the page
@@ -461,8 +455,6 @@
        paper carries the swirl, both leans, the pan and the zoom. -->
   <div class="stage">
     <div class="grid" id="grid"><img class="shot" id="shot" alt="" src="lab_surface.svg"></div>
-    <!-- here_mark: fixed to the glass, sized to one card, never moves -->
-    <div class="here_mark" id="here_mark"><i></i><i></i><i></i><i></i></div>
     <div class="deck" id="deck"></div>
   </div>
   <div class="haze"></div>
@@ -535,7 +527,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'edge_near', bg: '#7e22ce', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'cal_month', bg: '#166534', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -757,7 +749,10 @@
   // +1 or -1 on exactly one of them. Whole numbers do not drift, and the gesture
   // that moved them is forgotten the instant it has been counted.
   var cell = { x: 0, y: 0, z: 0 };
-  var CELL_MAX = { x: 9, y: 9, z: 5 };
+  // cal_month: the lattice is the month, so its limits are the month's own edges —
+  // three days either side of the middle column, two weeks either side of the
+  // middle row. You cannot nudge off the calendar.
+  var CELL_MAX = { x: 3, y: 2, z: 5 };
   var BUMP_ZOOM = 1.6;              // how much bigger one nudge toward you makes the world
   // derive the depth notch from the zoom law, so changing Z_POWER cannot silently
   // change what a nudge toward you is worth
@@ -1141,14 +1136,98 @@
   // one to the next. At 62% of the width the card you were on filled the screen
   // and its neighbours were slivers, which reads as one card moving rather than as
   // a space you are travelling through.
-  var LAY_N  = 5;
-  var CARD_F = 0.46, GAP_F = 0.07;
-  // z_one — ONE layer of cards, and that is the whole space. The nested layers are
-  // gone: toward and away no longer drop you through a card into a fresh spread,
-  // they move the ONE spread nearer and further. And they do it hard — Z_STEP 2.1
-  // per nudge, so four nudges in is nineteen times bigger and four out is
-  // nineteen times smaller. Exaggerated is the point: he wants the in-and-out to
-  // read as unmistakably as the sideways ones do.
+  // ---- cal_month ----------------------------------------------------------
+  // The deck is a month. September 2026, Monday-first, seven columns by five
+  // rows: Aug 31 in the top-left corner through Oct 4 in the bottom-right, with
+  // the centre of the lattice landing on Thursday the 17th. One nudge sideways is
+  // one DAY and one nudge up or down is one WEEK, which is what the grid already
+  // meant — it just had numbers on it instead of dates.
+  //
+  // Why a calendar at all: the deck was 25 coloured cards with a digit each, and a
+  // digit is legible at any size. Nothing about it could answer "can I actually
+  // find my way around a space that has more in it than fits on the screen" —
+  // which is the question the whole page exists to ask. A day with nine things on
+  // it is unreadable at the zoomed-out scale and perfectly readable three notches
+  // in, so navigating REQUIRES both the moving and the zooming, together.
+  var LAY_W = 7, LAY_H = 5;         // days across, weeks down
+  var CAL_FIRST = new Date(2026, 7, 31);   // the Monday the grid starts on (Aug 31)
+  var CAL_MONTH = 8;                       // September, zero-based, for the "other month" wash
+  var DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // cal_fill — some days are nearly empty and some are stacked, because a month
+  // where every day carries the same load teaches nothing about navigating one.
+  // Keyed by day-of-month within September.
+  var CAL_DAY = {
+    1:  ['09:00 Standup', '11:00 Vendor call', '14:00 1:1 Dana'],
+    2:  ['10:30 Dentist'],
+    3:  ['09:00 Standup', '09:45 Design review', '11:00 Budget v3', '13:00 Lunch — Ray',
+         '14:30 Interview: backend', '16:00 Interview: debrief', '17:30 Ship checklist',
+         '19:00 Choir'],
+    4:  ['09:00 Standup', '15:00 Retro'],
+    5:  ['08:00 Long run', '13:00 Farmers market'],
+    6:  [],
+    7:  ['ALL DAY Labor Day'],
+    8:  ['09:00 Standup', '10:00 Q4 planning', '14:00 1:1 Dana'],
+    9:  ['09:00 Standup', '09:30 Security review', '10:15 Vendor: Acme', '11:00 Roadmap',
+         '12:30 Lunch — Priya', '14:00 Pricing', '15:30 Board deck', '16:45 1:1 Sam',
+         '18:00 Flight to SFO'],
+    10: ['ALL DAY Offsite — day 1', '19:00 Dinner, Ferry Building'],
+    11: ['ALL DAY Offsite — day 2', '17:00 Flight home'],
+    12: ['11:00 Bike shop'],
+    13: ['16:00 Roast chicken'],
+    14: ['09:00 Standup', '13:00 Contract redlines'],
+    15: ['09:00 Standup', '10:00 All hands', '11:30 Hiring sync', '14:00 1:1 Dana',
+         '15:00 Perf calibration', '16:30 Customer: Northwind'],
+    16: ['09:00 Standup', '12:00 Lunch — Jo'],
+    17: ['09:00 Standup', '09:30 Architecture', '11:00 Legal', '12:00 Lunch — team',
+         '13:30 Pricing v2', '15:00 Interview: design', '16:00 Debrief',
+         '17:00 Release cut', '18:30 Parents dinner', '20:00 Call — Lena'],
+    18: ['09:00 Standup', '15:00 Retro', '17:00 Drinks'],
+    19: ['10:00 Farmers market'],
+    20: [],
+    21: ['09:00 Standup', '14:00 1:1 Dana', '16:00 Renewal: Globex'],
+    22: ['09:00 Standup', '10:00 QBR prep'],
+    23: ['09:00 Standup', '09:30 QBR', '11:00 QBR debrief', '13:00 Lunch — Ray',
+         '14:00 Support review', '15:30 Infra costs', '17:00 1:1 Sam'],
+    24: ['09:00 Standup', '11:00 Dentist'],
+    25: ['09:00 Standup', '15:00 Retro', '16:00 Demo day'],
+    26: ['09:00 Long run'],
+    27: [],
+    28: ['09:00 Standup', '10:00 Month close', '14:00 1:1 Dana'],
+    29: ['09:00 Standup', '13:00 Budget lock'],
+    30: ['09:00 Standup', '11:00 Q3 wrap', '15:00 Retro', '17:00 Team dinner']
+  };
+  // cal_span — the bars that run ACROSS days. Each is a September start and end
+  // day inclusive, and it is drawn as one element lying over the row rather than
+  // as a mark on each day, so it reads as one thing that spans rather than as
+  // several things that coincide. A span crossing a week boundary is split into
+  // one bar per row, which is what a paper calendar does too.
+  var CAL_SPAN = [
+    { from: 2,  to: 4,  text: 'Design sprint',        tone: 0 },
+    { from: 7,  to: 11, text: 'Q4 planning week',     tone: 1 },
+    { from: 10, to: 11, text: 'Offsite',              tone: 2 },
+    { from: 14, to: 25, text: 'Hiring loop',          tone: 3 },
+    { from: 19, to: 22, text: 'Ray on leave',         tone: 4 },
+    { from: 28, to: 30, text: 'Quarter close',        tone: 5 }
+  ];
+  var SPAN_TONE = ['#2563eb', '#0f766e', '#b45309', '#7c3aed', '#be185d', '#15803d'];
+  // the card is a day, so it is roughly a day's shape: a little taller than wide,
+  // packed close, because a month has to read as a grid rather than as a scatter.
+  // cal_fit — and it is sized so that the WHOLE MONTH at Z_HOME very nearly fills
+  // the width. The old 0.46 was chosen so that three of five cards showed at once;
+  // seven columns is a different sum, and at 0.42 the month sat in the middle of
+  // the screen with a third of the glass empty around it.
+  var CARD_F = 0.55, GAP_F = 0.035;
+  // cal_date — grid position to a real date. Column is i + 3, row counts DOWN
+  // from the top, which is why j is negated: the lattice has +y up and a calendar
+  // has week one at the top.
+  function cal_date(i, j) {
+    var col = i + (LAY_W - 1) / 2;
+    var row = (LAY_H - 1) / 2 - j;
+    var d = new Date(CAL_FIRST.getTime());
+    d.setDate(d.getDate() + row * LAY_W + col);
+    return d;
+  }
   var Z_STEP = 2.1;                 // how much bigger one nudge toward you makes the deck
   // z_room — four notches either way, x19 in to 1/19 out. Six was tried and both
   // ends were useless: at x86 a card is fourteen thousand pixels of flat colour
@@ -1157,19 +1236,23 @@
   // "right up against it") and the far end is the whole grid as a small legible
   // constellation.
   var Z_MAX  = 4;                   // notches either way: x19.4 in, x1/19.4 out
-  var zc   = 0;                     // which z notch the one deck is at
+  // cal_open — the month starts WHOLE. Two notches out puts all seven columns and
+  // all five weeks on the glass at once, at which size a day is about 40px and its
+  // hours are a grey texture rather than words. That is the point: you arrive
+  // seeing the shape of the month and have to come in to read any of it.
+  var Z_HOME = -2;
+  var zc   = Z_HOME;                // which z notch the one deck is at
   var zAnim = null;                 // { from, t0 } while a near/far nudge is landing
   var deckEl = document.getElementById('deck');
   function card_px() {
     var w = (frame && frame.clientWidth) || 320, h = (frame && frame.clientHeight) || 640;
-    var cw = w * CARD_F, ch = Math.min(h * 0.30, cw * 1.35);
+    var cw = w * CARD_F, ch = Math.min(h * 0.34, cw * 1.30);
     return { cw: cw, ch: ch, px: cw + w * GAP_F, py: ch + w * GAP_F };
   }
-  // card_name — the integrated number: where you are is the whole route that got
-  // you here, so 7.3.11 is the eleventh card of the third card of the seventh.
-  // z_one: with one layer there is no route, so a card is just its number
+  // cal_month: a card is a day, so its name is its date
   function card_name(i, j) {
-    return String((j + (LAY_N - 1) / 2) * LAY_N + (i + (LAY_N - 1) / 2) + 1);
+    var d = cal_date(i, j);
+    return DOW[(d.getDay() + 6) % 7] + ' ' + MON[d.getMonth()] + ' ' + d.getDate();
   }
   // deep_say — how far in or out from where you started
   function deep_say() {
@@ -1184,31 +1267,61 @@
   function z_scale() { return Math.pow(Z_STEP, z_at()); }
   function deck_build() {
     if (!deckEl) return;
-    var g = card_px(), half = (LAY_N - 1) / 2, out = '';
-    for (var j = half; j >= -half; j--) {
-      for (var i = -half; i <= half; i++) {
-        // here_y — the flag disagreed with the pan on the Y axis, and had done for
-        // a long time: the deck is translated by -cell.y, so the row that arrives
-        // in the middle is j = -cell.y, but the flag was looking for j = +cell.y.
-        // Nudging up therefore highlighted a card two rows away from the one you
-        // were actually looking at. It was invisible until card_focus dimmed the
-        // neighbours — with every card equally bright, a ring in the wrong place
-        // just read as decoration. X was right all along, which is why it never
-        // looked systematically broken.
+    var g = card_px();
+    var hw = (LAY_W - 1) / 2, hh = (LAY_H - 1) / 2;
+    var out = '';
+    // cal_span: the bars first, so the days sit ON them rather than under them.
+    // One bar per row per span — a span that crosses a week boundary becomes two,
+    // which is what a paper calendar does with the same problem.
+    var BAR_H = Math.max(3, g.ch * 0.052), BAR_TOP = g.ch * 0.30, BAR_GAP = BAR_H * 1.5;
+    for (var r = 0; r < LAY_H; r++) {
+      var lane = 0;
+      for (var si = 0; si < CAL_SPAN.length; si++) {
+        var sp = CAL_SPAN[si];
+        var lo = null, hi = null;
+        for (var c = 0; c < LAY_W; c++) {
+          var dd = cal_date(c - hw, hh - r);
+          if (dd.getMonth() !== CAL_MONTH) continue;
+          if (dd.getDate() >= sp.from && dd.getDate() <= sp.to) { if (lo === null) lo = c; hi = c; }
+        }
+        if (lo === null) continue;
+        var x0 = (lo - hw) * g.px - g.cw / 2;
+        var wpx = (hi - lo) * g.px + g.cw;
+        var top = -(hh - r) * g.py - g.ch / 2 + BAR_TOP + lane * BAR_GAP;
+        out += '<div class="cal_bar" style="left:' + x0.toFixed(0) + 'px;top:' + top.toFixed(0) +
+               'px;width:' + wpx.toFixed(0) + 'px;height:' + BAR_H.toFixed(1) + 'px;' +
+               'background:' + SPAN_TONE[sp.tone % SPAN_TONE.length] + ';' +
+               'font-size:' + (BAR_H * 0.95).toFixed(1) + 'px">' +
+               '<span>' + sp.text + '</span></div>';
+        lane++;
+      }
+    }
+    for (var j = hh; j >= -hh; j--) {
+      for (var i = -hw; i <= hw; i++) {
+        // here_y — the deck is translated by -cell.y, so the row that arrives in
+        // the middle is j = -cell.y. The flag has to ask the same question the pan
+        // answers, or the highlight sits on a day you are not looking at.
         var here = (i === -cell.x && j === -cell.y);
-        var num  = (j + half) * LAY_N + (i + half) + 1;
-        // card_hue: the golden angle, so no two neighbours are near each other on
-        // the wheel; the depth tilts the lightness so each layer reads as its own
-        var hue  = Math.round((num * 137.508) % 360);
-        var lit  = 90;
-        out += '<div class="card' + (here ? ' here' : '') + '" style="' +
-               '--h:' + hue + ';--s:58%;--l:' + lit + '%;' +
+        var d = cal_date(i, j);
+        var mine = (d.getMonth() === CAL_MONTH);
+        var list = (mine && CAL_DAY[d.getDate()]) || [];
+        var lanes = 0;
+        for (var q = 0; q < CAL_SPAN.length; q++)
+          if (mine && d.getDate() >= CAL_SPAN[q].from && d.getDate() <= CAL_SPAN[q].to) lanes++;
+        var body = '';
+        for (var e = 0; e < list.length; e++)
+          body += '<span class="cal_ev">' + list[e].replace(/[<>&]/g, '') + '</span>';
+        out += '<div class="card cal_day' + (here ? ' here' : '') + (mine ? '' : ' cal_out') + '" style="' +
                'width:' + g.cw.toFixed(0) + 'px;height:' + g.ch.toFixed(0) + 'px;' +
                'left:' + (i * g.px - g.cw / 2).toFixed(0) + 'px;' +
                'top:' + (-j * g.py - g.ch / 2).toFixed(0) + 'px;' +
-               'font-size:' + (g.cw * 0.128).toFixed(0) + 'px">' +
-               '<span><span class="n">' + card_name(i, j) + '</span>' +
-               '<span class="d">' + deep_say() + '</span></span></div>';
+               '--pad:' + (g.cw * 0.06).toFixed(1) + 'px;' +
+               '--num:' + (g.cw * 0.145).toFixed(1) + 'px;' +
+               '--evf:' + (g.cw * 0.074).toFixed(2) + 'px;' +
+               '--lane:' + (BAR_TOP + lanes * BAR_GAP - g.ch * 0.24).toFixed(1) + 'px">' +
+               '<span class="cal_num">' + d.getDate() +
+                 (d.getDate() === 1 ? '<i>' + MON[d.getMonth()] + '</i>' : '') + '</span>' +
+               '<span class="cal_list">' + body + '</span></div>';
       }
     }
     deckEl.innerHTML = out;
@@ -1240,10 +1353,6 @@
     root.setProperty('--sx', cx.toFixed(1) + 'px');
     root.setProperty('--sy', cy.toFixed(1) + 'px');
     root.setProperty('--sc', z.toFixed(4));
-    // here_mark: the bracket is sized to one card AS DRAWN, so it stays snug
-    // around whatever is standing in it at every depth.
-    root.setProperty('--hm_w', (g.cw * z).toFixed(1) + 'px');
-    root.setProperty('--hm_h', (g.ch * z).toFixed(1) + 'px');
   }
   // deck_deep — z_one: toward and away move the ONE deck nearer and further, hard.
   // Nothing is entered and nothing is left behind; the same twenty-five cards are
@@ -2014,7 +2123,7 @@
     anim = null; zAnim = null;
     nBar = { x: 0, y: 0, z: 0 }; nArm = true; nQuiet = 0; nStir = 0;
     nSlow = { x: 0, y: 0, z: 0 };   // nudge_raw: relearn what zero is from here
-    if (!keepDepth) zc = 0;         // z_one: back to the deck's resting size
+    if (!keepDepth) zc = Z_HOME;    // cal_open: back to the whole month
     cell = { x: 0, y: 0, z: 0 };    // and to the middle card of it
     deck_build();
     off  = { x: 0, y: 0, z: 0 };
@@ -2462,7 +2571,7 @@
                landing: anim ? anim.k : '', armed: nArm, sinceNudge: nLast ? Date.now() - nLast : -1,
                card: card_here(), deep: zc, say: deep_say(),
                zoom: +z_scale().toFixed(3), zing: !!zAnim,
-               deck: { n: LAY_N, zmax: Z_MAX, zstep: Z_STEP,
+               deck: { w: LAY_W, h: LAY_H, zmax: Z_MAX, zstep: Z_STEP, home: Z_HOME,
                        pitch: +card_px().px.toFixed(1) },
                watch: { a: +NUDGE_A, tau: NUDGE_TAU, quiet: NUDGE_QUIET,
                         rearm: NUDGE_REARM, rise: NUDGE_RISE, push: PUSH_INV,

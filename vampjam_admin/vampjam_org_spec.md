@@ -2782,7 +2782,42 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   spacers so that button is 40px like every other rather than stretching across the line — spacers
   rather than a fixed width, so the columns stay aligned whatever width the rig ends up.
   Suites 256, 263 and 267 green, no page errors. Still no new trace.
-- NEXT → add entry 268 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 268 cal_month · b268 · lab.html — the deck becomes September 2026.
+  why: the deck was 25 coloured cards with a digit each, and a digit is legible at any size. Nothing
+  about it could answer the question the page exists to ask — can I find my way around a space that
+  has more in it than fits on the screen — because there was never anything in it to find. A day
+  with ten things on it is a grey texture at the zoomed-out scale and perfectly readable three
+  notches in, so navigating now REQUIRES the moving and the zooming together.
+  the grid: seven columns by five rows, Monday-first, Aug 31 in the top-left through Oct 4 in the
+  bottom-right, with the middle of the lattice landing on Thursday the 17th. One nudge sideways is
+  one DAY and one up or down is one WEEK — which is what the lattice always meant, it just had
+  numbers on it instead of dates. CELL_MAX becomes { 3, 2 }, the month's own edges: you cannot
+  nudge off the calendar, verified by nudging six past the right edge and eight past the left.
+  cal_fill: some days carry nothing and some carry ten, because a month where every day has the
+  same load teaches nothing about navigating one. The 3rd, 9th, 17th and 23rd are the heavy ones.
+  cal_span: six multi-day bars, each drawn as ONE element lying across the days it covers rather
+  than as a mark on each day, so it reads as one thing that spans rather than several that
+  coincide. A span crossing a week boundary is split into one bar per row, which is what a paper
+  calendar does with the same problem. Each day's own list starts BELOW however many bars cross it,
+  worked out per day, so a bar never lies over an hour.
+  cal_open: the month starts WHOLE, two notches out, and a reset returns there rather than to x1.
+  Measured: at Z_HOME the month is 333x305 in a 390x820 window, dead centre, and a day is 45x59px —
+  at which size its hours are texture, not words. Three notches in, that same day is 418x544 and
+  its ten entries are plain text.
+  cal_fit: CARD_F 0.46 → 0.55. The old value was chosen so three of five cards showed at once;
+  seven columns is a different sum, and at 0.42 the month sat in the middle with a third of the
+  glass empty around it.
+  day_here: the corner brackets are gone at his word. The day says it itself — full strength while
+  its neighbours wash back, a blue ring standing off its edge, a tinted ground and its date in the
+  same blue, lifted above the span bars so a bar can never cross the ring.
+  a sign left deliberately alone: nudging right currently goes to the EARLIER day and up goes to
+  the LATER week. Those are the move row's signs, which he has spent four builds making his own, so
+  I have not quietly reversed them to suit a calendar convention — the L R and U D switches are
+  right there and it is one press.
+  verified: 35 days and 8 bars drawn, the month centred to the pixel, one nudge per day and per
+  week with the focal day centred every time, both edges clamped, the zoom walked in and the day's
+  entries read back as text. Suites 256, 263 and 267 green, no page errors. Still no new trace.
+- NEXT → add entry 269 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

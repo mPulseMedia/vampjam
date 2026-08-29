@@ -9,8 +9,63 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "267 edge_near",
+        id: "268 cal_month",
         expanded: true,
+        nodes: [
+          { text: "268 cal_month", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the matrix of cards look like days on a calendar." },
+              { text: "Fill some days with a whole bunch of stuff, so I have to zoom in to see it." },
+              { text: "Some days should have a bar across them for a multi-day event." },
+              { text: "One day at a time as I move. Start with the whole month visible. September 2026." },
+              { text: "No little round corner framing \u2014 but do highlight the day visibly." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Make the Matrix of cards actually look like days on a calendar and fill them with a whole bunch of some of the days with a whole bunch of stuff and let me have to zoom in in order to see it. Also, some of the days should have a bar going across them for a multi day event. Let me see what that\u2019s like to navigate and I should just move one day at a time you know uptown where I left, etc. and started with the whole month visible do it for September 2026 and I don\u2019t have the Little Round2 corner framing things but do have it be highlighted in some visible way." }
+            ]},
+            { text: "why_this_is_the_right_test", children: [
+              { text: "the old deck was 25 coloured cards with a digit each, and a digit is legible at any size" },
+              { text: "so nothing about it could answer the question the page exists to ask \u2014 can I find my way around a space with more in it than fits on the screen \u2014 because there was nothing in it to find" },
+              { text: "a day with ten things on it is texture when zoomed out and readable three notches in, so navigating now needs the moving and the zooming together" }
+            ]},
+            { text: "the_month", children: [
+              { text: "seven days across, five weeks down, Aug 31 through Oct 4, the middle of the lattice landing on Thursday the 17th" },
+              { text: "one nudge sideways is one day and one up or down is one week \u2014 which is what the lattice always meant, it just had numbers on it" },
+              { text: "you cannot nudge off the calendar; I checked by pushing six past the right edge and eight past the left" },
+              { text: "some days carry nothing and some carry ten, because a month where every day has the same load teaches nothing" }
+            ]},
+            { text: "the_bars", children: [
+              { text: "six of them, each drawn as ONE element lying across its days rather than a mark on each day \u2014 so it reads as one thing that spans, not several that coincide" },
+              { text: "one that crosses a week boundary splits into a bar per row, which is what a paper calendar does with the same problem" },
+              { text: "and each day\u2019s own list starts below however many bars cross it, so a bar never sits on an hour" }
+            ]},
+            { text: "how_it_opens", children: [
+              { text: "the whole month, two notches out, and a reset comes back there rather than to full size" },
+              { text: "measured: the month is 333x305 in your 390x820 screen, dead centre, and a day is 45x59 \u2014 at which size its hours are texture, not words" },
+              { text: "three notches in, that same day is 418x544 and its ten entries are plain text" }
+            ]},
+            { text: "the_highlight", children: [
+              { text: "the corner brackets are gone. the day says it itself: full strength while the others wash back, a blue ring standing off its edge, a tinted ground, its date in the same blue" },
+              { text: "and it lifts above the span bars, so a bar can never cross the ring" }
+            ]},
+            { text: "one_thing_i_left_alone_on_purpose", children: [
+              { text: "nudging right currently goes to the EARLIER day, and up goes to the LATER week" },
+              { text: "those are the move row\u2019s signs, which you have spent four builds making yours \u2014 so I have not quietly reversed them to suit a calendar convention. the L R and U D switches are right there" }
+            ]},
+            { text: "verify", children: [
+              { text: "~38m: 35 days and 8 bars drawn; the month centred to the pixel; one nudge per day and per week with the focal day centred every time; both edges clamped" },
+              { text: "the zoom walked in and the day\u2019s entries read back as text" },
+              { text: "three earlier suites green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "267 edge_near",
+        expanded: false,
         nodes: [
           { text: "267 edge_near", children: [
             { text: "prompt_restate", children: [
