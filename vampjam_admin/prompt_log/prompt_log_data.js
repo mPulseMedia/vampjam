@@ -9,8 +9,41 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "264 z_response",
+        id: "265 roll_flip",
         expanded: true,
+        nodes: [
+          { text: "265 roll_flip", children: [
+            { text: "prompt_restate", children: [
+              { text: "On the 3D diagram, flip right/left." },
+              { text: "And flip the rotation \u2014 right edge away, left edge away." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On the 3d thing, flip right left and flip rotate (right edge away, left edge away)" }
+            ]},
+            { text: "one_sign_did_both", children: [
+              { text: "and that is not luck \u2014 it is the thing I put in two builds ago paying off" },
+              { text: "the plate\u2019s position along the right/left arc is read from the turn angle itself, because on an orbit, carrying the phone round to the side and turning it about the vertical are the same fact" },
+              { text: "so one sign reverses the arc position, the rotation arrow, the plate\u2019s own turn and the readout, all together \u2014 and the panel still cannot contradict itself" },
+              { text: "I deliberately did NOT add a second sign for the position: that would have flipped it back and split the pair apart again" }
+            ]},
+            { text: "diagram_only", children: [
+              { text: "the paper and the cards are untouched \u2014 this is the picture in the corner, nothing else" }
+            ]},
+            { text: "verify", children: [
+              { text: "~7m: ran the same three poses against the previous build and this one, side by side" },
+              { text: "right/left and turn side both go +40 to \u221240, and the plate\u2019s travel along the right arm reverses with them" },
+              { text: "up/down, tilt top and swirl flat come out character-for-character identical \u2014 nothing moved that you did not ask to move" },
+              { text: "three suites green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "264 z_response",
+        expanded: false,
         nodes: [
           { text: "264 z_response", children: [
             { text: "prompt_restate", children: [

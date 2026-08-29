@@ -2707,7 +2707,22 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   old one. The diagram's plate follows the deck, so it now travels away on a toward-nudge — the
   picture and the deck agree, which is the thing that has to be true.
   Suites 256, 263 and 264 green, no page errors. Still no new trace.
-- NEXT → add entry 265 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 265 roll_flip · b265 · lab.html — the diagram's right/left and its right-edge-away rotation, both
+  reversed, by one sign.
+  he asked for two flips and ONE sign does both, which is not a coincidence — it is sign_agree from
+  263 paying off. The plate's position along the right/left arc is read from the turn angle itself,
+  because on an orbit, carrying the phone round to the side and turning it about the vertical are
+  the same fact. So ROLL_INV reverses the angle at the single point it is derived, and the arc
+  position, the rotation arrow, the plate's own turn and the "turn side" readout all move together.
+  MODEL_INV.x stays +1 deliberately: a second sign there would have flipped the position back and
+  split the pair apart again, which is the state 263 was built to end.
+  diagram only, as TILT_INV and SWIRL_INV are — the paper and the deck are untouched.
+  verified by running the same three poses against the previous build and this one, side by side:
+  "right / left" and "turn side" both go +40 → −40 and the plate's travel along the +X arm goes
+  +27.8 → −28.1, while "up / down", "tilt top" and "swirl flat" are character-for-character
+  identical. The turn arc is still drawn, and the plate's own top edge lies the other way.
+  Suites 256, 263 and 265 green, no page errors. Still no new trace.
+- NEXT → add entry 266 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

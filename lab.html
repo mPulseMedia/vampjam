@@ -521,7 +521,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'z_response', bg: '#4338ca', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'roll_flip', bg: '#be185d', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1274,11 +1274,23 @@
   // ONLY — the paper's counter-turn (screen_roll via PAN_INV) is untouched,
   // because that one is right.
   var SWIRL_INV = -1;
+  // roll_flip — ROLL_INV reverses the DEPICTED turn about the vertical: the
+  // right-edge-away / left-edge-away rotation. Diagram only.
+  //
+  // He asked for two flips, right/left and this rotation, and ONE sign does both,
+  // which is not a coincidence — it is sign_agree paying off. The plate's position
+  // along the right/left arc is read from this very angle, because on an orbit
+  // carrying the phone round to the side and turning it about the vertical are the
+  // same fact. Flip the angle and the arc position, the rotation arrow, the plate's
+  // own turn and the "turn side" readout all move together, and the panel stays
+  // incapable of contradicting itself. MODEL_INV.x therefore stays +1: putting a
+  // second sign there would have flipped the position back and split the pair.
+  var ROLL_INV = -1;
   function flip_yaw(m) {
     var deg = 180 / Math.PI;
     var pitch = TILT_INV  * Math.asin(Math.max(-1, Math.min(1, m[7]))) * deg;
     var yaw   = SWIRL_INV * Math.atan2(-m[1], m[4]) * deg;
-    var roll  = Math.atan2(-m[6], m[8]) * deg;
+    var roll  = ROLL_INV  * Math.atan2(-m[6], m[8]) * deg;
     return { m: mat_from(-yaw, pitch, roll), pitch: pitch, yaw: -yaw, roll: roll };
   }
   // pose_scale — 1 cm of hand travel is POSE_SC/100 units in the diagram, an
