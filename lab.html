@@ -490,7 +490,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'curve_flip', bg: '#7c3aed', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'nudge_core', bg: '#15803d', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -662,181 +662,33 @@
   // centimetres out. 400% of the viewport at x0.30 is still 120% covered, and
   // the haze takes the rim.
   var MULT_MIN   = 0.30, MULT_MAX = 39;
-  var DEAD       = 0.12;     // m/s^2 ignored: the noise floor at rest (from his takes)
-  // z_calm — near/far is the worst axis and he is right that it is. Three
-  // reasons, and one fix each. (1) Gravity points mostly along the screen's
-  // normal at any comfortable holding angle, and the phone's gravity-free
-  // acceleration is an ESTIMATE — its error is largest exactly along gravity,
-  // so z carries more leakage than x or y ever do. It gets its own, larger
-  // deadband. (2) The depth mapping amplifies whatever survives: at Z_POWER 6.6
-  // a centimetre of z error moved the whole picture's scale, where a centimetre
-  // of x error moved it one screen-width. The exponent comes down to 4.6, which
-  // still reaches x39 but is a third less twitchy per centimetre. (3) The
-  // display spring is softened for z alone, so what does get through arrives as
-  // a glide rather than a flicker.
-  var DEAD_Z     = 0.20;     // m/s^2: near/far's own, larger noise floor
-  // hold_still: a move ends where it ends. There is no position leak any more —
-  // the world used to ease back to centre after every gesture, which read as
-  // 'resets instead of holding'. Now the run is integrated while the phone is
-  // actually moving, and the moment it reads still the velocity is killed and
-  // the position simply STAYS. Drift cannot accumulate between moves because
-  // nothing is being integrated between moves.
-  // glide_stop — a slide has two halves: the hand pushes, then the hand brakes.
-  // Integrating the brake honestly makes the world travel BACK, which is what he
-  // saw in the second half of every slide. So a move latches its direction, and
-  // from then on opposing acceleration is only allowed to slow it down, never to
-  // carry it the other way. The moment braking is detected the glide-out starts —
-  // about a second earlier than waiting for stillness — and it eases to rest
-  // instead of stopping dead.
-  var BRAKE_DECAY = 0.90;    // per sample once the hand starts braking (~0.16s)
-  var LATCH_V     = 0.02;    // m/s: fast enough to call the direction of a move
-  var STOP_V      = 0.015;   // m/s: slower than this counts as stopped
-  var STILL_MS   = 120;      // quiet for this long -> the move is over
-  var VEL_TAU    = 6.0;      // s: barely any leak — a leak makes the braking half
-                             // of a move outweigh the pushing half, which dragged
-                             // the world back the moment you stopped
-  // the same take shows mean linear acceleration of 0.13-0.41 through windows he
-  // called wrong, so 0.20 was calling noise a move; 0.26 clears the quiet ones
-  var MOVE_A     = 0.26;     // m/s^2: above this the phone counts as moving
-  // trap_free — the left-right axis was the one that most often got stuck ON:
-  // the model kept believing the hand was still pushing when it was not, the
-  // velocity never bled away (VEL_TAU 6s is barely a leak at all), and the
-  // world walked off on its own. That is what most of his resets were for.
-  // Two guards. COAST: when the drive on an axis is weak, that axis's speed
-  // decays in a third of a second instead of six — coasting is not free,
-  // because a hand that has stopped pushing has stopped. MOVE_MAX: no single
-  // move may run longer than this; real gestures are short, and anything still
-  // 'moving' after a second and a half is the trap, not a gesture.
-  var COAST_A    = 0.10;     // m/s^2 of drive below which an axis is coasting
-  var COAST_TAU  = 0.30;     // s: how fast a coasting axis gives up its speed
-  var MOVE_MAX   = 1.5;      // s: hard ceiling on one move
-  // shake_test — the real difference between a push and a tremor is NET. A hand
-  // that is going somewhere has a direction over a third of a second; a hand
-  // that is only shaking averages to nothing while still reading large. So each
-  // axis carries a short average of its signed drive and of its size, and when
-  // the signed one is a small fraction of the size, that axis is shaking and is
-  // not allowed to move the world at all. This is the thing that was getting
-  // stuck on, and no threshold on magnitude alone can tell the two apart.
-  var TREM_TAU   = 0.14;     // s: the window the net is measured over
-  var TREM_R     = 0.34;     // net/size ratio below which an axis is only shaking
-  // shake_hold — a real push-then-brake passes through 'no net' for an instant at
-  // the turn, and killing its speed there costs half the gesture (measured: a
-  // slide fell from 482px to 266px). So shaking has to PERSIST before it counts.
-  var TREM_HOLD  = 0.35;     // s of continuous no-net before an axis is silenced
-  // axis_one — why pulling the phone toward you and pushing it away threw the
-  // FOCAL POINT off and not just the scale: the pan is world metres multiplied
-  // by the zoom, so at x6 a three-millimetre sideways error is drawn six times
-  // bigger. A toward-and-away move is made by an arm, and an arm arcs, so there
-  // is always a little sideways in it — and the zoom the move itself creates is
-  // what magnifies it. The fix is not to fight the arithmetic but to notice that
-  // he moves ONE WAY AT A TIME: during a move, an axis carrying less than
-  // ONE_R of the leading axis's drive is not really being pushed, and is not
-  // allowed to move the world. A genuine diagonal, where two axes are
-  // comparable, still passes both.
-  var ONE_R      = 0.45;     // share of the leading axis's drive an axis must carry
-  var DWELL_S    = 1.0;      // s of stillness that counts as 'I meant to stop here'
+  // nudge_core — everything that used to live here is gone: DEAD and DEAD_Z, the
+  // brake decay, the latch and stop velocities, the still window, the velocity
+  // and coast time constants, the move threshold and its maximum duration, the
+  // tremor window, ratio and hold, the one-axis dominance ratio, the dwell time,
+  // the lead term, and the two rotation-veto angles. Twenty-two constants, every
+  // one of them tuned against his takes, and every one of them feeding a model
+  // that did not move a card.
+  //
+  // What replaced them is already above, in nudge_watch: two exponential averages
+  // and a subtraction. The slow one is whatever the phone currently thinks zero
+  // is, which is what the levelling window and the calibrated bias were for. The
+  // fast one is the gesture. Nothing else is needed to see a wrist flick, and
+  // everything else was in the way of seeing it.
+
   // reset_run — his shorthand: ONE press of reset means 'I am just re-zeroing',
   // several presses close together mean 'that went disastrously wrong'. So the
   // presses are counted, every reset mark carries how many it was, and two or
-  // more is flagged severe. It costs him nothing to say and it turns a reset
-  // from an ambiguous act into a graded one.
-  // 900ms: a real double-tap lands well inside this, while a considered second
-  // reset a second later stays a plain one. Measured at 1400 a deliberate
-  // re-zero followed a second later was wrongly read as a burst.
+  // more is flagged severe.
   var RESET_GAP  = 900;      // ms: presses closer together than this are one burst
   var resetAt    = 0;        // when the last reset was
   var resetRun   = 0;        // how many in the current burst
-  // lag_trace: position is the integral of the integral of acceleration, so it
-  // always trails the hand. Showing pos + vel*LEAD cancels most of that — while
-  // the phone travels at a steady rate the screen sits where the phone WILL be
-  // a tenth of a second from now, and the moment it stops, vel is 0 and the lead
-  // vanishes, so nothing overshoots at rest.
-  var LEAD       = 0.10;     // s of prediction
-  // lead_hold: the lead term used to unwind the instant the hand braked, which
-  // dragged the picture back exactly where he said it reversed. Now the lead is
-  // carried as state: it tracks vel while the move is building, FREEZES the
-  // moment that axis starts braking, and is folded into pos when the move ends.
-  // The picture therefore only ever eases forward to a stop.
-  // rot_tight — refined from the 62.8s take and its ten marks. Reading the two
-  // seconds before every judgement: 'a little off' sat at 4-19 deg/s mean with
-  // peaks of 13-60, and 'haywire' at 6-37 mean with peaks of 22-113 — ALL of it
-  // inside the old fully-trusted band, which started doubting only at 45 and
-  // only shut at 160. That is why rotation was leaking into position: 1.3 to
-  // 4.7 cm of drift accumulated in two seconds of what was mostly turning.
-  var ROT_OPEN   = 12;       // deg/s: below this the sample counts fully
-  var ROT_SHUT   = 70;       // deg/s: above this it is thrown away (a spin, not a slide)
 
   var motionOn = false;
-  var R0 = null;             // zero-pose rotation matrix (world <- phone), transposed use
+  var R0 = null;             // zero-pose rotation matrix — the DIAGRAM's plate only
   var Rnow = null;
-  var vel = { x: 0, y: 0, z: 0 };
-  var pos = { x: 0, y: 0, z: 0 };   // metres in the zero frame: x right, y up, z toward the eye
-  var quietFor = 0;          // seconds of quiet, in sample time
-  var rotVeto = 1;
-  var lastAccel = 0, movedSign = 1;
-  var moving = false;               // is the phone in a move right now?
-  var dir  = { x: 0, y: 0, z: 0 };  // the latched direction of the move in progress
-  var lead = { x: 0, y: 0, z: 0 };  // metres of lag compensation currently shown
-  // zero_cal — pressing Reset is a promise: the phone is held in front of your
-  // face, still, in the pose everything after it is measured from. That promise
-  // is worth more than a re-centre. For the first CAL_MS after a reset the model
-  // holds itself still and READS the accelerometer instead of believing it: what
-  // it reports while the phone is not moving is, by definition, its resting
-  // offset. That offset is subtracted from every sample afterwards, so the drift
-  // it used to feed into position is gone at the source rather than damped later.
-  // The gravity direction at that instant is kept too, as a record of the pose
-  // the take was measured from.
-  var CAL_MS  = 450;
-  var calLeft = 0;                              // seconds of levelling left
-  var calSum  = { x: 0, y: 0, z: 0 }, calN = 0, calSq = 0;
-  var CAL_SD  = 0.35;                           // m/s^2: spread above this = not still
-  var bias    = { x: 0, y: 0, z: 0 };           // resting offset, in the zero frame
-  var gZero   = null;                           // gravity at the reset, phone frame
-  // smooth_move — the picture does not sit ON the model, it CHASES it through a
-  // critically damped spring. Starting from rest the spring is slack, so the
-  // world eases in; through the middle it is behind and runs FASTER than the
-  // hand to catch up — the over-acceleration he asked for; arriving, it has no
-  // overshoot left and settles instead of stopping dead. It always converges
-  // exactly on the model, so nothing is lost: the same gesture ends in the same
-  // place, it just gets there with its ends dimmed and its middle driven.
-  var SM_W   = 11;                  // rad/s: spring stiffness (~0.09s to catch up)
-  var SM_W_Z = 6;                   // z_calm: near/far follows more softly
-  var show  = { x: 0, y: 0, z: 0 }; // what is drawn
+  var show  = { x: 0, y: 0, z: 0 }; // what is drawn: the lattice, plus the drag
   var showV = { x: 0, y: 0, z: 0 };
-  // settle_lock: stopping a slide is itself a shove the other way. Once a move
-  // has been braked to rest, the tail of that same stopping push must not be
-  // read as a fresh move backwards — that was the reversal in the second half
-  // of every slide. So after a move ends the model stays disarmed until the
-  // phone has actually been quiet for STILL_MS.
-  // lock_time: the lock is a countdown, not a latch. It was a latch, and if the
-  // hand never went properly still the model stayed disarmed for good — one
-  // gesture would register and everything after it fell off.
-  var LOCK_S = 0.45;                // s: how long the tail of a stopping push is ignored
-  var lockLeft = 0;
-  var moveFor  = 0;          // how long the move in progress has been running
-  var aBar = { x: 0, y: 0, z: 0 };   // short average of the SIGNED drive
-  var aMag = { x: 0, y: 0, z: 0 };   // short average of its size
-  var trem = { x: 0, y: 0, z: 0 };   // how long each axis has been only shaking
-  var dwelled  = false;      // has the current rest already been noted?
-  function end_move() {
-    // bake the frozen lead into the resting position so the world stays put
-    // where it was last drawn instead of springing back
-    ['x', 'y', 'z'].forEach(function (k) {
-      pos[k] += lead[k];
-      if (!dir[k] || lead[k] * dir[k] > 0) run[k] += lead[k];
-      lead[k] = 0;
-    });
-    vel.x = vel.y = vel.z = 0;
-    moving = false;
-    lockLeft = LOCK_S;
-    dir = { x: 0, y: 0, z: 0 };
-    lastMove = name_move(run);
-    // nudge_fast: the nudge has already been delivered on the leading edge, from
-    // nudge_watch. Ending a move is now only bookkeeping for the lanes and marks.
-    run = { x: 0, y: 0, z: 0 };
-  }
-  var run = { x: 0, y: 0, z: 0 };   // distance carried by the move in progress
-  var lastMove = '';                // what the last finished move was
   // bump_step — the world does not follow the phone any more. It sits on a
   // LATTICE, and a gesture is worth exactly one step along one axis: bump right,
   // the world goes one right; bump back, one left; bump toward you, one closer.
@@ -1055,7 +907,14 @@
   // changes, so a sign held only in memory is gone before the walk is over. They
   // live in localStorage and are applied at the single point each sign is used, so
   // there is still exactly one place in the code that knows which way an axis goes.
-  var FLIP_KEY = 'vampjam_lab_flip';
+  // flip_reset — 258 reversed the three straight vectors at rest, and on his
+  // phone nothing changed. The switches are remembered, and his were already set
+  // the other way from walking the signs out by hand, so the permanent flip and
+  // his stored switch cancelled each other exactly. A permanent change to what
+  // "off" means has to clear what people had stored against the old meaning, or
+  // only a fresh browser ever sees it. The key carries the meaning's version now:
+  // bump it and every switch comes back off, against the new resting behaviour.
+  var FLIP_KEY = 'vampjam_lab_flip_2';
   var FLIPS = [
     { k: 'x',    lab: 'L\u2009R',  tip: 'Reverse right / left' },
     { k: 'y',    lab: 'U\u2009D',  tip: 'Reverse up / down' },
@@ -1206,23 +1065,15 @@
     if (typeof mark_add === 'function') mark_add('bump', {
       way: lastBump, axis: k, at: card_here(),
       cell: [cell.x, cell.y], z: zc, drive: drive, rise: rise });
-    // nudge_fast: the fine-grained model has no say any more, so wipe it
-    pos = { x: 0, y: 0, z: 0 };
-    vel = { x: 0, y: 0, z: 0 };
-    lead = { x: 0, y: 0, z: 0 };
-    run = { x: 0, y: 0, z: 0 };
+    // nudge_core: the chart is showing the signal the detector judges, so it is
+    // told the moment a judgement was made — the rule lands against the shape that
+    // caused it, and scrolls away with it. 4, not 1: a firing is not the Good
+    // button, and reusing its colour would have made the chart lie about which of
+    // the two had happened.
+    pendEv = 4;
   }
   function card_here() { return card_name(-cell.x, cell.y); }
-  // name_move — categorise a finished move by whichever axis carried it
-  function name_move(r) {
-    var ax = Math.abs(r.x), ay = Math.abs(r.y), az2 = Math.abs(r.z);
-    var big = Math.max(ax, ay, az2);
-    if (big < 0.01) return '';       // under a centimetre: not a move
-    var cm = Math.round(big * 100);
-    if (big === ax) return (r.x > 0 ? 'right ' : 'left ') + cm + ' cm';
-    if (big === ay) return (r.y > 0 ? 'up ' : 'down ') + cm + ' cm';
-    return (r.z > 0 ? 'closer ' : 'away ') + cm + ' cm';
-  }
+
   // red_reset: the red lamp IS the reset, and it is also how motion gets switched
   // on the first time — there is no separate button any more.
   var motionBtn = document.getElementById('g_wire');
@@ -1297,9 +1148,16 @@
   // through this, so the picture and the figures can never disagree.
   // diag_flip: MODEL_INV.z -1 — the depicted near/far travel reverses too, so
   // all three of the diagram's travel axes are now reversed against the world.
+  // nudge_core — the plate used to stand at the integrator's position: a number
+  // in metres that nothing on the page acted on, wiped to zero on every nudge. So
+  // the diagram was drawing a quantity that was neither what he did nor what the
+  // app did with it. It stands where the DECK stands now — which card, and how
+  // deep — so the picture answers the only question the page is asking.
   var MODEL_INV = { x: -1, y: -1, z: -1 };
   function model_pos() {
-    return { x: MODEL_INV.x * pos.x, y: MODEL_INV.y * pos.y, z: MODEL_INV.z * pos.z };
+    return { x: MODEL_INV.x * cell.x / CELL_MAX.x,
+             y: MODEL_INV.y * cell.y / CELL_MAX.y,
+             z: MODEL_INV.z * zc     / Z_MAX };
   }
   // pose_slow — the diagram rebuilds four groups of SVG from strings; at sixty
   // frames a second that is thousands of elements parsed per second for a
@@ -1463,7 +1321,8 @@
 
     // plate_move — the phone carries its travel now; the axes hold still. Each
     // axis is clamped on its own so a big move on one never drags the picture off.
-    function clamp_ax(v) { var u = v * POSE_SC; return Math.max(-AX_MAX, Math.min(AX_MAX, u)); }
+    // model_pos hands back -1..1 per axis now, so the axis length IS the scale
+    function clamp_ax(v) { var u = v * AX_MAX; return Math.max(-AX_MAX, Math.min(AX_MAX, u)); }
     var mp = model_pos();
     var mv = { x: clamp_ax(mp.x), y: clamp_ax(mp.y), z: clamp_ax(mp.z) };
     // curve_flip — the arithmetic bends with the picture. X and Y are arcs, so a
@@ -1520,17 +1379,19 @@
     // rather than reduced to an initial. Distances first in the axis colours,
     // then the three angles, then the scale. Label left, value right, so the
     // column of numbers can be scanned without hunting.
-    function cm_txt(v) {
-      var n = v * 100;
-      return (n < -0.05 ? '\u2212' : '+') + Math.abs(n).toFixed(1) + ' cm';
+    // nudge_core — these read centimetres of an integrated position that no
+    // longer exists. They read the deck: which card, and how many notches deep.
+    function cell_txt(v, max) {
+      var n = Math.round(v * max);
+      return (n < 0 ? '\u2212' : '+') + Math.abs(n);
     }
     function deg_txt(v) {
       return (v < -0.5 ? '\u2212' : '+') + Math.abs(v).toFixed(0) + '\u00b0';
     }
     var lines = [
-      ['right / left', cm_txt(mp.x), '#dc2626'],
-      ['up / down',    cm_txt(mp.y), '#16a34a'],
-      ['near / far',   cm_txt(mp.z), '#2563eb'],
+      ['right / left', cell_txt(mp.x, CELL_MAX.x), '#dc2626'],
+      ['up / down',    cell_txt(mp.y, CELL_MAX.y), '#16a34a'],
+      ['near / far',   cell_txt(mp.z, Z_MAX),      '#2563eb'],
       ['tilt top',     deg_txt(flipped.pitch),             'rgba(0,0,0,0.68)'],
       ['turn side',    deg_txt(flipped.roll),              'rgba(0,0,0,0.68)'],
       ['swirl flat',   deg_txt(SWIRL_INV * screen_roll()), 'rgba(0,0,0,0.68)'],
@@ -1574,155 +1435,46 @@
     Rnow = mat_from(e.alpha, e.beta, e.gamma);
     if (!R0) R0 = Rnow;
   }
+  // nudge_core — THE path, and now the whole of it. Raw sample in, one notch of
+  // deck out. Four steps and no state but the detector's own:
+  //
+  //   1. take e.acceleration exactly as the phone sends it
+  //   2. work out whether the wrist is twisting (the one motion that is not a nudge)
+  //   3. hand both to nudge_watch, which decides
+  //   4. step the drawing
+  //
+  // What used to be here, and is now gone: the sample was rotated into a world
+  // frame and then into a zero frame, offset by a calibrated bias measured during
+  // a levelling window, dead-banded, veto'd by an all-axis rotation gate,
+  // integrated into a velocity with three different decay constants depending on
+  // whether the axis was driving, coasting or braking, tested for tremor against a
+  // second pair of averages, tested for being a passenger of another axis, latched
+  // to a direction, capped at a maximum duration, and integrated again into a
+  // position. About seventy lines of it, running on every sample.
+  //
+  // None of it moved a card. nudge_fire wiped the position it produced on every
+  // firing — the note there said so in as many words — so the entire apparatus was
+  // feeding nothing but the diagram and the lanes, which now read the things that
+  // are actually true (where the deck stands, and what the detector sees).
+  //
+  // And it was in the way in one concrete respect: the old guard returned early
+  // until a deviceorientation event had arrived and a zero pose had been taken, so
+  // no nudge could fire until the attitude was known. The detector never needed the
+  // attitude — that is the whole point of reading the phone's own axes — and it
+  // does not wait for it now.
   function on_motion(e) {
     var a = e.acceleration;
     if (!a || (a.x == null && a.y == null && a.z == null)) return;   // needs the gravity-free stream
-    if (!motionOn || !Rnow || !R0) return;
-    var rr = e.rotationRate || {};
-    var rot = Math.hypot(rr.alpha || 0, rr.beta || 0, rr.gamma || 0);
-    rotVeto = Math.max(0, Math.min(1, 1 - (rot - ROT_OPEN) / (ROT_SHUT - ROT_OPEN)));
-    // orbit_spin: the nudge detector's own veto — a twist about the screen normal
-    // only. Pitch and yaw are what an orbit is made of and must get through.
-    var twist = Math.abs(rr.alpha || 0);
-    spinVeto = twist <= ORBIT_SPIN ? 1 : Math.max(0, 1 - (twist - ORBIT_SPIN) / ORBIT_SPIN);
+    if (!motionOn) return;
     var iv = e.interval || 0.0166;
     var dt = iv < 1 ? iv : iv / 1000;
-    // nudge_raw: the nudge is read here, off the untouched reading, before the
-    // rotations below get anywhere near it
+    // orbit_spin: a twist about the screen normal is the one motion an orbit never
+    // makes, so it is the one the detector refuses. Pitch and yaw are what an orbit
+    // is MADE of and must get through untouched.
+    var rr = e.rotationRate || {};
+    var twist = Math.abs(rr.alpha || 0);
+    spinVeto = twist <= ORBIT_SPIN ? 1 : Math.max(0, 1 - (twist - ORBIT_SPIN) / ORBIT_SPIN);
     nudge_watch(a, dt);
-
-    // phone axes -> world -> zero frame: rotation falls out here
-    var aw = mul_vec(Rnow, { x: a.x || 0, y: a.y || 0, z: a.z || 0 });
-    var az = mul_t_vec(R0, aw);
-    // zero_cal: while levelling, believe nothing and measure everything
-    if (calLeft > 0) {
-      calLeft -= dt;
-      calSum.x += az.x; calSum.y += az.y; calSum.z += az.z; calN++;
-      calSq += az.x * az.x + az.y * az.y + az.z * az.z;
-      var ag = e.accelerationIncludingGravity;
-      if (ag && ag.x != null) {
-        var gm = Math.hypot(ag.x || 0, ag.y || 0, ag.z || 0) || 1;
-        gZero = [ +( (ag.x || 0) / gm ).toFixed(3), +( (ag.y || 0) / gm ).toFixed(3), +( (ag.z || 0) / gm ).toFixed(3) ];
-      }
-      vel.x = vel.y = vel.z = 0; moving = false; quietFor = 0; lastAccel = 0;
-      if (calLeft <= 0 && calN) {
-        var mx = calSum.x / calN, my = calSum.y / calN, mz = calSum.z / calN;
-        // cal_trust: a reading is only an offset if the phone was actually still.
-        // The spread about the mean says whether it was; a hand still moving gives
-        // a wide one, and its 'offset' would be nonsense worth more than no offset
-        // at all — so that one is thrown away and the last good one kept.
-        var sd = Math.sqrt(Math.max(0, calSq / calN - (mx * mx + my * my + mz * mz)));
-        if (sd < CAL_SD) {
-          bias.x = mx; bias.y = my; bias.z = mz;
-          say('sent', 'levelled \u00b7 offset ' + Math.hypot(mx, my, mz).toFixed(3) + ' m/s\u00b2');
-          if (typeof mark_add === 'function') mark_add('levelled', {
-            bias: [+mx.toFixed(4), +my.toFixed(4), +mz.toFixed(4)],
-            gravity: gZero, spread: +sd.toFixed(4), samples: calN });
-        } else {
-          say('warn', 'moved while levelling \u2014 offset kept from before');
-          if (typeof mark_add === 'function') mark_add('level_failed',
-            { spread: +sd.toFixed(4), samples: calN });
-        }
-      }
-      smooth_step(dt);
-      return;
-    }
-    az.x -= bias.x; az.y -= bias.y; az.z -= bias.z;
-    var mag = Math.hypot(az.x, az.y, az.z);
-    lastAccel = mag;
-    movedSign = (Math.abs(az.x) >= Math.abs(az.y) ? (az.x >= 0 ? 1 : -1) : (az.y >= 0 ? 1 : -1));
-    // quiet time is counted in SAMPLE time, not wall-clock: if the phone throttles
-    // its sensor the two drift apart, and only sample time reflects what was measured
-    if (lockLeft > 0) lockLeft -= dt;               // the lock always expires
-    if (mag < MOVE_A && rot < 20) {
-      quietFor += dt;
-      if (moving && quietFor > STILL_MS / 1000) end_move();
-      if (quietFor > STILL_MS / 1000) lockLeft = 0;  // genuinely still: arm again now
-      // dwell_mark — his protocol says that if the return was right he simply
-      // STAYS there a second. That is a signal, not an absence of one, so it
-      // goes on the judgement track by itself with where the world had settled.
-      if (!moving && !dwelled && quietFor > DWELL_S) {
-        dwelled = true;
-        if (typeof mark_add === 'function') mark_add('dwell', {
-          after: lastMove || '',
-          pos: [+pos.x.toFixed(4), +pos.y.toFixed(4), +pos.z.toFixed(4)] });
-      }
-    } else {
-      quietFor = 0;
-      if (!moving && lockLeft <= 0) {
-        moving = true; moveFor = 0; dwelled = false;
-        run = { x: 0, y: 0, z: 0 }; dir = { x: 0, y: 0, z: 0 };
-      }
-    }
-
-    var kv = Math.exp(-dt / VEL_TAU);
-    if (moving) {
-      var slowing = false;
-      ['x', 'y', 'z'].forEach(function (k) {
-        var a = az[k];
-        var dz = (k === 'z') ? DEAD_Z : DEAD;
-        a = Math.abs(a) < dz ? 0 : (a - (a > 0 ? dz : -dz));
-        a *= rotVeto;
-        // shake_test: is this axis going anywhere, or just vibrating?
-        var w = Math.min(1, dt / TREM_TAU);
-        aBar[k] += (a - aBar[k]) * w;
-        aMag[k] += (Math.abs(a) - aMag[k]) * w;
-        if (aMag[k] > 0.06 && Math.abs(aBar[k]) < TREM_R * aMag[k]) {
-          trem[k] += dt;
-          if (trem[k] > TREM_HOLD) { vel[k] = 0; a = 0; }
-        } else {
-          trem[k] = 0;
-        }
-        // axis_one: is this the axis being pushed, or is it along for the ride?
-        var lead2 = Math.max(Math.abs(aBar.x), Math.abs(aBar.y), Math.abs(aBar.z));
-        if (lead2 > 0.05 && Math.abs(aBar[k]) < ONE_R * lead2) { vel[k] = 0; a = 0; }
-        // latch which way this move is going, once it is going anywhere
-        if (!dir[k] && Math.abs(vel[k]) > LATCH_V) {
-          dir[k] = vel[k] > 0 ? 1 : -1;
-          // run_true: anything the settling wobble put on the tally before the
-          // direction was known is not part of the move, so a slide right can
-          // never be reported as a move left
-          if (run[k] * dir[k] < 0) run[k] = 0;
-        }
-        var braking = !!(dir[k] && a * dir[k] < 0);
-        if (braking) {
-          // the hand is braking: bleed speed off, never push the other way
-          slowing = true;
-          vel[k] = (vel[k] + a * dt) * BRAKE_DECAY;
-          if (vel[k] * dir[k] < 0) vel[k] = 0;      // stop at zero, do not reverse
-        } else {
-          // trap_free: weak drive on this axis means it is coasting, and coasting
-          // decays fast. Strong drive keeps the near-lossless integration.
-          var tau = Math.abs(a) < COAST_A ? COAST_TAU : VEL_TAU;
-          vel[k] = (vel[k] + a * dt) * Math.exp(-dt / tau);
-        }
-        // creep_floor: the stop threshold may only kill a move that is ending.
-        // Applied unconditionally it also killed every move that was starting —
-        // a gentle push never got its first sample above STOP_V, so slow moves
-        // (and the whole closer/away axis) registered nothing at all.
-        if ((braking || !a) && Math.abs(vel[k]) < STOP_V) vel[k] = 0;
-        // lead grows with the push and holds through the brake
-        var want = vel[k] * LEAD;
-        if (!braking || Math.abs(want) > Math.abs(lead[k])) lead[k] = want;
-        var d = vel[k] * dt;
-        pos[k] += d;               // no leak: where it lands is where it stays
-        if (!dir[k] || d * dir[k] > 0) run[k] += d;   // only forward travel counts
-      });
-      // everything has come to rest: end the move now rather than waiting out
-      // the quiet timer — this is the 'jump the gun' he asked for
-      if (!vel.x && !vel.y && !vel.z && (slowing || quietFor > 0.05)) end_move();
-      // trap_free: and no move may simply keep running
-      moveFor += dt;
-      if (moving && moveFor > MOVE_MAX) {
-        // only worth a mark if the runaway actually carried the world somewhere;
-        // a capped move that went nowhere is the shake test doing its job
-        var carried = Math.max(Math.abs(run.x), Math.abs(run.y), Math.abs(run.z));
-        if (carried > 0.01 && typeof mark_add === 'function') mark_add('move_capped', {
-          ran: +moveFor.toFixed(2),
-          vel: [+vel.x.toFixed(3), +vel.y.toFixed(3), +vel.z.toFixed(3)] });
-        end_move();
-      }
-    }
     smooth_step(dt);
   }
   // smooth_move: chase the model. Driven off the sensor clock, not the paint
@@ -1791,16 +1543,13 @@
     var n = LANES.length;
     var pad = 8, gap = 6;
     var lh = (H - pad * 2 - gap * (n - 1)) / n;
-    // lane_scale — each lane finds its own full scale from what it has seen, so
-    // a small axis is not flattened by a large one; a floor keeps a quiet lane
-    // from turning noise into a mountain.
-    var floors = [0.03, 0.03, 0.03];
-    var maxv = floors.slice();
-    for (var i = 0; i < TRACE_N; i += LANE_STEP) {
-      var s2 = trace[(traceAt + i) % TRACE_N];
-      if (!s2) continue;
-      for (var k = 0; k < n; k++) if (Math.abs(s2[k]) > maxv[k]) maxv[k] = Math.abs(s2[k]);
-    }
+    // lane_fixed — one fixed scale for all three lanes, and it is the firing
+    // threshold: half a lane's height is exactly NUDGE_A, so a spike that touches
+    // the edge of its lane is a spike that fired. Each lane used to rescale itself
+    // to whatever it had seen in the last four seconds, which made a quiet axis's
+    // noise look identical to a real nudge on a loud one, and meant no two lanes
+    // could be compared — on a page whose detector decides by comparing them.
+    var maxv = [1, 1, 1];
     LANES.forEach(function (L, k) {
       var top = pad + k * (lh + gap);
       var mid = top + lh / 2;
@@ -1825,16 +1574,21 @@
       traceCtx.fill();
       traceCtx.globalAlpha = 1;
     });
-    // the presses, drawn last so they read across every lane at once: one rule
-    // per press, green for good, red for a reset — and a burst of resets is
-    // drawn thick and solid, because that is him saying it went badly wrong.
+    // the rules, drawn last so they read across every lane at once. 1 is the Good
+    // button, 2 a plain reset, 3 a burst of them (thick, because that is him
+    // saying it went badly wrong) — and 4, new, is the detector firing.
+    // nudge_core: that fourth one is the whole point of the chart now. The spike
+    // is what he did; the rule is the moment the page believed it. A spike with no
+    // rule beside it is a nudge that was missed, and a rule with no spike under it
+    // is one that was imagined — which are the only two ways this can be wrong.
     for (var m = 0; m < TRACE_N; m++) {
       var sm = trace[(traceAt + m) % TRACE_N];
       if (!sm || !sm[3]) continue;
       var mx = (m / (TRACE_N - 1)) * W;
-      traceCtx.strokeStyle = sm[3] === 1 ? '#16a34a' : '#d7263d';
-      traceCtx.lineWidth = sm[3] === 3 ? 3 : 1.4;
-      traceCtx.globalAlpha = sm[3] === 3 ? 0.95 : 0.7;
+      traceCtx.strokeStyle = sm[3] === 4 ? 'rgba(0,0,0,0.55)'
+                           : sm[3] === 1 ? '#16a34a' : '#d7263d';
+      traceCtx.lineWidth = sm[3] === 3 ? 3 : sm[3] === 4 ? 1 : 1.4;
+      traceCtx.globalAlpha = sm[3] === 3 ? 0.95 : sm[3] === 4 ? 0.85 : 0.7;
       traceCtx.beginPath();
       traceCtx.moveTo(mx, pad - 4);
       traceCtx.lineTo(mx, H - pad + 4);
@@ -1937,8 +1691,15 @@
     var v = view();
     var w = v.w, dist = v.dist, mult = v.mult;
     var sx = v.ox, sy = v.oy;
-    // three lanes: where the world stands on each axis, in metres
-    trace_push([v.cam.x, v.cam.y, v.cam.z, 0]);
+    // nudge_core — the lanes carry the detector's own averaged drive per axis:
+    // the exact three numbers nudge_watch compares against its threshold. They
+    // used to carry where the world had been panned to, which only ever moved in
+    // whole notches and so drew three staircases — a picture of the OUTPUT, on a
+    // page whose whole job is judging the INPUT. Now a nudge is a spike you can
+    // see rise, and the rule dropped on it by nudge_fire is the moment it was
+    // believed. Scaled by the firing threshold, so the lane's own half-height IS
+    // the threshold: anything that reaches the edge of its lane fired.
+    trace_push([nBar.x / (NUDGE_A * 2), nBar.y / (NUDGE_A * 2), nBar.z / (NUDGE_A * 2), 0]);
     trace_draw(now);
     var root = document.documentElement.style;
     root.setProperty('--sx', sx.toFixed(1) + 'px');
@@ -1969,10 +1730,6 @@
   // too and puts the whole model back to ×1.
   function zero_here(keepDepth) {
     R0 = Rnow;
-    vel = { x: 0, y: 0, z: 0 };
-    pos = { x: 0, y: 0, z: 0 };
-    run = { x: 0, y: 0, z: 0 };
-    lead = { x: 0, y: 0, z: 0 };
     anim = null; zAnim = null;
     nBar = { x: 0, y: 0, z: 0 }; nArm = true; nQuiet = 0; nStir = 0;
     nSlow = { x: 0, y: 0, z: 0 };   // nudge_raw: relearn what zero is from here
@@ -1983,12 +1740,12 @@
     lastBump = '';
     var z = cell.z * NUDGE_Z;
     show = { x: 0, y: 0, z: z }; showV = { x: 0, y: 0, z: 0 };
-    // open the levelling window: hold still, this is the pose we measure from
-    calLeft = CAL_MS / 1000; calSum = { x: 0, y: 0, z: 0 }; calN = 0; calSq = 0;
-    if (motionOn) say('send', 'levelling \u2014 hold still\u2026');
-    moving = false; lastMove = ''; quietFor = 0; lockLeft = 0; dir = { x: 0, y: 0, z: 0 };
-    moveFor = 0; dwelled = true;   // a reset is not a dwell
-    aBar = { x: 0, y: 0, z: 0 }; aMag = { x: 0, y: 0, z: 0 }; trem = { x: 0, y: 0, z: 0 };
+    // nudge_core — there is no levelling any anymore. The detector carries its own
+    // running zero (nSlow, the slow average), which relearns what rest looks like
+    // from wherever the phone is, so there is nothing to hold still FOR. The
+    // levelling window, its offset, its spread test and its "hold still…" message
+    // are all gone; a reset is instant now.
+    if (motionOn) say('sent', 'watching');
     if (!keepDepth) document.documentElement.style.setProperty('--sc', '1');
     document.documentElement.style.setProperty('--rot', '0deg');
     document.documentElement.style.setProperty('--tilt', TILT_BASE + 'deg');
@@ -2039,7 +1796,7 @@
     if (typeof mark_add !== 'function') return;
     var v = view();
     mark_add(kind, { run: resetRun, severe: resetRun >= 2,
-                     pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) },
+                     cell: [cell.x, cell.y], z: zc, at: card_here(),
                      mult: +v.mult.toFixed(3), tilt: +v.tilt.toFixed(1), turn: +v.turn.toFixed(1),
                      roll: +v.roll.toFixed(1) });
   }
@@ -2124,10 +1881,13 @@
       : [null, null, null];
     take.samples.push({ t: t, ori: o, rel: rel, acc: live.acc, accG: live.accG, rot: live.rot, iv: interval,
                         // lag_trace: what the page DID with that sample, so a take
-                        // can be measured end to end instead of guessed at
-                        st: [r3(pos.x), r3(pos.y), r3(pos.z),
-                             r3(vel.x), r3(vel.y), r3(vel.z),
-                             moving ? 1 : 0] });
+                        // can be measured end to end instead of guessed at. It used
+                        // to carry the integrator's position and velocity; those
+                        // were never used to move anything, so it carries what IS
+                        // used now — the detector's averaged drive per axis, whether
+                        // it was armed, and where the deck stands.
+                        st: [r3(nBar.x), r3(nBar.y), r3(nBar.z),
+                             nArm ? 1 : 0, cell.x, cell.y, zc] });
   }
   function ang(d) { while (d > 180) d -= 360; while (d < -180) d += 360; return d; }
 
@@ -2373,13 +2133,13 @@
         on_motion({ acceleration: { x: ax, y: ay, z: az },
                     rotationRate: rr, interval: 0.0166 });
       }
-      return { pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) }, veto: +rotVeto.toFixed(2) };
+      return { bar: { x: +nBar.x.toFixed(4), y: +nBar.y.toFixed(4), z: +nBar.z.toFixed(4) },
+               armed: nArm, veto: +spinVeto.toFixed(2) };
     },
     // what the maths is thinking right now, without waiting for a paint frame
     state: function () {
       var v = view();
       return { px: v.ox, py: v.oy, mult: v.mult, dist: v.dist, roll: v.roll, tilt: v.tilt, turn: v.turn,
-               moving: moving, held: lastMove, lock: +Math.max(0, lockLeft).toFixed(2),
                bump: lastBump, cell: { x: cell.x, y: cell.y, z: cell.z },
                landing: anim ? anim.k : '', armed: nArm, sinceNudge: nLast ? Date.now() - nLast : -1,
                card: card_here(), deep: zc, say: deep_say(),
@@ -2392,11 +2152,12 @@
                nudge: { ms: NUDGE_MS, pan: +NUDGE_PAN.toFixed(4),
                         z: +NUDGE_Z.toFixed(5), zoom: BUMP_ZOOM, max: CELL_MAX },
                show: { x: +show.x.toFixed(4), y: +show.y.toFixed(4), z: +show.z.toFixed(4) },
-               cal: +Math.max(0, calLeft).toFixed(3),
-               bias: { x: +bias.x.toFixed(4), y: +bias.y.toFixed(4), z: +bias.z.toFixed(4) },
-               gravity: gZero,
                showV: { x: +showV.x.toFixed(4), y: +showV.y.toFixed(4), z: +showV.z.toFixed(4) },
-               pos: { x: +pos.x.toFixed(4), y: +pos.y.toFixed(4), z: +pos.z.toFixed(4) } };
+               // nudge_core: what the detector is holding, which is now the only
+               // running state the motion path has
+               bar: { x: +nBar.x.toFixed(4), y: +nBar.y.toFixed(4), z: +nBar.z.toFixed(4) },
+               zero: { x: +nSlow.x.toFixed(4), y: +nSlow.y.toFixed(4), z: +nSlow.z.toFixed(4) },
+               quiet: +nQuiet.toFixed(3), stir: +nStir.toFixed(3) };
     },
     world: function () {
       var st = getComputedStyle(document.documentElement);

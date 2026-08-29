@@ -9,8 +9,62 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "259 list_css",
+        id: "260 nudge_core",
         expanded: true,
+        nodes: [
+          { text: "260 nudge_core", children: [
+            { text: "prompt_restate", children: [
+              { text: "The permanent flip of right/left, up/down, toward/away did not actually happen \u2014 keep the buttons, but make the default the opposite of what it is." },
+              { text: "The whole point of this page is watching for a bump left, right, up, down, toward, away \u2014 reading it and moving the cards accordingly." },
+              { text: "A lot of other stuff is getting in the way of detecting that signal and adjusting the picture. Clean up and simplify that path, because it is the core thing." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "So it seems like you have not done the thing where you permanently flipped the treatment of the right and left up and down forward and back we have those buttons I wanna keep the buttons, but I want you to make the default action the opposite of what is currently the default action. Next the whole point of this app now is this part of it this lab this page is that it is watching for and detecting when I bump the screen to the left bump it to the right bump it up pump it down bump it forward bump it away and I\u2019m reading that and I\u2019m moving the thing changing the depiction of the cards accordingly now I think a lot of other stuff is getting in the way of detecting that signal and then adjusting the depiction of the image accordingly I want you to really clean up and simplify that Path because that\u2019s the core thing" }
+            ]},
+            { text: "why_the_flip_did_nothing", children: [
+              { text: "you were right, and here is why: the switches are remembered, and yours were already set the other way from walking the signs out by hand" },
+              { text: "so the permanent flip and your stored switch cancelled each other exactly \u2014 only a browser that had never seen the page would have felt it" },
+              { text: "changing what \u2018off\u2019 means has to clear what people stored against the old meaning, so it does that now: all five switches come back off, against the new behaviour" },
+              { text: "checked by putting your exact old settings back on disk and reloading \u2014 ignored, and nudge right now moves the cards left" }
+            ]},
+            { text: "the_path", children: [
+              { text: "the motion handler went from 115 lines to 12: take the reading as the phone sends it, work out whether your wrist is twisting, hand both to the detector, draw" },
+              { text: "what came out was about seventy lines and twenty-two tuned numbers \u2014 rotating the sample into two other frames, a levelling window and its offset, a velocity built with three different decay rates, a tremor test, a passenger test, a direction latch, a duration cap, and a position" },
+              { text: "none of it moved a card. it was wiped on every firing, and had been for weeks \u2014 it was feeding only the diagram and the chart" }
+            ]},
+            { text: "and_it_was_in_the_way", children: [
+              { text: "the handler used to refuse every sample until the phone had reported its attitude and a zero pose had been taken" },
+              { text: "the detector never needed the attitude \u2014 reading your phone\u2019s own axes is the whole idea \u2014 so that was a wait for nothing" },
+              { text: "there is a test for exactly this now: turn motion on, never send an orientation reading at all, nudge, and the deck moves" }
+            ]},
+            { text: "no_more_levelling", children: [
+              { text: "the detector carries its own running zero and relearns it from wherever the phone is" },
+              { text: "so there is nothing to hold still for \u2014 reset is instant, and \u2018levelling, hold still\u2026\u2019 is gone" }
+            ]},
+            { text: "the_two_pictures_now_show_true_things", children: [
+              { text: "the diagram\u2019s plate stood at that dead position; it stands where the deck stands \u2014 which card, how deep \u2014 and the readout says cards and notches instead of centimetres" },
+              { text: "the chart showed where the picture had been panned to, which only moves in whole steps, so it drew three staircases \u2014 a picture of the output, on a page whose job is judging the input" },
+              { text: "it shows the detector\u2019s own signal now, at one fixed scale where half a lane\u2019s height is the firing threshold, so the three lanes can finally be compared \u2014 which is how the detector decides" },
+              { text: "and every firing drops its own grey line: a spike with no line beside it is a nudge that was missed, a line with no spike under it is one that was imagined. those are the only two ways this can be wrong, and you can now see both" }
+            ]},
+            { text: "verify", children: [
+              { text: "~31m: the page is 239 lines shorter; latency measured at one sample, about 17ms \u2014 tighter than before, because there is nothing left between the reading and the decision" },
+              { text: "all six directions walked with every switch off, then each of the three switches on" },
+              { text: "the cold-start test with no attitude ever reported, the stored-switches test, 60fps, and the earlier lab suite still green on all five switches" }
+            ]},
+            { text: "one_thing_you_should_know", children: [
+              { text: "the link to your Mac dropped partway through this one, so the files are in the chat but I could not write them into your folder" },
+              { text: "nothing has been committed \u2014 the robot will not see this build until the files are back in the folder" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "259 list_css",
+        expanded: false,
         nodes: [
           { text: "259 list_css", children: [
             { text: "prompt_restate", children: [

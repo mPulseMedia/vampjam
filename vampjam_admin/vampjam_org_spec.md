@@ -2512,7 +2512,55 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   screenshotted the open list from admin, from session.html and from r2_setup and diffed the drawer
   band: pixel-identical, both pairs. Every page shot again against the state shipped in 257 and 258
   — nothing else moved. Suites 254, 255 and 258 green, no page errors. Still no new trace.
-- NEXT → add entry 260 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 260 nudge_core · b260 · lab.html — the detection path is now the whole of the motion path.
+  flip_reset (why 258 did nothing on his phone): the permanent reversal shipped, and he felt no
+  change. The switches are remembered in localStorage, and his were already set the other way from
+  walking the signs out by hand — so PUSH_INV going to -1 and his stored -1 cancelled exactly. A
+  permanent change to what "off" MEANS has to clear what people stored against the old meaning, or
+  only a fresh browser ever sees it. FLIP_KEY carries the meaning's version now
+  (vampjam_lab_flip_2); bumping it brings every switch back off, against the new resting behaviour.
+  Verified by writing his exact old state under the old key and reloading: still on disk, ignored,
+  all five switches off, and nudge right now moves the cards left.
+  nudge_core: on_motion goes from 115 lines of code to 12. What it does: take e.acceleration as
+  sent, work out whether the wrist is twisting, hand both to nudge_watch, step the drawing.
+  what came out, and why it could: the sample used to be rotated into a world frame and then a zero
+  frame, offset by a bias measured during a levelling window, dead-banded, veto'd by an all-axis
+  rotation gate, integrated to a velocity with three decay constants (driving, coasting, braking),
+  tested for tremor against a second pair of averages, tested for being a passenger of another
+  axis, latched to a direction, capped at a maximum duration, and integrated again to a position.
+  Twenty-two tuned constants and about seventy lines, on every sample. None of it moved a card:
+  nudge_fire wiped the position on every firing, and had said so in a comment since 253. It was
+  feeding the diagram and the lanes, and nothing else.
+  and it WAS in the way, in one concrete respect: the old guard returned early until a
+  deviceorientation event had arrived and a zero pose had been taken. No nudge could fire before
+  the attitude was known — on a detector whose whole design is that it reads the phone's own axes
+  and needs no attitude at all. There is now a test for exactly this: arm motion, never send an
+  orientation event, nudge, and the deck moves.
+  no more levelling. The detector's slow average IS the running zero and relearns from wherever the
+  phone is, so there is nothing to hold still for. Reset is instant; the "hold still…" message, the
+  spread test and the offset are gone.
+  the diagram and the lanes now show things that are true. The plate stood at the integrated
+  position — a quantity in metres that nothing acted on and that was wiped on every nudge; it
+  stands where the DECK stands (which card, how deep), and the readout says cards and notches
+  instead of centimetres. The lanes carried where the world had been panned to, which moves only in
+  whole notches and drew three staircases — a picture of the OUTPUT on a page whose job is judging
+  the INPUT. They carry the detector's own averaged drive per axis now: the exact three numbers
+  nudge_watch compares against its threshold, at one FIXED scale for all three lanes where half a
+  lane's height IS the threshold. (They each rescaled themselves to their own last four seconds
+  before, so a quiet axis's noise looked like a real nudge on a loud one, and no two lanes could be
+  compared — on a page whose detector decides by comparing them.) A firing drops its own rule, a
+  fourth kind, grey, distinct from the Good button's green. A spike with no rule beside it is a
+  nudge that was missed; a rule with no spike under it is one that was imagined. Those are the only
+  two ways this can be wrong, and both are now visible.
+  the recorded takes changed shape with it: each sample used to carry the integrator's position and
+  velocity, which were never used to move anything. They carry the detector's three bars, whether
+  it was armed, and where the deck stood.
+  lab.html 2414 → 2175 lines. Latency measured at 1 sample, ~17ms — tighter than before, because
+  there is now nothing between the reading and the decision. All six directions walked with every
+  switch off, then each of the three switches on. 60fps. Suite 256 green: all five switches still
+  exactly negate their own vector and nothing else, and still come back lit after a reload.
+  Still no new trace.
+- NEXT → add entry 261 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
