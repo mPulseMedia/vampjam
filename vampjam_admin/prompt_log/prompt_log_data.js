@@ -9,8 +9,57 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "261 nudge_small",
+        id: "262 nudge_fit",
         expanded: true,
+        nodes: [
+          { text: "262 nudge_fit", children: [
+            { text: "prompt_restate", children: [
+              { text: "For that last trace: three nudges up, three left, three down, three right \u2014 then again." },
+              { text: "Use it to update the profile of a nudge." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK for that last trace, I would do three nudges up three nudges left three nudges down three nudges right and then I did it again. Use that too update your profile of a nudge." }
+            ]},
+            { text: "the_take_you_mean_is_not_there", children: [
+              { text: "the newest take on the server is 1.1 seconds long with four bursts in it \u2014 it cannot hold 24 nudges" },
+              { text: "nothing has landed since 11:43 on the 27th, which is what I have been saying at the end of every reply" },
+              { text: "your recordings are NOT lost \u2014 they are still on the phone" }
+            ]},
+            { text: "and_i_found_why", children: [
+              { text: "Send and Copy are marked hidden in the page and nothing ever unhides them" },
+              { text: "a take sends itself when you stop recording; when that fails the page says so once in a line that scrolls away, and there was then no way to retry and no way to get the take off the phone at all" },
+              { text: "now: every take that the server has not acknowledged shows both buttons with its count on Send, marks its own chip, and stays there until it goes \u2014 and a failure names the actual error" },
+              { text: "open the lab and you should see a Send button with a number on it. tap it." }
+            ]},
+            { text: "what_the_old_takes_could_still_teach", children: [
+              { text: "I replayed all 268 gestures in your sixteen recorded takes through the detector\u2019s own maths" }
+            ]},
+            { text: "near_far_was_eating_everything", children: [
+              { text: "toward/away won 69% of your gestures \u2014 on a page where you are mostly nudging up, down, left and right" },
+              { text: "and it is not the orbit: the pull of swinging can only ever point toward you, but the split is 95 toward against 89 away. near enough even, so half of it is just leakage" },
+              { text: "near/far now has its own, larger floor \u2014 there used to be one for exactly this reason and I deleted it last night along with the machinery it happened to sit beside. that was my mistake; the reason for it had nothing to do with that machinery" },
+              { text: "and the rule that distrusts a near/far reading while the phone is moving sideways now works in both directions instead of one. its share drops from 69% to 14%" }
+            ]},
+            { text: "the_ceiling_was_too_tight", children: [
+              { text: "yesterday\u2019s ceiling was a guess made without data, and replayed against your real gestures it refuses a QUARTER of everything you have ever done" },
+              { text: "worth being plain: there is no natural break in the sizes. they fall smoothly from small to enormous, so where the line goes is a choice, not something I can discover" },
+              { text: "I moved it to sit above the bulk of your gestures and refuse about one in seven" }
+            ]},
+            { text: "verify", children: [
+              { text: "~29m: all six directions still fire; a toward-with-sideways-in-it now correctly reads as the sideways one; both floors reject a gesture under them; the new ceiling passes what should pass and refuses what should not" },
+              { text: "your four longest takes replayed through the live page now read a sensible spread of directions instead of a wall of near/far" },
+              { text: "the stuck-send path tested with the server refusing and then accepting \u2014 button appears with a count, failure names the status, success clears it" },
+              { text: "earlier lab suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 and now I know why, and you have a button for it." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "261 nudge_small",
+        expanded: false,
         nodes: [
           { text: "261 nudge_small", children: [
             { text: "prompt_restate", children: [

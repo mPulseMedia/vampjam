@@ -316,6 +316,7 @@
               display: flex; align-items: center; justify-content: center; gap: 4px; }
   .g_led { width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,0.22); flex: 0 0 auto; }
   .g_recent { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; min-height: 0; }
+  .g_chip.g_wait { border-color: #b45309; color: #b45309; font-weight: 600; }
   .g_chip { font-size: 9px; font-weight: 600; color: rgba(0,0,0,0.55);
             background: rgba(0,0,0,0.06); border-radius: 999px; padding: 2px 6px;
             max-width: 88px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -520,7 +521,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'nudge_small', bg: '#b91c1c', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'nudge_fit', bg: '#a16207', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -817,6 +818,18 @@
   // 0.12 from every sample was quietly eating the small gestures this pass is
   // about. 0.05 is enough to keep sensor floor noise out of the average.
   var NUDGE_DEAD  = 0.05;
+  // dead_z — near/far gets its own, larger floor, and the reason is old: the
+  // phone's gravity-free reading is an ESTIMATE, and its error is largest along
+  // gravity, which at any comfortable holding angle is mostly along the screen's
+  // normal. There used to be a constant for exactly this and nudge_core deleted
+  // it along with the integrator it sat next to — that was a mistake, because the
+  // reason for it had nothing to do with the integrator.
+  // The evidence: across all 268 gestures in his recorded takes, z led 69% of
+  // them, on a page where he is mostly nudging up, down, left and right. It is
+  // not the orbit doing that — the centripetal pull only ever points toward him,
+  // and the split is 95 gestures leading +z against 89 leading -z, near enough
+  // even. Half of it is simply leakage. At 0.13 the z share falls to 14%.
+  var NUDGE_DEAD_Z = 0.13;
   // nudge_small — the detector had a floor and no ceiling, so a full arm swing
   // sailed past the threshold and counted as a nudge, exactly like a flick of the
   // wrist. He does not want the big motions at all: they are him moving the phone
@@ -833,7 +846,13 @@
   // first sample. nPeak is the largest raw drive this gesture has reached since
   // the phone left quiet; a gesture that has already been that hard is him
   // carrying the phone somewhere, and is refused before anything is delivered.
-  var NUDGE_BIG   = 1.20;    // m/s^2 of RAW drive above which it is a swing, not a nudge
+  // nudge_fit — 1.20 was a guess made without data, and the data says it was too
+  // tight: replayed over all 236 real gestures in his takes, a ceiling there
+  // refuses a QUARTER of everything he has ever done. The distribution has no
+  // natural break — it falls smoothly from 0.3 to 25, so there is no boundary to
+  // discover and this is a choice, not a measurement. 1.80 sits above the bulk
+  // (median 0.68, three-quarters under 1.25) and below the tail, and refuses 14%.
+  var NUDGE_BIG   = 1.80;    // m/s^2 of RAW drive above which it is a swing, not a nudge
   var nPeak = { x: 0, y: 0, z: 0 };
   var NUDGE_LEAD  = 1.6;     // how far the winning axis must beat the runner-up
   var NUDGE_QUIET = 0.15;    // m/s^2: below this the phone counts as still
@@ -907,16 +926,24 @@
       var v = raw[k] || 0;
       nSlow[k] += (v - nSlow[k]) * ws;    // what zero is right now
       var a = v - nSlow[k];               // the gesture, and only the gesture
-      a = Math.abs(a) < NUDGE_DEAD ? 0 : (a - (a > 0 ? NUDGE_DEAD : -NUDGE_DEAD));
+      var dead = (k === 'z') ? NUDGE_DEAD_Z : NUDGE_DEAD;   // dead_z
+      a = Math.abs(a) < dead ? 0 : (a - (a > 0 ? dead : -dead));
       a *= spinVeto;                      // orbit_spin: only a twist is not a nudge
       if (Math.abs(a) > nPeak[k]) nPeak[k] = Math.abs(a);   // nudge_small: how big it got
       nBar[k] += (a - nBar[k]) * w;
       if (Math.abs(nBar[k]) > big) big = Math.abs(nBar[k]);
     });
-    // orbit_pull: a toward-you reading that arrives while the phone is swinging is
-    // the arc pulling inward, not his arm coming in. Refuse it.
+    // orbit_both — the veto was one-sided, on the argument that an arc can only
+    // pull inward, so only a toward-you reading could be phantom. That argument is
+    // right about the ARC and wrong about the axis: the same 268 gestures lead -z
+    // as often as +z (89 against 95), and nothing about swinging on a sphere
+    // produces an away-from-you push. So the other half is leakage, and leakage
+    // has no preferred sign. The rule is simply that a near/far reading is not
+    // believed while there is real sideways drive underneath it — whichever way
+    // it points. A genuine toward or away nudge has little sideways drive and
+    // sails through: 38 of the 236 gestures in his takes stand alone that way.
     var tan = Math.max(Math.abs(nBar.x), Math.abs(nBar.y));
-    var pulled = (nBar.z > 0 && tan > ORBIT_TAN);
+    var pulled = (tan > ORBIT_TAN);
     if (big < NUDGE_QUIET) {
       nQuiet += dt; nStir = 0;
       nPeak = { x: 0, y: 0, z: 0 };       // nudge_small: each gesture is measured from quiet
@@ -1922,11 +1949,25 @@
     gMsg.textContent = text;
   }
   function paint_recent() {
-    var list = gest_get().slice(-4);
+    var all = gest_get();
+    var list = all.slice(-4);
     gRecent.innerHTML = list.map(function (t2) {
-      return '<span class="g_chip">' + String(t2.name || 'unnamed').replace(/[<>&]/g, '') +
-             ' · ' + (t2.ms / 1000).toFixed(1) + 's</span>';
+      return '<span class="g_chip' + (t2.sent ? '' : ' g_wait') + '">' +
+             String(t2.name || 'unnamed').replace(/[<>&]/g, '') +
+             ' · ' + (t2.ms / 1000).toFixed(1) + 's' + (t2.sent ? '' : ' · here') + '</span>';
     }).join('');
+    // send_stuck — Send and Copy were marked hidden in the markup and NOTHING
+    // ever unhid them. A take is sent automatically when the recording stops, and
+    // when that send failed there was no way to retry it and no way to get the
+    // take off the phone at all. Two days of recordings sat there while the page
+    // said so once, quietly, in a line that scrolls away. Now any take the server
+    // has not acknowledged shows both buttons and puts its count on Send, and
+    // stays there until it goes: a take that has not arrived is a fact about the
+    // page's state, not a message that happened once.
+    var due = all.filter(function (t2) { return !t2.sent; }).length;
+    if (gSend) { gSend.hidden = !due; gSend.textContent = due ? 'Send ' + due : 'Send'; }
+    if (gCopy) gCopy.hidden = !all.length;
+    if (gRecent) gRecent.hidden = !all.length;
   }
   var gCopy = document.getElementById('g_copy');
   var gSend = document.getElementById('g_send');
@@ -2143,7 +2184,15 @@
         var seen = {};
         have.forEach(function (t) { if (t && t.ts) seen[t.ts] = true; });
         var add = list.filter(function (t) { return !seen[t.ts]; });
-        if (!add.length) { sending = false; say('sent', 'already sent'); return; }
+        if (!add.length) {
+          sending = false;
+          // send_stuck: the server already has them, so stop counting them as due
+          var here = gest_get();
+          here.forEach(function (t2) { if (seen[t2.ts]) t2.sent = true; });
+          gest_put(here);
+          say('sent', 'already sent');
+          return;
+        }
         var out = have.concat(add).slice(-60);
         return fetch(SYNC_URL, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -2151,11 +2200,26 @@
                                  message: 'gesture ' + (add[add.length - 1].name || 'take') })
         }).then(function (r) {
           sending = false;
-          if (r.ok) say('sent', '✓ sent ' + add.length);
-          else say('warn', 'send failed — kept on this phone');
+          if (r.ok) {
+            // send_stuck: mark what actually landed, so the count is a fact about
+            // the server rather than a hope about the last request
+            var went = {};
+            add.forEach(function (t2) { went[t2.ts] = true; });
+            var mine = gest_get();
+            mine.forEach(function (t2) { if (went[t2.ts]) t2.sent = true; });
+            gest_put(mine);
+            say('sent', '✓ sent ' + add.length);
+          } else {
+            say('warn', 'send failed (' + r.status + ') — still here, tap Send to retry');
+            paint_recent();
+          }
         });
       })
-      .catch(function () { sending = false; say('warn', 'send failed — kept on this phone'); });
+      .catch(function () {
+        sending = false;
+        say('warn', 'send failed — still here, tap Send to retry');
+        paint_recent();
+      });
   }
   gSend.addEventListener('click', function () { send_takes(false); });
   paint_recent();

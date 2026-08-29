@@ -2610,7 +2610,53 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Measured after two nudges in and one across: paper 4.4100 against cards 4.4100, pan 846.1px
   against 846.1px. A card is now the same number of grid squares across at every depth.
   60fps, suite 256 green, no page errors. Still no new trace.
-- NEXT → add entry 262 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 262 nudge_fit · b262 · lab.html — the nudge profile refitted against the recorded takes, and the
+  reason the take he meant is not among them.
+  the take he described is not in the file. He said the last trace was three up, three left, three
+  down, three right, twice — 24 nudges. The newest take on main is "take 21", 68 samples, 1.1
+  seconds, four bursts. It cannot hold 24 of anything. Nothing has landed since 11:43 on Aug 27,
+  which is what the last sentence of every reply this session has been saying.
+  send_stuck — and the cause was in plain sight. The Send and Copy buttons are marked hidden in the
+  markup and NOTHING in the page ever unhides them. A take is sent automatically when the recording
+  stops; when that send fails, the page says so once in a status line that scrolls away, and there
+  is then no way to retry it and no way to get the take off the phone at all. Fixed: every take now
+  carries a `sent` flag set only when the server actually acknowledged it, any unacknowledged take
+  shows both buttons with its count on Send ("Send 3"), the chips for those takes are marked, and
+  the failure line carries the HTTP status. A take that has not arrived is now a fact about the
+  page's state rather than a message that happened once. Tested with the worker refusing 403 and
+  then accepting: three takes, Send appears reading 3, the failure names the status and the button
+  stays, and on success all three flip to sent and the button goes. HIS TAKES ARE NOT LOST — they
+  are still in localStorage on the phone, and Send will now offer them.
+  what the existing takes were still able to teach, replayed through the real detector maths over
+  all 268 gestures in the sixteen takes that have samples:
+  dead_z: z led 69% of his gestures, on a page where he is mostly nudging up, down, left and right.
+  It is NOT the orbit doing that. The centripetal pull only ever points toward him, and the split is
+  95 gestures leading +z against 89 leading -z — near enough even, and nothing about swinging on a
+  sphere produces an away-from-you push. Half of it is leakage, and the reason is old and was
+  written down here long ago: the phone's gravity-free reading is an estimate, and its error is
+  largest along gravity, which at any comfortable holding angle is mostly along the screen's normal.
+  There used to be a DEAD_Z for exactly this and nudge_core deleted it along with the integrator it
+  happened to sit beside. That was a mistake — the reason for it had nothing to do with the
+  integrator. NUDGE_DEAD_Z is 0.13 against 0.05 for the other two; measured, that alone takes z's
+  share from 29% to 14%.
+  orbit_both: the veto on a near/far reading was one-sided, on the argument that an arc can only
+  pull inward. Right about the arc, wrong about the axis — see the sign split above. It is now
+  two-sided: a near/far reading is not believed while there is real sideways drive underneath it,
+  whichever way it points. A genuine toward or away nudge has little sideways drive and sails
+  through; 38 of the 236 gestures stand alone that way, and the page still fires cleanly on a pure
+  toward and a pure away.
+  big_fit: NUDGE_BIG 1.20 → 1.80. 1.20 was a guess made yesterday without data, and replayed over
+  his real gestures it refuses a QUARTER of everything he has ever done. Worth being plain about:
+  the distribution has NO natural break — it falls smoothly from 0.3 to 25 — so there is no
+  boundary to discover and this is a choice, not a measurement. 1.80 sits above the bulk (median
+  0.68, three-quarters under 1.25) and refuses 14%. Verified in the page: 1.2 and 1.6 fire, 1.9 and
+  2.5 are refused.
+  after the change, replaying his four longest takes through the live page reads a sensible spread
+  of directions instead of a wall of near/far — take 11 gives 18 lateral against 7 depth where the
+  old numbers gave mostly depth. All six directions still fire on the page, a toward-with-sideways
+  now correctly reads as the sideways one, and both floors reject a gesture under them.
+  Suite 256 green, no page errors.
+- NEXT → add entry 263 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
