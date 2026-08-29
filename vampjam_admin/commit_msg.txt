@@ -1,1 +1,1 @@
-edge_near
+auto_commit
