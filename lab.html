@@ -175,13 +175,41 @@
     -webkit-user-select: none; user-select: none;
   }
   .card .n { white-space: nowrap; }
-  /* the card you are standing on, so a nudge has something to read against */
-  .card.here {
-    background: hsl(var(--h, 0) 62% 78%);
-    border-color: hsl(var(--h, 0) 55% 42%);
-    color: hsl(var(--h, 0) 70% 22%);
-    box-shadow: 0 0 0 3px hsl(var(--h, 0) 55% 45% / 0.55), 0 12px 30px rgba(15,23,42,0.26);
+  /* card_focus — which card you are on has to be unmistakable, because it is the
+     only thing a nudge changes. Three things say it at once, and they say it in
+     three different visual channels so no one of them has to carry it alone:
+     the neighbours step back, the card you are on comes forward, and a fixed
+     bracket on the glass marks the place they arrive at. */
+  .card:not(.here) {
+    filter: saturate(0.35);
+    opacity: 0.42;
+    box-shadow: 0 2px 6px rgba(15,23,42,0.10);
   }
+  .card.here {
+    background: hsl(var(--h, 0) 72% 74%);
+    border: 2px solid hsl(var(--h, 0) 60% 34%);
+    color: hsl(var(--h, 0) 70% 18%);
+    box-shadow: 0 0 0 5px hsl(var(--h, 0) 60% 42% / 0.7),
+                0 18px 44px rgba(15,23,42,0.34);
+    z-index: 2;
+  }
+  /* here_mark — a bracket at the centre of the GLASS, not on a card. It never
+     moves, so the cards visibly travel through it, and the one inside it is the
+     one you are on. A property of a card can only ever say "this one is special";
+     a fixed mark says "this is the place, and something is standing in it". */
+  .here_mark {
+    position: absolute; left: 50%; top: 50%; z-index: 3;
+    pointer-events: none; transform: translate(-50%, -50%);
+    width: var(--hm_w, 160px); height: var(--hm_h, 200px);
+  }
+  .here_mark i {
+    position: absolute; width: 22px; height: 22px; display: block;
+    border: 3px solid rgba(15,23,42,0.55);
+  }
+  .here_mark i:nth-child(1) { left: -9px;  top: -9px;    border-right: none; border-bottom: none; border-radius: 8px 0 0 0; }
+  .here_mark i:nth-child(2) { right: -9px; top: -9px;    border-left:  none; border-bottom: none; border-radius: 0 8px 0 0; }
+  .here_mark i:nth-child(3) { right: -9px; bottom: -9px; border-left:  none; border-top:    none; border-radius: 0 0 8px 0; }
+  .here_mark i:nth-child(4) { left: -9px;  bottom: -9px; border-right: none; border-top:    none; border-radius: 0 0 0 8px; }
   .card .n { color: hsl(var(--h, 0) 45% 30%); }
   .card.here .n { color: hsl(var(--h, 0) 72% 20%); }
   .card.here .d { color: hsl(var(--h, 0) 40% 34%); }
@@ -418,6 +446,8 @@
        paper carries the swirl, both leans, the pan and the zoom. -->
   <div class="stage">
     <div class="grid" id="grid"><img class="shot" id="shot" alt="" src="lab_surface.svg"></div>
+    <!-- here_mark: fixed to the glass, sized to one card, never moves -->
+    <div class="here_mark" id="here_mark"><i></i><i></i><i></i><i></i></div>
     <div class="deck" id="deck"></div>
   </div>
   <div class="haze"></div>
@@ -490,7 +520,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'nudge_core', bg: '#15803d', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'nudge_small', bg: '#b91c1c', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -780,13 +810,31 @@
   // height of the bar but the three tests around it: the axis has to be clearly
   // the one being driven, it has to get there fast, and the detector has to have
   // been quiet first.
-  var NUDGE_A     = 0.26;    // m/s^2 of averaged drive that says "that was a nudge"
+  var NUDGE_A     = 0.13;    // m/s^2 of averaged drive that says "that was a nudge"
   // nudge_floor — the nudge detector uses its OWN deadband, far smaller than the
   // one the old integrator needed. That deadband existed to stop drift creeping
   // into a running position; there is no running position here, and subtracting
   // 0.12 from every sample was quietly eating the small gestures this pass is
   // about. 0.05 is enough to keep sensor floor noise out of the average.
   var NUDGE_DEAD  = 0.05;
+  // nudge_small — the detector had a floor and no ceiling, so a full arm swing
+  // sailed past the threshold and counted as a nudge, exactly like a flick of the
+  // wrist. He does not want the big motions at all: they are him moving the phone
+  // somewhere, not him saying something. So there is a ceiling now, and the band
+  // between the two is what a nudge IS. The floor comes down at the same time —
+  // with a ceiling doing the rejecting, the floor no longer has to be high enough
+  // to keep swings out, and can be low enough to catch the small ones he means.
+  // The ceiling cannot be read off the averaged bar, and this is the whole
+  // subtlety of it. The detector fires on the LEADING EDGE — that is where its
+  // 17ms comes from — and at the leading edge a swing and a nudge look identical:
+  // both have only just left zero. By the time the average has climbed high
+  // enough to call something a swing, the notch has already been delivered.
+  // So the ceiling is read off the RAW drive, which is at full size on the very
+  // first sample. nPeak is the largest raw drive this gesture has reached since
+  // the phone left quiet; a gesture that has already been that hard is him
+  // carrying the phone somewhere, and is refused before anything is delivered.
+  var NUDGE_BIG   = 1.20;    // m/s^2 of RAW drive above which it is a swing, not a nudge
+  var nPeak = { x: 0, y: 0, z: 0 };
   var NUDGE_LEAD  = 1.6;     // how far the winning axis must beat the runner-up
   var NUDGE_QUIET = 0.15;    // m/s^2: below this the phone counts as still
   var NUDGE_REARM = 0.16;    // s of quiet needed before another nudge can fire
@@ -861,6 +909,7 @@
       var a = v - nSlow[k];               // the gesture, and only the gesture
       a = Math.abs(a) < NUDGE_DEAD ? 0 : (a - (a > 0 ? NUDGE_DEAD : -NUDGE_DEAD));
       a *= spinVeto;                      // orbit_spin: only a twist is not a nudge
+      if (Math.abs(a) > nPeak[k]) nPeak[k] = Math.abs(a);   // nudge_small: how big it got
       nBar[k] += (a - nBar[k]) * w;
       if (Math.abs(nBar[k]) > big) big = Math.abs(nBar[k]);
     });
@@ -870,6 +919,7 @@
     var pulled = (nBar.z > 0 && tan > ORBIT_TAN);
     if (big < NUDGE_QUIET) {
       nQuiet += dt; nStir = 0;
+      nPeak = { x: 0, y: 0, z: 0 };       // nudge_small: each gesture is measured from quiet
       if (nQuiet > NUDGE_REARM) nArm = true;
       return;
     }
@@ -883,6 +933,14 @@
     if (m[0][1] < NUDGE_A) return;                               // orbit_pull may have taken the leader
     if (m[1][1] > 0 && m[0][1] < m[1][1] * NUDGE_LEAD) return;   // between two axes: not a nudge
     var k = m[0][0];
+    // nudge_small: too big to be a nudge. Read off the raw peak, not the average,
+    // for the reason set out where NUDGE_BIG is defined. Judged on the leading
+    // axis only, so a small deliberate nudge is never thrown away because some
+    // other axis was along for the ride — and judged after orbit_pull, so a
+    // phantom toward-you reading cannot be what makes a gesture look like a swing.
+    // Disarming (rather than just returning) means the rest of the swing cannot
+    // trickle a notch out later: one gesture, one judgement, and this one was no.
+    if (nPeak[k] > NUDGE_BIG) { nArm = false; return; }
     nArm = false; nLast = Date.now();
     nudge_fire(k, nBar[k] > 0 ? 1 : -1, +m[0][1].toFixed(3), +nStir.toFixed(3));
   }
@@ -900,7 +958,15 @@
   // ONE place the resting sign of a straight vector lives; the five switches
   // below still flip against it, so the switches all still read "off" for the
   // way it now behaves and "on" for the other way.
-  var PUSH_INV = { x: -1, y: -1, z: -1 };
+  // flip_again — back to +1 on all three, which is the reverse of what 260
+  // shipped and is what he has now asked for twice. His read of it is right: he
+  // asked for a flip in 258, it never reached him because his stored switches
+  // cancelled it, 260 fixed the cancelling and delivered 258's flip — by which
+  // time he had asked for the flip again, so what landed was one flip when two
+  // had been asked for. This is the second one. The key version goes with it, for
+  // the same reason it did last time: a change to what "off" means is worthless
+  // if the switches people already stored quietly undo it.
+  var PUSH_INV = { x: 1, y: 1, z: 1 };
   // vec_flip — one reverse switch per vector, five of them, each remembered across
   // reloads. Deciding a sign by feel means flipping it, walking around with the
   // phone, and flipping it back — and this page reloads itself whenever its source
@@ -914,7 +980,7 @@
   // "off" means has to clear what people had stored against the old meaning, or
   // only a fresh browser ever sees it. The key carries the meaning's version now:
   // bump it and every switch comes back off, against the new resting behaviour.
-  var FLIP_KEY = 'vampjam_lab_flip_2';
+  var FLIP_KEY = 'vampjam_lab_flip_3';
   var FLIPS = [
     { k: 'x',    lab: 'L\u2009R',  tip: 'Reverse right / left' },
     { k: 'y',    lab: 'U\u2009D',  tip: 'Reverse up / down' },
@@ -1001,7 +1067,15 @@
     var g = card_px(), half = (LAY_N - 1) / 2, out = '';
     for (var j = half; j >= -half; j--) {
       for (var i = -half; i <= half; i++) {
-        var here = (i === -cell.x && j === cell.y);
+        // here_y — the flag disagreed with the pan on the Y axis, and had done for
+        // a long time: the deck is translated by -cell.y, so the row that arrives
+        // in the middle is j = -cell.y, but the flag was looking for j = +cell.y.
+        // Nudging up therefore highlighted a card two rows away from the one you
+        // were actually looking at. It was invisible until card_focus dimmed the
+        // neighbours — with every card equally bright, a ring in the wrong place
+        // just read as decoration. X was right all along, which is why it never
+        // looked systematically broken.
+        var here = (i === -cell.x && j === -cell.y);
         var num  = (j + half) * LAY_N + (i + half) + 1;
         // card_hue: the golden angle, so no two neighbours are near each other on
         // the wheel; the depth tilts the lightness so each layer reads as its own
@@ -1027,10 +1101,29 @@
     // z_pan — the pan is applied BEFORE the scale in the transform, so it has to
     // be multiplied by the scale itself or one nudge sideways would carry you a
     // whole card at x1 and a quarter of one at x4.
-    root.setProperty('--cx', (cell_at('x') * g.px * z).toFixed(1) + 'px');
-    root.setProperty('--cy', (-cell_at('y') * g.py * z).toFixed(1) + 'px');
+    var cx = cell_at('x') * g.px * z, cy = -cell_at('y') * g.py * z;
+    root.setProperty('--cx', cx.toFixed(1) + 'px');
+    root.setProperty('--cy', cy.toFixed(1) + 'px');
     root.setProperty('--dz', z.toFixed(4));
     root.setProperty('--dop', '1');
+    // paper_lock — the graph paper takes the DECK's pan and scale, not its own.
+    // There were two depth systems on this page: the cards moved on a lattice
+    // measured in card pitches and scaled by Z_STEP per notch, while the paper
+    // moved in metres through the old distance-and-exponent pipeline. They had
+    // no reason to agree and they did not — nudge inward and the cards grew by
+    // 2.1 while the paper grew by something else entirely, so the cards slid over
+    // a surface that was going somewhere different. One lattice, one motion: the
+    // paper is now the floor the cards stand on, and the grid squares grow with
+    // the cards so a card is always the same number of squares across.
+    // The transform order is the same on both elements (translate then scale), so
+    // the same two numbers mean the same thing to each.
+    root.setProperty('--sx', cx.toFixed(1) + 'px');
+    root.setProperty('--sy', cy.toFixed(1) + 'px');
+    root.setProperty('--sc', z.toFixed(4));
+    // here_mark: the bracket is sized to one card AS DRAWN, so it stays snug
+    // around whatever is standing in it at every depth.
+    root.setProperty('--hm_w', (g.cw * z).toFixed(1) + 'px');
+    root.setProperty('--hm_h', (g.ch * z).toFixed(1) + 'px');
   }
   // deck_deep — z_one: toward and away move the ONE deck nearer and further, hard.
   // Nothing is entered and nothing is left behind; the same twenty-five cards are
@@ -1072,7 +1165,7 @@
     // the two had happened.
     pendEv = 4;
   }
-  function card_here() { return card_name(-cell.x, cell.y); }
+  function card_here() { return card_name(-cell.x, -cell.y); }   // here_y
 
   // red_reset: the red lamp IS the reset, and it is also how motion gets switched
   // on the first time — there is no separate button any more.
@@ -2157,7 +2250,9 @@
                // running state the motion path has
                bar: { x: +nBar.x.toFixed(4), y: +nBar.y.toFixed(4), z: +nBar.z.toFixed(4) },
                zero: { x: +nSlow.x.toFixed(4), y: +nSlow.y.toFixed(4), z: +nSlow.z.toFixed(4) },
-               quiet: +nQuiet.toFixed(3), stir: +nStir.toFixed(3) };
+               quiet: +nQuiet.toFixed(3), stir: +nStir.toFixed(3),
+               peak: { x: +nPeak.x.toFixed(3), y: +nPeak.y.toFixed(3), z: +nPeak.z.toFixed(3) },
+               big: NUDGE_BIG, floor: NUDGE_A, dead: NUDGE_DEAD };
     },
     world: function () {
       var st = getComputedStyle(document.documentElement);

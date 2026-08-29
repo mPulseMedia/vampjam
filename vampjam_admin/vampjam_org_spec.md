@@ -2560,7 +2560,57 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   switch off, then each of the three switches on. 60fps. Suite 256 green: all five switches still
   exactly negate their own vector and nothing else, and still come back lit after a reload.
   Still no new trace.
-- NEXT → add entry 261 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 261 nudge_small · b261 · lab.html — the small gestures only, the focal card unmistakable, and the
+  paper on the same lattice as the cards.
+  flip_again: PUSH_INV back to { 1, 1, 1 }, and FLIP_KEY to _3 with it. His account of what
+  happened is right: he asked for the flip in 258, it never reached him because his stored switches
+  cancelled it exactly, 260 fixed the cancelling and delivered 258's flip — by which time he had
+  asked again, so one flip landed where two had been asked for. This is the second. The key version
+  goes with it for the same reason as last time: a change to what "off" means is worthless if the
+  switches people already stored quietly undo it. Verified by writing the previous generation's
+  switches back under the old key and reloading — still on disk, ignored, all five off.
+  nudge_small: the detector had a floor and no ceiling, so a full arm swing sailed past the
+  threshold and counted exactly like a wrist flick. NUDGE_BIG is the ceiling; the floor comes down
+  from 0.26 to 0.13 at the same time, because with a ceiling doing the rejecting the floor no
+  longer has to be high enough to keep swings out and can be low enough to catch the small ones he
+  means.
+  the subtlety, and it is the whole of this build: the ceiling CANNOT be read off the averaged bar.
+  The detector fires on the leading edge — that is where its 17ms comes from — and at the leading
+  edge a swing and a nudge are identical, both having only just left zero. By the time the average
+  has climbed high enough to call something a swing, the notch is already delivered. Measured: with
+  the ceiling on the bar, drives of 1.4 and 2.2 still fired. So it is read off the RAW drive, which
+  is at full size on the very first sample: nPeak is the largest raw drive since the phone left
+  quiet, reset on every return to quiet, and a gesture that has already been that hard is refused
+  before anything is delivered. Refusing disarms rather than returning, so the rest of a swing
+  cannot trickle a notch out later — one gesture, one judgement.
+  the band, walked in eight steps: 0.10 and 0.16 do nothing, 0.30 through 0.90 fire, 1.40, 2.20 and
+  3.50 are refused. (0.16 is below the floor once the 0.05 deadband is taken off it, so the real
+  floor in raw terms is about 0.18.) A long gentle push still delivers one notch on its leading
+  edge and then cannot fire again until quiet, which is correct: that is a nudge held, not a swing.
+  card_focus: three channels rather than one, so no single cue has to carry it. The neighbours step
+  back (0.42 opacity, saturation to 0.35), the card you are on comes forward (a heavier ring, a
+  deeper shadow, its own stacking), and here_mark — a bracket at the centre of the GLASS, sized to
+  one card as drawn, that never moves. A property of a card can only say "this one is special"; a
+  fixed mark says "this is the place, and something is standing in it", and the cards visibly
+  travel through it.
+  here_y — and dimming the neighbours immediately exposed a bug that had been there a long time:
+  the deck is translated by -cell.y, so the row arriving in the middle is j = -cell.y, but the
+  `here` flag was looking for j = +cell.y. Nudging up highlighted a card TWO ROWS from the one you
+  were looking at, and card_here() named that one too. Invisible until now — with every card
+  equally bright, a ring in the wrong place just read as decoration. X had been right all along,
+  which is exactly why it never looked systematically broken. Both fixed; measured at rest, one and
+  two steps right, and one and two steps up: the centred card and the flagged card now agree in
+  every case, within a pixel.
+  paper_lock: there were two depth systems on this page. The cards moved on a lattice measured in
+  card pitches and scaled by Z_STEP per notch; the paper moved in metres through the old
+  distance-and-exponent pipeline. They had no reason to agree and did not — a nudge inward grew the
+  cards by 2.1 and the paper by something else, so the cards slid over a surface going somewhere
+  different. The paper takes the deck's own pan and scale now. The transform order is the same on
+  both elements (translate then scale), so the same two numbers mean the same thing to each.
+  Measured after two nudges in and one across: paper 4.4100 against cards 4.4100, pan 846.1px
+  against 846.1px. A card is now the same number of grid squares across at every depth.
+  60fps, suite 256 green, no page errors. Still no new trace.
+- NEXT → add entry 262 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

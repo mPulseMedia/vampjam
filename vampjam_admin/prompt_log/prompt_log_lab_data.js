@@ -9,8 +9,64 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "260 nudge_core",
+        id: "261 nudge_small",
         expanded: true,
+        nodes: [
+          { text: "261 nudge_small", children: [
+            { text: "prompt_restate", children: [
+              { text: "Ignore the big motions \u2014 look only for the tiny nudges." },
+              { text: "Reverse all three again: right/left, up/down, toward/away. I think I flipped twice and undid my own request." },
+              { text: "Make it really obvious which card is the focal point." },
+              { text: "Scale the graph paper along with the cards." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, and so I want you to ignore the big motion and just look for those tiny nudges in the right direction and I guess I\u2019m gonna try one more time to ask you to reverse all three of the ways that the paper responds to the nudge in that I want right and left to flip up and down to flip and toward and away to flip as the default from what\u2019s there, I want the default to be the flip and I think maybe what happened as I flipped and flipped twice so I\u2019ve undone my request and I want you to ignore the bigger motions and just do the smaller ones I want you really make it obvious which of the cards the focal point and I want you to scale the graph paper along with the cards let\u2019s start with that" }
+            ]},
+            { text: "flip_again", children: [
+              { text: "your account of it is right \u2014 you asked in 258, it never reached you because your stored switches cancelled it exactly" },
+              { text: "260 fixed the cancelling and delivered 258\u2019s flip, by which time you had asked again, so one flip landed where two had been asked for" },
+              { text: "this is the second one, and the stored switches are cleared again so nothing can quietly undo it" }
+            ]},
+            { text: "ignoring_the_big_ones", children: [
+              { text: "there was a floor and no ceiling, so a full arm swing sailed past the threshold and counted exactly like a wrist flick" },
+              { text: "there is a ceiling now, and the floor came down at the same time \u2014 with the ceiling doing the rejecting, the floor no longer has to be high enough to keep swings out" },
+              { text: "walked it in eight steps: the two gentlest do nothing, the middle three fire, the three hardest are refused" }
+            ]},
+            { text: "the_catch_in_that", children: [
+              { text: "the ceiling cannot be read off the smoothed signal. the detector fires on the leading edge \u2014 that is where its 17ms comes from \u2014 and at the leading edge a swing and a nudge look identical, both having only just left zero" },
+              { text: "by the time the average is high enough to call something a swing, the card has already moved. measured: with the ceiling there, hard shoves still fired" },
+              { text: "so it reads the raw number, which is at full size on the very first sample. it remembers how hard the gesture has got so far, and refuses one that has already been too hard \u2014 before anything is delivered" }
+            ]},
+            { text: "which_card_you_are_on", children: [
+              { text: "three things say it at once so no one of them has to carry it: the neighbours step back, the card you are on comes forward, and a bracket at the centre of the glass marks the place" },
+              { text: "the bracket never moves, so the cards visibly travel through it \u2014 a mark on a card can only say \u2018this one is special\u2019, a fixed mark says \u2018this is the place, and something is standing in it\u2019" }
+            ]},
+            { text: "and_that_found_a_real_bug", children: [
+              { text: "dimming the neighbours immediately exposed one that had been there a long time: nudging up highlighted a card TWO ROWS from the one you were actually looking at" },
+              { text: "the deck and the highlight disagreed by a sign on the up/down axis. left/right had always been right, which is why it never looked systematically broken" },
+              { text: "invisible until now \u2014 with every card equally bright, a ring in the wrong place just read as decoration" }
+            ]},
+            { text: "paper_lock", children: [
+              { text: "there were two depth systems: the cards moved on a lattice of card widths, the paper moved in metres through an older distance-and-exponent pipeline" },
+              { text: "they had no reason to agree and did not \u2014 a nudge inward grew the cards by one amount and the paper by another, so the cards slid over a surface going somewhere different" },
+              { text: "the paper takes the deck\u2019s own pan and scale now, so a card is the same number of grid squares across at every depth" }
+            ]},
+            { text: "verify", children: [
+              { text: "~26m: all six directions with every switch off; the previous generation\u2019s stored switches put back and proved unable to cancel the flip" },
+              { text: "the firing band walked in eight steps from too gentle to too hard, plus a long slow push" },
+              { text: "the centred card and the flagged card compared at rest and at one and two steps right and up \u2014 they agree within a pixel now" },
+              { text: "paper and cards measured together after two nudges in and one across: same scale, same pan, to four decimals" },
+              { text: "60fps, earlier lab suite green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "260 nudge_core",
+        expanded: false,
         nodes: [
           { text: "260 nudge_core", children: [
             { text: "prompt_restate", children: [
