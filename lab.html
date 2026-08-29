@@ -475,7 +475,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'lab_true', bg: '#334155', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'mid_full', bg: '#0d9488', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -985,13 +985,18 @@
     { from: 28, to: 30, text: 'Quarter close',        tone: 5 }
   ];
   var SPAN_TONE = ['#2563eb', '#0f766e', '#b45309', '#7c3aed', '#be185d', '#15803d'];
-  // the card is a day, so it is roughly a day's shape: a little taller than wide,
-  // packed close, because a month has to read as a grid rather than as a scatter.
-  // cal_fit — and it is sized so that the WHOLE MONTH at Z_HOME very nearly fills
-  // the width. The old 0.46 was chosen so that three of five cards showed at once;
-  // seven columns is a different sum, and at 0.42 the month sat in the middle of
-  // the screen with a third of the glass empty around it.
-  var CARD_F = 0.55, GAP_F = 0.035;
+  // day_full — he asked for a zoom notch where a day is 90% of the viewport, so a
+  // day's width is not a taste any more, it is a consequence: name the notch
+  // (Z_FULL) and the fraction (DAY_FULL) and the width follows from the zoom step.
+  // Change any of the three and the day resizes itself to keep the promise, which
+  // is the point of deriving it rather than typing 0.4286 and hoping.
+  //
+  // And because day_phone gave a day the SCREEN's proportions, 90% of the width is
+  // 90% of the height in the same breath — at Z_FULL a day is 90% of the glass in
+  // BOTH directions, not 90% one way and something else the other.
+  var Z_FULL   = 1;                 // the notch where a day fills the glass
+  var DAY_FULL = 0.90;              // how much of the glass it fills there
+  var GAP_F    = 0.035;
   // cal_date — grid position to a real date. Column is i + 3, row counts DOWN
   // from the top, which is why j is negated: the lattice has +y up and a calendar
   // has week one at the top.
@@ -1028,32 +1033,33 @@
   // with no letterboxing at the top or bars down the sides — the day IS the
   // screen. And it holds on any device without a second number to maintain: turn
   // the phone to landscape and the days turn with it.
+  // A day is measured against the WINDOW throughout — its width, its height and
+  // the gap between two of them. Both promises the page makes about a day are
+  // promises about his screen: day_phone says a day has the screen's proportions,
+  // day_full says it is 90% of the screen at one notch. Measuring from the stage
+  // element instead, which is inset from the window, broke both by a few percent
+  // — a 2.19 ratio against the screen's 2.10, and a "90%" day at 83.5%.
   function card_px() {
-    var w = (frame && frame.clientWidth) || 320;
-    // the ratio comes from the WINDOW, not from the stage element: he asked for
-    // the proportions of his phone's screen, and the stage is a few percent off
-    // the window's own shape. Measured, that was the difference between 2.19 and
-    // the screen's 2.10 — small, but it is the one number this is supposed to be.
-    var vw = window.innerWidth || w, vh = window.innerHeight || (w * 2);
-    var cw = w * CARD_F, ch = cw * (vh / vw);
-    return { cw: cw, ch: ch, px: cw + w * GAP_F, py: ch + w * GAP_F };
+    var vw = window.innerWidth || (frame && frame.clientWidth) || 320;
+    var vh = window.innerHeight || (vw * 2);
+    var CARD_F = DAY_FULL / Math.pow(Z_STEP, Z_FULL);
+    // day_full: the promise is about the SCREEN, so the width is measured from the
+    // window too. Taking it from the stage element instead put a "90%" day at
+    // 83.5% of the glass, because the stage is inset from the window by a margin.
+    var cw = vw * CARD_F, ch = cw * (vh / vw);
+    return { cw: cw, ch: ch, px: cw + vw * GAP_F, py: ch + vw * GAP_F };
   }
-  // band_room — the controls own a band along the bottom now, so the month is
-  // centred in the glass ABOVE it rather than in the whole window. Without this
-  // the taller days push the last week down behind the controls while leaving a
-  // matching gap at the top.
-  function band_h() {
-    var r = document.querySelector('.rig');
-    return r ? r.getBoundingClientRect().height : 0;
-  }
-  function deck_home() { return { x: 0, y: -band_h() / 2 }; }
   // cal_month: a card is a day, so its name is its date
   function card_name(i, j) {
     var d = cal_date(i, j);
     return DOW[(d.getDay() + 6) % 7] + ' ' + MON[d.getMonth()] + ' ' + d.getDate();
   }
   // deep_say — how far in or out from where you started
+  // day_full: the notch where a day fills the glass says so, because it is the one
+  // depth on the dial with a meaning rather than a number
   function deep_say() {
+    if (zc === Z_FULL) return 'full day';
+    if (zc === Z_HOME) return 'whole month';
     return zc === 0 ? 'start' : (zc > 0 ? '+' + zc + ' near' : zc + ' far').replace('-', '\u2212');
   }
   function z_at() {
@@ -1132,32 +1138,20 @@
     // z_pan — the pan is applied BEFORE the scale in the transform, so it has to
     // be multiplied by the scale itself or one nudge sideways would carry you a
     // whole card at x1 and a quarter of one at x4.
-    // hold_still — the month does NOT follow the selection. It was panning so the
-    // selected day sat dead centre, which meant every nudge slid the whole
-    // calendar under you and a day was in a different place selected than it had
-    // been a moment earlier unselected. On a calendar that is exactly backwards:
-    // the month is the fixed thing and the selection is what moves over it.
+    // stay_mid — the selected day sits at the centre of the glass, always. This
+    // replaces hold_still, which held the month still and scrolled only when the
+    // selection would have left the screen. Both are defensible and he has now
+    // asked for each in turn: holding still keeps a day where you last saw it,
+    // centring keeps the thing you are ON where your eye already is. Centring wins
+    // once the days are large — at Z_FULL one day is 90% of the glass, and a
+    // "scroll only when it would leave" rule spends most of its time scrolling
+    // anyway, in jumps, which is worse than simply following.
     //
-    // So the deck holds where it is, and pans only when it has to — when the
-    // selected day would otherwise be off the glass, and then by the LEAST amount
-    // that brings it back inside a margin. Zoomed out, the whole month is on
-    // screen and it never moves at all. Zoomed in, it scrolls the way a page
-    // scrolls to keep the caret visible, one edge at a time.
-    var W = (frame && frame.clientWidth) || 320, H = (frame && frame.clientHeight) || 640;
-    // band_room: the region a day actually has to be inside is the glass minus the
-    // control band, measured from the deck's own origin at the centre of the window
-    var band = band_h();
-    var top = -H / 2, bot = H / 2 - band;
-    var sel = { x: -cell_at('x') * g.px * z, y: cell_at('y') * g.py * z };   // where the day sits in the deck
-    var mx = Math.min(W * 0.38, g.cw * z * 0.72);
-    var my = Math.min((bot - top) * 0.38, g.ch * z * 0.72);
-    var lo, hi;
-    lo = -W / 2 + mx - sel.x; hi = W / 2 - mx - sel.x;
-    if (lo > hi) { deckOff.x = -sel.x; }                     // wider than the glass: centre it
-    else deckOff.x = Math.max(lo, Math.min(hi, deckOff.x));
-    lo = top + my - sel.y; hi = bot - my - sel.y;
-    if (lo > hi) { deckOff.y = (top + bot) / 2 - sel.y; }
-    else deckOff.y = Math.max(lo, Math.min(hi, deckOff.y));
+    // deckOff is still the page's own position rather than a function inlined into
+    // the transform, because the month is drawn from it and because going back to
+    // holding still is one line here.
+    deckOff.x = cell_at('x') * g.px * z;
+    deckOff.y = -cell_at('y') * g.py * z;
     var cx = deckOff.x, cy = deckOff.y;
     root.setProperty('--cx', cx.toFixed(1) + 'px');
     root.setProperty('--cy', cy.toFixed(1) + 'px');
@@ -1912,7 +1906,7 @@
     nBar = { x: 0, y: 0, z: 0 }; nArm = true; nQuiet = 0; nStir = 0;
     nSlow = { x: 0, y: 0, z: 0 };   // nudge_raw: relearn what zero is from here
     if (!keepDepth) zc = Z_HOME;    // cal_open: back to the whole month
-    deckOff = deck_home();          // hold_still: and the month back to square
+    deckOff = { x: 0, y: 0 };       // stay_mid recomputes it on the next frame
     cell = { x: 0, y: 0, z: 0 };    // and to the middle card of it
     deck_build();
     lastBump = '';
@@ -2315,7 +2309,6 @@
   // no press needed. Motion still has to be switched on for the sensor, but that
   // is a separate thing from there being something to look at.
   deck_build();
-  deckOff = deck_home();          // band_room: the month centres above the controls
   draw_start();
 
   // test hook

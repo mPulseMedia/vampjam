@@ -2942,7 +2942,37 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   dot column that was deliberately removed.
   lab.html 2733 → 2420 lines. 60fps. All five lab suites green — 256, 263, 267, 269 and 270 — and
   no page errors at any stage. Still no new trace.
-- NEXT → add entry 274 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 274 mid_full · b274 · lab.html — the selected day is centred, and one notch makes it 90% of the
+  glass.
+  stay_mid: the deck pans so the selected day sits at the centre of the viewport, always. This
+  REPLACES hold_still from 271, and both are defensible — he has now asked for each in turn.
+  Holding still keeps a day where you last saw it; centring keeps the thing you are ON where your
+  eye already is. Centring wins once the days are large: at the full-day notch one day is 90% of the
+  glass, and a "scroll only when it would leave" rule then spends most of its time scrolling anyway,
+  in jumps, which is worse than simply following. deckOff stays a position the page keeps rather
+  than an expression inlined into the transform, so going back is one line.
+  measured at six positions — at rest, two across, one up, back down, and back across — the selected
+  day's centre landed on the centre of the glass to the pixel every time, (0, 0) off.
+  day_full: a day's width stops being a taste and becomes a consequence. Name the notch (Z_FULL) and
+  the fraction (DAY_FULL) and the width follows from the zoom step: 0.90 / Z_STEP^1. Change any of
+  the three and the day resizes itself to keep the promise, which is the point of deriving it rather
+  than typing 0.4286 and hoping. And because day_phone gave a day the screen's proportions, 90% of
+  the width is 90% of the height in the same breath — measured 89.9% on BOTH axes at that notch,
+  not 90% one way and something else the other.
+  a trap it walked into first: the width was taken from the stage element rather than the window,
+  which put the "90%" day at 83.5% of the glass, because the stage is inset. Both of a day's
+  promises are promises about his SCREEN — its proportions and its 90% — so every measurement in
+  card_px now comes from the window. Same class of mistake as day_phone's, in the same function, two
+  builds apart; the ratio had been fixed and the width had not.
+  the dial says what it means at the two notches that have a meaning: "whole month" at Z_HOME and
+  "full day" at Z_FULL, plain numbers everywhere else.
+  band_h and deck_home went with hold_still — with the selection always centred there is nothing to
+  centre above the band.
+  verified: the six positions above, the depth dial walked from the whole month to +3 with the
+  percentage of the glass printed at each notch, and all five lab suites green. Suite 269's
+  hold_still section was rewritten to assert the new contract rather than the one it replaced.
+  No page errors. Still no new trace.
+- NEXT → add entry 275 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "273 lab_true",
+        id: "274 mid_full",
         expanded: true,
+        nodes: [
+          { text: "274 mid_full", children: [
+            { text: "prompt_restate", children: [
+              { text: "Keep the selected thing centered." },
+              { text: "At some zoom notch, make it 90% the size of my viewport \u2014 and label it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Keep the selected thing centered. At some zoom label make it 90% size of my viewport" }
+            ]},
+            { text: "stay_mid", children: [
+              { text: "the day you are on now sits at the centre of the glass, always \u2014 measured at six positions, dead centre to the pixel every time" },
+              { text: "this replaces the hold-still behaviour from two builds ago, and both are defensible \u2014 you have asked for each in turn" },
+              { text: "holding still keeps a day where you last saw it; centring keeps the thing you are ON where your eye already is" },
+              { text: "centring wins now the days are large: at the full-day notch one day is 90% of the glass, so a \u2018scroll only when it would leave\u2019 rule spends most of its time scrolling anyway, in jumps" },
+              { text: "and going back to holding still is one line, if you want it" }
+            ]},
+            { text: "day_full", children: [
+              { text: "a day\u2019s width stops being a taste and becomes a consequence: name the notch and the fraction, and the width follows from the zoom step" },
+              { text: "change any of the three and the day resizes itself to keep the promise \u2014 which is the point of deriving it rather than typing a number and hoping" },
+              { text: "and because a day already has your screen\u2019s proportions, 90% of the width is 90% of the height in the same breath \u2014 measured 89.9% on both axes" }
+            ]},
+            { text: "a_trap_it_walked_into_first", children: [
+              { text: "I took the width from the stage element rather than the window, which put the \u201890%\u2019 day at 83.5% \u2014 the stage is inset from the screen" },
+              { text: "both of a day\u2019s promises are promises about your SCREEN, so every measurement in that function comes from the window now" },
+              { text: "same mistake, same function, two builds apart: I had fixed the ratio and left the width" }
+            ]},
+            { text: "the_dial", children: [
+              { text: "the two notches that mean something now say so \u2014 \u2018whole month\u2019 and \u2018full day\u2019 \u2014 and plain numbers everywhere else" }
+            ]},
+            { text: "verify", children: [
+              { text: "~17m: six positions with the selected day\u2019s centre against the centre of the glass; the depth dial walked from the whole month to +3 with the percentage of the glass printed at every notch" },
+              { text: "all five lab suites green, and the one that tested the old hold-still behaviour rewritten to test the new contract instead" },
+              { text: "no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "273 lab_true",
+        expanded: false,
         nodes: [
           { text: "273 lab_true", children: [
             { text: "prompt_restate", children: [
