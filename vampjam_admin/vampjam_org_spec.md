@@ -2656,7 +2656,39 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   old numbers gave mostly depth. All six directions still fire on the page, a toward-with-sideways
   now correctly reads as the sideways one, and both floors reject a gesture under them.
   Suite 256 green, no page errors.
-- NEXT → add entry 263 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 263 plate_arc · b263 · lab.html — the plate shows where the phone physically is, riding the arcs,
+  and near/far is the right way round.
+  what he asked for, and it is two different questions on two kinds of axis. Right/left and up/down
+  are to be WHERE THE PHONE PHYSICALLY IS — continuously, separate from any nudging: carry it way
+  to the right and the plate should be way to the right, ON the curve, because his arm does not
+  move in a straight line. Near/far is to be inverted, because it has been backwards.
+  plate_arc: the two lateral axes are read off the ATTITUDE, not off any integrated acceleration.
+  That is not a shortcut, it is the geometry, and it is the orbit_frame insight cashed in: his head
+  is the fixed point and the phone orbits it with the screen kept square to his nose, so carrying
+  the phone round to the right IS turning it about the vertical — the angle and the position on the
+  sphere are the same fact. Reading the angle is drift-free, instant, and needs nothing integrated;
+  an integrated position would drift and would still only ever be an estimate of the angle. It also
+  means the plate lands ON the curve rather than beside it: the drawn arcs ARE that sphere, so a
+  point placed by its angle is on them by construction. Measured across six poses, 20° and 40°
+  either way on both axes: the plate sits between 1.3 and 3.5px of the drawn arc every time.
+  ORB_SPAN is 55° — the turn that carries the phone to the end of an arm. Near/far stays the deck's
+  depth, because depth is not somewhere he carries the phone to; it is a place he nudges into, and
+  the notch is the truth of it.
+  z_flip: MODEL_INV.z from -1 to +1. Verified against the drawing rather than by eye — a toward
+  nudge now moves the plate +11 along the projected +Z arrow.
+  sign_agree — and the other two signs are not guesses either. They are pinned to the angle
+  readouts already on the panel: "right / left" must agree with "turn side", and "up / down" with
+  "tilt top", because each pair is the same physical fact stated twice. The panel had them
+  disagreeing: pose the phone one way and the two lines read +40 and −40 about the same motion.
+  Right/left already agreed; up/down did not, and does now. Whatever the felt direction turns out
+  to be, the panel cannot contradict itself, and a change of mind is one character in one place.
+  the readout follows: the two lateral lines report degrees of arc, because that is what they now
+  show, and near/far reports notches, because that is what IT shows.
+  verified: the six poses above with the plate's distance from the arc measured each time; the
+  plate's travel projected onto each drawn axis arm; the sign agreement checked line by line
+  against the angle readouts; the toward-nudge direction measured. Suites 256, 262 and 263 green,
+  no page errors. Still no new trace — the Send button shipped last build is on the phone now.
+- NEXT → add entry 264 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

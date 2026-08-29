@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "262 nudge_fit",
+        id: "263 plate_arc",
         expanded: true,
+        nodes: [
+          { text: "263 plate_arc", children: [
+            { text: "prompt_restate", children: [
+              { text: "On the 3D diagram, invert the rectangle\u2019s direction for closer and further \u2014 it has been wrong." },
+              { text: "And make right/left and up/down follow the curve, showing where the phone physically is when I move it way over \u2014 separate from nudging." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "on the 3-D diagram in the upright corner, invert the direction of the rectangle for XNY no sorry for closer and further. Invert that it\u2019s been wrong and I wanna have the curve of the right and left correspond with how I physically move way to the right or move way to the left cause it\u2019s not a flat line and same with up. I move way up and way down it\u2019s it\u2019s not a straight line and I\u2019m talking about separate from the nudging but where the phone physically is when I move it way to the right again, separate from nudging it multiple times to the right, but when I move it way to the right, I wanna see it a line with the general curve of the right left cave shape" }
+            ]},
+            { text: "two_different_questions", children: [
+              { text: "right/left and up/down now show where the phone physically is, continuously, with nothing to do with nudging" },
+              { text: "near/far stays the deck\u2019s depth, because depth is not somewhere you carry the phone to \u2014 it is a place you nudge into" }
+            ]},
+            { text: "how_it_knows_where_the_phone_is", children: [
+              { text: "off the phone\u2019s angle, not off any integrated motion \u2014 and that is the geometry, not a shortcut" },
+              { text: "your head is the fixed point and the phone orbits it with the screen square to your nose, so carrying it round to the right IS turning it about the vertical. the angle and the position on the sphere are the same fact" },
+              { text: "reading the angle never drifts and is instant. an integrated position would drift, and would still only be an estimate of the angle" },
+              { text: "and it is why the plate lands ON the curve instead of beside it \u2014 the drawn arcs are that sphere, so a point placed by its angle is on them by construction" },
+              { text: "measured at 20 and 40 degrees each way on both axes: the plate sits within a few pixels of the drawn arc every time" }
+            ]},
+            { text: "closer_further", children: [
+              { text: "inverted, and checked against the drawing rather than by eye \u2014 a toward-nudge now carries the plate toward you" }
+            ]},
+            { text: "the_other_two_signs_are_not_guesses", children: [
+              { text: "they are pinned to the angle readouts already on the panel: right/left has to agree with \u2018turn side\u2019, up/down with \u2018tilt top\u2019, because each pair is the same fact stated twice" },
+              { text: "the panel had them disagreeing \u2014 one motion, two lines, +40 and \u221240. right/left already agreed; up/down did not, and does now" },
+              { text: "so whichever way it turns out to feel, the panel cannot contradict itself, and changing it is one character" }
+            ]},
+            { text: "verify", children: [
+              { text: "~21m: six poses with the plate\u2019s distance from the arc measured each time; its travel projected onto each drawn axis arm; the sign agreement checked line by line; the toward-nudge direction measured" },
+              { text: "the three earlier suites green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 the Send button from last build is on your phone now." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "262 nudge_fit",
+        expanded: false,
         nodes: [
           { text: "262 nudge_fit", children: [
             { text: "prompt_restate", children: [

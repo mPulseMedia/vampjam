@@ -521,7 +521,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'nudge_fit', bg: '#a16207', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'plate_arc', bg: '#0f766e', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1268,16 +1268,44 @@
   // through this, so the picture and the figures can never disagree.
   // diag_flip: MODEL_INV.z -1 — the depicted near/far travel reverses too, so
   // all three of the diagram's travel axes are now reversed against the world.
-  // nudge_core — the plate used to stand at the integrator's position: a number
-  // in metres that nothing on the page acted on, wiped to zero on every nudge. So
-  // the diagram was drawing a quantity that was neither what he did nor what the
-  // app did with it. It stands where the DECK stands now — which card, and how
-  // deep — so the picture answers the only question the page is asking.
-  var MODEL_INV = { x: -1, y: -1, z: -1 };
-  function model_pos() {
-    return { x: MODEL_INV.x * cell.x / CELL_MAX.x,
-             y: MODEL_INV.y * cell.y / CELL_MAX.y,
-             z: MODEL_INV.z * zc     / Z_MAX };
+  // plate_arc — the plate answers two different questions on its two kinds of
+  // axis, and that is deliberate.
+  //
+  // Right/left and up/down are WHERE THE PHONE PHYSICALLY IS, continuously,
+  // separate from any nudging. Move it right around your head and the plate
+  // travels right along the arc; move it back and the plate comes back. It is a
+  // position, not a count of gestures.
+  //
+  // And it is read off the ATTITUDE, not off any integrated acceleration. That is
+  // not a shortcut, it is the geometry: his head is the fixed point and the phone
+  // orbits it with the screen kept square to his nose (orbit_frame), so carrying
+  // the phone round to the right IS turning it about the vertical — the angle and
+  // the position on the sphere are the same fact. Reading the angle is drift-free,
+  // instant, and needs nothing integrated. An integrated position would drift, and
+  // would still only ever be an estimate of the angle.
+  //
+  // That is also why the plate lands ON the curve rather than beside it: the arcs
+  // drawn on the diagram ARE that sphere, so a point placed by its angle is on
+  // them by construction.
+  //
+  // Near/far stays the DECK's depth, because depth is not somewhere he carries the
+  // phone to — it is a place he nudges his way into, and the notch is the truth of
+  // it. z_flip: its sign is inverted here, on his say-so — it has been backwards.
+  //
+  // sign_agree — the three signs are not guesses. Two of them are pinned to the
+  // angle readouts already on the panel: "right / left" must agree with "turn
+  // side" and "up / down" with "tilt top", because each pair is the SAME physical
+  // fact stated twice, and the panel had them disagreeing — turn the phone one way
+  // and the two lines reported +40 and −40 about the same motion. Whatever the
+  // felt direction turns out to be, the panel now cannot contradict itself, and a
+  // change of mind is one character in one place.
+  var ORB_SPAN = 55;   // degrees of orbit that carry the phone to the end of an arm
+  var MODEL_INV = { x: 1, y: 1, z: 1 };
+  function model_pos(pitchDeg, rollDeg) {
+    function arc(d) { return Math.max(-1, Math.min(1, (d || 0) / ORB_SPAN)); }
+    return { x: MODEL_INV.x * arc(rollDeg),      // turn about the vertical = round to the side
+             y: MODEL_INV.y * arc(pitchDeg),     // tilt about the horizontal = up and over
+             z: MODEL_INV.z * zc / Z_MAX };
   }
   // pose_slow — the diagram rebuilds four groups of SVG from strings; at sixty
   // frames a second that is thousands of elements parsed per second for a
@@ -1443,7 +1471,7 @@
     // axis is clamped on its own so a big move on one never drags the picture off.
     // model_pos hands back -1..1 per axis now, so the axis length IS the scale
     function clamp_ax(v) { var u = v * AX_MAX; return Math.max(-AX_MAX, Math.min(AX_MAX, u)); }
-    var mp = model_pos();
+    var mp = model_pos(flipped.pitch, flipped.roll);
     var mv = { x: clamp_ax(mp.x), y: clamp_ax(mp.y), z: clamp_ax(mp.z) };
     // curve_flip — the arithmetic bends with the picture. X and Y are arcs, so a
     // phone that has travelled out along either of them is no longer at the flat
@@ -1499,8 +1527,13 @@
     // rather than reduced to an initial. Distances first in the axis colours,
     // then the three angles, then the scale. Label left, value right, so the
     // column of numbers can be scanned without hunting.
-    // nudge_core — these read centimetres of an integrated position that no
-    // longer exists. They read the deck: which card, and how many notches deep.
+    // plate_arc — the two lateral lines read how far round the arc the phone is,
+    // in degrees, because that is what they now show. Near/far reads notches,
+    // because that is what IT shows.
+    function arc_txt(v) {
+      var n = Math.round(v * ORB_SPAN);
+      return (n < 0 ? '\u2212' : '+') + Math.abs(n) + '\u00b0';
+    }
     function cell_txt(v, max) {
       var n = Math.round(v * max);
       return (n < 0 ? '\u2212' : '+') + Math.abs(n);
@@ -1509,9 +1542,9 @@
       return (v < -0.5 ? '\u2212' : '+') + Math.abs(v).toFixed(0) + '\u00b0';
     }
     var lines = [
-      ['right / left', cell_txt(mp.x, CELL_MAX.x), '#dc2626'],
-      ['up / down',    cell_txt(mp.y, CELL_MAX.y), '#16a34a'],
-      ['near / far',   cell_txt(mp.z, Z_MAX),      '#2563eb'],
+      ['right / left', arc_txt(mp.x),         '#dc2626'],
+      ['up / down',    arc_txt(mp.y),         '#16a34a'],
+      ['near / far',   cell_txt(mp.z, Z_MAX), '#2563eb'],
       ['tilt top',     deg_txt(flipped.pitch),             'rgba(0,0,0,0.68)'],
       ['turn side',    deg_txt(flipped.roll),              'rgba(0,0,0,0.68)'],
       ['swirl flat',   deg_txt(SWIRL_INV * screen_roll()), 'rgba(0,0,0,0.68)'],
