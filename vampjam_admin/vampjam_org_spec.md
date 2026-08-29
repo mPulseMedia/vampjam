@@ -2837,7 +2837,21 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   and share, in targets of the same height. Ghost buttons outside a highlight row checked on three
   pages and still 17px with 17px icons. Every page shot against the previous build: pixel-identical
   apart from record.html's clock. No page errors. Still no new trace.
-- NEXT → add entry 270 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 270 rec_same · b270 · record.html — the record page takes the site's page box.
+  what was left: record.html has linked site.css since 257, but it still carried its own body rule,
+  and that copy had drifted — an 18px gutter against the site's 16, a 10px top against its 3, its
+  own font-family and its own html rule, none of which said anything the shared sheet did not. It
+  was the only reason this page sat on a slightly different grid from the rest of the site.
+  and three bands — .top_bar, .name_row and .stage — were capped at 560px, a number chosen when
+  this page did not share a stylesheet with anything. They take the site's width now, which also
+  retires the landscape rule that existed only to undo that cap.
+  what is KEPT, because it is genuinely this page's own: the recorder is a single centred column,
+  so body stays a flex column with a min-height, and the safe-area bottom padding stays with it.
+  Sharing a stylesheet does not mean pretending a page has no shape of its own.
+  measured before and after: padding 10px 18px 24px → 3px 16px 24px, the bands 354 → 358px wide,
+  and the wordmark, the record button and the tag button unchanged to the pixel. Every other page
+  shot against the previous build: pixel-identical. No page errors. Still no new trace.
+- NEXT → add entry 271 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

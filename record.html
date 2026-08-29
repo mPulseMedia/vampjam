@@ -8,20 +8,28 @@
 <link rel="stylesheet" href="site.css?v=3">
 <script src="theme.js?v=2"></script>
 <style>
-  html { background: var(--bg, #ffffff); touch-action: manipulation; }
+  /* rec_same — the page box comes from site.css like every other page's. What was
+     here was a near-copy that had drifted: an 18px gutter against the site's 16,
+     a 10px top against its 3, its own font-family, and its own html rule. All of
+     that is in the shared sheet, and the copy was the only reason this page sat
+     on a slightly different grid from the rest of the site.
+     What is kept is the one thing that is genuinely this page's own: the recorder
+     is a single centred column, so body stays a flex column. The min-height goes
+     with it, because the column has to reach the bottom of the glass. */
   body {
-    margin: 0; background: var(--bg, #ffffff); color: var(--fg, #1d1d1f); min-height: 100vh; min-height: 100dvh; touch-action: manipulation;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh; min-height: 100dvh;
     display: flex; flex-direction: column; align-items: center;
-    padding: max(10px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
   }
-  .top_bar { width: 100%; max-width: 560px; position: relative; text-align: center; min-height: 44px; margin-top: 4px; }
+  /* and the page's own bands take the site's width rather than a narrower one of
+     their own — 560 was chosen when this page did not share a stylesheet */
+  .top_bar { width: 100%; position: relative; text-align: center; min-height: 44px; margin-top: 4px; }
   /* nav_cass owns the placement now — see the shared block below */
   /* admin_same: the wordmark was 58/29 here and 68/34 on every other page —
      it comes from site.css now, and the bar carries .brand so it matches. */
   .name_row {
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: 100%; max-width: 560px; margin-top: 6px;
+    width: 100%; margin-top: 6px;
   }
   #name_in {
     background: none; border: none; outline: none; text-align: center;
@@ -36,7 +44,7 @@
   }
   .pencil_btn svg { width: 17px; height: 17px; }
 
-  .stage { width: 100%; max-width: 560px; display: flex; flex-direction: column; align-items: center; gap: 16px; margin-top: 14px; }
+  .stage { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 16px; margin-top: 14px; }
 
   /* control row mirrors the playback page — side buttons present but inert */
   .ctrl_row { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
@@ -130,7 +138,7 @@
   /* full_width: phone landscape stretches the record screen edge to edge */
   @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
     body { padding-left: clamp(8px, env(safe-area-inset-left), 24px); padding-right: clamp(8px, env(safe-area-inset-right), 24px); }   /* land_margin */
-    .top_bar, .name_row, .stage { max-width: none; }
+    /* rec_same: they take the site's width now, so there is nothing to widen */
   }
   .status a { color: var(--accent); font-weight: 600; }
 

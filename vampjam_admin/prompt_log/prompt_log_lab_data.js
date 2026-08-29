@@ -9,8 +9,39 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "269 icon_row",
+        id: "270 rec_same",
         expanded: true,
+        nodes: [
+          { text: "270 rec_same", children: [
+            { text: "prompt_restate", children: [
+              { text: "Have the record screen use the CSS of the rest of the pages." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "have the record screen use the css of the rest of the pages" }
+            ]},
+            { text: "what_was_left", children: [
+              { text: "it has linked the shared stylesheet since the big refactor, but it still carried its own copy of the page box \u2014 and the copy had drifted" },
+              { text: "an 18px gutter against the site\u2019s 16, a 10px top against its 3, its own font, its own html rule" },
+              { text: "that was the only reason it sat on a slightly different grid from everything else" },
+              { text: "and three of its bands were capped at 560px, a number chosen when this page shared a stylesheet with nothing. they take the site\u2019s width now" }
+            ]},
+            { text: "what_i_kept", children: [
+              { text: "the recorder is a single centred column, so the page stays a centred column" },
+              { text: "sharing a stylesheet does not mean pretending a page has no shape of its own" }
+            ]},
+            { text: "verify", children: [
+              { text: "~8m: measured before and after \u2014 the gutter and top padding now match the rest, the bands went 354 to 358 wide, and the wordmark, the record button and the tag button are unchanged to the pixel" },
+              { text: "every other page shot against the previous build: pixel-identical" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "269 icon_row",
+        expanded: false,
         nodes: [
           { text: "269 icon_row", children: [
             { text: "prompt_restate", children: [
