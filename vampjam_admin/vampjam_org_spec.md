@@ -2851,7 +2851,39 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   measured before and after: padding 10px 18px 24px → 3px 16px 24px, the bands 354 → 358px wide,
   and the wordmark, the record button and the tag button unchanged to the pixel. Every other page
   shot against the previous build: pixel-identical. No page errors. Still no new trace.
-- NEXT → add entry 271 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 271 open_view · b271 · lab.html — the month holds still, it is there from load, and the controls
+  are one band along the bottom.
+  hold_still — the big one, and he is right about it. The deck was panning so the selected day sat
+  dead centre, which meant every nudge slid the whole calendar under him and a day was in a
+  different place selected than it had been a moment earlier unselected. On a calendar that is
+  backwards: the month is the fixed thing and the selection is what moves over it. The deck now
+  holds where it is and pans only when it must — when the selected day would otherwise be off the
+  glass, and then by the LEAST amount that brings it back inside a margin. Zoomed out, the whole
+  month is on screen and it never moves at all; zoomed in, it scrolls the way a page scrolls to keep
+  a caret visible, one edge at a time. Measured: three days checked at the home zoom, each in
+  exactly the same pixel selected as unselected; and three notches in, the month moved on 3 of 4
+  nudges with the selection never once leaving the glass.
+  open_draw: the paint loop returned early until motion was switched on, so the page opened blank
+  and only became a calendar after a press. Nothing about drawing a month needs the sensor — the
+  month, its position and its scale are all page state — so it draws from load, and turning motion
+  on only adds the two instrument panels and the leans. One flag decides whether the loop is
+  running, so switching motion on cannot start a second loop alongside the first.
+  svg_hidden — and open_draw immediately exposed a bug that had been sitting there harmlessly. An
+  SVG element does not reflect the `hidden` IDL property, so `poseEl.hidden = false` sets a plain JS
+  property and leaves the ATTRIBUTE in place. That did nothing for as long as the attribute did
+  nothing to an SVG — but the diagram was therefore painting an empty white box in the corner from
+  load, invisible before only because the whole page was blank. Giving the attribute a CSS rule
+  fixed the box and broke the unhide in the same stroke; both are fixed by naming the attribute.
+  The 256 suite had the same line in it and was measuring 0x0 as a result — corrected there too.
+  bar_low: every control on one band along the bottom, at his word. It was a 168px column floating
+  in the lower right, which put the switches over the right-hand days and left the whole bottom of
+  the glass empty. The band is full width with its own ground, so the calendar reading through it
+  can never make a label ambiguous.
+  flip_hide: twelve switches were taking a third of the band for something touched once a week, so
+  they are closed by default behind one small button and remembered — a setting he had open should
+  still be open when the page reloads itself, which this page does constantly.
+  Suites 256, 263, 267 and 269 green, no page errors. Still no new trace.
+- NEXT → add entry 272 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

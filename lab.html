@@ -324,14 +324,43 @@
   .g_count { flex: 0 0 auto; font-size: 10px; color: rgba(0,0,0,0.45); min-width: 30px; text-align: right; }
 
   /* ---- rig_right: the whole interface, stacked off the right edge ---- */
+  /* bar_low — every control on one band along the bottom, at his word. It was a
+     168px column floating in the lower right, which put the switches over the
+     right-hand days and left the whole bottom of the glass empty. The band is
+     full width, has its own ground so the calendar reading through it never makes
+     a label ambiguous, and the month simply has the screen above it. */
   .rig {
     position: fixed; z-index: 8;
-    right: max(16px, calc(env(safe-area-inset-right) + 8px));
-    bottom: max(96px, calc(env(safe-area-inset-bottom) + 84px));
-    width: 168px;
-    display: flex; flex-direction: column; align-items: stretch; gap: 9px;
+    left: 0; right: 0;
+    bottom: 0;
+    display: flex; flex-direction: column; align-items: stretch; gap: 6px;
+    padding: 8px max(12px, env(safe-area-inset-left))
+             max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-right));
+    background: rgba(252,252,248,0.93);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(15,23,42,0.10);
     touch-action: manipulation;
   }
+  /* the working row: grade, record and the disclosure, side by side */
+  .rig_main { display: flex; align-items: center; gap: 8px; }
+  .rig_main .rig_lights { flex: 0 0 auto; }
+  .rig_main .g_rec { flex: 1 1 auto; }
+  /* flip_hide — the switches are a setting, not a control, so they are closed by
+     default and open from one small button. Twelve of them were taking a third of
+     the band for something touched once a week. */
+  .flip_pop {
+    flex: 0 0 auto; min-height: 46px; min-width: 46px;
+    border: 1px solid var(--panel_3, rgba(0,0,0,0.14)); border-radius: 13px;
+    background: rgba(255,255,255,0.9); color: var(--muted, #86868b);
+    font: 600 17px/1 -apple-system, system-ui, sans-serif; cursor: pointer;
+  }
+  .flip_pop.on { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+  .flips[hidden] { display: none; }
+  /* open_draw — an SVG does not honour the plain `hidden` attribute the way an
+     HTML element does, so the diagram was painting an empty white box in the
+     corner from load. It was invisible before only because the whole page was
+     blank until motion was switched on. */
+  .pose[hidden] { display: none !important; }
   .rig [hidden] { display: none !important; }
   /* vec_flip — five in a row across the rig's width, small because they are set
      once and then left alone, but each still a real target. Off is quiet; ON is
@@ -477,12 +506,17 @@
   <!-- grade_two — two ordinary buttons, not lamps. Green says that was right.
        Red says it was not, and resets, which is the same press he was making
        anyway: in his protocol hitting reset IS the bad grade. Amber is gone. -->
-  <div class="rig_lights" id="rig_lights">
-    <button id="g_good" class="g_mark g_green">Good</button>
-    <button id="g_wire" class="g_mark g_red">Bad</button>
-  </div>
   <div class="rig_say"><span class="g_led" id="g_led"></span><span class="rig_msg" id="g_msg">tap Record</span></div>
-  <button id="g_rec" class="g_rec">Record</button>
+  <div class="rig_main">
+    <div class="rig_lights" id="rig_lights">
+      <button id="g_good" class="g_mark g_green">Good</button>
+      <button id="g_wire" class="g_mark g_red">Bad</button>
+    </div>
+    <button id="g_rec" class="g_rec">Record</button>
+    <!-- flip_hide: the switches live behind this -->
+    <button id="flip_pop" class="flip_pop" aria-expanded="false"
+            aria-controls="flips" title="Show the reverse switches">⇅</button>
+  </div>
   <div class="g_status" id="g_status" hidden></div>
   <div class="g_recent" id="g_recent" hidden></div>
   <button id="g_copy" class="g_small" hidden>Copy last</button>
@@ -490,7 +524,7 @@
   <span class="g_count" id="g_count" hidden></span>
   <!-- vec_flip — five tiny reverse switches, one per vector, under the controls
        they change the meaning of. A lit one is reversed; they survive a reload. -->
-  <div class="flips" id="flips"></div>
+  <div class="flips" id="flips" hidden></div>
 </div>
 <a class="corner_back" id="back_btn" href="admin.html">&#8249; Admin</a>
 <span class="build_tag" id="build_tag"></span>
@@ -527,7 +561,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'cal_month', bg: '#166534', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'open_view', bg: '#0891b2', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1243,6 +1277,9 @@
   var Z_HOME = -2;
   var zc   = Z_HOME;                // which z notch the one deck is at
   var zAnim = null;                 // { from, t0 } while a near/far nudge is landing
+  // hold_still: where the month stands. It is a position the page keeps, not a
+  // function of the selection, which is the whole point.
+  var deckOff = { x: 0, y: 0 };
   var deckEl = document.getElementById('deck');
   function card_px() {
     var w = (frame && frame.clientWidth) || 320, h = (frame && frame.clientHeight) || 640;
@@ -1334,7 +1371,28 @@
     // z_pan — the pan is applied BEFORE the scale in the transform, so it has to
     // be multiplied by the scale itself or one nudge sideways would carry you a
     // whole card at x1 and a quarter of one at x4.
-    var cx = cell_at('x') * g.px * z, cy = -cell_at('y') * g.py * z;
+    // hold_still — the month does NOT follow the selection. It was panning so the
+    // selected day sat dead centre, which meant every nudge slid the whole
+    // calendar under you and a day was in a different place selected than it had
+    // been a moment earlier unselected. On a calendar that is exactly backwards:
+    // the month is the fixed thing and the selection is what moves over it.
+    //
+    // So the deck holds where it is, and pans only when it has to — when the
+    // selected day would otherwise be off the glass, and then by the LEAST amount
+    // that brings it back inside a margin. Zoomed out, the whole month is on
+    // screen and it never moves at all. Zoomed in, it scrolls the way a page
+    // scrolls to keep the caret visible, one edge at a time.
+    var W = (frame && frame.clientWidth) || 320, H = (frame && frame.clientHeight) || 640;
+    var sel = { x: -cell_at('x') * g.px * z, y: cell_at('y') * g.py * z };   // where the day sits in the deck
+    var mx = Math.min(W * 0.38, g.cw * z * 0.72), my = Math.min(H * 0.38, g.ch * z * 0.72);
+    var lo, hi;
+    lo = -W / 2 + mx - sel.x; hi = W / 2 - mx - sel.x;
+    if (lo > hi) { deckOff.x = -sel.x; }                     // wider than the glass: centre it
+    else deckOff.x = Math.max(lo, Math.min(hi, deckOff.x));
+    lo = -H / 2 + my - sel.y; hi = H / 2 - my - sel.y;
+    if (lo > hi) { deckOff.y = -sel.y; }
+    else deckOff.y = Math.max(lo, Math.min(hi, deckOff.y));
+    var cx = deckOff.x, cy = deckOff.y;
     root.setProperty('--cx', cx.toFixed(1) + 'px');
     root.setProperty('--cy', cy.toFixed(1) + 'px');
     root.setProperty('--dz', z.toFixed(4));
@@ -1547,7 +1605,7 @@
   // picture the eye reads at fifteen. Same rationing as the lanes.
   var POSE_MS = 66, poseLast = 0;
   function draw_pose(mult, now) {
-    if (!poseEl || poseEl.hidden) return;
+    if (!poseEl || poseEl.hasAttribute('hidden')) return;   // svg_hidden
     if (now && now - poseLast < POSE_MS) return;
     poseLast = now || 0;
     var m0 = rel_matrix(); if (!m0) return;
@@ -2077,7 +2135,12 @@
   }
 
   function paint_world(now) {
-    if (!motionOn) return;
+    // open_draw — the loop used to return here until motion was switched on, so
+    // the page opened blank and only became a calendar after a press. Nothing in
+    // drawing the month needs the sensor: the month, its position and its scale
+    // are all page state. So it draws from load, and turning motion on only adds
+    // the two instrument panels and the leans.
+    if (!drawing) return;
     var v = view();
     var w = v.w, dist = v.dist, mult = v.mult;
     var sx = v.ox, sy = v.oy;
@@ -2124,6 +2187,7 @@
     nBar = { x: 0, y: 0, z: 0 }; nArm = true; nQuiet = 0; nStir = 0;
     nSlow = { x: 0, y: 0, z: 0 };   // nudge_raw: relearn what zero is from here
     if (!keepDepth) zc = Z_HOME;    // cal_open: back to the whole month
+    deckOff = { x: 0, y: 0 };       // hold_still: and the month back to square
     cell = { x: 0, y: 0, z: 0 };    // and to the middle card of it
     deck_build();
     off  = { x: 0, y: 0, z: 0 };
@@ -2148,9 +2212,22 @@
     window.addEventListener('deviceorientation', on_orientation);
     window.addEventListener('devicemotion', on_motion);
     motionBtn.classList.add('on');
-    if (poseEl) poseEl.hidden = false;
+    // svg_hidden — an SVG element does not reflect the `hidden` IDL property, so
+    // `poseEl.hidden = false` sets a plain JS property and leaves the ATTRIBUTE in
+    // place. That was harmless for as long as the attribute did nothing to an SVG;
+    // the moment open_draw gave it a CSS rule, this line stopped unhiding the
+    // panel and started only appearing to. The attribute has to go by name.
+    if (poseEl) poseEl.removeAttribute('hidden');
     if (traceEl) traceEl.hidden = false;
     if (hint) hint.style.opacity = '0';
+    draw_start();
+  }
+  // open_draw — one place decides whether the paint loop is running, so turning
+  // motion on cannot start a second one alongside the one already going.
+  var drawing = false;
+  function draw_start() {
+    if (drawing) return;
+    drawing = true;
     requestAnimationFrame(paint_world);
   }
 
@@ -2493,6 +2570,31 @@
   }
   gSend.addEventListener('click', function () { send_takes(false); });
   paint_recent();
+
+  // flip_hide — the switches open and close from one button, and it remembers,
+  // because a setting you had open should still be open when the page reloads
+  // itself (which this page does, constantly).
+  (function flip_pop_ui() {
+    var b = document.getElementById('flip_pop'), box = document.getElementById('flips');
+    if (!b || !box) return;
+    var KEY = 'vampjam_lab_flip_open';
+    function set(on) {
+      box.hidden = !on;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-expanded', on ? 'true' : 'false');
+      try { localStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {}
+    }
+    var was = '0';
+    try { was = localStorage.getItem(KEY) || '0'; } catch (e) {}
+    set(was === '1');
+    b.addEventListener('click', function () { set(box.hidden); });
+  })();
+
+  // open_draw — the month is on the glass from load, in its home position, with
+  // no press needed. Motion still has to be switched on for the sensor, but that
+  // is a separate thing from there being something to look at.
+  deck_build();
+  draw_start();
 
   // test hook
   // ---- watch_live: reload the page whenever this file changes on the server ----

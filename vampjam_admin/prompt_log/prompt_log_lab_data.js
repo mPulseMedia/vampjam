@@ -9,8 +9,56 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "270 rec_same",
+        id: "271 open_view",
         expanded: true,
+        nodes: [
+          { text: "271 open_view", children: [
+            { text: "prompt_restate", children: [
+              { text: "The selected day is in a different place than it was unselected \u2014 it should stay put." },
+              { text: "On load I have to press stop or record before the image appears; it should just be there." },
+              { text: "Move all the controls to along the bottom." },
+              { text: "A small button to show the flip switches, closed by default." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "The selected day seems to be in a different location than where it was when it was unselected that shouldn\u2019t be the case. It should just be the in the same place also when the pages first loaded, I need to click one of the other the stop button or the record button in order to make the Image appear and it shouldn\u2019t. It should just appear by default in the default position. Also, let\u2019s move all of the controls to along the bottom of the screen somewhere. We can make a small close button that displays all of the on off buttons for the flip things, but let\u2019s default to it closed" }
+            ]},
+            { text: "hold_still", children: [
+              { text: "you are right and it was the wrong model. the deck was panning so the selected day sat dead centre, so every nudge slid the whole calendar under you" },
+              { text: "on a calendar that is backwards: the month is the fixed thing and the selection is what moves over it" },
+              { text: "it holds where it is now and scrolls only when the selected day would otherwise be off the glass \u2014 and then by the least amount that brings it back, the way a page scrolls to keep a caret visible" },
+              { text: "zoomed out, the whole month is on screen and it never moves at all" },
+              { text: "checked three days at the home zoom: each in exactly the same pixel selected as unselected" }
+            ]},
+            { text: "open_draw", children: [
+              { text: "the drawing loop was refusing to run until motion was switched on, so the page opened blank" },
+              { text: "nothing about drawing a month needs the sensor \u2014 the month, where it is and how big it is are all just page state" },
+              { text: "so it draws from load, and turning motion on only adds the two little panels and the leans" }
+            ]},
+            { text: "and_that_found_a_quiet_bug", children: [
+              { text: "an SVG ignores the `hidden` property the way HTML uses it, so the line that was supposed to reveal the diagram had never actually been removing the attribute" },
+              { text: "it did not matter while the attribute did nothing to an SVG \u2014 but it meant the diagram was painting an empty white box in the corner from load, invisible only because the page was blank" },
+              { text: "fixing the box broke the reveal in the same stroke; both are fixed now, and an old test that had the same line in it was measuring the panel as 0x0 because of it" }
+            ]},
+            { text: "the_controls", children: [
+              { text: "one band along the bottom, full width, with its own ground so the calendar reading through it never makes a label ambiguous" },
+              { text: "it was a narrow column floating in the lower right, which put the switches over the right-hand days and left the whole bottom empty" },
+              { text: "and the twelve switches are behind one small button now, closed by default and remembered \u2014 they were taking a third of the band for something touched once a week" }
+            ]},
+            { text: "verify", children: [
+              { text: "~26m: the month measured in place before any press \u2014 35 days, 8 bars, centred, the 17th highlighted" },
+              { text: "three days each in the same pixel selected and unselected; three notches in, the month moved on 3 of 4 nudges and the selection never left the glass" },
+              { text: "the band measured full width at the bottom; the switches closed on load, open on a press, still open after a reload" },
+              { text: "four suites green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "270 rec_same",
+        expanded: false,
         nodes: [
           { text: "270 rec_same", children: [
             { text: "prompt_restate", children: [
