@@ -9,8 +9,55 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "265 roll_flip",
+        id: "266 flip_row",
         expanded: true,
+        nodes: [
+          { text: "266 flip_row", children: [
+            { text: "prompt_restate", children: [
+              { text: "The row we have is one question: when I nudge, which way does the paper go?" },
+              { text: "Add a row for the 3D diagram \u2014 up, down, right, left and the rest \u2014 so I can flip which way the plate goes." },
+              { text: "And a third row: when I rotate or tilt the phone, flip what happens to the paper." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK for each of those vectors right left up down toward away. We actually have that\u2019s just one row and those buttons now determine and potentially flip are the nudge when I nudge which way does the paper go? We need another row which indicates and lets me flip on the 3-D device up down right left, etc. so I won\u2019t be able to invert those in the 3-D diagram as far as when I Chester a thing to go up on the diagram. Does it go up or does it go down same with the other things? That\u2019s what that button lets me flip and then I think the third row is about when I rotate it or tilt it I wanna be able to flip what happens to the paper" }
+            ]},
+            { text: "three_questions_three_rows", children: [
+              { text: "move \u2014 I nudge the phone. which way does the paper go?" },
+              { text: "show \u2014 I move the phone. which way does the plate go on the diagram?" },
+              { text: "lean \u2014 I turn or tilt. which way does the paper lean?" },
+              { text: "the old row was answering the first and third at once: its L R / U D / N F were the nudge, but its swirl and edge-away were the paper\u2019s lean, which is a different question. and the middle one had no switches at all" },
+              { text: "every sign I have been hunting by hand over the last four builds is yours to set in one press now" }
+            ]},
+            { text: "nothing_moves_until_you_press", children: [
+              { text: "each switch multiplies the sign already in the code, so \u2018off\u2019 is exactly what the page does today" },
+              { text: "that is what made twelve switches safe to add at once, and the test checks it before it presses anything" }
+            ]},
+            { text: "two_couplings_you_should_know", children: [
+              { text: "on the diagram, flipping a rotation carries its position with it \u2014 because carrying the phone round to the side and turning it about the vertical are the same fact" },
+              { text: "flipping the position on its own splits that pair. both are now your choice rather than my guess" }
+            ]},
+            { text: "layout", children: [
+              { text: "the six-switch group takes a second line rather than shrinking to 17px buttons, which is under any thumb" },
+              { text: "every button in all four lines is a full 40 wide, and no label wraps" }
+            ]},
+            { text: "one_catch", children: [
+              { text: "two of the twelve reported \u2018nothing changed\u2019 on the first run and I nearly took that as a pass \u2014 the test had not actually posed a swirl, so there was nothing for them to reverse" },
+              { text: "re-run with a real swirl: both work, and each leaves the other side alone" }
+            ]},
+            { text: "verify", children: [
+              { text: "~34m: all twelve switches exercised one at a time \u2014 each changes only its own readouts, show never touches the paper, lean never touches the diagram, move still moves only the deck" },
+              { text: "the button sizes measured, the labels checked for wrapping, and every switch checked to survive a reload" },
+              { text: "two earlier suites green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "265 roll_flip",
+        expanded: false,
         nodes: [
           { text: "265 roll_flip", children: [
             { text: "prompt_restate", children: [

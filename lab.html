@@ -343,8 +343,21 @@
      once and then left alone, but each still a real target. Off is quiet; ON is
      filled, because "this axis is reversed" is a thing you must be able to see at
      a glance while walking around with the phone. */
-  .flips { display: flex; gap: 5px; }
+  .flips { display: flex; flex-direction: column; gap: 4px; }
+  .flip_row { display: flex; gap: 5px; align-items: center; }
+  /* the row says which question it answers, in three characters, so the panel
+     does not need a legend anywhere else */
+  .flip_tag {
+    flex: 0 0 34px; font: 600 10px/1 -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.04em; color: var(--muted, #86868b); text-align: right;
+    padding-right: 2px; -webkit-user-select: none; user-select: none;
+  }
   .flips button {
+    /* row_tight — the show row carries six switches where the others carry three,
+       and at the shared size its two-letter labels wrapped onto a second line and
+       read as gibberish. They never wrap now, and a crowded row simply sets its
+       own type smaller rather than every row shrinking to match the busiest. */
+    white-space: nowrap;
     flex: 1 1 0; min-width: 0; min-height: 32px; padding: 0;
     border: 1px solid var(--panel_3, rgba(0,0,0,0.14));
     background: rgba(255,255,255,0.9); color: var(--muted, #86868b);
@@ -521,7 +534,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'roll_flip', bg: '#be185d', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'flip_row', bg: '#0369a1', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1019,14 +1032,43 @@
   var FLIP_KEY  = 'vampjam_lab_flip_4';
   var FLIP_PREV = 'vampjam_lab_flip_3';
   var NEUTERED  = { z: true };
-  var FLIPS = [
-    { k: 'x',    lab: 'L\u2009R',  tip: 'Reverse right / left' },
-    { k: 'y',    lab: 'U\u2009D',  tip: 'Reverse up / down' },
-    { k: 'z',    lab: 'N\u2009F',  tip: 'Reverse closer / further' },
-    { k: 'roll', lab: '\u21bb',    tip: 'Reverse clockwise / counter-clockwise' },
-    { k: 'turn', lab: '\u25e8',    tip: 'Reverse right-edge-away / left-edge-away' }
+  // flip_row — three rows, because there are three different questions and they
+  // were being answered by one row of five buttons that mixed two of them up.
+  //
+  //   move — I nudge the phone. Which way does the PAPER go?
+  //   show — I move the phone. Which way does the PLATE go on the diagram?
+  //   lean — I turn or tilt the phone. Which way does the PAPER lean?
+  //
+  // Every switch is a multiplier on top of the sign the code already ships, so
+  // "off" is always exactly what the page does today and "on" is always the
+  // reverse of it. That is what makes them safe to add in bulk: nothing changes
+  // until he presses something.
+  //
+  // Two couplings worth knowing before pressing anything. On the diagram the
+  // plate's right/left POSITION is read from the turn angle, because on an orbit
+  // those are the same fact (sign_agree), and up/down likewise from the tilt. So
+  // flipping a rotation flips its position with it and the panel stays consistent;
+  // flipping the position alone splits the pair. Both are now his to choose.
+  var FLIP_ROWS = [
+    { name: 'move', tip: 'when I nudge, which way the paper goes', keys: [
+      { k: 'x',      lab: 'L\u2009R',  tip: 'Nudge: reverse right / left' },
+      { k: 'y',      lab: 'U\u2009D',  tip: 'Nudge: reverse up / down' },
+      { k: 'z',      lab: 'N\u2009F',  tip: 'Nudge: reverse closer / further' } ] },
+    { name: 'show', tip: 'on the diagram, which way the plate goes', split: 3, keys: [
+      { k: 'dx',     lab: 'L\u2009R',  tip: 'Diagram: reverse right / left' },
+      { k: 'dy',     lab: 'U\u2009D',  tip: 'Diagram: reverse up / down' },
+      { k: 'dz',     lab: 'N\u2009F',  tip: 'Diagram: reverse closer / further' },
+      { k: 'dtilt',  lab: '\u2934',    tip: 'Diagram: reverse tilt top' },
+      { k: 'dturn',  lab: '\u25e8',    tip: 'Diagram: reverse right-edge-away / left-edge-away' },
+      { k: 'dswirl', lab: '\u21bb',    tip: 'Diagram: reverse the flat swirl' } ] },
+    { name: 'lean', tip: 'when I turn or tilt, which way the paper leans', keys: [
+      { k: 'tilt',   lab: '\u2934',    tip: 'Paper: reverse the lean when I tilt the top' },
+      { k: 'turn',   lab: '\u25e8',    tip: 'Paper: reverse right-edge-away / left-edge-away' },
+      { k: 'roll',   lab: '\u21bb',    tip: 'Paper: reverse clockwise / counter-clockwise' } ] }
   ];
-  var flip = { x: 1, y: 1, z: 1, roll: 1, turn: 1 };
+  var FLIPS = FLIP_ROWS.reduce(function (a, r) { return a.concat(r.keys); }, []);
+  var flip = { x: 1, y: 1, z: 1, roll: 1, turn: 1, tilt: 1,
+               dx: 1, dy: 1, dz: 1, dtilt: 1, dturn: 1, dswirl: 1 };
   try {
     var savedFlip = JSON.parse(localStorage.getItem(FLIP_KEY) || 'null');
     if (!savedFlip) {
@@ -1042,19 +1084,38 @@
     FLIPS.forEach(function (f) { if (savedFlip[f.k] === -1) flip[f.k] = -1; });
   } catch (e) {}
   function flip_save() { try { localStorage.setItem(FLIP_KEY, JSON.stringify(flip)); } catch (e) {} }
+  // row_wrap — the rig is 168px wide and that is a shape worth keeping, so a
+  // group with more switches than fit takes a second LINE rather than shrinking
+  // its buttons to 17px, which is under any sane thumb. The tag sits on the first
+  // line only, so the two lines still read as one group answering one question.
   (function flip_ui() {
     var wrap = document.getElementById('flips');
     if (!wrap) return;
-    FLIPS.forEach(function (f) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.textContent = f.lab;
-      b.title = f.tip;
-      b.setAttribute('aria-label', f.tip);
-      function paint() { b.classList.toggle('on', flip[f.k] === -1); b.setAttribute('aria-pressed', flip[f.k] === -1); }
-      b.addEventListener('click', function () { flip[f.k] = -flip[f.k]; flip_save(); paint(); });
-      paint();
-      wrap.appendChild(b);
+    FLIP_ROWS.forEach(function (row) {
+      var per = row.split || row.keys.length;
+      var lines = [];
+      for (var i = 0; i < row.keys.length; i += per) lines.push(row.keys.slice(i, i + per));
+      lines.forEach(function (keys, li) {
+        var r = document.createElement('div');
+        r.className = 'flip_row';
+        var tag = document.createElement('span');
+        tag.className = 'flip_tag';
+        tag.textContent = li ? '' : row.name;
+        tag.title = row.tip;
+        r.appendChild(tag);
+        keys.forEach(function (f) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = f.lab;
+          b.title = f.tip;
+          b.setAttribute('aria-label', f.tip);
+          function paint() { b.classList.toggle('on', flip[f.k] === -1); b.setAttribute('aria-pressed', flip[f.k] === -1); }
+          b.addEventListener('click', function () { flip[f.k] = -flip[f.k]; flip_save(); paint(); });
+          paint();
+          r.appendChild(b);
+        });
+        wrap.appendChild(r);
+      });
     });
   })();
   // ---- card_deck ----------------------------------------------------------
@@ -1288,9 +1349,10 @@
   var ROLL_INV = -1;
   function flip_yaw(m) {
     var deg = 180 / Math.PI;
-    var pitch = TILT_INV  * Math.asin(Math.max(-1, Math.min(1, m[7]))) * deg;
-    var yaw   = SWIRL_INV * Math.atan2(-m[1], m[4]) * deg;
-    var roll  = ROLL_INV  * Math.atan2(-m[6], m[8]) * deg;
+    // flip_row: the show row's three rotations, each the shipped sign times his switch
+    var pitch = TILT_INV  * flip.dtilt  * Math.asin(Math.max(-1, Math.min(1, m[7]))) * deg;
+    var yaw   = SWIRL_INV * flip.dswirl * Math.atan2(-m[1], m[4]) * deg;
+    var roll  = ROLL_INV  * flip.dturn  * Math.atan2(-m[6], m[8]) * deg;
     return { m: mat_from(-yaw, pitch, roll), pitch: pitch, yaw: -yaw, roll: roll };
   }
   // pose_scale — 1 cm of hand travel is POSE_SC/100 units in the diagram, an
@@ -1336,9 +1398,12 @@
   var MODEL_INV = { x: 1, y: 1, z: 1 };
   function model_pos(pitchDeg, rollDeg) {
     function arc(d) { return Math.max(-1, Math.min(1, (d || 0) / ORB_SPAN)); }
-    return { x: MODEL_INV.x * arc(rollDeg),      // turn about the vertical = round to the side
-             y: MODEL_INV.y * arc(pitchDeg),     // tilt about the horizontal = up and over
-             z: MODEL_INV.z * zc / Z_MAX };
+    // flip_row: the show row's three positions. rollDeg and pitchDeg already carry
+    // dturn and dtilt, so flipping a rotation carries its position with it; these
+    // three flip the position on its own, which is what splits the pair.
+    return { x: MODEL_INV.x * flip.dx * arc(rollDeg),   // round to the side
+             y: MODEL_INV.y * flip.dy * arc(pitchDeg),  // up and over
+             z: MODEL_INV.z * flip.dz * zc / Z_MAX };
   }
   // pose_slow — the diagram rebuilds four groups of SVG from strings; at sixty
   // frames a second that is thousands of elements parsed per second for a
@@ -1498,7 +1563,7 @@
     document.getElementById('pose_spin').innerHTML =
       arc(ay, az, -flipped.pitch,             '#dc2626') +   // tilt,  about X
       arc(az, ax,  flipped.roll,              '#16a34a') +   // turn,  about Y
-      arc(ax, ay, -SWIRL_INV * screen_roll(), '#2563eb');    // swirl, about Z
+      arc(ax, ay, -SWIRL_INV * flip.dswirl * screen_roll(), '#2563eb');    // swirl, about Z
 
     // plate_move — the phone carries its travel now; the axes hold still. Each
     // axis is clamped on its own so a big move on one never drags the picture off.
@@ -1580,7 +1645,7 @@
       ['near / far',   cell_txt(mp.z, Z_MAX), '#2563eb'],
       ['tilt top',     deg_txt(flipped.pitch),             'rgba(0,0,0,0.68)'],
       ['turn side',    deg_txt(flipped.roll),              'rgba(0,0,0,0.68)'],
-      ['swirl flat',   deg_txt(SWIRL_INV * screen_roll()), 'rgba(0,0,0,0.68)'],
+      ['swirl flat',   deg_txt(SWIRL_INV * flip.dswirl * screen_roll()), 'rgba(0,0,0,0.68)'],
       ['scale',        '\u00d7' + mult.toFixed(2),         'rgba(0,0,0,0.68)']
     ];
     // no_number — the readout is gone from the face of the diagram: the lanes
@@ -1865,8 +1930,10 @@
     var lim = w * 3;
     return {
       w: w, cam: cam, dist: dist, mult: mult, pxPerM: pxPerM,
-      roll: flip.roll * PAN_INV * screen_roll(), tilt: screen_pitch(),
-      turn: flip.turn * screen_turn(),                      // vec_flip
+      // flip_row: the lean row. Each is the shipped sign times his switch.
+      roll: flip.roll * PAN_INV * screen_roll(),
+      tilt: flip.tilt * screen_pitch(),
+      turn: flip.turn * screen_turn(),
       ox: Math.max(-lim, Math.min(lim,  PAN_INV * cam.x * pxPerM)),
       oy: Math.max(-lim, Math.min(lim, -PAN_INV * cam.y * pxPerM))
     };

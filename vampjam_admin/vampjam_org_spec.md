@@ -2722,7 +2722,42 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   +27.8 → −28.1, while "up / down", "tilt top" and "swirl flat" are character-for-character
   identical. The turn arc is still drawn, and the plate's own top edge lies the other way.
   Suites 256, 263 and 265 green, no page errors. Still no new trace.
-- NEXT → add entry 266 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 266 flip_row · b266 · lab.html — three rows of switches, because there are three questions and
+  one row of five was answering two of them at once.
+  the three questions, which is the whole of the design:
+    move — I nudge the phone. Which way does the PAPER go?     (L R, U D, N F)
+    show — I move the phone. Which way does the PLATE go?      (L R, U D, N F, tilt, turn, swirl)
+    lean — I turn or tilt. Which way does the PAPER lean?      (tilt, turn, swirl)
+  The old row mixed the first and third: its L R / U D / N F were the nudge response, but its swirl
+  and edge-away were the paper's LEAN, which is a different question entirely. They are separated
+  now, and the middle question — the diagram — had no switches at all. Every sign I have been
+  hunting by hand over the last four builds is his to set in one press.
+  every switch is a MULTIPLIER on the sign the code already ships, so "off" is exactly what the page
+  does today and "on" is the reverse of it. That is what made twelve switches safe to add at once:
+  nothing changes until he presses something, which the test asserts before it presses anything.
+  two couplings worth knowing, and they are deliberate. On the diagram the plate's right/left
+  POSITION is read from the turn angle, because on an orbit those are the same fact (sign_agree),
+  and up/down likewise from the tilt. So flipping a rotation carries its position with it and the
+  panel stays consistent — measured: dturn moves both "right / left" and "turn side", dtilt moves
+  both "up / down" and "tilt top". Flipping the position alone splits the pair — dx moves only
+  "right / left". Both are now his to choose rather than mine to guess.
+  row_wrap: the rig is 168px wide and that shape is worth keeping, so the six-switch group takes a
+  second LINE rather than shrinking to 17px buttons, which is under any thumb. Measured: every
+  button in all four lines is 40x32, and none wraps its label. The tag is on the first line only,
+  so the two lines read as one group.
+  verified switch by switch, twelve of them: each changes only its own readouts, the show row never
+  touches the paper, the lean row never touches the diagram, the move row still moves the deck and
+  only the deck, and all of it survives a reload. dswirl and the lean roll needed a swirl actually
+  posed to exercise — the first run had none and reported "(none) changed", which looked like a
+  pass and was not; re-run with a 35 degree swirl, dswirl takes the diagram −35 → +35 with the paper
+  untouched, and lean roll takes the paper 35 → −35 with the diagram untouched.
+  a process note worth keeping: three edit scripts in a row lost their work because they write the
+  file at the END and an assertion failed before that. The file was fine, the edit simply was not in
+  it, and the browser was blamed for caching. Two lessons — write incrementally or verify the edit
+  landed with a grep, and put a cache-buster on the harness URL so a stale page can never be the
+  suspect.
+  Suites 256 and 263 green, no page errors. Still no new trace.
+- NEXT → add entry 267 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
