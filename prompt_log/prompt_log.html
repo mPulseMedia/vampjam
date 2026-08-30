@@ -56,7 +56,12 @@
   <div id="root"></div>
 </div>
 
-<script src="prompt_log_lab_data.js"></script>
+<!-- one_record — the data lives in vampjam_admin/prompt_log/, which is where the
+     ship loop writes it. Two copies used to sit here as well and they DRIFTED:
+     this page was showing nothing newer than build 255 while 26 builds went into
+     the admin copy unseen. The copies are in claude_trash/; this is the only
+     reader and it now reads the only writer. -->
+<script src="../vampjam_admin/prompt_log/prompt_log_lab_data.js"></script>
 <script>
   function el(tag, cls) { var e = document.createElement(tag); if (cls) e.className = cls; return e; }
 
