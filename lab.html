@@ -180,6 +180,139 @@
   }
   .card.here .cal_num { color: #1d4ed8; }
   .card.here .cal_ev { color: #1e293b; }
+  /* ---- room_swap: three places, one page ------------------------------------
+     The nudge detector, the instrument panels and the recorder are the page; the
+     thing they MOVE you through is now a choice of three. Each room keeps its own
+     position, so leaving the calendar on the 17th and coming back puts you on the
+     17th — a room you have to re-find every time is a room you stop visiting.
+     Only one is in the DOM's flow at a time; the other two are `hidden`, which
+     also takes them out of the paint. */
+  .room_off { display: none !important; }
+
+  /* room_read — a magazine column. One measure of text, five screens tall, on
+     paper. No zoom and no sideways: the whole point of a column is that there is
+     exactly one direction to go, and the page says so by having nothing else. */
+  .page_col {
+    /* read_fit — the column occupies what can actually be READ: under the chrome
+       row, above the control band. --page_h is measured off this element rather
+       than off the window, so "five page-heights" is five of the height a page
+       really has. Measuring it off the window instead put a fifth of every page
+       behind the band and the panels, which is how the first cut of this room
+       lost its bottom four lines on every turn. */
+    position: absolute; left: 0; right: 0; top: 44px;
+    bottom: calc(var(--band_h, 92px)); z-index: 2; overflow: hidden;
+    background: #fbfaf7; pointer-events: none;
+    -webkit-user-select: none; user-select: none;
+    box-shadow: 0 -1px 0 rgba(0,0,0,0.08), 0 1px 0 rgba(0,0,0,0.08);
+  }
+  /* read_grid — every vertical measurement on the page is a multiple of one
+     line, and a page is exactly READ_LINES of them. That is what makes a page
+     turn land BETWEEN two lines instead of through the middle of one, which is
+     the difference between five pages and one long scroll stopped arbitrarily
+     five times. Padding, paragraph spacing, headings and the rule under the
+     byline are all counted in --L; nothing here is allowed a round pixel value
+     of its own. */
+  .mag {
+    position: absolute; left: 0; right: 0; top: 0;
+    --L: calc(var(--page_h, 100vh) / 30);
+    /* read_five — the column is exactly five screens tall by construction, not by
+       however much prose happened to be typed. The text is set to fill it; the
+       height is the promise. */
+    height: calc(var(--page_h, 100vh) * 5);
+    padding: 0 24px; box-sizing: border-box;
+    transform: translate3d(0, var(--read_y, 0px), 0);
+    color: #1c1b19;
+    font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    /* the type scales with the page, so the fit of the prose inside five screens
+       is the same on a small phone as on a large one */
+    font-size: clamp(15px, calc(var(--L) * 0.66), 20px);
+    line-height: var(--L); text-align: left;
+  }
+  .mag_kicker {
+    font: 700 11px/var(--L) -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.20em; text-transform: uppercase; color: #b4531f;
+    margin: var(--L) 0 0;
+  }
+  .mag h1 {
+    margin: 0; font-family: Georgia, serif; font-weight: 700;
+    font-size: calc(var(--L) * 1.15); line-height: calc(var(--L) * 1.5);
+    letter-spacing: -0.025em; color: #14130f;
+  }
+  .mag_deck {
+    margin: 0; font: italic calc(var(--L) * 0.63)/var(--L) Georgia, serif; color: #55524b;
+  }
+  .mag_by {
+    margin: 0 0 var(--L); height: var(--L);
+    border-bottom: 1px solid rgba(0,0,0,0.14);
+    font: 600 10px/var(--L) -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.13em; text-transform: uppercase; color: #8a857c;
+  }
+  .mag p { margin: 0 0 var(--L); }
+  /* the first paragraph of the piece gets the capital, as a magazine's does. It
+     floats exactly three lines, so it displaces nothing. */
+  .mag p.drop:first-letter {
+    float: left; font-size: calc(var(--L) * 2.4); line-height: calc(var(--L) * 2.6);
+    padding-right: 0.08em; font-weight: 700; color: #b4531f;
+  }
+  .mag h2 {
+    margin: 0 0 0; font: 700 11px/var(--L) -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.16em; text-transform: uppercase; color: #b4531f;
+  }
+  .mag blockquote {
+    margin: 0 0 var(--L); padding: 0 0 0 14px; border-left: 3px solid #b4531f;
+    font-family: Georgia, serif; font-weight: 600;
+    font-size: calc(var(--L) * 0.72); line-height: var(--L);
+    color: #24221d; letter-spacing: -0.01em;
+  }
+  /* read_clear — in the article room the page IS the content, so the page gets
+     out of its own way. The three corner markers stack down the left in the
+     calendar, over 200px of it; here they lie in one short row along the top and
+     the column starts under them, so no line of type is ever set behind a pill.
+     The two instrument panels go entirely: a diagnostic overlay across the bottom
+     of a magazine page ruins the one room whose whole job is being readable, and
+     they are two taps away in the calendar. The detector, the recorder and the
+     caption in the band are all still running. */
+  .read_on .corner_back { top: max(8px, calc(env(safe-area-inset-top) + 4px)); height: 28px;
+                          padding: 0 11px; font-size: 12px; }
+  .read_on .build_tag   { top: max(8px, calc(env(safe-area-inset-top) + 4px)); height: 28px;
+                          left: auto; right: 74px; font-size: 11.5px; padding: 0 9px; }
+  .read_on .watch       { top: max(38px, calc(env(safe-area-inset-top) + 34px)); font-size: 9.5px; }
+  .read_on .pose, .read_on .trace { display: none !important; }
+
+  /* read_edge — which page of five you are on, and how much is left, in the one
+     place a magazine puts it. It rides the glass, not the column, or it would
+     scroll away with the text it is counting. */
+  .read_tab {
+    position: absolute; z-index: 3; right: 12px; top: 12px;
+    padding: 5px 9px; border-radius: 999px;
+    background: rgba(28,27,25,0.80); color: #fbfaf7;
+    font: 700 11px/1 -apple-system, system-ui, sans-serif; letter-spacing: 0.08em;
+  }
+
+  /* room_solid — the geometric space. Drawn on a canvas by a projector of this
+     page's own, not with CSS 3D transforms: a perspective container blows up the
+     moment an element passes the perspective plane, and in a space you WALK
+     through things pass behind you constantly. Projecting by hand means near
+     clipping is a comparison rather than a catastrophe. */
+  .void {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: linear-gradient(#0b1120 0%, #131c31 52%, #1c2740 100%);
+  }
+
+  /* room_btn — one button that cycles the three, wearing the name of the room it
+     is IN. It sits in the working row with Record because changing rooms is a
+     thing you do while walking around, not a setting. */
+  .room_btn {
+    flex: 0 0 auto; min-height: 46px; padding: 0 11px;
+    border: 1px solid var(--panel_3, rgba(0,0,0,0.14)); border-radius: 13px;
+    background: rgba(255,255,255,0.9); color: #1f2937;
+    font: 600 13px/1 -apple-system, system-ui, sans-serif; letter-spacing: -0.01em;
+    white-space: nowrap; cursor: pointer;
+  }
+  .room_btn b { display: block; font-size: 15px; margin-bottom: 2px; }
+  .room_btn.is_read  { background: #fbfaf7; border-color: #b4531f; color: #b4531f; }
+  .room_btn.is_solid { background: #131c31; border-color: #131c31; color: #dbeafe; }
+
   /* the distance dissolving into the background: one screen-sized overlay in
      the paper's own colour, cheap to paint and independent of the paper's size */
   .haze {
@@ -452,6 +585,101 @@
     <div class="deck" id="deck"></div>
   </div>
   <div class="haze"></div>
+  <!-- room_read — the column. It is one <article>, five screens tall, and the
+       only thing that ever happens to it is that it slides up or down by exactly
+       one screen. There is no scrollbar and no touch scrolling: the nudge is the
+       only way through it, which is the point of putting it here. -->
+  <div class="page_col room_off" id="column">
+    <div class="read_tab" id="read_tab">1 / 5</div>
+    <article class="mag" id="mag">
+      <p class="mag_kicker">Field notes</p>
+      <h1>The Room You Are Holding</h1>
+      <p class="mag_deck">Every map ever drawn assumes a reader standing still.</p>
+      <p class="mag_by">By the desk &middot; September 2026</p>
+
+      <p class="drop">There is a moment, in the first week with a paper map in a
+        city you do not know, when the map stops being a picture and becomes a
+        place. You are no longer looking at streets. You are looking from
+        somewhere. The paper has not changed. You have.</p>
+      <p>Cartographers call what you acquired orientation. It is a poor word,
+        because it sounds like a fact you learned, and this is not a fact. It is a
+        posture — a way of standing with respect to a piece of paper.</p>
+      <p>The argument here is that for forty years we have built the picture and
+        left the reader out of it, and the reader has been quietly doing the
+        difficult half of the work.</p>
+
+      <h2>The tyranny of the frame</h2>
+      <p>A window on a screen is a hole cut in a wall. To see something else you
+        move what is behind the hole: you scroll, you pan, you drag. The hole never
+        moves. The wall never moves. You never move.</p>
+      <p>It takes an effort to notice this is a convention at all. It came from
+        paper on a desk, where the sheet slides and the reader's head stays put.
+        Three thousand years of this. It works.</p>
+      <blockquote>The hole never moves. The wall never moves. You never move.</blockquote>
+      <p>But it costs something, and the cost is hidden because the reader pays it.
+        Ask anyone to point, without looking, at the part of a long web page they
+        were reading four minutes ago. They cannot. Ask about a book and they will
+        put a thumb within twenty pages, because a book has a shape their hands
+        learned.</p>
+      <p>Depth is worse than length. Zooming is a slider with no memory: you go in,
+        you look, you come out, and nothing about coming out tells you how far you
+        came. A pilot has an altimeter for exactly this reason.</p>
+
+      <h2>Small motions, large claims</h2>
+      <p>A phone knows, sixty times a second, the acceleration along three axes and
+        the rotation about three more. It knows everything about how it is being
+        held and almost nothing about why. That gap is where the work is.</p>
+      <p>The obvious use has been tried for fifteen years and does not work: tilt
+        the phone, the world tilts. Continuous control feels like magic for four
+        seconds and like a wrestling match for the rest of the afternoon. Your hand
+        is never still. Trains exist. So does breathing.</p>
+      <p>The better use is to throw almost all of it away. Do not track the phone.
+        Watch for one gesture — a short, sharp push, over in a fifteenth of a
+        second — and treat it as a single event, like a keystroke. A nudge left.
+        A nudge up. A nudge toward your face.</p>
+
+      <h2>Rooms, not documents</h2>
+      <p>A document is a length. A room is a place, and the difference is that a
+        room goes on existing in the same arrangement while you are not in it, so
+        that returning is genuinely returning rather than starting again.</p>
+      <p>Make a month into a room and the twenty-third stops being a row in a list.
+        It becomes a location: over there, past the middle, two down from the
+        offsite. You do not remember it as a date.</p>
+      <blockquote>You remember it as a direction from something else.</blockquote>
+      <p>Make an article into a column and the opposite discipline applies. A column
+        has exactly one dimension, and honouring that is the whole of the design.
+        Anything offering a sideways move in a column is offering a way to get lost
+        somewhere that should make getting lost impossible.</p>
+
+      <h2>What the hand knows</h2>
+      <p>A hand knows how far it has moved without being told. It knows a flick
+        from a push. It can repeat a small motion a thousand times with a
+        consistency the eye cannot match, which is why musicians practise with
+        their hands and not with diagrams.</p>
+      <p>Gesture systems fail when the gesture substitutes for a button that was
+        working fine. They earn their keep only when the gesture carries something
+        a button cannot: which way, how far, from where.</p>
+      <p>Direction is information. "Next" tells you nothing about the shape of what
+        you are in. A push to the left tells you there is a left, that you are one
+        step into it, and that one push right will undo it exactly. That is a map,
+        delivered through the wrist.</p>
+
+      <h2>The honest objection</h2>
+      <p>All of this is harder. Scrolling is free and universal and needs no
+        explanation to anyone alive. A space you step through has to be learned,
+        and for most things the learning will not be worth it.</p>
+      <p>That is the correct conclusion and it should be said before anyone gets
+        carried away. A settings screen is a list, a list is a length, and dragging
+        it is fine forever.</p>
+      <p>But there is a category where it is worth it: everything you return to.
+        The calendar checked nine times a day, the codebase lived in for two years,
+        the quarter, the case file. Those are not documents. They are places, and
+        we have been handing people a hole in a wall and asking them to remember
+        the building.</p>
+    </article>
+  </div>
+  <!-- room_solid — the geometric space, painted by hand. -->
+  <canvas class="void room_off" id="void"></canvas>
   <div class="frame_shadow"></div>
 </div>
 
@@ -470,6 +698,11 @@
       <button id="g_wire" class="g_mark g_red">Bad</button>
     </div>
     <button id="g_rec" class="g_rec">Record</button>
+    <!-- room_swap — one button, cycling calendar to article to space and back.
+         It wears the name of the room you are IN rather than the one it would
+         take you to, because a mode control that lies about the mode is worse
+         than no mode control. -->
+    <button id="room_btn" class="room_btn" aria-label="Change room"><b id="room_ico">&#9638;</b><span id="room_lbl">Calendar</span></button>
     <!-- flip_hide: the switches live behind this -->
     <button id="flip_pop" class="flip_pop" aria-expanded="false"
             aria-controls="flips" title="Show the reverse switches">⇅</button>
@@ -514,7 +747,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'zoom_deep', bg: '#0f766e', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'room_swap', bg: '#7c3aed', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1254,10 +1487,332 @@
     deck_build();
     return zc !== was;
   }
+  // ---- room_swap: the three rooms --------------------------------------------
+  // The page is a nudge detector with a place attached to it, and the place is now
+  // a choice of three. Everything upstream of here — the detector, the recorder,
+  // the reverse switches, the instrument panels — is untouched by which room you
+  // are in; a nudge is still one nudge, in one of six directions. All that changes
+  // is who is listening, and each room answers to a different subset of the six,
+  // which is the honest way to express "you can only go up and down in here".
+  var ROOM_LIST = ['cal', 'read', 'solid'];
+  var ROOM_SAY  = { cal: 'Calendar', read: 'Article', solid: 'Space' };
+  var ROOM_ICO  = { cal: '▦', read: '≡', solid: '◈' };
+  var ROOM_KEY  = 'vampjam_lab_room';
+  var room = 'cal';
+
+  // ---- room_read: the column -------------------------------------------------
+  // read_five — five screens of one article, and one axis. A column has exactly
+  // one dimension and the page honours that by having nothing else to press: a
+  // sideways or a depth nudge is READ, logged and answered with a caption saying
+  // there is nowhere to go, rather than quietly doing nothing. Silence would look
+  // like a bug in the detector, which is the one thing this page must never look
+  // like.
+  var READ_PAGES = 5;
+  var readPage = 0;
+  var readAnim = null;                 // { from, t0 } while a page turn is landing
+  function read_at() {
+    if (!readAnim) return readPage;
+    var t = Date.now() - readAnim.t0;
+    if (t >= NUDGE_MS) { readAnim = null; return readPage; }
+    return readAnim.from + (readPage - readAnim.from) * ease(t / NUDGE_MS);
+  }
+  function read_go(d) {
+    var was = readPage;
+    readAnim = { from: read_at(), t0: Date.now() };
+    readPage = Math.max(0, Math.min(READ_PAGES - 1, was + d));
+    return readPage !== was;
+  }
+  function read_draw(root) {
+    // read_fit — a page is the height of the READABLE area, measured off the
+    // column element itself, not the height of the window
+    var col = document.getElementById('column');
+    var vh = (col && col.clientHeight) || window.innerHeight || 700;
+    root.setProperty('--page_h', vh + 'px');
+    root.setProperty('--read_y', (-read_at() * vh).toFixed(1) + 'px');
+    var tab = document.getElementById('read_tab');
+    if (tab) tab.textContent = (readPage + 1) + ' / ' + READ_PAGES;
+  }
+
+  // ---- room_solid: the geometric space ---------------------------------------
+  // Painted on a canvas by a projector written here, NOT with CSS 3D transforms.
+  // A perspective container divides by (P - z), so anything that reaches the
+  // perspective plane inverts and fills the screen — and in a space you walk
+  // through, things pass the plane every few steps. Projecting by hand makes the
+  // near plane a comparison instead of a catastrophe, and lets a face that is
+  // half past it be CLIPPED rather than popped out of existence.
+  var SOLID_STEP  = 330;               // world units per nudge
+  var SOLID_FLOOR = -175;              // the floor, below eye level
+  var SOLID_NEAR  = 40;                // the near plane
+  var SOLID_F     = 1.05;              // focal length, as a multiple of the width
+  var SOLID_FOG   = [19, 28, 49];      // what the distance dissolves into
+  var CAM_MAX = { x: 4, z: 7 };
+  var cam = { x: 0, z: 0 };
+  var camAnim = null;                  // { k, from, t0 } while a step is landing
+  function cam_at(k) {
+    if (!camAnim || camAnim.k !== k) return cam[k];
+    var t = Date.now() - camAnim.t0;
+    if (t >= NUDGE_MS) { camAnim = null; return cam[k]; }
+    return camAnim.from + (cam[k] - camAnim.from) * ease(t / NUDGE_MS);
+  }
+  function cam_go(k, d) {
+    var was = cam[k], lim = CAM_MAX[k];
+    camAnim = { k: k, from: cam_at(k), t0: Date.now() };
+    cam[k] = (k === 'z') ? Math.max(0, Math.min(lim, was + d))
+                         : Math.max(-lim, Math.min(lim, was + d));
+    return cam[k] !== was;
+  }
+  // the furniture. Positions are world units with y UP; a shape is a box unless
+  // it says pyr, and the sizes are deliberately unequal so that turning a corner
+  // changes the skyline rather than just the parallax.
+  // solid_lane — every shape stands on the floor at a HALF-step offset in both
+  // x and z, and none is wider than a step. That is what makes the space
+  // walkable rather than a set of obstacles: the camera's lattice points fall
+  // in the gaps by construction, so you pass BETWEEN things instead of ending
+  // up inside one. The first cut had a 560-tall pillar on the centre line and
+  // three steps forward put its face across the whole glass.
+  var SOLID_SHAPE = [
+    { k:'box', at:[-495,  -45,825 ], s:[210,260,210], c:'#38bdf8' },
+    { k:'pyr', at:[495,  -25,825 ], s:[240,300,240], c:'#fbbf24' },
+    { k:'box', at:[-825,  135,1485 ], s:[190,620,190], c:'#f472b6' },
+    { k:'box', at:[165,  -85,1485 ], s:[250,180,250], c:'#34d399' },
+    { k:'pyr', at:[825,  -45,1815 ], s:[230,260,230], c:'#a78bfa' },
+    { k:'box', at:[-165,   35,2145 ], s:[200,420,200], c:'#f87171' },
+    { k:'box', at:[1155,  175,2145 ], s:[240,700,240], c:'#60a5fa' },
+    { k:'box', at:[-1155,  -55,2475 ], s:[250,240,250], c:'#facc15' },
+    { k:'pyr', at:[495,   15,2805 ], s:[260,380,260], c:'#2dd4bf' },
+    { k:'box', at:[-495,  -25,3135 ], s:[220,300,220], c:'#c084fc' },
+    { k:'box', at:[825,  105,3135 ], s:[200,560,200], c:'#fb923c' },
+    { k:'box', at:[165,  -75,3465 ], s:[250,200,250], c:'#4ade80' },
+    { k:'pyr', at:[-825,  -15,3795 ], s:[250,320,250], c:'#818cf8' },
+    { k:'box', at:[1155,   65,3795 ], s:[220,480,220], c:'#f0abfc' },
+    { k:'box', at:[-165,  -45,4125 ], s:[240,260,240], c:'#22d3ee' },
+    { k:'box', at:[495,  145,4455 ], s:[210,640,210], c:'#fda4af' },
+    { k:'pyr', at:[-1155,  -25,4455 ], s:[240,300,240], c:'#a3e635' },
+    { k:'box', at:[165,    5,4785 ], s:[250,360,250], c:'#7dd3fc' },
+    { k:'box', at:[-495,   85,5115 ], s:[220,520,220], c:'#fca5a5' },
+    { k:'box', at:[825,  -65,5115 ], s:[240,220,240], c:'#86efac' },
+    { k:'pyr', at:[165,   35,5775 ], s:[280,420,280], c:'#fde047' },
+    { k:'box', at:[-825,  115,6105 ], s:[230,580,230], c:'#93c5fd' }
+  ];
+  function solid_mesh(sh) {
+    var w = sh.s[0] / 2, h = sh.s[1] / 2, d = sh.s[2] / 2, o = sh.at, v, f;
+    if (sh.k === 'pyr') {
+      v = [[-w,-h,-d],[w,-h,-d],[w,-h,d],[-w,-h,d],[0,h,0]];
+      f = [[0,1,2,3],[0,4,1],[1,4,2],[2,4,3],[3,4,0]];
+    } else {
+      v = [[-w,-h,-d],[w,-h,-d],[w,-h,d],[-w,-h,d],
+           [-w, h,-d],[w, h,-d],[w, h, d],[-w, h, d]];
+      f = [[4,5,6,7],[0,3,2,1],[3,7,6,2],[0,1,5,4],[1,2,6,5],[0,4,7,3]];
+    }
+    var vs = [];
+    for (var i = 0; i < v.length; i++) vs.push([v[i][0]+o[0], v[i][1]+o[1], v[i][2]+o[2]]);
+    return { v: vs, f: f, c: sh.c, mid: o };
+  }
+  var SOLID_MESH = SOLID_SHAPE.map(solid_mesh);
+  var LIGHT = [0.40, 0.82, -0.41];
+  function solid_eye() {
+    var vw = window.innerWidth || 320, vh = window.innerHeight || 700;
+    // look_lean — the phone's attitude aims the camera. It is the only continuous
+    // control on the page and it is deliberately small and clamped: enough that
+    // tipping the phone lets you see round the side of the pillar in front of you,
+    // never enough to be steering. Walking is still the nudge's job.
+    var lean = 0.55, cap = 26, v = motionOn ? view() : { turn: 0, tilt: 0, roll: 0 };
+    var clamp = function (a) { return Math.max(-cap, Math.min(cap, a * lean)) * Math.PI / 180; };
+    // look_down — a small standing bias. You hold a phone at chest height and look
+    // slightly down at it, and a camera aimed dead level puts half the frame in
+    // empty sky and the whole space in the bottom third. Seven degrees puts the
+    // horizon high enough that the floor grid — which is what tells you how fast
+    // you are walking — is most of what you see.
+    return { vw: vw, vh: vh, f: vw * SOLID_F,
+             cx: cam_at('x') * SOLID_STEP, cz: cam_at('z') * SOLID_STEP,
+             yaw: clamp(v.turn), pitch: -7 * Math.PI / 180 + clamp(v.tilt - TILT_BASE),
+             roll: clamp(v.roll) };
+  }
+  function solid_cam(p, e) {                       // world -> camera space
+    var x = p[0] - e.cx, y = p[1], z = p[2] - e.cz;
+    var cy = Math.cos(e.yaw), sy = Math.sin(e.yaw);
+    var x1 = x * cy - z * sy, z1 = x * sy + z * cy;
+    var cp = Math.cos(e.pitch), sp = Math.sin(e.pitch);
+    return [x1, y * cp - z1 * sp, y * sp + z1 * cp];
+  }
+  // near_clip — Sutherland-Hodgman against the single plane z = NEAR. A face with
+  // one corner behind you keeps the part of itself that is not, which is the whole
+  // difference between walking past a pillar and having it blink out.
+  function solid_clip(poly) {
+    var out = [];
+    for (var i = 0; i < poly.length; i++) {
+      var a = poly[i], b = poly[(i + 1) % poly.length];
+      var ain = a[2] >= SOLID_NEAR, bin = b[2] >= SOLID_NEAR;
+      if (ain) out.push(a);
+      if (ain !== bin) {
+        var t = (SOLID_NEAR - a[2]) / (b[2] - a[2]);
+        out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, SOLID_NEAR]);
+      }
+    }
+    return out;
+  }
+  function solid_flat(p, e) {                      // camera space -> the glass
+    var s = e.f / p[2], cr = Math.cos(e.roll), sr = Math.sin(e.roll);
+    var x = p[0] * s, y = -p[1] * s;
+    return [e.vw / 2 + x * cr - y * sr, e.vh / 2 + x * sr + y * cr];
+  }
+  function solid_tone(hex, lit, fog) {
+    var n = parseInt(hex.slice(1), 16);
+    var r = ((n >> 16) & 255) * lit, g = ((n >> 8) & 255) * lit, b = (n & 255) * lit;
+    r += (SOLID_FOG[0] - r) * fog; g += (SOLID_FOG[1] - g) * fog; b += (SOLID_FOG[2] - b) * fog;
+    return 'rgb(' + (r|0) + ',' + (g|0) + ',' + (b|0) + ')';
+  }
+  var voidEl = document.getElementById('void');
+  function solid_size() {
+    if (!voidEl) return;
+    var vw = window.innerWidth || 320, vh = window.innerHeight || 700;
+    var r = Math.min(window.devicePixelRatio || 1, 2);
+    if (voidEl.width !== Math.round(vw * r) || voidEl.height !== Math.round(vh * r)) {
+      voidEl.width = Math.round(vw * r); voidEl.height = Math.round(vh * r);
+    }
+    voidEl.style.width = vw + 'px'; voidEl.style.height = vh + 'px';
+    return r;
+  }
+  // solid_list — the frame's worth of polygons, sorted, ready to fill. It is kept
+  // separate from the painting so a test can read what the projector believes
+  // without owning a canvas or a screenshot.
+  function solid_list(e) {
+    var out = [];
+    // the floor, so that walking has something to be measured against. Lines
+    // rather than a filled plane: a grid tells you your speed, a surface does not.
+    var g0 = Math.round(e.cz / SOLID_STEP);
+    for (var gi = -3; gi <= 16; gi++) {
+      var zz = (g0 + gi) * SOLID_STEP;
+      out.push({ line: [[-9 * SOLID_STEP, SOLID_FLOOR, zz], [9 * SOLID_STEP, SOLID_FLOOR, zz]] });
+    }
+    for (var gx = -9; gx <= 9; gx++) {
+      out.push({ line: [[gx * SOLID_STEP, SOLID_FLOOR, (g0 - 3) * SOLID_STEP],
+                        [gx * SOLID_STEP, SOLID_FLOOR, (g0 + 16) * SOLID_STEP]] });
+    }
+    for (var m = 0; m < SOLID_MESH.length; m++) {
+      var me = SOLID_MESH[m];
+      for (var fi = 0; fi < me.f.length; fi++) {
+        var idx = me.f[fi], poly = [], k, dep = 0;
+        for (k = 0; k < idx.length; k++) poly.push(solid_cam(me.v[idx[k]], e));
+        var cut = solid_clip(poly);
+        if (cut.length < 3) continue;
+        var pts = [];
+        for (k = 0; k < cut.length; k++) { pts.push(solid_flat(cut[k], e)); dep += cut[k][2]; }
+        dep /= cut.length;
+        // the shade is taken in WORLD space off the un-clipped face, so a face
+        // does not change colour as it slides across the near plane
+        var a = me.v[idx[0]], b = me.v[idx[1]], c = me.v[idx[2]];
+        var u = [b[0]-a[0], b[1]-a[1], b[2]-a[2]], w2 = [c[0]-a[0], c[1]-a[1], c[2]-a[2]];
+        var nx = u[1]*w2[2]-u[2]*w2[1], ny = u[2]*w2[0]-u[0]*w2[2], nz = u[0]*w2[1]-u[1]*w2[0];
+        var nl = Math.sqrt(nx*nx+ny*ny+nz*nz) || 1; nx/=nl; ny/=nl; nz/=nl;
+        var fc = [(a[0]+b[0]+c[0])/3 - me.mid[0], (a[1]+b[1]+c[1])/3 - me.mid[1],
+                  (a[2]+b[2]+c[2])/3 - me.mid[2]];
+        if (nx*fc[0] + ny*fc[1] + nz*fc[2] < 0) { nx=-nx; ny=-ny; nz=-nz; }
+        var lit = 0.40 + 0.60 * Math.max(0, nx*LIGHT[0] + ny*LIGHT[1] + nz*LIGHT[2]);
+        var fog = Math.max(0, Math.min(0.86, (dep - 500) / 4200));
+        out.push({ pts: pts, d: dep, fill: solid_tone(me.c, lit, fog), fog: fog });
+      }
+    }
+    // painter's algorithm: furthest first. The floor lines carry no depth of their
+    // own because they are drawn under everything by hand, below.
+    out.sort(function (p, q) { return (q.d || 0) - (p.d || 0); });
+    return out;
+  }
+  function solid_draw() {
+    if (!voidEl || !voidEl.getContext) return;
+    var r = solid_size(), e = solid_eye(), cx = voidEl.getContext('2d');
+    cx.setTransform(r, 0, 0, r, 0, 0);
+    var sky = cx.createLinearGradient(0, 0, 0, e.vh);
+    sky.addColorStop(0, '#0b1120'); sky.addColorStop(0.52, '#131c31'); sky.addColorStop(1, '#1c2740');
+    cx.fillStyle = sky; cx.fillRect(0, 0, e.vw, e.vh);
+    var list = solid_list(e), i, k;
+    // the floor grid goes down first, under everything
+    cx.lineWidth = 1;
+    for (i = 0; i < list.length; i++) {
+      if (!list[i].line) continue;
+      var seg = solid_clip([solid_cam(list[i].line[0], e), solid_cam(list[i].line[1], e),
+                            solid_cam(list[i].line[1], e)]);
+      if (seg.length < 2) continue;
+      var p0 = solid_flat(seg[0], e), p1 = solid_flat(seg[1], e);
+      var fd = (seg[0][2] + seg[1][2]) / 2;
+      cx.strokeStyle = 'rgba(96,132,190,' + Math.max(0.05, 0.42 - fd / 9000).toFixed(3) + ')';
+      cx.beginPath(); cx.moveTo(p0[0], p0[1]); cx.lineTo(p1[0], p1[1]); cx.stroke();
+    }
+    for (i = 0; i < list.length; i++) {
+      var f = list[i]; if (!f.pts) continue;
+      cx.beginPath(); cx.moveTo(f.pts[0][0], f.pts[0][1]);
+      for (k = 1; k < f.pts.length; k++) cx.lineTo(f.pts[k][0], f.pts[k][1]);
+      cx.closePath();
+      cx.fillStyle = f.fill; cx.fill();
+      cx.strokeStyle = 'rgba(6,10,20,' + (0.42 * (1 - f.fog)).toFixed(3) + ')';
+      cx.lineWidth = 1; cx.stroke();
+    }
+  }
+
+  // room_go — the one place a room changes. It moves the DOM out of the way
+  // rather than stacking three live worlds on top of each other, remembers where
+  // you were so a reload puts you back, and leaves every room's own position
+  // alone: coming back to the calendar puts you on the day you left it on.
+  function room_go(next) {
+    if (ROOM_LIST.indexOf(next) < 0) next = 'cal';
+    room = next;
+    try { localStorage.setItem(ROOM_KEY, room); } catch (e) {}
+    var stage = document.querySelector('.stage'), haze = document.querySelector('.haze');
+    var col = document.getElementById('column');
+    document.body.classList.toggle('read_on', room === 'read');
+    if (stage) stage.classList.toggle('room_off', room !== 'cal');
+    if (haze)  haze.classList.toggle('room_off', room !== 'cal');
+    if (col)   col.classList.toggle('room_off', room !== 'read');
+    if (voidEl) voidEl.classList.toggle('room_off', room !== 'solid');
+    var b = document.getElementById('room_btn');
+    if (b) {
+      b.className = 'room_btn' + (room === 'cal' ? '' : ' is_' + room);
+      document.getElementById('room_ico').innerHTML = ROOM_ICO[room];
+      document.getElementById('room_lbl').textContent = ROOM_SAY[room];
+    }
+    if (room === 'solid') { solid_size(); solid_draw(); }
+    if (room === 'read') read_draw(document.documentElement.style);
+    lastBump = 'in the ' + ROOM_SAY[room].toLowerCase();
+    if (typeof mark_add === 'function') mark_add('room', { room: room });
+  }
+  function room_next() { room_go(ROOM_LIST[(ROOM_LIST.indexOf(room) + 1) % ROOM_LIST.length]); }
+
   function nudge_fire(k, s, drive, rise) {
     var d = s * PUSH_INV[k] * flip[k];   // vec_flip
     var moved;
-    if (k === 'z') {
+    // room_route — which of the six directions this room answers to. The detector
+    // above is unchanged and unaware; all three rooms get the same nudge, the same
+    // reverse switches and the same recording. What differs is the reply.
+    if (room === 'read') {
+      // read_only_y — a column has one dimension. A sideways or depth nudge is
+      // heard and answered with a caption rather than silently dropped: on a page
+      // whose job is judging a detector, "nothing happened" must never be
+      // ambiguous between "you did not nudge" and "there is nowhere to go".
+      if (k === 'y') {
+        moved = read_go(d);
+        lastBump = (d > 0 ? 'on a page' : 'back a page') + (moved ? ' \u2014 ' + (readPage + 1) + '/' + READ_PAGES : ' (at the end)');
+      } else {
+        moved = false;
+        lastBump = (k === 'x' ? 'sideways' : 'in and out') + ' \u2014 the column only goes up and down';
+      }
+    } else if (room === 'solid') {
+      // up_out — up is the way out, from anywhere in the space and at any depth.
+      // It is spent on leaving rather than on rising, which is why there is no
+      // down: an exit you can only use from one height is not an exit, and a
+      // direction that sometimes climbs and sometimes leaves is a trapdoor.
+      if (k === 'y') {
+        if (d > 0) { room_go('cal'); moved = true; }
+        else { moved = false; lastBump = 'no down in here \u2014 up is the way back to the calendar'; }
+      } else if (k === 'x') {
+        // the same convention the deck has always had: a nudge right slides the
+        // WORLD right, which is you stepping to your left
+        moved = cam_go('x', -d);
+        lastBump = BUMP_NAME.x[d > 0 ? 1 : 0] + (moved ? '' : ' (at the edge)');
+      } else {
+        moved = cam_go('z', d);
+        lastBump = (d > 0 ? 'forward' : 'back') + (moved ? '' : ' (at the edge)');
+      }
+    } else if (k === 'z') {
       moved = deck_deep(d);
       lastBump = (d > 0 ? 'nearer' : 'further') + (moved ? '' : ' (at the end)');
     } else {
@@ -1273,8 +1828,11 @@
       lastBump = BUMP_NAME[k][d > 0 ? 1 : 0] + (moved ? '' : ' (at the end)');
       deck_build();
     }
+    // room_mark — a recorded nudge now says which room it landed in and where it
+    // put you THERE, or a take made in the article would read as thirty nudges
+    // that all left the calendar on Thu Sep 17.
     if (typeof mark_add === 'function') mark_add('bump', {
-      way: lastBump, axis: k, at: card_here(),
+      way: lastBump, axis: k, at: room_here(), room: room,
       cell: [cell.x, cell.y], z: zc, drive: drive, rise: rise });
     // nudge_core: the chart is showing the signal the detector judges, so it is
     // told the moment a judgement was made — the rule lands against the shape that
@@ -1284,6 +1842,12 @@
     pendEv = 4;
   }
   function card_here() { return card_name(-cell.x, -cell.y); }   // here_y
+  // room_here — where you are, in the terms of the room you are in
+  function room_here() {
+    if (room === 'read')  return 'page ' + (readPage + 1) + ' of ' + READ_PAGES;
+    if (room === 'solid') return 'space ' + cam.x + ',' + cam.z;
+    return card_here();
+  }
 
   // red_reset: the red lamp IS the reset, and it is also how motion gets switched
   // on the first time — there is no separate button any more.
@@ -1965,7 +2529,11 @@
     // the band's own and not a guess
     var rigEl = document.querySelector('.rig');
     if (rigEl) root.setProperty('--band_h', Math.round(rigEl.getBoundingClientRect().height) + 'px');
-    deck_draw(root);
+    // room_paint — only the room you are in is drawn. The other two are out of the
+    // DOM's flow and out of the frame's work; nothing here is a matter of opacity.
+    if (room === 'cal') deck_draw(root);
+    else if (room === 'read') read_draw(root);
+    else solid_draw();
     draw_pose(mult, now);
     requestAnimationFrame(paint_world);
   }
@@ -2380,6 +2948,24 @@
     b.addEventListener('click', function () { set(box.hidden); });
   })();
 
+  // room_swap — the button, and the room the page opens in. Which room you were
+  // last in is remembered for the same reason the switches are: this page reloads
+  // itself constantly, and being thrown back to the calendar mid-read would make
+  // the watcher feel like a fault.
+  (function room_ui() {
+    var b = document.getElementById('room_btn');
+    if (b) b.addEventListener('click', room_next);
+    var was = 'cal';
+    try { was = localStorage.getItem(ROOM_KEY) || 'cal'; } catch (e) {}
+    room_go(was);
+    // the two rooms measured against the window have to be re-measured when it
+    // changes; the calendar already re-measures every frame from card_px
+    window.addEventListener('resize', function () {
+      if (room === 'read') read_draw(document.documentElement.style);
+      if (room === 'solid') { solid_size(); solid_draw(); }
+    });
+  })();
+
   // open_draw — the month is on the glass from load, in its home position, with
   // no press needed. Motion still has to be switched on for the sensor, but that
   // is a separate thing from there being something to look at.
@@ -2471,6 +3057,47 @@
                quiet: +nQuiet.toFixed(3), stir: +nStir.toFixed(3),
                peak: { x: +nPeak.x.toFixed(3), y: +nPeak.y.toFixed(3), z: +nPeak.z.toFixed(3) },
                big: NUDGE_BIG, floor: NUDGE_A, dead: NUDGE_DEAD };
+    },
+    // room_swap — which room, where in it, and what the projector believes
+    room: function (to) { if (to) room_go(to); return room; },
+    rooms: function () {
+      var col = document.getElementById('column');
+      var mag = document.getElementById('mag');
+      var st = getComputedStyle(document.documentElement);
+      return { room: room, list: ROOM_LIST,
+               shown: { cal: !document.querySelector('.stage').classList.contains('room_off'),
+                        read: !!(col && !col.classList.contains('room_off')),
+                        solid: !!(voidEl && !voidEl.classList.contains('room_off')) },
+               read: { page: readPage, pages: READ_PAGES,
+                       y: st.getPropertyValue('--read_y').trim(),
+                       ph: st.getPropertyValue('--page_h').trim(),
+                       tall: mag ? Math.round(mag.getBoundingClientRect().height) : 0,
+                       used: mag ? Math.round(mag.scrollHeight) : 0,
+                       tab: (document.getElementById('read_tab') || {}).textContent },
+               solid: { x: cam.x, z: cam.z, max: CAM_MAX, step: SOLID_STEP,
+                        shapes: SOLID_SHAPE.length },
+               label: (document.getElementById('room_lbl') || {}).textContent };
+    },
+    // what the projector is about to paint, without a canvas or a screenshot
+    solid: function () {
+      var e = solid_eye(), l = solid_list(e), faces = 0, on = 0, i;
+      for (i = 0; i < l.length; i++) {
+        if (!l[i].pts) continue;
+        faces++;
+        var any = false;
+        for (var k = 0; k < l[i].pts.length; k++) {
+          var q = l[i].pts[k];
+          if (q[0] > -e.vw && q[0] < e.vw * 2 && q[1] > -e.vh && q[1] < e.vh * 2) any = true;
+        }
+        if (any) on++;
+      }
+      return { faces: faces, onGlass: on, eye: { cx: Math.round(e.cx), cz: Math.round(e.cz),
+               yaw: +(e.yaw * 180 / Math.PI).toFixed(1), pitch: +(e.pitch * 180 / Math.PI).toFixed(1) },
+               near: SOLID_NEAR, sorted: (function () {
+                 var d = -1, ok = true;
+                 for (var j = 0; j < l.length; j++) if (l[j].pts) {
+                   if (d >= 0 && l[j].d > d + 0.001) ok = false; d = l[j].d; }
+                 return ok; })() };
     },
     world: function () {
       var st = getComputedStyle(document.documentElement);

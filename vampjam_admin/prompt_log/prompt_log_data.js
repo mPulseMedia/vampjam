@@ -9,8 +9,60 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "277 zoom_deep",
+        id: "278 room_swap",
         expanded: true,
+        nodes: [
+          { text: "278 room_swap", children: [
+            { text: "prompt_restate", children: [
+              { text: "A button that toggles between calendar, article and 3d." },
+              { text: "The article is one tall column, like a magazine, and I can ONLY move up and down in it. Five page-heights of it." },
+              { text: "A 3d space of geometric shapes I move around within, and I move up to get back to the calendar." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Give me a button that toggles between calendar, article and 3d. \n\nthe article, like in a magazine, is one tall column that i can only (important) move up and down within. there are 5 page-heights worth of the article. \n\nAlso make a 3d space of geometric shapes that I move around within. And I move up to get back to calendar. This" }
+            ]},
+            { text: "room_swap", children: [
+              { text: "one button in the control band, wearing the name of the room you are IN, cycling calendar \u2192 article \u2192 space" },
+              { text: "the detector, the recorder, the reverse switches and the panels are untouched and unaware \u2014 a nudge is still one nudge in one of six directions" },
+              { text: "all that changes is who is listening, and each room answers to a different subset of the six. that turns out to be the honest way to say \u2018you can only go up and down in here\u2019" },
+              { text: "each room keeps its own place, so the calendar you left on the 17th is the calendar you come back to. and the room itself survives a reload, because this page reloads itself constantly" }
+            ]},
+            { text: "the_article", children: [
+              { text: "five screens of one column, and one axis" },
+              { text: "a sideways or a depth nudge is HEARD and answered with a caption saying there is nowhere to go, rather than dropped in silence \u2014 on a page whose job is judging a detector, \u2018nothing happened\u2019 must never be ambiguous between \u2018you did not nudge\u2019 and \u2018there is nothing that way\u2019" },
+              { text: "read_grid \u2014 every vertical measurement is a multiple of one line and a page is exactly 30 of them, so a page turn lands BETWEEN two lines instead of through the middle of one" },
+              { text: "the type scales with the page, so the fit holds across phones: the prose ends at 87-94% of the fifth page on three different sizes" }
+            ]},
+            { text: "and_I_got_the_page_wrong_first", children: [
+              { text: "the page height came off the WINDOW, so the bottom fifth of every page was behind the control band and the two instrument panels \u2014 four lines lost at every turn" },
+              { text: "same class of mistake as day_full and day_phone, third time on this page. a page is the height that can be READ" },
+              { text: "the panels also go entirely in the article \u2014 a diagnostic overlay across a magazine page ruins the one room whose job is being legible \u2014 and the three corner markers lie in one short row along the top instead of down 200px of the left margin" }
+            ]},
+            { text: "the_space", children: [
+              { text: "22 solids standing on a floor grid, walked with the same nudges" },
+              { text: "projected BY HAND onto a canvas rather than built from CSS 3D. a perspective container divides by (P minus z), so anything reaching the perspective plane inverts and fills the screen \u2014 and in a space you walk through, things pass the plane every few steps" },
+              { text: "doing the projection myself makes the near plane a comparison instead of a catastrophe: a face half past it gets clipped rather than popping out of existence" },
+              { text: "solid_lane \u2014 every shape stands at a half-step offset in both directions and none is wider than a step, so the lattice points you walk on fall in the gaps and you pass BETWEEN things. my first layout had a tall pillar on the centre line and three steps forward put its face across the whole glass" },
+              { text: "the phone\u2019s attitude aims the camera a little \u2014 enough to see round the pillar in front of you, never enough to be steering. walking stays the nudge\u2019s job" }
+            ]},
+            { text: "up_out", children: [
+              { text: "up leaves the space for the calendar, from anywhere in it and at any depth" },
+              { text: "so there is no down in there, and it says so when you try. an exit usable from only one height is not an exit, and a direction that sometimes climbs and sometimes leaves is a trapdoor" }
+            ]},
+            { text: "verify", children: [
+              { text: "new suite: the button cycling all three, the five pages and the two directions that do nothing, the projector\u2019s face count and its furthest-first ordering, walking and the up-exit, each room holding its place while you are elsewhere, and the reload" },
+              { text: "60 frames a second in all three rooms" },
+              { text: "six older suites green, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "277 zoom_deep",
+        expanded: false,
         nodes: [
           { text: "277 zoom_deep", children: [
             { text: "prompt_restate", children: [

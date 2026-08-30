@@ -3038,7 +3038,55 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   it is why .card and .card.here now carry no border at all.
   New suite vj_274 covers the range, the on-glass ring measurement at every notch and the frame rate
   at +6. Suites 256, 263, 269, 271 and 273 green, no page errors. Still no new trace.
-- NEXT → add entry 278 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 278 room_swap · b278 · lab.html — one button, three rooms: the calendar, an article and a
+  geometric space you walk through.
+  room_swap: the page is a nudge detector with a PLACE attached to it, and the place is now a
+  choice. The detector, the recorder, the reverse switches and the instrument panels are untouched
+  and unaware — a nudge is still one nudge in one of six directions. All that changes is who is
+  listening, and each room answers to a different subset of the six, which turns out to be the
+  honest way to express "you can only go up and down in here". Each room keeps its own position, so
+  the calendar you left on the 17th is the calendar you come back to; the room itself is remembered
+  across a reload, because this page reloads itself constantly and being thrown out of an article
+  mid-read would read as a fault.
+  room_read: five screens of one column, and one axis. A sideways or a depth nudge is HEARD and
+  answered with a caption saying there is nowhere to go, rather than silently dropped — on a page
+  whose whole job is judging a detector, "nothing happened" must never be ambiguous between "you did
+  not nudge" and "there is nothing that way".
+  read_grid — every vertical measurement in the column is a multiple of one line, and a page is
+  exactly 30 of them: padding, paragraph spacing, headings, the rule under the byline. That is what
+  makes a page turn land BETWEEN two lines instead of through the middle of one, which is the
+  difference between five pages and one scroll stopped arbitrarily five times. The type scales with
+  the page, so the fit holds across phones: measured at 390x820, 360x780 and 430x932, the prose ends
+  at 87%, 94% and 88% of the fifth page.
+  read_fit — and the first cut got the page wrong in the way this page has now got a measurement
+  wrong three times: --page_h came off the WINDOW, so the bottom fifth of every page was behind the
+  control band and the two instrument panels, and four lines were lost at every turn. A page is the
+  height that can be READ, measured off the column element. The panels also go entirely in this room
+  — a diagnostic overlay across a magazine page ruins the one room whose whole job is being
+  legible — and the three corner markers lie in one short row along the top instead of stacked down
+  200px of the left margin.
+  room_solid: a space of 22 solids on a floor grid, walked with the same six nudges. It is projected
+  BY HAND onto a canvas rather than built from CSS 3D transforms, and that is the load-bearing
+  decision: a perspective container divides by (P − z), so anything reaching the perspective plane
+  inverts and fills the screen, and in a space you walk through things pass the plane every few
+  steps. Projecting by hand makes the near plane a comparison instead of a catastrophe, and lets a
+  face that is half past it be clipped (Sutherland-Hodgman against z = NEAR) rather than popped out
+  of existence.
+  solid_lane — every shape stands on the floor at a HALF-step offset in both x and z, and none is
+  wider than one step, so the camera's lattice points fall in the gaps by construction and you pass
+  BETWEEN things rather than ending up inside one. The first cut had a 560-tall pillar on the centre
+  line and three steps forward put its face across the whole glass.
+  up_out — up is the way out of the space, from anywhere in it, which is what he asked for. It is
+  spent on leaving rather than on rising and so there is no down: an exit usable from only one
+  height is not an exit, and a direction that sometimes climbs and sometimes leaves is a trapdoor.
+  look_lean gives the phone's attitude a small clamped aim of the camera (0.55x, capped at 26
+  degrees) — enough to see round the pillar in front of you, never enough to be steering. Walking
+  stays the nudge's job.
+  New suite vj_275: the button cycling all three, the five pages and the two directions that do
+  nothing, the projector's face count and its painter's-algorithm ordering, walking and the up-exit,
+  each room holding its place while you are elsewhere, the reload, and 60fps in all three. Suites
+  256, 263, 269, 271, 273 and 274 green, no page errors. Still no new trace.
+- NEXT → add entry 279 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
