@@ -9,8 +9,46 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "276 cal_head",
+        id: "277 zoom_deep",
         expanded: true,
+        nodes: [
+          { text: "277 zoom_deep", children: [
+            { text: "prompt_restate", children: [
+              { text: "Let me get even closer \u2014 extend the zoom-in range." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Let me get even closer" }
+            ]},
+            { text: "zoom_deep", children: [
+              { text: "the zoom-in now goes six notches instead of three" },
+              { text: "last build I argued against exactly this \u2014 that past three notches there is nothing but the inside of a rectangle. that was reasoning about an empty rectangle, and a day is not empty" },
+              { text: "a day holds ten lines of text, so the useful depths are the ones where the TEXT is large: at the old limit a line set at 115px, at the new one at 1061px \u2014 one entry filling the phone" },
+              { text: "measured at every notch, 38x80px at the whole month up to 14323x30104px at the deepest, and it holds 60 frames a second at the bottom while being shoved sideways" }
+            ]},
+            { text: "and_it_broke_on_the_way", children: [
+              { text: "at the deepest notch the selection ring turned into an 86px navy slab across the screen" },
+              { text: "border_clamp \u2014 chromium rounds a non-zero border-width UP to a whole device pixel BEFORE the transform. the ring asked for 0.02px, got 1px in the deck\u2019s units, and the zoom multiplied that into the slab. there is no way to ask for thinner" },
+              { text: "so card edges are drawn with a box-shadow spread now, which takes fractional widths honestly. the cards carry no border at all any more" }
+            ]},
+            { text: "ring_flat", children: [
+              { text: "the deck now publishes a unit that does not scale \u2014 one screen pixel expressed in the deck\u2019s own units, recomputed each frame" },
+              { text: "anything drawn in it stays the same thickness on the glass however far in you are" },
+              { text: "the ring is 2px and its halo 6px, measured on screen at all nine depths: 2.00 and 6.00 everywhere, 2.01 and 6.02 at the very bottom" }
+            ]},
+            { text: "verify", children: [
+              { text: "new suite walks every notch printing the day\u2019s size, the text size and the ring measured on the glass, then counts frames at the deepest zoom" },
+              { text: "five suites green, no page errors" },
+              { text: "screenshot at a mid-deep zoom: one day filling the phone, all ten entries readable, thin blue ring \u2014 no slab" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "276 cal_head",
+        expanded: false,
         nodes: [
           { text: "276 cal_head", children: [
             { text: "prompt_restate", children: [

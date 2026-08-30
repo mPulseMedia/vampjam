@@ -117,9 +117,15 @@
      card is gone, because a calendar identifies a day by its NUMBER and its
      contents, and 35 hues would be noise on top of that. */
   .card {
-    position: absolute; border-radius: 5px;
-    background: #ffffff; border: 1px solid #d8dde4;
-    box-shadow: 0 1px 2px rgba(15,23,42,0.10);
+    position: absolute; border-radius: calc(var(--px1, 1px) * 5);
+    background: #ffffff; border: none;
+    /* ring_flat: the day's edge is drawn with a shadow spread rather than a
+       border, because a BORDER is rounded up to a whole device pixel — at the
+       deepest zoom a 0.02px border became a solid 1px in deck units, which the
+       transform then blew up into an 86px slab of blue across the screen. A
+       shadow spread takes fractional widths without complaint. */
+    box-shadow: 0 0 0 var(--px1, 1px) #d8dde4,
+                0 var(--px1, 1px) calc(var(--px1, 1px) * 2) rgba(15,23,42,0.10);
     display: block; overflow: hidden;
     padding: var(--pad, 6px); box-sizing: border-box;
     color: #334155; text-align: left;
@@ -167,9 +173,10 @@
   .card:not(.here) { opacity: 0.78; filter: saturate(0.88); }
   .card.here {
     opacity: 1; filter: none; z-index: 3;
-    background: #eef4ff; border-color: #1d4ed8;
-    box-shadow: 0 0 0 max(2px, calc(var(--num, 14px) * 0.16)) rgba(29,78,216,0.45),
-                0 6px 20px rgba(15,23,42,0.28);
+    background: #eef4ff;
+    box-shadow: 0 0 0 calc(var(--px1, 1px) * 2) #1d4ed8,
+                0 0 0 calc(var(--px1, 1px) * 6) rgba(29,78,216,0.45),
+                0 calc(var(--px1, 1px) * 6) calc(var(--px1, 1px) * 20) rgba(15,23,42,0.28);
   }
   .card.here .cal_num { color: #1d4ed8; }
   .card.here .cal_ev { color: #1e293b; }
@@ -507,7 +514,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'cal_head', bg: '#1d4ed8', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'zoom_deep', bg: '#0f766e', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1051,7 +1058,7 @@
   // because past +3 one day is four screens wide and there is nothing there but
   // the inside of a rectangle — the day already fills the glass at +1.
   var Z_OUT = 8;                    // notches you can pull back
-  var Z_IN  = 3;                    // notches you can push in
+  var Z_IN  = 6;                    // notches you can push in
   // cal_open — the month starts WHOLE. Two notches out puts all seven columns and
   // all five weeks on the glass at once, at which size a day is about 40px and its
   // hours are a grey texture rather than words. That is the point: you arrive
@@ -1213,6 +1220,13 @@
     root.setProperty('--cx', cx.toFixed(1) + 'px');
     root.setProperty('--cy', cy.toFixed(1) + 'px');
     root.setProperty('--dz', z.toFixed(4));
+    // ring_flat — one screen pixel, expressed in the deck's own units. Everything
+    // inside the deck is scaled by z, so a border or a ring written in px grows
+    // with it: at the deepest zoom the selected day's ring was a 300px slab of
+    // navy across the corner of the screen, and at the whole-month zoom it was a
+    // hairline. A ring is CHROME, not content — it should be the same thickness
+    // on the glass wherever you are — so it is written in this unit instead.
+    root.setProperty('--px1', (1 / z).toFixed(4) + 'px');
     root.setProperty('--dop', '1');
     // paper_lock — the graph paper takes the DECK's pan and scale, not its own.
     // There were two depth systems on this page: the cards moved on a lattice

@@ -3017,7 +3017,28 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   so they go to 78% with the colour nearly whole. Still unmistakably secondary next to the ringed
   day, but a month you can read all of.
   Suites 256, 263, 269 and 271 green, no page errors. Still no new trace.
-- NEXT → add entry 277 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 277 zoom_deep · b277 · lab.html — the zoom-in range goes six notches, and the day's own chrome
+  stops growing with it.
+  zoom_deep: Z_IN goes 3 → 6. Yesterday's entry argued the opposite — that past +3 "there is nothing
+  there but the inside of a rectangle" — and that reasoning was about an empty rectangle, which is
+  not what a day is. A day holds ten lines of text, and the useful depths are the ones where those
+  lines are large: at +3 a line sets at 115px, at +6 at 1061px, which is one entry filling the
+  screen. That is a legitimate place to stand on a phone you are nudging one-handed. Measured at
+  every notch: 38x80px at −2 through 14323x30104px at +6, and 60 frames a second at the deepest
+  notch while being shoved sideways.
+  ring_flat: the chrome inside the deck now has a unit that does not scale. deck_draw publishes
+  --px1 = 1/z px on the root, so a rule written in --px1 lands on the glass at a constant thickness
+  no matter how far the deck has been blown up. The selection ring is 2px and its halo 6px, measured
+  on screen at all nine depths: 2.00/6.00 everywhere, 2.01/6.02 at +6.
+  border_clamp — and the reason a unit was needed at all is a Chromium behaviour worth writing down:
+  a non-zero border-width is rounded UP to a whole device pixel before the transform is applied. At
+  +6 the ring's 0.02px border became 1px in deck units, which the transform multiplied into an 86px
+  navy slab across the glass. There is no way to ask for a thinner border. Card edges are drawn with
+  box-shadow spread instead, which takes fractional widths honestly — same look at every zoom, and
+  it is why .card and .card.here now carry no border at all.
+  New suite vj_274 covers the range, the on-glass ring measurement at every notch and the frame rate
+  at +6. Suites 256, 263, 269, 271 and 273 green, no page errors. Still no new trace.
+- NEXT → add entry 278 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
