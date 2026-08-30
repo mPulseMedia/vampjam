@@ -3197,7 +3197,45 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   look at — three of the six files in audio/ are cuts of the same 08-07 Sound Union set, which is
   most of that 1.2 GB sitting in one place now.
   No page edit, no suite. Still no new trace.
-- NEXT → add entry 282 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 282 folder_tidy · b282 · README.md + prompt_log/prompt_log.html + vampjam_org.html + six moves —
+  the local folder organised, and one silent breakage found while doing it.
+  the_rule: anything the site SERVES stays at the root. The root is the served directory, so a
+  file's path here is its URL, and links to these sessions have been handed to people. Tidiness is
+  not worth a dead link. So the root stays wide and the organising happens around it.
+  Two mechanisms make that harder than it sounds, and both are now written into README.md because
+  both are easy to trip and neither is visible from the folder:
+  · the worker only writes ROOT-LEVEL json. worker/vampjam_worker.js guards its path with
+    /^[a-zA-Z0-9_\-]+\.json$/ — no slashes. So every json the site or the lab writes back has to
+    live at the root: the session sidecars, the 31 deletion tombstones, and lab_gestures.json. Move
+    one into a folder and its next write is rejected. This is why the 10 MB nudge corpus stays in a
+    repo that no longer hosts the nudge app — and it is a better reason than the one the handoff doc
+    gave, which was only that moving it was its own job.
+  · the commit robot is addressed absolutely. The plist hard-codes the full path to
+    auto_push_vampjam.sh and watches this folder. Moving either stops every ship, from inside a
+    session that depends on the robot to ship. They stay.
+  one_record — and this is the thing worth finding. There were TWO copies of the record: the spec
+  and the prompt log each existed at the root AND in vampjam_admin/. They had drifted badly. The log
+  VIEWER at prompt_log/prompt_log.html loads the data sitting beside it, and that copy stopped at
+  255 vec_flip on Aug 28 — so for twenty-six builds, everything the ship loop wrote went into the
+  admin copy and the page he opens to read it showed none of it. Same for the spec: vampjam_org.html
+  named the root copy in its pickup prompt, which was also stale.
+  Fixed by making vampjam_admin/ the only writer AND the only reader: the viewer now loads
+  ../vampjam_admin/prompt_log/prompt_log_lab_data.js (its own URL unchanged, because he opens it),
+  the org page's pickup prompt names the admin path, and the three stale duplicates are in
+  claude_trash/. Verified by serving the pair and loading the viewer: 281 entries, newest
+  "281 audio_tuck", 5328 outline nodes rendered, no errors and no failed requests.
+  moved: Sound Union 29.qta (619 MB QuickTime master, gitignored) joins the others in audio/, which
+  is now 1.6 GB of local masters and nothing deployed. vampjam_player.html — 58 KB, referenced by
+  nothing anywhere in the repo — to claude_trash/. lab_surface.png and .svg, referenced only by the
+  nudge notes that have already left, copied to lab_repo/nudge/ and trashed here.
+  README.md at the root: the layout with a line per group, the rule and both mechanisms that enforce
+  it, the one_record principle, and the ship loop. The point is that the folder should explain
+  itself to whoever opens it next, including me.
+  NOT done, deliberately: the 8 session pages, their sidecars and the 31 tombstones stay at the
+  root. Grouping them into sessions/ is the one change that would visibly shrink the root, and it is
+  the one change that breaks shared links and the worker's write path at the same time.
+  No page behaviour changed; no suite. Still no new trace.
+- NEXT → add entry 283 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
