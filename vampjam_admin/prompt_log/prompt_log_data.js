@@ -9,8 +9,62 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "278 room_swap",
+        id: "279 nudge_out",
         expanded: true,
+        nodes: [
+          { text: "279 nudge_out", children: [
+            { text: "prompt_restate", children: [
+              { text: "You are going to extract the nudge experiment into its own project, in a new folder inside the public Claude folder." },
+              { text: "Do NOT move the code out." },
+              { text: "Do separate it, so the move is easy later." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I\u2019m going to extract this nudge experiment out and make it its own project, make a new local folder inside the public Claude local folder, so don\u2019t move the code out but please separate it to make the move easy later." }
+            ]},
+            { text: "the_folder", children: [
+              { text: "nudge/ \u2014 nudge.html is the markup and nothing else, nudge.css every rule it owns, nudge.js the engine, nudge_host.js the seam" },
+              { text: "nudge_notes.md \u2014 its own build history, 87 entries from 177 lab_frame to here, lifted out of the vampjam spec" },
+              { text: "nudge_test/ \u2014 the eight suites, an opener that puts the address in one place, and a runner" },
+              { text: "README.md \u2014 what it is, and the move in four steps" }
+            ]},
+            { text: "nudge_host_is_the_point", children: [
+              { text: "one object holding the back link, the release stamp, the storage prefix, the sync endpoints and the watcher\u2019s file list" },
+              { text: "measured: the word \u2018vampjam\u2019 appears 9 times in nudge_host.js and ZERO times in the page, the stylesheet, the engine and the suites" },
+              { text: "that number is the deliverable \u2014 it is what makes the move an edit to one file instead of a search" }
+            ]},
+            { text: "one_file_engine", children: [
+              { text: "the engine stays ONE file rather than modules, on purpose" },
+              { text: "every part of it shares one piece of state \u2014 the attitude, the detector\u2019s running average, which room you are in \u2014 and splitting shared state across files buys boundaries that are not real" },
+              { text: "the seam that matters is the one to the host, and that is where I cut" }
+            ]},
+            { text: "lab_html_stays", children: [
+              { text: "the old address is still there as a redirect, because it is the one on your phone and the one the ship loop has reloaded for three hundred builds" },
+              { text: "it uses replace, so Back does not bounce off it. it is the one thing the move deletes" },
+              { text: "admin\u2019s \u2018Open the lab\u2019 goes to the new address directly" }
+            ]},
+            { text: "watch_many", children: [
+              { text: "four files now, so the reload-on-change watcher polls all four" },
+              { text: "watching only the HTML would have made every css or engine edit invisible until a manual reload \u2014 the one thing that loop exists to prevent" }
+            ]},
+            { text: "verify", children: [
+              { text: "proved by DIFF, not assertion: the same three rooms shot before and after, 1,279,200 pixels each" },
+              { text: "112 differ, all in one 1x28px column at the right edge of the version pill \u2014 the pill is a different width because the stamp is a different word. every other pixel identical, and the state hooks match exactly" },
+              { text: "new suite for the split; seven older suites green from their new home" }
+            ]},
+            { text: "left_for_the_move_to_decide", children: [
+              { text: "the prompt log \u2014 you keep two identical twins, one named for the lab, but neither is lab-only. separating a log that has never been separate is a decision, not a copy" },
+              { text: "lab_gestures.json, which lives in this repo and is reached by URL through the host object" },
+              { text: "the commit robot, which watches this folder" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "278 room_swap",
+        expanded: false,
         nodes: [
           { text: "278 room_swap", children: [
             { text: "prompt_restate", children: [

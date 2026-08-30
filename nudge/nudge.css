@@ -1,0 +1,574 @@
+/* nudge.css — every rule the nudge experiment owns, and nothing else. This file
+   has no dependency on the host site's stylesheet: the experiment was always
+   "totally different" from the rest of vampsf by his instruction, so the split
+   took the whole <style> block across unchanged. Moving the experiment moves
+   this file as it stands.
+
+   The sections, in order: the frame and the stage; the calendar room; the
+   article room; the space; the control band and its switches; the two
+   instrument panels; the corner markers. */
+
+  /* lab_frame — a sketch of the feeling the session list gave us: a fixed
+     white frame with a rounded window cut in it, and a stack of full-screen
+     cells that slides behind the window. The frame never moves; the cells do,
+     and the frame's edge casts a shadow down onto whichever cell is showing.
+     Cells: 1 red (top) · 2 white (middle) · 3 blue (bottom). */
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%; background: #ffffff; color: #1d1d1f;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden; overscroll-behavior: none;
+    touch-action: manipulation; color-scheme: light;
+  }
+
+  /* the white frame is simply the page; the window is what is cut out of it */
+  .frame_window {
+    background: #fcfcf8;
+    position: fixed;
+    top: max(14px, env(safe-area-inset-top));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    left: max(14px, env(safe-area-inset-left));
+    right: max(14px, env(safe-area-inset-right));
+    border-radius: 22px;
+    overflow: hidden;
+    background: #fcfcf8;
+  }
+  /* tilt_deep — the perspective lives on its OWN layer, not on the window.
+     WebKit flattens 3D children of an element that both clips and rounds its
+     corners, which is why the lean barely showed on the phone while it looked
+     right in a desktop screenshot. The stage clips nothing and rounds nothing;
+     the window still does both, around it. The camera is close (460px against a
+     ~360px window), so a modest tilt of the hand lays the paper right down. */
+  .stage {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    perspective: 460px; perspective-origin: 50% 50%;
+    transform-style: preserve-3d;
+  }
+  /* frame_shadow — the window's own edge, pressed onto the calendar underneath:
+     strongest from the top, present on all four sides. It rides above the deck. */
+  .frame_shadow {
+    position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 3;
+    box-shadow:
+      inset 0 14px 18px -10px rgba(0,0,0,0.45),
+      inset 0 -10px 16px -10px rgba(0,0,0,0.30),
+      inset 12px 0 16px -12px rgba(0,0,0,0.30),
+      inset -12px 0 16px -12px rgba(0,0,0,0.30);
+  }
+
+  /* dot_steady — the dot sits dead centre of every card. When the phone's
+     motion sensors are running it is pushed the OTHER way from every wobble,
+     so it holds still in the room while the screen jiggles around it. */
+  /* graph_one — ONE surface for the whole window: graph paper, drawn once,
+     behind everything. It pans and scales with the phone; nothing else carries
+     lines, so there are no layers to see through. Sized 800% so even at the
+     small end of the scale, panned to its limit, no edge comes into view. */
+  .grid {
+    /* haze_cheap — the fade used to be a mask ON THIS ELEMENT, and that was the
+       crash: a mask forces the browser to allocate an offscreen buffer the size
+       of the masked element, and this element is a thousand percent of the
+       viewport with a 3D transform and a scale of up to 39 on top. The fade now
+       lives on .haze, one viewport big, sitting over the paper. The paper itself
+       is a plain painted element again — no mask, no buffer — and smaller. */
+    /* paper_paint — the paper no longer MOVES or SCALES; only its pattern does.
+       Panning is background-position and zooming is background-size, both of
+       which are a repaint of one fixed element. The transform is left carrying
+       nothing but the three rotations, so it changes only when the phone turns.
+       Before this the element was a thousand-plus percent of the viewport being
+       re-rasterised on every frame at every scale, which is what took the
+       browser down. 400% is what the 45-degree lean needs to cover; nothing
+       about the size has to grow with the zoom any more. */
+    position: absolute; left: -150%; top: -150%; width: 400%; height: 400%;
+    pointer-events: none; z-index: 0; transform-origin: 50% 50%;
+    /* roll_hold: the rotation comes FIRST, so the offset that follows is measured
+       along the world's own axes rather than the screen's. Swirl the phone in
+       front of your face and the paper turns the other way by the same amount,
+       which is what makes it look like the paper never moved. */
+    /* the swirl first, then the two leans, which tip about the phone's own axes,
+       then the pan and the zoom — so the pan runs along the paper's surface
+       rather than across the glass. (Panning and zooming through
+       background-position / background-size instead was tried and is four times
+       SLOWER: a background change repaints the whole element, where a transform
+       change only recomposites it.) */
+    transform: rotate(var(--rot, 0deg)) rotateX(var(--tilt, 0deg)) rotateY(var(--turn, 0deg))
+               translate3d(var(--sx, 0px), var(--sy, 0px), 0) scale(var(--sc, 1));
+    background-color: #fcfcf8;
+    background-image:
+      repeating-linear-gradient(to bottom, rgba(38,86,140,0.32) 0 1px, transparent 1px 30px),
+      repeating-linear-gradient(to right,  rgba(38,86,140,0.32) 0 1px, transparent 1px 30px);
+  }
+  /* shot_gone — the photograph that used to lie on the paper is out. It has been
+     display:none since the deck arrived, and the element was still being parsed,
+     still fetching its image file on every load, and still carrying the
+     crisp_deep raster machinery that existed only to keep it sharp under zoom. */
+  /* the deck — the month itself. It is driven in PIXELS off the day pitch: a
+     nudge is one day, and one day is one day at every depth. It keeps the swirl
+     and both leans, so the month still tips with the phone. */
+  .deck {
+    position: absolute; left: 50%; top: 50%; z-index: 1;
+    width: 0; height: 0; pointer-events: none;
+    transform-style: preserve-3d;
+    transform: rotate(var(--rot, 0deg)) rotateX(var(--tilt, 0deg)) rotateY(var(--turn, 0deg))
+               translate3d(var(--cx, 0px), var(--cy, 0px), 0) scale(var(--dz, 1));
+    opacity: var(--dop, 1);
+  }
+  /* cal_month — a day, not a playing card: white, squared off, its date in the
+     corner and its hours stacked under it. The colour that used to identify a
+     card is gone, because a calendar identifies a day by its NUMBER and its
+     contents, and 35 hues would be noise on top of that. */
+  .card {
+    position: absolute; border-radius: calc(var(--px1, 1px) * 5);
+    background: #ffffff; border: none;
+    /* ring_flat: the day's edge is drawn with a shadow spread rather than a
+       border, because a BORDER is rounded up to a whole device pixel — at the
+       deepest zoom a 0.02px border became a solid 1px in deck units, which the
+       transform then blew up into an 86px slab of blue across the screen. A
+       shadow spread takes fractional widths without complaint. */
+    box-shadow: 0 0 0 var(--px1, 1px) #d8dde4,
+                0 var(--px1, 1px) calc(var(--px1, 1px) * 2) rgba(15,23,42,0.10);
+    display: block; overflow: hidden;
+    padding: var(--pad, 6px); box-sizing: border-box;
+    color: #334155; text-align: left;
+    font: 500 var(--evf, 8px)/1.28 -apple-system, system-ui, sans-serif;
+    -webkit-user-select: none; user-select: none;
+  }
+  .cal_out { background: #f3f5f8; color: #9aa3b0; }
+  .cal_out .cal_num { color: #b3bbc6; }
+  .cal_num {
+    display: block; font-size: var(--num, 14px); font-weight: 700; line-height: 1;
+    color: #1f2937; letter-spacing: -0.02em;
+  }
+  .cal_num i { font-style: normal; font-size: 0.5em; font-weight: 600; margin-left: 0.25em;
+               color: #64748b; letter-spacing: 0.04em; text-transform: uppercase; }
+  /* the day's own list starts BELOW whatever span bars cross this day, so a bar
+     never lies over an hour — --lane is how far down that is, and it is worked
+     out per day from how many spans touch it */
+  .cal_list { display: block; margin-top: var(--lane, 4px); }
+  .cal_ev {
+    display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 0.18em; color: #475569;
+  }
+  /* cal_span — one element lying across the days it covers, so it reads as one
+     thing that spans rather than as several things that coincide */
+  .cal_bar {
+    position: absolute; z-index: 2; border-radius: 999px;
+    display: flex; align-items: center; overflow: hidden;
+    padding: 0 0.5em; box-sizing: border-box;
+    color: #ffffff; font-weight: 700; letter-spacing: -0.01em;
+    font-family: -apple-system, system-ui, sans-serif;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.18);
+  }
+  .cal_bar span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
+
+  /* day_here — the corner brackets are gone, at his word. The day you are on says
+     so itself instead: full strength while its neighbours are washed back, a blue
+     ring standing off its edge, a tinted ground, and its date in the same blue.
+     It lifts above the span bars too, so a bar can never cross the ring. */
+  /* day_dim — how far back the days you are NOT on stand. He read them as about
+     20% and asked for 40%; they were in fact at 52% with their colour cut to 60%,
+     which together is what made them read as fainter than they were. The number
+     that matters is the intent — less fading — so they go to 78% with the colour
+     nearly whole. They are still unmistakably secondary next to the ringed day,
+     but a month you can actually read is now a month you can read all of. */
+  .card:not(.here) { opacity: 0.78; filter: saturate(0.88); }
+  .card.here {
+    opacity: 1; filter: none; z-index: 3;
+    background: #eef4ff;
+    box-shadow: 0 0 0 calc(var(--px1, 1px) * 2) #1d4ed8,
+                0 0 0 calc(var(--px1, 1px) * 6) rgba(29,78,216,0.45),
+                0 calc(var(--px1, 1px) * 6) calc(var(--px1, 1px) * 20) rgba(15,23,42,0.28);
+  }
+  .card.here .cal_num { color: #1d4ed8; }
+  .card.here .cal_ev { color: #1e293b; }
+  /* ---- room_swap: three places, one page ------------------------------------
+     The nudge detector, the instrument panels and the recorder are the page; the
+     thing they MOVE you through is now a choice of three. Each room keeps its own
+     position, so leaving the calendar on the 17th and coming back puts you on the
+     17th — a room you have to re-find every time is a room you stop visiting.
+     Only one is in the DOM's flow at a time; the other two are `hidden`, which
+     also takes them out of the paint. */
+  .room_off { display: none !important; }
+
+  /* room_read — a magazine column. One measure of text, five screens tall, on
+     paper. No zoom and no sideways: the whole point of a column is that there is
+     exactly one direction to go, and the page says so by having nothing else. */
+  .page_col {
+    /* read_fit — the column occupies what can actually be READ: under the chrome
+       row, above the control band. --page_h is measured off this element rather
+       than off the window, so "five page-heights" is five of the height a page
+       really has. Measuring it off the window instead put a fifth of every page
+       behind the band and the panels, which is how the first cut of this room
+       lost its bottom four lines on every turn. */
+    position: absolute; left: 0; right: 0; top: 44px;
+    bottom: calc(var(--band_h, 92px)); z-index: 2; overflow: hidden;
+    background: #fbfaf7; pointer-events: none;
+    -webkit-user-select: none; user-select: none;
+    box-shadow: 0 -1px 0 rgba(0,0,0,0.08), 0 1px 0 rgba(0,0,0,0.08);
+  }
+  /* read_grid — every vertical measurement on the page is a multiple of one
+     line, and a page is exactly READ_LINES of them. That is what makes a page
+     turn land BETWEEN two lines instead of through the middle of one, which is
+     the difference between five pages and one long scroll stopped arbitrarily
+     five times. Padding, paragraph spacing, headings and the rule under the
+     byline are all counted in --L; nothing here is allowed a round pixel value
+     of its own. */
+  .mag {
+    position: absolute; left: 0; right: 0; top: 0;
+    --L: calc(var(--page_h, 100vh) / 30);
+    /* read_five — the column is exactly five screens tall by construction, not by
+       however much prose happened to be typed. The text is set to fill it; the
+       height is the promise. */
+    height: calc(var(--page_h, 100vh) * 5);
+    padding: 0 24px; box-sizing: border-box;
+    transform: translate3d(0, var(--read_y, 0px), 0);
+    color: #1c1b19;
+    font-family: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    /* the type scales with the page, so the fit of the prose inside five screens
+       is the same on a small phone as on a large one */
+    font-size: clamp(15px, calc(var(--L) * 0.66), 20px);
+    line-height: var(--L); text-align: left;
+  }
+  .mag_kicker {
+    font: 700 11px/var(--L) -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.20em; text-transform: uppercase; color: #b4531f;
+    margin: var(--L) 0 0;
+  }
+  .mag h1 {
+    margin: 0; font-family: Georgia, serif; font-weight: 700;
+    font-size: calc(var(--L) * 1.15); line-height: calc(var(--L) * 1.5);
+    letter-spacing: -0.025em; color: #14130f;
+  }
+  .mag_deck {
+    margin: 0; font: italic calc(var(--L) * 0.63)/var(--L) Georgia, serif; color: #55524b;
+  }
+  .mag_by {
+    margin: 0 0 var(--L); height: var(--L);
+    border-bottom: 1px solid rgba(0,0,0,0.14);
+    font: 600 10px/var(--L) -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.13em; text-transform: uppercase; color: #8a857c;
+  }
+  .mag p { margin: 0 0 var(--L); }
+  /* the first paragraph of the piece gets the capital, as a magazine's does. It
+     floats exactly three lines, so it displaces nothing. */
+  .mag p.drop:first-letter {
+    float: left; font-size: calc(var(--L) * 2.4); line-height: calc(var(--L) * 2.6);
+    padding-right: 0.08em; font-weight: 700; color: #b4531f;
+  }
+  .mag h2 {
+    margin: 0 0 0; font: 700 11px/var(--L) -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.16em; text-transform: uppercase; color: #b4531f;
+  }
+  .mag blockquote {
+    margin: 0 0 var(--L); padding: 0 0 0 14px; border-left: 3px solid #b4531f;
+    font-family: Georgia, serif; font-weight: 600;
+    font-size: calc(var(--L) * 0.72); line-height: var(--L);
+    color: #24221d; letter-spacing: -0.01em;
+  }
+  /* read_clear — in the article room the page IS the content, so the page gets
+     out of its own way. The three corner markers stack down the left in the
+     calendar, over 200px of it; here they lie in one short row along the top and
+     the column starts under them, so no line of type is ever set behind a pill.
+     The two instrument panels go entirely: a diagnostic overlay across the bottom
+     of a magazine page ruins the one room whose whole job is being readable, and
+     they are two taps away in the calendar. The detector, the recorder and the
+     caption in the band are all still running. */
+  .read_on .corner_back { top: max(8px, calc(env(safe-area-inset-top) + 4px)); height: 28px;
+                          padding: 0 11px; font-size: 12px; }
+  .read_on .build_tag   { top: max(8px, calc(env(safe-area-inset-top) + 4px)); height: 28px;
+                          left: auto; right: 74px; font-size: 11.5px; padding: 0 9px; }
+  .read_on .watch       { top: max(38px, calc(env(safe-area-inset-top) + 34px)); font-size: 9.5px; }
+  .read_on .pose, .read_on .trace { display: none !important; }
+
+  /* read_edge — which page of five you are on, and how much is left, in the one
+     place a magazine puts it. It rides the glass, not the column, or it would
+     scroll away with the text it is counting. */
+  .read_tab {
+    position: absolute; z-index: 3; right: 12px; top: 12px;
+    padding: 5px 9px; border-radius: 999px;
+    background: rgba(28,27,25,0.80); color: #fbfaf7;
+    font: 700 11px/1 -apple-system, system-ui, sans-serif; letter-spacing: 0.08em;
+  }
+
+  /* room_solid — the geometric space. Drawn on a canvas by a projector of this
+     page's own, not with CSS 3D transforms: a perspective container blows up the
+     moment an element passes the perspective plane, and in a space you WALK
+     through things pass behind you constantly. Projecting by hand means near
+     clipping is a comparison rather than a catastrophe. */
+  .void {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: linear-gradient(#0b1120 0%, #131c31 52%, #1c2740 100%);
+  }
+
+  /* room_btn — one button that cycles the three, wearing the name of the room it
+     is IN. It sits in the working row with Record because changing rooms is a
+     thing you do while walking around, not a setting. */
+  .room_btn {
+    flex: 0 0 auto; min-height: 46px; padding: 0 11px;
+    border: 1px solid var(--panel_3, rgba(0,0,0,0.14)); border-radius: 13px;
+    background: rgba(255,255,255,0.9); color: #1f2937;
+    font: 600 13px/1 -apple-system, system-ui, sans-serif; letter-spacing: -0.01em;
+    white-space: nowrap; cursor: pointer;
+  }
+  .room_btn b { display: block; font-size: 15px; margin-bottom: 2px; }
+  .room_btn.is_read  { background: #fbfaf7; border-color: #b4531f; color: #b4531f; }
+  .room_btn.is_solid { background: #131c31; border-color: #131c31; color: #dbeafe; }
+
+  /* the distance dissolving into the background: one screen-sized overlay in
+     the paper's own colour, cheap to paint and independent of the paper's size */
+  .haze {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(ellipse 78% 62% at 50% 56%,
+                                rgba(252,252,248,0) 0%,
+                                rgba(252,252,248,0.18) 66%,
+                                rgba(252,252,248,0.62) 100%);
+  }
+  /* star_off — the star is gone. It existed to be the one thing in the world
+     when the world was blank graph paper; with a picture lying on the paper
+     there is something to look at, and a marker sitting on top of it is just in
+     the way. Its shadow machinery went with it. */
+
+  /* lab_release — a solid square in the corner wearing this release's colour,
+     with this release's name inside it. New colour + new name every ship. */
+
+  /* thumb_reach: Set zero gets pressed constantly, so it sits low on the right,
+     just above the recorder bar, where a right thumb lands without a stretch. */
+
+  /* zero_split: the rarer of the two sits above the one the thumb wants, and is
+     quieter — Set zero is pressed constantly, Reset all only when the scale has
+     run away. */
+
+  /* lag_trace — four seconds of history, so what the hand did and what the
+     screen did can be compared by eye instead of by adjective.
+     grey = how hard the phone is accelerating, purple = where the world is. */
+  /* lane_view — six lanes, one per axis, stacked and kept apart. Each is a
+     solid fill away from its own centre line, up for positive and down for
+     negative, and carries no marking of any kind. The colours are the diagram's:
+     red is the left-right axis and the tilt about it, green up-down and the turn
+     about it, blue near-far and the swirl about it. */
+  .trace {
+    position: fixed; z-index: 6; left: max(107px, calc(env(safe-area-inset-left) + 101px));
+    bottom: calc(var(--band_h, 92px) + 8px);   /* panel_low: beside the diagram */
+    /* panel_half — the diagram and the chart at half their old size. They are
+       instruments to glance at, not things to read, and at 178px they were taking
+       a third of the screen away from the thing they are describing. */
+    width: 89px; height: 84px; border-radius: 10px;
+    background: rgba(255,255,255,0.88);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    pointer-events: none;
+  }
+  /* panel_low — the two instruments move to the bottom LEFT, sitting on the
+     control band. They were top right, which is where the calendar's own heading
+     now is: at the home zoom they sat squarely over "2026" and the SUN column,
+     and no fixed offset can dodge a heading that moves with the zoom. Down here
+     they are clear of the paper at every scale, and they are diagnostics anyway —
+     they belong beside the controls, not over the thing they describe. */
+  .pose {
+    position: fixed; z-index: 6; left: max(12px, calc(env(safe-area-inset-left) + 6px));
+    bottom: calc(var(--band_h, 92px) + 8px);
+    width: 89px; height: 89px; border-radius: 10px;      /* panel_half */
+    background: rgba(255,255,255,0.86);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    pointer-events: none;
+  }
+
+  /* gesture_lab — hold the button, do the move, let go. Everything the phone's
+     sensors say during the hold is kept, tagged with the name you typed, so
+     the two of us can look at real numbers instead of guessing. */
+  /* gest_small — everything around the hold button gets out of the way: the bar
+     is far narrower, the chrome is half the size it was. The one thing that does
+     NOT shrink is the hold target itself, which stays a full-height slab because
+     it is held down through a whole gesture with the phone in motion. */
+
+
+  #g_name:focus { border-color: #1350c4; }
+
+  .g_rec.recording { background: #1d1d1f; animation: g_pulse 1s ease-in-out infinite; }
+  @keyframes g_pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.72; } }
+  /* take_clear: the bar says which of the four states it is in, in colour and
+     in words — idle, recording, sending, sent-and-ready. */
+  .g_recent { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; min-height: 0; }
+  .g_chip.g_wait { border-color: #b45309; color: #b45309; font-weight: 600; }
+  .g_chip { font-size: 9px; font-weight: 600; color: rgba(0,0,0,0.55);
+            background: rgba(0,0,0,0.06); border-radius: 999px; padding: 2px 6px;
+            max-width: 88px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .g_small {
+    flex: 1 1 auto; min-width: 0; border: none; border-radius: 7px; padding: 5px 4px;
+    font: inherit; font-size: 10px; font-weight: 600; cursor: pointer;
+    background: rgba(0,0,0,0.06); color: #1d1d1f; touch-action: manipulation;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .g_count { flex: 0 0 auto; font-size: 10px; color: rgba(0,0,0,0.45); min-width: 30px; text-align: right; }
+
+  /* cal_head — the month's name and the weekday letters, ON the paper: children
+     of the deck, so they pan and scale with the month exactly as a printed
+     calendar's heading does. Last build put the name on the glass so it would
+     survive zooming into one day; he wants the printed thing instead, and he is
+     right that it is what makes this read as a calendar rather than as a grid of
+     tiles. Zoom in past the month and the heading leaves with the rest of the
+     paper, which is what happens when you put your face against a wall calendar. */
+  .cal_title {
+    position: absolute; text-align: center; pointer-events: none;
+    font-weight: 700; letter-spacing: 0.06em; color: #1f2937;
+    font-family: -apple-system, system-ui, sans-serif; line-height: 1;
+    white-space: nowrap;
+  }
+  .cal_title i { font-style: normal; font-weight: 500; color: #94a3b8; margin-left: 0.4em; }
+  .cal_dow {
+    position: absolute; text-align: center; pointer-events: none;
+    font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #94a3b8; font-family: -apple-system, system-ui, sans-serif; line-height: 1;
+  }
+
+  /* ---- the control band along the bottom ---- */
+  /* bar_low — every control on one band along the bottom, at his word. It was a
+     168px column floating in the lower right, which put the switches over the
+     right-hand days and left the whole bottom of the glass empty. The band is
+     full width, has its own ground so the calendar reading through it never makes
+     a label ambiguous, and the month simply has the screen above it. */
+  .rig {
+    position: fixed; z-index: 8;
+    left: 0; right: 0;
+    bottom: 0;
+    display: flex; flex-direction: column; align-items: stretch; gap: 6px;
+    padding: 8px max(12px, env(safe-area-inset-left))
+             max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-right));
+    background: rgba(252,252,248,0.93);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(15,23,42,0.10);
+    touch-action: manipulation;
+  }
+  /* the working row: grade, record and the disclosure, side by side */
+  .rig_main { display: flex; align-items: center; gap: 8px; }
+  .rig_main .rig_lights { flex: 0 0 auto; }
+  .rig_main .g_rec { flex: 1 1 auto; }
+  /* flip_hide — the switches are a setting, not a control, so they are closed by
+     default and open from one small button. Twelve of them were taking a third of
+     the band for something touched once a week. */
+  .flip_pop {
+    flex: 0 0 auto; min-height: 46px; min-width: 46px;
+    border: 1px solid var(--panel_3, rgba(0,0,0,0.14)); border-radius: 13px;
+    background: rgba(255,255,255,0.9); color: var(--muted, #86868b);
+    font: 600 17px/1 -apple-system, system-ui, sans-serif; cursor: pointer;
+  }
+  .flip_pop.on { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+  .flips[hidden] { display: none; }
+  /* open_draw — an SVG does not honour the plain `hidden` attribute the way an
+     HTML element does, so the diagram was painting an empty white box in the
+     corner from load. It was invisible before only because the whole page was
+     blank until motion was switched on. */
+  .pose[hidden] { display: none !important; }
+  .rig [hidden] { display: none !important; }
+  /* vec_flip — five in a row across the rig's width, small because they are set
+     once and then left alone, but each still a real target. Off is quiet; ON is
+     filled, because "this axis is reversed" is a thing you must be able to see at
+     a glance while walking around with the phone. */
+  .flips { display: flex; flex-direction: column; gap: 4px; }
+  .flip_row { display: flex; gap: 5px; align-items: center; }
+  /* the row says which question it answers, in three characters, so the panel
+     does not need a legend anywhere else */
+  .flip_tag {
+    flex: 0 0 34px; font: 600 10px/1 -apple-system, system-ui, sans-serif;
+    letter-spacing: 0.04em; color: var(--muted, #86868b); text-align: right;
+    padding-right: 2px; -webkit-user-select: none; user-select: none;
+  }
+  .flips button {
+    /* row_tight — the show row carries six switches where the others carry three,
+       and at the shared size its two-letter labels wrapped onto a second line and
+       read as gibberish. They never wrap now, and a crowded row simply sets its
+       own type smaller rather than every row shrinking to match the busiest. */
+    white-space: nowrap;
+    flex: 1 1 0; min-width: 0; min-height: 32px; padding: 0;
+    border: 1px solid var(--panel_3, rgba(0,0,0,0.14));
+    background: rgba(255,255,255,0.9); color: var(--muted, #86868b);
+    border-radius: 8px; font: 600 13px/1 -apple-system, system-ui, sans-serif;
+    cursor: pointer; touch-action: manipulation;
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  }
+  .flip_gap { flex: 1 1 0; min-width: 0; }
+  .flips button.on {
+    background: #1d4ed8; border-color: #1d4ed8; color: #fff;
+  }
+  .flips button:active { transform: scale(0.95); }
+  /* grade_two — plain buttons, the same shape as Record. Green only exists while
+     the tape is running, because a grade is about a take; Red is out at all
+     times, because it is also the reset and that has to be reachable whenever
+     the paper is moving. */
+  .rig_lights { display: flex; gap: 8px; justify-content: flex-end; }
+  .rig_lights .g_mark.g_green { display: none; }
+  .rig.is_rec .rig_lights .g_mark.g_green { display: block; }
+  .rig_lights .g_mark.g_red { flex: 0 0 78px; }
+  .rig.is_rec .rig_lights .g_mark { flex: 1 1 0; }
+  .g_mark {
+    height: 46px; border: none; border-radius: 13px; padding: 0 10px;
+    font: inherit; font-size: 15px; font-weight: 700; line-height: 1;
+    color: #ffffff; cursor: pointer; touch-action: manipulation;
+    box-shadow: 0 2px 9px rgba(0,0,0,0.20);
+    transition: filter 0.15s ease;
+  }
+  .g_mark.g_green { background: #16a34a; }
+  .g_mark.g_red   { background: #d7263d; }
+  .g_mark:active { transform: scale(0.96); }
+  .g_mark.down  { filter: brightness(0.82); }
+  .g_mark.hit   { filter: brightness(1.35); }
+  .rig_say { display: flex; align-items: center; justify-content: flex-end; gap: 5px;
+             min-height: 12px; overflow: hidden; }
+  .g_led { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,0,0,0.22); flex: 0 0 auto; }
+  .rig_msg {
+    min-width: 0; font-size: 10.5px; line-height: 1.2; color: rgba(0,0,0,0.55);
+    text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .g_rec {
+    height: 56px; border: none; border-radius: 15px; padding: 0 10px;
+    font: inherit; font-size: 17px; font-weight: 700; cursor: pointer;
+    background: #1350c4; color: #ffffff; touch-action: manipulation;
+    box-shadow: 0 3px 12px rgba(19,80,196,0.34);
+  }
+  .g_rec:active { transform: scale(0.97); }
+  .g_rec.recording { background: #1d1d1f; }
+  .rig.is_rec  .g_led { background: #d7263d; animation: g_pulse 1s ease-in-out infinite; }
+  .rig.is_send .g_led { background: #e0a800; animation: g_pulse 0.7s ease-in-out infinite; }
+  .rig.is_sent .g_led { background: #16a34a; }
+  .rig.is_warn .g_led { background: #e0a800; }
+  .rig.is_sent .rig_msg { color: #16a34a; font-weight: 700; }
+  .rig.is_rec  .rig_msg { color: #d7263d; font-weight: 700; }
+  /* the two things that are not controls: where you came from, and which build
+     this is. Both out of the way in the top-left corner. */
+  .corner_back {
+    position: fixed; z-index: 8;
+    top: max(16px, calc(env(safe-area-inset-top) + 8px));
+    left: max(16px, calc(env(safe-area-inset-left) + 8px));
+    display: inline-flex; align-items: center; height: 32px; padding: 0 13px;
+    border-radius: 999px; text-decoration: none;
+    background: rgba(255,255,255,0.9); color: #1d1d1f;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.16);
+    font-size: 13px; font-weight: 600; line-height: 1; white-space: nowrap;
+  }
+  .corner_back:active { transform: scale(0.96); }
+  .build_tag {
+    position: fixed; z-index: 8;
+    top: max(56px, calc(env(safe-area-inset-top) + 48px));
+    left: max(16px, calc(env(safe-area-inset-left) + 8px));
+    height: 28px; max-width: 44vw; border-radius: 9px;
+    background: var(--lab_bg, #1d4ed8); color: var(--lab_fg, #ffffff);
+    display: inline-flex; align-items: center; padding: 0 11px;
+    font-size: 12.5px; font-weight: 700; line-height: 1; letter-spacing: 0.01em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    pointer-events: none;
+  }
+  /* watch_live — the source-watcher's own light, so it is never a mystery
+     whether the page is still checking */
+  .watch {
+    position: fixed; z-index: 8;
+    top: max(90px, calc(env(safe-area-inset-top) + 82px));
+    left: max(16px, calc(env(safe-area-inset-left) + 8px));
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10.5px; font-weight: 600; color: rgba(0,0,0,0.42);
+    pointer-events: none;
+  }
+  .watch_dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #16a34a;
+    animation: g_pulse 1.6s ease-in-out infinite;
+  }
+  .watch.is_off .watch_dot { background: rgba(0,0,0,0.25); animation: none; }
+  .watch.is_hit .watch_dot { background: #1350c4; animation: none; }

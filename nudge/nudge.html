@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>nudge</title>
+<!-- nudge_split — the experiment is four files in one folder now. The page holds
+     the markup and nothing else; the styles are in nudge.css, the engine is in
+     nudge.js, and every line that knows which site this is living in is in
+     nudge_host.js. Moving the experiment to a project of its own is copying this
+     folder and editing nudge_host.js. -->
+<link rel="stylesheet" href="nudge.css">
+</head>
+<body>
+
+
+<div class="frame_window" id="frame">
+  <!-- one world, filling the window. The stage carries the perspective; the
+       paper carries the swirl, both leans, the pan and the zoom. -->
+  <div class="stage">
+    <div class="grid" id="grid"></div>
+    <div class="deck" id="deck"></div>
+  </div>
+  <div class="haze"></div>
+  <!-- room_read — the column. It is one <article>, five screens tall, and the
+       only thing that ever happens to it is that it slides up or down by exactly
+       one screen. There is no scrollbar and no touch scrolling: the nudge is the
+       only way through it, which is the point of putting it here. -->
+  <div class="page_col room_off" id="column">
+    <div class="read_tab" id="read_tab">1 / 5</div>
+    <article class="mag" id="mag">
+      <p class="mag_kicker">Field notes</p>
+      <h1>The Room You Are Holding</h1>
+      <p class="mag_deck">Every map ever drawn assumes a reader standing still.</p>
+      <p class="mag_by">By the desk &middot; September 2026</p>
+
+      <p class="drop">There is a moment, in the first week with a paper map in a
+        city you do not know, when the map stops being a picture and becomes a
+        place. You are no longer looking at streets. You are looking from
+        somewhere. The paper has not changed. You have.</p>
+      <p>Cartographers call what you acquired orientation. It is a poor word,
+        because it sounds like a fact you learned, and this is not a fact. It is a
+        posture — a way of standing with respect to a piece of paper.</p>
+      <p>The argument here is that for forty years we have built the picture and
+        left the reader out of it, and the reader has been quietly doing the
+        difficult half of the work.</p>
+
+      <h2>The tyranny of the frame</h2>
+      <p>A window on a screen is a hole cut in a wall. To see something else you
+        move what is behind the hole: you scroll, you pan, you drag. The hole never
+        moves. The wall never moves. You never move.</p>
+      <p>It takes an effort to notice this is a convention at all. It came from
+        paper on a desk, where the sheet slides and the reader's head stays put.
+        Three thousand years of this. It works.</p>
+      <blockquote>The hole never moves. The wall never moves. You never move.</blockquote>
+      <p>But it costs something, and the cost is hidden because the reader pays it.
+        Ask anyone to point, without looking, at the part of a long web page they
+        were reading four minutes ago. They cannot. Ask about a book and they will
+        put a thumb within twenty pages, because a book has a shape their hands
+        learned.</p>
+      <p>Depth is worse than length. Zooming is a slider with no memory: you go in,
+        you look, you come out, and nothing about coming out tells you how far you
+        came. A pilot has an altimeter for exactly this reason.</p>
+
+      <h2>Small motions, large claims</h2>
+      <p>A phone knows, sixty times a second, the acceleration along three axes and
+        the rotation about three more. It knows everything about how it is being
+        held and almost nothing about why. That gap is where the work is.</p>
+      <p>The obvious use has been tried for fifteen years and does not work: tilt
+        the phone, the world tilts. Continuous control feels like magic for four
+        seconds and like a wrestling match for the rest of the afternoon. Your hand
+        is never still. Trains exist. So does breathing.</p>
+      <p>The better use is to throw almost all of it away. Do not track the phone.
+        Watch for one gesture — a short, sharp push, over in a fifteenth of a
+        second — and treat it as a single event, like a keystroke. A nudge left.
+        A nudge up. A nudge toward your face.</p>
+
+      <h2>Rooms, not documents</h2>
+      <p>A document is a length. A room is a place, and the difference is that a
+        room goes on existing in the same arrangement while you are not in it, so
+        that returning is genuinely returning rather than starting again.</p>
+      <p>Make a month into a room and the twenty-third stops being a row in a list.
+        It becomes a location: over there, past the middle, two down from the
+        offsite. You do not remember it as a date.</p>
+      <blockquote>You remember it as a direction from something else.</blockquote>
+      <p>Make an article into a column and the opposite discipline applies. A column
+        has exactly one dimension, and honouring that is the whole of the design.
+        Anything offering a sideways move in a column is offering a way to get lost
+        somewhere that should make getting lost impossible.</p>
+
+      <h2>What the hand knows</h2>
+      <p>A hand knows how far it has moved without being told. It knows a flick
+        from a push. It can repeat a small motion a thousand times with a
+        consistency the eye cannot match, which is why musicians practise with
+        their hands and not with diagrams.</p>
+      <p>Gesture systems fail when the gesture substitutes for a button that was
+        working fine. They earn their keep only when the gesture carries something
+        a button cannot: which way, how far, from where.</p>
+      <p>Direction is information. "Next" tells you nothing about the shape of what
+        you are in. A push to the left tells you there is a left, that you are one
+        step into it, and that one push right will undo it exactly. That is a map,
+        delivered through the wrist.</p>
+
+      <h2>The honest objection</h2>
+      <p>All of this is harder. Scrolling is free and universal and needs no
+        explanation to anyone alive. A space you step through has to be learned,
+        and for most things the learning will not be worth it.</p>
+      <p>That is the correct conclusion and it should be said before anyone gets
+        carried away. A settings screen is a list, a list is a length, and dragging
+        it is fine forever.</p>
+      <p>But there is a category where it is worth it: everything you return to.
+        The calendar checked nine times a day, the codebase lived in for two years,
+        the quarter, the case file. Those are not documents. They are places, and
+        we have been handing people a hole in a wall and asking them to remember
+        the building.</p>
+    </article>
+  </div>
+  <!-- room_solid — the geometric space, painted by hand. -->
+  <canvas class="void room_off" id="void"></canvas>
+  <div class="frame_shadow"></div>
+</div>
+
+<!-- rig_right — everything you touch, stacked off the right edge and lifted a
+     little off the corner: one wide Record, and while the tape runs the three
+     lights it turns into. Nothing else lives down here any more — no name to
+     type, no bar across the bottom. -->
+<div class="rig" id="gest_bar">
+  <!-- grade_two — two ordinary buttons, not lamps. Green says that was right.
+       Red says it was not, and resets, which is the same press he was making
+       anyway: in his protocol hitting reset IS the bad grade. Amber is gone. -->
+  <div class="rig_say"><span class="g_led" id="g_led"></span><span class="rig_msg" id="g_msg">tap Record</span></div>
+  <div class="rig_main">
+    <div class="rig_lights" id="rig_lights">
+      <button id="g_good" class="g_mark g_green">Good</button>
+      <button id="g_wire" class="g_mark g_red">Bad</button>
+    </div>
+    <button id="g_rec" class="g_rec">Record</button>
+    <!-- room_swap — one button, cycling calendar to article to space and back.
+         It wears the name of the room you are IN rather than the one it would
+         take you to, because a mode control that lies about the mode is worse
+         than no mode control. -->
+    <button id="room_btn" class="room_btn" aria-label="Change room"><b id="room_ico">&#9638;</b><span id="room_lbl">Calendar</span></button>
+    <!-- flip_hide: the switches live behind this -->
+    <button id="flip_pop" class="flip_pop" aria-expanded="false"
+            aria-controls="flips" title="Show the reverse switches">⇅</button>
+  </div>
+  <div class="g_recent" id="g_recent" hidden></div>
+  <button id="g_copy" class="g_small" hidden>Copy last</button>
+  <button id="g_send" class="g_small" hidden>Send</button>
+  <span class="g_count" id="g_count" hidden></span>
+  <!-- vec_flip — five tiny reverse switches, one per vector, under the controls
+       they change the meaning of. A lit one is reversed; they survive a reload. -->
+  <div class="flips" id="flips" hidden></div>
+</div>
+<a class="corner_back" id="back_btn" href="admin.html">&#8249; Admin</a>
+<span class="build_tag" id="build_tag"></span>
+<div class="watch" id="watch" hidden><span class="watch_dot"></span><span id="watch_msg">watching</span></div>
+<svg class="pose" id="pose" viewBox="-62 -62 124 124" hidden aria-hidden="true">
+  <!-- pose_arrow: the phone as an object standing in a frame that never moves.
+       The axes and the dashed zero rectangle are pinned at the origin; the plate
+       carries BOTH the tilt and the travel, so where the phone is in the picture
+       is where it is in the world. The coloured bars along each axis, and the
+       dashed drop lines to them, read off its position one axis at a time. -->
+  <g id="pose_ref" stroke="rgba(0,0,0,0.18)" stroke-width="1" fill="none"></g>
+  <g id="pose_axes" stroke-width="2" stroke-linecap="round" fill="none"></g>
+  <g id="pose_guide" fill="none"></g>
+  <line id="pose_move" stroke="rgba(0,0,0,0.28)" stroke-width="1.4" stroke-linecap="round"
+        stroke-dasharray="3 3"></line>
+  <g id="pose_shadow" fill="rgba(0,0,0,0.055)"></g>
+  <polygon id="pose_plate" fill="rgba(109,40,217,0.07)" stroke="rgba(109,40,217,0.55)" stroke-width="1" stroke-linejoin="round"></polygon>
+  <line id="pose_top" stroke="rgba(109,40,217,0.8)" stroke-width="1.6" stroke-linecap="round"></line>
+  <!-- spin_arc: a rotation is not a distance, so it is drawn where a rotation
+       can be seen — an arc swept about the axis it turns, in that axis's colour.
+       It rides ABOVE the plate, or the phone hides the very thing it is doing. -->
+  <g id="pose_spin" fill="none"></g>
+  <g id="pose_knob"></g>
+  <text id="pose_lbl" font-size="0.01" fill="none"></text>
+</svg>
+<canvas class="trace" id="trace" width="178" height="168" hidden></canvas><!-- panel_half: the
+     canvas keeps its 178x168 backing store and is DRAWN at half that by the CSS
+     above. Halving the buffer instead would halve the resolution of the one thing
+     on the page whose whole job is showing a small wobble. -->
+
+<!-- host first: nudge.js reads NUDGE_HOST at parse time -->
+<script src="nudge_host.js"></script>
+<script src="nudge.js"></script>
+</body>
+</html>
