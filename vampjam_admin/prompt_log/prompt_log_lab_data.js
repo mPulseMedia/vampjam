@@ -9,8 +9,52 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "275 month_name",
+        id: "276 cal_head",
         expanded: true,
+        nodes: [
+          { text: "276 cal_head", children: [
+            { text: "prompt_restate", children: [
+              { text: "Move September above the paper of the calendar \u2014 make it look like a regular calendar." },
+              { text: "Let me zoom back as far as I want." },
+              { text: "Reduce the fading on the other cells \u2014 if the focused one is 100% and the rest look like 20%, make them 40%." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Move the word September to above the piece of paper of the calendar just like a calendar like make it look like a regular calendar and let me zoom back as far as I want and reduce the amount of fading for all the other cells. I don\u2019t know right now if if the one in focuses at 100% it seems like the ones all the other others are at 20%. If that\u2019s the case make them make all the others like 40%." }
+            ]},
+            { text: "cal_head", children: [
+              { text: "the month\u2019s name and the weekday letters are part of the paper now, so they pan and scale with the month the way printing does" },
+              { text: "last build put the name on the glass so it would survive zooming into a day; you want the printed thing, and you are right that it is what makes this read as a calendar" },
+              { text: "the weekday row is new and was the piece actually missing \u2014 MON through SUN over their own columns" },
+              { text: "zoom in past the month and the heading leaves with the paper, which is what happens when you put your face against a wall calendar" }
+            ]},
+            { text: "and_that_immediately_collided", children: [
+              { text: "the two instrument panels were top right, squarely over \u20182026\u2019 and the SUN column" },
+              { text: "no fixed offset can dodge a heading that moves with the zoom, so the panels moved instead \u2014 bottom left, sitting on the control band" },
+              { text: "they are diagnostics; they belong beside the controls rather than over the thing they describe" }
+            ]},
+            { text: "zoom_room", children: [
+              { text: "the two ends stop sharing a limit. out goes to eight notches now, where the month is a few pixels" },
+              { text: "in stops at three, because past that one day is four screens wide and there is nothing there but the inside of a rectangle \u2014 it already fills the glass at the full-day notch" }
+            ]},
+            { text: "the_fading", children: [
+              { text: "worth being exact, because your premise was a little off: they were at 52%, not 20% \u2014 but with their colour also cut to 60%, which is what made them read fainter than they were" },
+              { text: "the intent is what matters, so they are at 78% now with the colour nearly whole" },
+              { text: "still unmistakably secondary next to the ringed day, but a month you can read all of" }
+            ]},
+            { text: "verify", children: [
+              { text: "~19m: the heading measured entirely above week one, spanning the paper\u2019s exact width, both parts inside the deck; travelling with a sideways nudge and rescaling with a depth nudge at four positions" },
+              { text: "the zoom-out walked notch by notch until it stopped, printing the month\u2019s size at each" },
+              { text: "four suites green \u2014 and one of them had an overlap check that meant nothing once the panels sat side by side, so it is a proper rectangle test now" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "275 month_name",
+        expanded: false,
         nodes: [
           { text: "275 month_name", children: [
             { text: "prompt_restate", children: [

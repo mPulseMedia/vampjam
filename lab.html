@@ -158,7 +158,13 @@
      so itself instead: full strength while its neighbours are washed back, a blue
      ring standing off its edge, a tinted ground, and its date in the same blue.
      It lifts above the span bars too, so a bar can never cross the ring. */
-  .card:not(.here) { opacity: 0.52; filter: saturate(0.6); }
+  /* day_dim — how far back the days you are NOT on stand. He read them as about
+     20% and asked for 40%; they were in fact at 52% with their colour cut to 60%,
+     which together is what made them read as fainter than they were. The number
+     that matters is the intent — less fading — so they go to 78% with the colour
+     nearly whole. They are still unmistakably secondary next to the ringed day,
+     but a month you can actually read is now a month you can read all of. */
+  .card:not(.here) { opacity: 0.78; filter: saturate(0.88); }
   .card.here {
     opacity: 1; filter: none; z-index: 3;
     background: #eef4ff; border-color: #1d4ed8;
@@ -200,8 +206,8 @@
      red is the left-right axis and the tilt about it, green up-down and the turn
      about it, blue near-far and the swirl about it. */
   .trace {
-    position: fixed; z-index: 6; right: max(18px, calc(env(safe-area-inset-right) + 8px));
-    top: max(122px, calc(env(safe-area-inset-top) + 110px));   /* panel_half: follows the diagram up */
+    position: fixed; z-index: 6; left: max(107px, calc(env(safe-area-inset-left) + 101px));
+    bottom: calc(var(--band_h, 92px) + 8px);   /* panel_low: beside the diagram */
     /* panel_half — the diagram and the chart at half their old size. They are
        instruments to glance at, not things to read, and at 178px they were taking
        a third of the screen away from the thing they are describing. */
@@ -211,9 +217,15 @@
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     pointer-events: none;
   }
+  /* panel_low — the two instruments move to the bottom LEFT, sitting on the
+     control band. They were top right, which is where the calendar's own heading
+     now is: at the home zoom they sat squarely over "2026" and the SUN column,
+     and no fixed offset can dodge a heading that moves with the zoom. Down here
+     they are clear of the paper at every scale, and they are diagnostics anyway —
+     they belong beside the controls, not over the thing they describe. */
   .pose {
-    position: fixed; z-index: 6; right: max(18px, calc(env(safe-area-inset-right) + 8px));
-    top: max(24px, calc(env(safe-area-inset-top) + 12px));
+    position: fixed; z-index: 6; left: max(12px, calc(env(safe-area-inset-left) + 6px));
+    bottom: calc(var(--band_h, 92px) + 8px);
     width: 89px; height: 89px; border-radius: 10px;      /* panel_half */
     background: rgba(255,255,255,0.86);
     box-shadow: 0 3px 10px rgba(0,0,0,0.22);
@@ -249,19 +261,24 @@
   }
   .g_count { flex: 0 0 auto; font-size: 10px; color: rgba(0,0,0,0.45); min-width: 30px; text-align: right; }
 
-  /* month_name — the month's name across the top of the GLASS, not inside the
-     deck. In the deck it would shrink to nothing at the whole-month zoom and sail
-     off the screen the moment you came in on a day; on the glass it holds, which
-     is the one thing a month label has to do. Letter-spaced and set wide because
-     at this size it reads as a title rather than as a word. */
-  .month_name {
-    position: fixed; z-index: 6; left: 0; right: 0;
-    top: max(18px, calc(env(safe-area-inset-top) + 8px));
-    text-align: center; pointer-events: none;
-    font: 700 15px/1 -apple-system, system-ui, sans-serif;
-    letter-spacing: 0.22em; text-transform: uppercase;
-    color: rgba(15,23,42,0.55);
-    text-shadow: 0 1px 0 rgba(252,252,248,0.9), 0 0 8px rgba(252,252,248,0.9);
+  /* cal_head — the month's name and the weekday letters, ON the paper: children
+     of the deck, so they pan and scale with the month exactly as a printed
+     calendar's heading does. Last build put the name on the glass so it would
+     survive zooming into one day; he wants the printed thing instead, and he is
+     right that it is what makes this read as a calendar rather than as a grid of
+     tiles. Zoom in past the month and the heading leaves with the rest of the
+     paper, which is what happens when you put your face against a wall calendar. */
+  .cal_title {
+    position: absolute; text-align: center; pointer-events: none;
+    font-weight: 700; letter-spacing: 0.06em; color: #1f2937;
+    font-family: -apple-system, system-ui, sans-serif; line-height: 1;
+    white-space: nowrap;
+  }
+  .cal_title i { font-style: normal; font-weight: 500; color: #94a3b8; margin-left: 0.4em; }
+  .cal_dow {
+    position: absolute; text-align: center; pointer-events: none;
+    font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #94a3b8; font-family: -apple-system, system-ui, sans-serif; line-height: 1;
   }
 
   /* ---- the control band along the bottom ---- */
@@ -459,9 +476,6 @@
   <div class="flips" id="flips" hidden></div>
 </div>
 <a class="corner_back" id="back_btn" href="admin.html">&#8249; Admin</a>
-<!-- month_name: which month this is, on the glass rather than in the deck, so it
-     is still there when you have zoomed into a single day -->
-<div class="month_name" id="month_name"></div>
 <span class="build_tag" id="build_tag"></span>
 <div class="watch" id="watch" hidden><span class="watch_dot"></span><span id="watch_msg">watching</span></div>
 <svg class="pose" id="pose" viewBox="-62 -62 124 124" hidden aria-hidden="true">
@@ -493,7 +507,7 @@
 <script>
   // lab_release — the corner square IS the version stamp: this release's commit
   // name in this release's colour. Both change on every ship.
-  var LAB_RELEASE = { name: 'month_name', bg: '#9333ea', fg: '#ffffff' };
+  var LAB_RELEASE = { name: 'cal_head', bg: '#1d4ed8', fg: '#ffffff' };
   (function () {
     var r = document.documentElement.style;
     r.setProperty('--lab_bg', LAB_RELEASE.bg);
@@ -1030,13 +1044,14 @@
     return d;
   }
   var Z_STEP = 2.1;                 // how much bigger one nudge toward you makes the deck
-  // z_room — four notches either way, x19 in to 1/19 out. Six was tried and both
-  // ends were useless: at x86 a card is fourteen thousand pixels of flat colour
-  // and at 1/86 the whole spread is a 60-pixel smudge. At four, the near end is a
-  // wall of one colour with its number across it (which is a fair reading of
-  // "right up against it") and the far end is the whole grid as a small legible
-  // constellation.
-  var Z_MAX  = 4;                   // notches either way: x19.4 in, x1/19.4 out
+  // zoom_room — the two ends are not the same journey, so they no longer share a
+  // limit. Going OUT he asked to be able to keep going: at -8 the month is a
+  // postage stamp on a big sheet, which is a real place to be when you want to
+  // see where the month sits rather than what is in it. Going IN stops sooner,
+  // because past +3 one day is four screens wide and there is nothing there but
+  // the inside of a rectangle — the day already fills the glass at +1.
+  var Z_OUT = 8;                    // notches you can pull back
+  var Z_IN  = 3;                    // notches you can push in
   // cal_open — the month starts WHOLE. Two notches out puts all seven columns and
   // all five weeks on the glass at once, at which size a day is about 40px and its
   // hours are a grey texture rather than words. That is the point: you arrive
@@ -1096,6 +1111,26 @@
     var g = card_px();
     var hw = (LAY_W - 1) / 2, hh = (LAY_H - 1) / 2;
     var out = '';
+    // cal_head — the printed heading: the month's name across the top of the
+    // paper, and the weekday letters over their own columns. Both are laid out in
+    // the deck's own pixel units above the first week, so they ride the pan and
+    // the scale with everything else.
+    var top0 = -hh * g.py - g.ch / 2;                 // the top edge of week one
+    var left0 = -hw * g.px - g.cw / 2;                // the left edge of Monday
+    var wide = (LAY_W - 1) * g.px + g.cw;             // the paper's full width
+    var dowH = g.ch * 0.085, dowGap = g.ch * 0.045;
+    var titleH = g.ch * 0.20;
+    out += '<div class="cal_dow" style="left:' + left0.toFixed(0) + 'px;top:' +
+           (top0 - dowH - dowGap).toFixed(0) + 'px;width:' + wide.toFixed(0) +
+           'px;height:' + dowH.toFixed(0) + 'px;font-size:' + (dowH * 0.82).toFixed(1) + 'px">';
+    for (var c0 = 0; c0 < LAY_W; c0++)
+      out += '<span style="position:absolute;left:' + (c0 * g.px).toFixed(0) + 'px;width:' +
+             g.cw.toFixed(0) + 'px;text-align:center">' + DOW[c0] + '</span>';
+    out += '</div>';
+    out += '<div class="cal_title" style="left:' + left0.toFixed(0) + 'px;top:' +
+           (top0 - dowH - dowGap * 2 - titleH).toFixed(0) + 'px;width:' + wide.toFixed(0) +
+           'px;height:' + titleH.toFixed(0) + 'px;font-size:' + titleH.toFixed(1) + 'px">' +
+           MON_FULL[CAL_MONTH] + '<i>' + CAL_FIRST.getFullYear() + '</i></div>';
     // cal_span: the bars first, so the days sit ON them rather than under them.
     // One bar per row per span — a span that crosses a week boundary becomes two,
     // which is what a paper calendar does with the same problem.
@@ -1201,7 +1236,7 @@
   function deck_deep(dir) {
     var was = zc;
     zAnim = { from: z_at(), t0: Date.now() };
-    zc = Math.max(-Z_MAX, Math.min(Z_MAX, zc + dir));
+    zc = Math.max(-Z_OUT, Math.min(Z_IN, zc + dir));   // zoom_room
     deck_build();
     return zc !== was;
   }
@@ -1381,7 +1416,7 @@
     // three flip the position on its own, which is what splits the pair.
     return { x: MODEL_INV.x * flip.dx * arc(rollDeg),   // round to the side
              y: MODEL_INV.y * flip.dy * arc(pitchDeg),  // up and over
-             z: MODEL_INV.z * flip.dz * zc / Z_MAX };
+             z: MODEL_INV.z * flip.dz * zc / (zc < 0 ? Z_OUT : Z_IN) };
   }
   // pose_slow — the diagram rebuilds four groups of SVG from strings; at sixty
   // frames a second that is thousands of elements parsed per second for a
@@ -1620,7 +1655,7 @@
     var lines = [
       ['right / left', arc_txt(mp.x),         '#dc2626'],
       ['up / down',    arc_txt(mp.y),         '#16a34a'],
-      ['near / far',   cell_txt(mp.z, Z_MAX), '#2563eb'],
+      ['near / far',   cell_txt(mp.z, mp.z < 0 ? Z_OUT : Z_IN), '#2563eb'],
       ['tilt top',     deg_txt(flipped.pitch),             'rgba(0,0,0,0.68)'],
       ['turn side',    deg_txt(flipped.roll),              'rgba(0,0,0,0.68)'],
       ['swirl flat',   deg_txt(SWIRL_INV * flip.dswirl * screen_roll()), 'rgba(0,0,0,0.68)'],
@@ -1912,6 +1947,10 @@
     root.setProperty('--rot', v.roll.toFixed(2) + 'deg');
     root.setProperty('--tilt', v.tilt.toFixed(2) + 'deg');
     root.setProperty('--turn', v.turn.toFixed(2) + 'deg');
+    // panel_low: the instruments sit on top of the control band, whose height is
+    // the band's own and not a guess
+    var rigEl = document.querySelector('.rig');
+    if (rigEl) root.setProperty('--band_h', Math.round(rigEl.getBoundingClientRect().height) + 'px');
     deck_draw(root);
     draw_pose(mult, now);
     requestAnimationFrame(paint_world);
@@ -2331,10 +2370,6 @@
   // no press needed. Motion still has to be switched on for the sensor, but that
   // is a separate thing from there being something to look at.
   deck_build();
-  (function month_title() {
-    var el = document.getElementById('month_name');
-    if (el) el.textContent = MON_FULL[CAL_MONTH];
-  })();
   draw_start();
 
   // test hook
@@ -2406,7 +2441,7 @@
                landing: anim ? anim.k : '', armed: nArm, sinceNudge: nLast ? Date.now() - nLast : -1,
                card: card_here(), deep: zc, say: deep_say(),
                zoom: +z_scale().toFixed(3), zing: !!zAnim,
-               deck: { w: LAY_W, h: LAY_H, zmax: Z_MAX, zstep: Z_STEP, home: Z_HOME,
+               deck: { w: LAY_W, h: LAY_H, zout: Z_OUT, zin: Z_IN, zstep: Z_STEP, home: Z_HOME,
                        pitch: +card_px().px.toFixed(1) },
                watch: { a: +NUDGE_A, tau: NUDGE_TAU, quiet: NUDGE_QUIET,
                         rearm: NUDGE_REARM, rise: NUDGE_RISE, push: PUSH_INV,

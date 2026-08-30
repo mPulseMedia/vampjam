@@ -2987,7 +2987,37 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   badge and the watching indicator, all of which live down the left, and the diagram panel on the
   right. No overlaps, and the title is centred on the glass to within a pixel.
   Suites 256, 263, 269 and 271 green, no page errors. Still no new trace.
-- NEXT → add entry 276 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 276 cal_head · b276 · lab.html — the heading is printed on the paper, the zoom-out goes much
+  further, and the other days step forward.
+  cal_head: the month's name and the weekday letters are children of the DECK now, so they pan and
+  scale with the month exactly as a printed calendar's heading does. 275 put the name on the glass
+  so it would survive zooming into one day; he wants the printed thing, and he is right that it is
+  what makes this read as a calendar rather than as a grid of tiles. Zoom in past the month and the
+  heading leaves with the rest of the paper, which is what happens when you put your face against a
+  wall calendar. The weekday row is new and is the piece that was actually missing — MON through
+  SUN over their own columns.
+  measured: the heading sits entirely above week one, spans the paper's exact width to within a
+  pixel, and both parts are inside the deck; it travels with a sideways nudge and rescales with a
+  depth nudge, checked at four positions.
+  panel_low — and putting the heading there immediately collided with the two instrument panels,
+  which were top right, squarely over "2026" and the SUN column. No fixed offset can dodge a
+  heading that moves with the zoom, so the panels moved instead: bottom left, sitting on the control
+  band, whose height they read from the band itself rather than guessing. They are diagnostics; they
+  belong beside the controls rather than over the thing they describe. (Suite 256's overlap check
+  tested pose.bottom against trace.top, which meant nothing once they sat side by side — it is a
+  proper rectangle test now.)
+  zoom_room: the two ends stop sharing a limit. Out goes to 8 notches, where the whole month is a
+  few pixels — he asked to be able to keep pulling back, and at −4 or −5 it is a real place to be,
+  seeing where the month sits rather than what is in it. In stops at 3, because past that one day is
+  four screens wide and there is nothing there but the inside of a rectangle; the day already fills
+  the glass at +1.
+  day_dim: he read the unselected days as about 20% and asked for 40%. Worth being exact, because
+  his premise was off: they were at 52% opacity with their colour cut to 60%, and it is the two
+  together that made them read fainter than they were. The intent is what matters — less fading —
+  so they go to 78% with the colour nearly whole. Still unmistakably secondary next to the ringed
+  day, but a month you can read all of.
+  Suites 256, 263, 269 and 271 green, no page errors. Still no new trace.
+- NEXT → add entry 277 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
