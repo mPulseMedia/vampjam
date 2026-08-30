@@ -9,8 +9,60 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "281 audio_tuck",
+        id: "282 folder_tidy",
         expanded: true,
+        nodes: [
+          { text: "282 folder_tidy", children: [
+            { text: "prompt_restate", children: [
+              { text: "Organize my local vampjam folder better." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "organize my local \"vampjam\" folder better." }
+            ]},
+            { text: "what_I_found_first", children: [
+              { text: "there were TWO copies of your record \u2014 the spec and the prompt log each existed at the root AND in vampjam_admin/, and they had drifted" },
+              { text: "the log viewer loads the data sitting beside it, and that copy stopped at 255 vec_flip on Aug 28" },
+              { text: "so for twenty-six builds everything the ship loop wrote went into the admin copy and the page you open to read it showed none of it" },
+              { text: "the spec had the same split, and vampjam_org.html\u2019s pickup prompt named the stale one" }
+            ]},
+            { text: "one_record", children: [
+              { text: "vampjam_admin/ is now the only writer AND the only reader" },
+              { text: "the viewer reads ../vampjam_admin/prompt_log/ \u2014 its own URL is unchanged, because you open it" },
+              { text: "the three stale duplicates are in claude_trash" },
+              { text: "checked by serving it and loading the page: 281 entries, newest \u2018281 audio_tuck\u2019, 5328 nodes rendered, no errors" }
+            ]},
+            { text: "the_rule_I_organised_by", children: [
+              { text: "anything the site SERVES stays at the root. the root is the served directory, so a file\u2019s path is its URL, and links to these sessions have been handed to people" },
+              { text: "tidiness is not worth a dead link, so the root stays wide and the organising happens around it" }
+            ]},
+            { text: "two_traps_now_written_down", children: [
+              { text: "the worker only writes ROOT-LEVEL json \u2014 its path guard forbids slashes. so the session sidecars, the 31 deletion tombstones and lab_gestures.json cannot go in folders. move one and its next write is rejected" },
+              { text: "that is also the real reason the 10 MB nudge corpus stays in a repo that no longer hosts the nudge app \u2014 a better reason than the handoff doc had" },
+              { text: "the commit robot is addressed absolutely: the plist hard-codes the full path to the script and watches this folder. moving either stops every ship" }
+            ]},
+            { text: "moved", children: [
+              { text: "Sound Union 29.qta \u2014 a 619 MB QuickTime master \u2014 joins the others in audio/, now 1.6 GB of local masters and nothing deployed" },
+              { text: "vampjam_player.html, 58 KB, referenced by nothing anywhere in the repo \u2014 to claude_trash" },
+              { text: "lab_surface.png and .svg \u2014 referenced only by the nudge notes that already left \u2014 copied to lab_repo/nudge and trashed here" }
+            ]},
+            { text: "README_at_the_root", children: [
+              { text: "the layout with a line per group, the rule and both mechanisms that enforce it, the one_record principle, and the ship loop" },
+              { text: "the folder should explain itself to whoever opens it next, including me" }
+            ]},
+            { text: "not_done_deliberately", children: [
+              { text: "the 8 session pages, their sidecars and the 31 tombstones stay at the root" },
+              { text: "grouping them into sessions/ is the one change that would visibly shrink the root \u2014 and the one that breaks shared links and the worker\u2019s write path at the same time" },
+              { text: "say the word if you want it and I will do the link rewrite and the worker guard together" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "281 audio_tuck",
+        expanded: false,
         nodes: [
           { text: "281 audio_tuck", children: [
             { text: "prompt_restate", children: [
