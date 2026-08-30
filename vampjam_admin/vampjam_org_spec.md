@@ -3180,7 +3180,24 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   the tiling space. All nine suites green from lab_repo/nudge/nudge_test/, no page errors. Still no
   new trace — and the send fix from 262 is still unproven, which is now written down where the next
   thread will find it.
-- NEXT → add entry 281 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 281 audio_tuck · b281 · local folder only — the six audio masters move out of the repo root into
+  audio/. Six .m4a files, 933 MB: the two bazaar_cafe recordings, the by-hand vampjam mix and the
+  three Sound Union cuts (raw, v2 and faststart).
+  local_only, and it is worth writing down WHY this is a safe move rather than a scary one. Every
+  one of these files is matched by .gitignore (*.m4a, line 3) and none is tracked — checked before
+  moving and checked again after, where git check-ignore confirms the pattern still covers them one
+  level down and git status shows nothing but the commit message. The site never loaded them from
+  disk either: every reference in the session jsons is an ABSOLUTE url to R2
+  (pub-33cfd8558d...r2.dev) or to a GitHub release. So nothing deployed, nothing tracked and nothing
+  linked changes — only the shape of the folder on his Mac, which is what he asked for.
+  mv -n, so an existing name in audio/ could not have been overwritten; byte totals check out at
+  933 MB and the root has no audio left in it.
+  This does not touch the two standing audio items: move_to_r2 (five release-hosted jsons and the
+  08-14 R2 file) and dups_decide (the ~1.2 GB of 08-07 spares). It does make dups_decide easier to
+  look at — three of the six files in audio/ are cuts of the same 08-07 Sound Union set, which is
+  most of that 1.2 GB sitting in one place now.
+  No page edit, no suite. Still no new trace.
+- NEXT → add entry 282 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

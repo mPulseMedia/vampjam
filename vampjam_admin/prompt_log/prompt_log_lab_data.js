@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "280 edge_gone",
+        id: "281 audio_tuck",
         expanded: true,
+        nodes: [
+          { text: "281 audio_tuck", children: [
+            { text: "prompt_restate", children: [
+              { text: "In the local folder only, move the music audio files into a sub-folder called \u2018audio\u2019." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "on ly local folder, move the music audio files into a sub-folder called \"audio\"" }
+            ]},
+            { text: "moved", children: [
+              { text: "six .m4a files, 933 MB, out of the vampjam root into audio/" },
+              { text: "the two bazaar_cafe recordings, the by-hand vampjam mix, and the three Sound Union cuts (raw, v2, faststart)" },
+              { text: "used mv -n, so nothing could have been overwritten; the root has no audio left in it" }
+            ]},
+            { text: "why_this_was_safe", children: [
+              { text: "all six are matched by .gitignore and none was tracked \u2014 checked before moving and again after" },
+              { text: "git check-ignore confirms the pattern still covers them one level down, and git status shows nothing but the commit message" },
+              { text: "the site never loaded them from disk anyway: every reference in the session jsons is an absolute url to R2 or to a GitHub release" },
+              { text: "so nothing deployed, tracked or linked changed \u2014 only the shape of the folder on your Mac" }
+            ]},
+            { text: "one_side_benefit", children: [
+              { text: "three of the six are cuts of the same 08-07 Sound Union set \u2014 most of the ~1.2 GB of spares you have been meaning to decide about, now sitting together" },
+              { text: "does not touch move_to_r2 or dups_decide; just makes the second one easier to look at" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "280 edge_gone",
+        expanded: false,
         nodes: [
           { text: "280 edge_gone \u00b7 nudge_move \u00b7 nudge_gone", children: [
             { text: "prompt_restate", children: [
