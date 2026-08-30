@@ -4,28 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<title>vampsf — lab</title>
-<!-- nudge_split — the nudge experiment moved into nudge/, one folder holding the
-     whole of it. This file stays behind as the old address, because it is the
-     one on his phone and it is what the ship loop has reloaded for three hundred
-     builds. It forwards, and it replaces itself in the history so Back does not
-     bounce off it.
-
-     When the experiment moves to a project of its own, this file is the only
-     thing left to delete. -->
 <meta name="robots" content="noindex">
+<title>vampsf — the lab moved</title>
+<!-- nudge_gone — the nudge experiment left vampjam on build 280 and lives in
+     lab_repo/nudge now. This page is the forwarding address, kept because it is
+     the one on his phone and the one three hundred builds of the ship loop
+     reloaded. It cannot redirect on its own: the two repos are different sites,
+     and vampsf.com has no idea where lab.com serves from. So it says where the
+     thing went, in words, with the link he needs.
+
+     Delete this file once nothing is pointing at it. -->
 <style>
-  html, body { margin: 0; height: 100%; background: #fcfcf8;
-               font: 15px/1.45 -apple-system, system-ui, sans-serif; color: #86868b; }
-  a { position: absolute; top: 44%; left: 0; right: 0; text-align: center; color: #1d4ed8; }
+  html, body { margin: 0; min-height: 100%; background: #fcfcf8;
+               font: 15px/1.5 -apple-system, system-ui, sans-serif; color: #1d1d1f;
+               -webkit-text-size-adjust: 100%; }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 64px 24px; }
+  h1 { font-size: 21px; margin: 0 0 10px; letter-spacing: -0.01em; }
+  p { color: #6b6b70; margin: 0 0 16px; }
+  code { background: #efeee8; border-radius: 5px; padding: 1px 6px; font-size: 13px; }
+  a.back { display: inline-flex; align-items: center; height: 40px; padding: 0 15px;
+           border-radius: 999px; background: #1d4ed8; color: #fff;
+           text-decoration: none; font-weight: 600; }
 </style>
 </head>
 <body>
-<a id="go" href="nudge/nudge.html">the lab moved to nudge/ — opening it…</a>
-<script>
-  var to = 'nudge/nudge.html' + location.search + location.hash;
-  document.getElementById('go').setAttribute('href', to);
-  location.replace(to);
-</script>
+<div class="wrap">
+  <h1>The lab moved out</h1>
+  <p>The nudge experiment — the calendar, the article and the space you steer by
+     tapping the phone — is its own project now. It lives in the
+     <code>lab</code> repo, under <code>nudge/</code>.</p>
+  <p>Nothing of it is left here. This page is only the forwarding address, and it
+     can go as soon as nothing points at it.</p>
+  <a class="back" href="admin.html">&#8249; Admin</a>
+</div>
 </body>
 </html>

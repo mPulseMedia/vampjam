@@ -9,8 +9,68 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "279 nudge_out",
+        id: "280 edge_gone",
         expanded: true,
+        nodes: [
+          { text: "280 edge_gone \u00b7 nudge_move \u00b7 nudge_gone", children: [
+            { text: "prompt_restate", children: [
+              { text: "Do not limit how far forward or back, up or down, right or left I can go." },
+              { text: "In 3d, do not make the down move switch to calendar \u2014 only the button should switch me." },
+              { text: "Make objects be above and below the grid." },
+              { text: "Then: write an extensive .md so another thread can pick it up, move the nudge files to lab_repo/nudge, and clean up vampjam." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "do not limit how far forward or back, up or down, right or left, I can go.\n\nin 3d, do not make the down move switch to calendar. it seem slike it does. only the button should switch me. make object be above and below the grid." },
+              { text: "create an extensive .md page that describes everything about the nudge app. be really detailed so anohter thread can pick it up. move the nudge related files to the nudge folder inside lab_repo (i already made that folder). clean up vampjam. next I\u2019ll start a new claude cowork thread and pick it up there." }
+            ]},
+            { text: "you_were_right_about_the_down_move", children: [
+              { text: "worth saying plainly: with a reverse switch set on the up/down vector, \u2018up leaves the room\u2019 comes out as \u2018down throws me out\u2019 \u2014 which is exactly what you saw" },
+              { text: "a direction that sometimes climbs and sometimes leaves is a trapdoor. only the button changes rooms now" },
+              { text: "up and down FLY instead, and the grid is a plane through the middle with twelve solids above it and twelve below" }
+            ]},
+            { text: "edge_gone", children: [
+              { text: "the calendar walks a DAY at a time and wraps at the week \u2014 off Monday\u2019s side lands on Sunday of the week before, like a cursor at the end of a line. there is no eighth column in a week" },
+              { text: "vertically it never stops. every month now prints its own heading, and to make room the weeks are deliberately NOT evenly spaced \u2014 a gap opens above the week holding a 1st" },
+              { text: "nine up lands on Sat Nov 14 with Oct, Nov and Dec printed on the paper; 22 back down lands on Sat Jun 13 with May, Jun and Jul" },
+              { text: "the zoom has no ends either. I measured before deciding: exact at +30, still measurable at -18, rounds to zero at -22 \u2014 that is the MACHINE stopping, not me" },
+              { text: "what is bounded is how many day cells one build lays out. a rendering budget, not a wall" }
+            ]},
+            { text: "and_the_space_had_to_earn_it", children: [
+              { text: "without walls, flying far enough left you in an empty grid forever \u2014 a worse answer to \u2018no limits\u2019 than the wall was" },
+              { text: "so the furniture repeats, laid out around wherever you are, with copies thrown away on their centre before any face is touched" },
+              { text: "391 faces in view at the start, 399 sixty steps in, 355 after another 20 sideways and 12 down" }
+            ]},
+            { text: "nudge_move", children: [
+              { text: "the whole thing is in lab_repo/nudge now \u2014 index.html, nudge.css, nudge.js, nudge_host.js, README, the handoff doc, the history, and nine suites" },
+              { text: "the move was exactly what last build promised: copy the folder, edit one file" },
+              { text: "the localStorage keys still say vampjam ON PURPOSE \u2014 they are keys, not labels, and renaming them would wipe your thirteen switches, your last room and any unsent takes" },
+              { text: "sync still points at vampjam\u2019s lab_gestures.json, because that is where the 268 gestures the detector was fitted against live. moving the corpus is its own job" }
+            ]},
+            { text: "nudge_hand_md", children: [
+              { text: "~660 lines, written for a thread that has never seen this" },
+              { text: "the detector mechanism by mechanism with every constant and why the big-motion ceiling has to read the RAW peak" },
+              { text: "all three rooms in full, the instruments, the recorder, the whole test hook, what each of the nine suites covers, and the build loop" },
+              { text: "a table of five decisions that were REVERSED, so they do not get re-argued" },
+              { text: "ten open loose ends and eleven traps that each cost a build" }
+            ]},
+            { text: "nudge_gone", children: [
+              { text: "vampjam is clean: the folder is in claude_trash, admin\u2019s CTA is gone, lab.html is a plain page saying where the thing went" },
+              { text: "it cannot redirect \u2014 the two repos are different sites. delete it once nothing points at it" },
+              { text: "lab_gestures.json stays, because the corpus does" }
+            ]},
+            { text: "verify", children: [
+              { text: "new suite for the endless calendar and the tiling space" },
+              { text: "all nine suites green from the new home, no page errors" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new, and the send fix from 262 is still unproven. it is written down where the next thread will find it." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "279 nudge_out",
+        expanded: false,
         nodes: [
           { text: "279 nudge_out", children: [
             { text: "prompt_restate", children: [

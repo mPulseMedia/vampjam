@@ -3125,7 +3125,62 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   New suite vj_276: the redirect and its history behaviour, all four files served, the vampjam count
   per file, what the page read out of the host, the watcher polling all four, and the three rooms
   intact. Suites 256, 263, 269, 271, 273, 274 and 275 green from their new home. Still no new trace.
-- NEXT → add entry 280 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 280 edge_gone + nudge_move + nudge_gone · b280 · lab_repo/nudge/ + vampjam lab.html, admin.html —
+  the last three limits come off, and then the whole experiment leaves vampjam for a project of its
+  own in lab_repo/nudge.
+  edge_gone: nothing stops you in any direction, in any room.
+  · the calendar walks a DAY at a time and wraps at the week — stepping off Monday's side lands on
+    Sunday of the week before, as a text cursor wraps at the end of a line, because there is no
+    eighth column in a week. On a wrap the column snaps and the row slides; easing six columns
+    backwards would read as travel rather than as a wrap.
+  · vertically it never stops. September is a place in an endless run of weeks now, and every month
+    gets its printed heading, not just September. A heading needs somewhere to be, so the run of
+    weeks is deliberately NOT evenly spaced: a gap opens above the week containing a 1st, which
+    makes row position cumulative (row_y) rather than row times pitch. Every consumer goes through
+    it — the cards, the span bars and the pan — because getting the pan from the pitch alone would
+    drift by one heading per month, a week of error by December. head_n is month arithmetic, so row
+    10,000 costs what row 1 costs. Verified: nine up lands on Sat Nov 14 with October, November and
+    December all printed on the paper; 22 back down lands on Sat Jun 13 with May, June and July.
+  · the zoom has no ends. Measured before deciding: the transform is exact and finite at +30 (a day
+    775 billion px wide) and the card still measures at -18 (0.0003px); at -22 it rounds to zero,
+    which is the MACHINE stopping, not a decision. So nothing clamps zc. What is bounded is
+    CELL_BUDGET, 1200 day cells per build — a rendering budget, not a wall.
+  · and the space has no walls: CAM_MAX is gone on all three axes.
+  room_lock — up no longer leaves the space, at his word, and this is worth recording because it is
+  a general lesson: with a reverse switch set on the y vector, "up leaves the room" reads as "down
+  throws me out", and he reported exactly that. A direction that sometimes climbs and sometimes
+  leaves is a trapdoor. Only the button changes rooms now.
+  sky_dive + grid_mid — up and down fly instead. The grid is a reference PLANE through the middle
+  rather than a floor, with twelve solids above it and twelve below; flying under it and looking
+  back up at what hangs there is the point of the vertical axis once it is not spent on leaving.
+  solid_tile — and without walls, flying far enough used to leave you in an empty grid forever,
+  which is a worse answer to "no limits" than the wall was. The furniture repeats on a period, laid
+  out around wherever you are, with copies pre-culled on their CENTRE before any face is touched.
+  Measured: 391 faces in view at the start, 399 sixty steps in, 355 after another 20 sideways and 12
+  down. grid_roam does the same for the plane, which now has no edge to reach.
+  nudge_move — then the whole thing left. lab_repo/nudge/ holds index.html, nudge.css, nudge.js,
+  nudge_host.js, README.md, nudge_hand.md, nudge_notes.md and nudge_test/ with nine suites. The move
+  was exactly what 279 promised it would be: copy the folder, edit one file. nudge_host.js now says
+  lab_repo, points back at hub.html, and keeps the vampjam_* localStorage keys ON PURPOSE — they are
+  keys, not labels, and renaming them would reset his thirteen reverse switches, his last room and
+  any takes still held in the browser. Its sync still points at vampjam's worker and
+  lab_gestures.json, because that is where the 268-gesture corpus the detector was fitted against
+  lives; moving the corpus is its own job and the handoff doc says so.
+  nudge_hand.md — the pick-up document, ~660 lines, written so another thread can take this over
+  cold: what it is and the three non-goals, every file and why the engine stays one file, the
+  detector explained mechanism by mechanism with every constant and why the ceiling has to read the
+  raw peak, all three rooms in full, the instruments, the recorder, the whole test hook and what
+  each suite covers, the build loop, a table of five decisions that were REVERSED so they are not
+  re-argued, ten open loose ends, and eleven traps that each cost a build.
+  nudge_gone — vampjam is cleaned. The nudge folder is in claude_trash/, admin's CTA is removed
+  rather than pointed across repos at a URL this site cannot know, and lab.html is a plain
+  forwarding page saying where the thing went. It cannot redirect: the two repos are different
+  sites. Delete it once nothing points at it. lab_gestures.json stays, because the corpus does.
+  New suite vj_277 covers the week wrap, the endless months and their headings, the cell budget and
+  the tiling space. All nine suites green from lab_repo/nudge/nudge_test/, no page errors. Still no
+  new trace — and the send fix from 262 is still unproven, which is now written down where the next
+  thread will find it.
+- NEXT → add entry 281 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
