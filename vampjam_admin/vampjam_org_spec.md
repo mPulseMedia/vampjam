@@ -3235,7 +3235,40 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   root. Grouping them into sessions/ is the one change that would visibly shrink the root, and it is
   the one change that breaks shared links and the worker's write path at the same time.
   No page behaviour changed; no suite. Still no new trace.
-- NEXT → add entry 283 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 283 unused_park · b283 · Claude_trash_temp/ + README.md — 33 files the running app never asks
+  for, parked where he can look at them before they go.
+  how "unused" was decided, because guessing at this is how a working site gets broken: a
+  reachability scan from the nine entry pages, following filename mentions transitively, and then
+  every candidate checked AGAINST ITS RUNTIME PATH rather than against the scan. The scan alone was
+  wrong twice and both corrections matter more than the moves:
+  · 2026_07_24_sound_union.json and 2026_07_31_sound_union.json came back unreferenced. They are
+    live: a session page builds its sidecar's name at runtime from PAGE_ID, so no filename search
+    can see the link. Moving those two would have silently broken two sessions' tags.
+  · sources/ and tags/ likewise — fetched as sources/<PAGE_ID>.json, constructed, never written out.
+  parked: 29 deletion tombstones, each exactly {"deleted": true, "tags": []} — the residue of the
+  delete flow, which removes the entry from sessions_auto.json and leaves the marker. None is in the
+  registry, so the drawer never asks for one, and all 29 were his own August test recordings. One
+  behaviour does change and it is written down in the folder's README: opening session.html against
+  one of those ids used to fetch the marker and could say "deleted" rather than failing. Nobody
+  holds a link to a test recording from August 25th.
+  also parked: 2026_05_30_bazaar_cafe.json, whose entire contents declare it unused (its sibling
+  .html stayed — that one is a redirect stub still catching an old link to the session's former
+  name), and two .DS_Store files.
+  flagged rather than assumed: 2026_08_28_san_francisco_2_33_49p.json is NOT a tombstone. It holds
+  five real tags with audio null, and it is not in the registry — a recording whose upload never
+  completed. It is parked rather than deleted precisely because it is real data, and it is called
+  out at the top of the folder's README and in the receipt so he can decide.
+  kept, and the reason is now in both READMEs: worker/, functions/ and cloudflare/ are DEPLOYED code
+  — Cloudflare Pages auto-deploys anything named functions/, so that folder's NAME is the contract.
+  lab_gestures.json is fetched by the nudge app by exact name and is root-bound by the worker's path
+  guard. The robot, vampjam_admin/ and prompt_log/ are not used by the site and are load-bearing for
+  working on it.
+  Claude_trash_temp/README.md says what each group is, what changed by parking it, what did NOT come
+  and why, and the one-line restore (git mv). Staging, not deletion — everything is tracked, so
+  every file is one git mv from home.
+  Root json is now ten files: eight live session sidecars, the worker-owned registry, and the nudge
+  corpus. No page behaviour changed; no suite. Still no new trace.
+- NEXT → add entry 284 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

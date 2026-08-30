@@ -9,8 +9,52 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "282 folder_tidy",
+        id: "283 unused_park",
         expanded: true,
+        nodes: [
+          { text: "283 unused_park", children: [
+            { text: "prompt_restate", children: [
+              { text: "Move things the app does not use into \u201cClaude_trash_temp\u201d." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "move things the app does not use into \"Claude_trash_temp\"" }
+            ]},
+            { text: "how_I_decided_what_is_unused", children: [
+              { text: "a reachability scan from the nine entry pages, then every candidate checked against its RUNTIME path rather than against the scan" },
+              { text: "the scan alone was wrong twice, and the corrections matter more than the moves" },
+              { text: "2026_07_24 and 2026_07_31 sidecars came back unreferenced \u2014 they are LIVE. a session page builds its sidecar name at runtime from PAGE_ID, so no filename search can see the link. moving them would have silently broken two sessions\u2019 tags" },
+              { text: "same for sources/ and tags/ \u2014 fetched as sources/<PAGE_ID>.json, constructed, never written out" }
+            ]},
+            { text: "parked_33_files", children: [
+              { text: "29 deletion tombstones \u2014 each exactly {deleted:true, tags:[]}, the residue of the delete flow. none is in the registry, and all 29 were your own August test recordings" },
+              { text: "one behaviour changes: opening session.html against one of those ids used to fetch the marker and could say \u2018deleted\u2019 rather than failing. nobody holds a link to a test recording from Aug 25" },
+              { text: "2026_05_30_bazaar_cafe.json, whose entire contents declare it unused \u2014 its sibling .html stayed, because that one still catches an old link to the session\u2019s former name" },
+              { text: "two .DS_Store files" }
+            ]},
+            { text: "one_flagged_not_assumed", children: [
+              { text: "2026_08_28_san_francisco_2_33_49p.json is NOT a tombstone \u2014 it holds FIVE REAL TAGS with audio null, and is not in the registry" },
+              { text: "looks like a recording whose upload never completed" },
+              { text: "parked rather than deleted precisely because it is real data. it is called out at the top of the folder\u2019s README \u2014 restore it if those tags matter" }
+            ]},
+            { text: "kept_and_why", children: [
+              { text: "worker/, functions/ and cloudflare/ are DEPLOYED code \u2014 Cloudflare Pages auto-deploys anything named functions/, so that folder\u2019s NAME is the contract" },
+              { text: "lab_gestures.json is fetched by the nudge app by exact name and is root-bound by the worker\u2019s path guard" },
+              { text: "the robot, vampjam_admin/ and prompt_log/ are not used by the site and are load-bearing for working on it" }
+            ]},
+            { text: "staging_not_deletion", children: [
+              { text: "everything is still tracked, so every file is one `git mv` from home" },
+              { text: "the folder\u2019s README says what each group is, what changed by parking it, what did NOT come and why, and the restore line" },
+              { text: "root json is now ten files: eight live session sidecars, the worker-owned registry, and the nudge corpus" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "282 folder_tidy",
+        expanded: false,
         nodes: [
           { text: "282 folder_tidy", children: [
             { text: "prompt_restate", children: [

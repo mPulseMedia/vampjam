@@ -57,7 +57,18 @@ Two mechanisms make that rule harder than it sounds, and both are easy to trip:
                           the R2 upload worker
   sources/ tags/          per-session source and tag data
   claude_trash/           soft delete. nothing is ever hard-deleted here
+  Claude_trash_temp/      staging for things nothing uses — checked, parked, and
+                          one `git mv` from coming back. Read its README first
 ```
+
+## "Unused" is not the same as "not served"
+
+`worker/`, `functions/` and `cloudflare/` are deployed code, not clutter —
+Cloudflare Pages auto-deploys anything named `functions/`. `sources/` and `tags/`
+are fetched at runtime by a name each session page BUILDS from its `PAGE_ID`, so
+no filename search will find a reference to them. The robot, `vampjam_admin/` and
+`prompt_log/` are not used by the site at all and are load-bearing for working on
+it. Check how a thing is reached before deciding nothing reaches it.
 
 ## One record, one copy
 
