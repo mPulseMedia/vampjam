@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "283 unused_park",
+        id: "284 thread_focus",
         expanded: true,
+        nodes: [
+          { text: "284 thread_focus", children: [
+            { text: "prompt_restate", children: [
+              { text: "You will move the next request to another thread and keep this one on vampjam." },
+              { text: "Remind you if you mess up." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "oh. I\u2019ll move my next request over to another thread. and try to keep this focused on vampjam. remind me if i mess up." }
+            ]},
+            { text: "agreed_and_one_wrinkle", children: [
+              { text: "yes \u2014 I will say so in one line before doing anything, and do nothing until you confirm" },
+              { text: "the wrinkle: this thread is not really the vampjam thread any more. it is the nudge thread" },
+              { text: "since 280 the nudge app has lived in lab_repo and has had two builds there. vampjam has had three, all housekeeping" }
+            ]},
+            { text: "the_signal_I_will_use", children: [
+              { text: "if a prompt names people, money, dates or a page I cannot find in vampjam or lab_repo/nudge, I stop and ask which project" },
+              { text: "that is the rule that caught the Zelle one" }
+            ]},
+            { text: "no_build", children: [
+              { text: "log entry only." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "283 unused_park",
+        expanded: false,
         nodes: [
           { text: "283 unused_park", children: [
             { text: "prompt_restate", children: [
