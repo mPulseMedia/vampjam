@@ -155,6 +155,9 @@
   .fav_grip {
     flex: 0 0 auto; background: none; border: none; color: var(--muted);
     padding: 8px 10px; cursor: grab; line-height: 0; font-size: 22px;
+    /* grip_hit — a real target. line-height:0 on a glyph button gives a 16px-tall
+       box, which is a thing you miss on a phone while trying to drag it. */
+    min-height: 41px; min-width: 41px; display: flex; align-items: center; justify-content: center;
     /* the browser must not claim the gesture, or the page scrolls instead of the row moving */
     touch-action: none; -webkit-user-select: none; user-select: none;
   }
