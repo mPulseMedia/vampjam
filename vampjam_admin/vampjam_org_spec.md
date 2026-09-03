@@ -3408,7 +3408,31 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   rather than the session, following it selecting the right row and scrolling it onto the glass, an
   un-hearted tag toasting instead of failing quietly, and the two controls on one row proved to
   point at different places. Still no new trace.
-- NEXT → add entry 289 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 289 do_next · b289 · vampjam_do_this_next.html + site.css + admin.html — one page for things
+  waiting on HIM, and the .mjs cards in the chat explained and stopped.
+  the_confusion_was_mine: he has been getting a file card in the chat for every regression suite I
+  write — "Herechk / MJS / Download and open" — and had no idea what he was meant to do with it.
+  Nothing: they are my tests, they get committed into the repo, and he never needs to open one.
+  They stop going into the chat, and the page says so in as many words under its own heading, so
+  the next one he sees anywhere does not restart the question.
+  vampjam_do_this_next.html is the page he named, and the promise on it is the point: it only ever
+  holds things waiting on HIM, and if it is empty then nothing is. Right now it holds one item —
+  the six audio files into R2 — with a numbered banner, a time estimate, and why it is worth doing
+  (it is the fix for the re-downloading he raised). audio_steps.html, written last build for the
+  same job, is in claude_trash: two pages both claiming to be the runbook is how one goes stale.
+  admin's CTA points here now.
+  It carries a second list under "Nothing else is waiting on you" — the sessions still on GitHub
+  releases, the duplicate 08-07 cuts, the stale org items — so he can see they are tracked and
+  they are mine.
+  text_in_svg — and the drawings were broken when I first rendered them: every label was 17px and
+  overlapping into mush. one_size again, third time. The exclusion list names elements that carry
+  their own size, and a <text> inside an <svg> is not an <svg>. Adding :not(text) was not enough
+  either — a drawing usually sets font-size on the GROUP and lets the labels inherit, so the <g>
+  took 17px !important and the text inherited it. Both :not(g) and :not(text) go on the list. This
+  affects every inline SVG on the site, not just this page.
+  Caught by rendering it and looking, which is the only way this class of bug has ever been caught
+  here. Suites vj_288 and vj_290 still green after the site.css change. Still no new trace.
+- NEXT → add entry 290 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

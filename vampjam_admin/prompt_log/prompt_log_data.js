@@ -9,8 +9,43 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "292 fav_here",
+        id: "293 do_next",
         expanded: true,
+        nodes: [
+          { text: "293 do_next", children: [
+            { text: "prompt_restate", children: [
+              { text: "You don\u2019t know what the .mjs file cards in the chat are for." },
+              { text: "Make a page called vampjam_do_this_next \u2014 if there is something for you to do, put simple clear instructions with SVG on it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I don\u2019t get what I\u2019m supposed to do with this. Make a page called vampjam_do_this_next -- if I\u2019m supposed to do something, put simple, clear instructions with SVG so it\u2019s obvious and easy for me." }
+            ]},
+            { text: "the_confusion_was_mine", children: [
+              { text: "those cards are my regression tests. they get committed into the repo. you never need to open one" },
+              { text: "they stop going into the chat, and the page says so under its own heading so the next one you see anywhere does not restart the question" }
+            ]},
+            { text: "vampjam_do_this_next_html", children: [
+              { text: "the promise on it is the point: it only ever holds things waiting on YOU. if it is empty, nothing is" },
+              { text: "right now it holds one thing \u2014 six audio files into R2 \u2014 with a numbered banner, a time estimate, and why it is worth doing" },
+              { text: "four steps, each a sentence with the link in it, gates named first, an SVG of the screen each one lands on with one red ring" },
+              { text: "a second list under \u2018nothing else is waiting on you\u2019, so you can see what is tracked and mine" },
+              { text: "audio_steps.html from last build is in claude_trash \u2014 two pages both claiming to be the runbook is how one goes stale. admin points here now" }
+            ]},
+            { text: "and_the_drawings_were_broken_when_I_first_looked", children: [
+              { text: "every label 17px and overlapping into mush. one_size again \u2014 third time that list has been the bug" },
+              { text: "a <text> inside an <svg> is not an <svg>. and :not(text) alone was not enough: a drawing sets font-size on the GROUP and the labels inherit, so the <g> took 17px and passed it down" },
+              { text: "both :not(g) and :not(text) are on the list now. this affects every inline SVG on the site" },
+              { text: "caught by rendering it and looking, which is the only way this class of bug has ever been caught here" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "292 fav_here",
+        expanded: false,
         nodes: [
           { text: "292 fav_here", children: [
             { text: "prompt_restate", children: [
