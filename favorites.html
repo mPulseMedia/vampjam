@@ -80,14 +80,11 @@
      right-aligned, so its END — the part that tells you which session — is never
      the part that goes. */
   .fav_main {
-    flex: 1 1 60px; min-width: 0;
-    /* title_lap: -10% of the row against a column fixed at 40% of the same row is
-       a quarter of the column — but the row's 7px flex gap sits between them and
-       eats the first 7px of any negative margin, so it has to be paid back or the
-       lap comes out at 20% instead of 25%. Measured, not assumed. */
-    margin-right: calc(-10% - 7px); position: relative; z-index: 1;
-    -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 34px), transparent 100%);
-            mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 34px), transparent 100%);
+    /* cass_link — min-width:0 is what actually lets the title shrink. A flex item
+       defaults to min-width:auto, which means "never smaller than my content", so
+       the field kept its full width and ran under the date. The crossfade mask
+       had been hiding that collision; with the mask gone it was just overlap. */
+    flex: 1 1 auto; min-width: 0; overflow: hidden;
   }
   /* fav_jump — the session name on the right of a row is a LINK to that session,
      landing on this very highlight. It sits where a thumb already rests, so it
