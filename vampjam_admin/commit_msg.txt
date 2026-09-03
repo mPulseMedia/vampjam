@@ -1,1 +1,1 @@
-swipe_deaf
+auto_commit
