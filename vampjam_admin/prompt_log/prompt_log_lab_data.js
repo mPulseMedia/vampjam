@@ -9,8 +9,46 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "290 fav_cass",
+        id: "291 fav_bare",
         expanded: true,
+        nodes: [
+          { text: "291 fav_bare", children: [
+            { text: "prompt_restate", children: [
+              { text: "Remove the date from the fav rows \u2014 just the cassette." },
+              { text: "In reorder mode, let me drag from anywhere on the row." },
+              { text: "And no date on the rows in reorder mode either." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "on fav, remove date. just have cassett. in reorder mode, let me click and drag from anywhere on the row. remove date on each row when in reorder mode." }
+            ]},
+            { text: "date_gone", children: [
+              { text: "out entirely \u2014 the formats, the cycling, the remembered mode and the CSS. not hidden: a display that displays nothing is a thing the next reader has to work out the deadness of" },
+              { text: "the cassette says which session, the title says which moment, and a favourite IS a moment. the day it fell on was the least of the three" },
+              { text: "the title is 167px now, up from 71 \u2014 the thing I flagged last build, answered by deleting rather than by squeezing the icons further" }
+            ]},
+            { text: "row_drag", children: [
+              { text: "the surface is the whole row. a grip is a target you have to hit, and on a phone that is a thing to miss" },
+              { text: "in a mode whose only gesture is dragging, every pixel should be it. the grip stays as the thing that SAYS so \u2014 the picture of the affordance, not its extent" },
+              { text: "a plain tap is now a zero-distance drag, so the write and the \u2018Order saved\u2019 only happen if it actually moved" }
+            ]},
+            { text: "I_broke_it_first_and_it_is_worth_recording", children: [
+              { text: "I removed the date by SLICING between two landmarks, and the second landmark was on the far side of three other blocks" },
+              { text: "the cut took the order store, the drag, the sorting state and sort_set with it. node --check passed \u2014 it was still valid JavaScript, just a page missing four features. the robot committed it within seconds" },
+              { text: "recovered with git show f38289f:favorites.html piped over the file, then redone by NAMED declarations with a length guard on every slice" },
+              { text: "the rule I already had \u2014 never write the file at the end of a script \u2014 is not enough. a slice needs a guard, and the guard has to be checked BEFORE the write" }
+            ]},
+            { text: "verify", children: [
+              { text: "both suites updated; the drag is now driven from 60% across the row, nowhere near the grip" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "290 fav_cass",
+        expanded: false,
         nodes: [
           { text: "290 fav_cass", children: [
             { text: "prompt_restate", children: [

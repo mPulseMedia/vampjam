@@ -20,14 +20,16 @@ await pg.click('#sort_btn'); await pg.waitForTimeout(400);
 const mode = await pg.evaluate(()=>{ const r=document.querySelector('.fav_row');
   return { btn:document.getElementById('sort_btn').textContent, grips:document.querySelectorAll('.fav_grip').length,
     play:document.querySelectorAll('.fav_play_sm').length, heart:document.querySelectorAll('.fav_heart').length,
-    share:document.querySelectorAll('.fav_share_btn').length, grip:r.querySelector('.fav_grip').textContent }; });
+    share:document.querySelectorAll('.fav_share_btn').length, grip:r.querySelector('.fav_grip').textContent,
+    dates:document.querySelectorAll('.fav_date').length, ta:getComputedStyle(r).touchAction }; });
 console.log('  --- in reorder mode ---');
-console.log(`    button now "${mode.btn}"; ${mode.grips} grips ("${mode.grip}"), play ${mode.play}, heart ${mode.heart}, share ${mode.share}`);
-console.log('  --- drag row 1 down past rows 2 and 3 ---');
+console.log(`    button now "${mode.btn}"; ${mode.grips} grips ("${mode.grip}"), play ${mode.play}, heart ${mode.heart}, share ${mode.share}, dates ${mode.dates}`);
+console.log(`    the row itself claims the gesture: touch-action ${mode.ta}`);
+console.log('  --- drag row 1 from the MIDDLE of the row, past rows 2 and 3 ---');
 const box = r => pg.evaluate(i=>{const b=document.querySelectorAll('.fav_row')[i].getBoundingClientRect();return {x:b.x+20,y:b.y+b.height/2,h:b.height};}, r);
-await pg.evaluate(()=>document.querySelector('.fav_grip').scrollIntoView({block:'center'}));
+await pg.evaluate(()=>document.querySelector('.fav_row').scrollIntoView({block:'center'}));
 await pg.waitForTimeout(300);
-const g0 = await pg.evaluate(()=>{const b=document.querySelector('.fav_grip').getBoundingClientRect();return {x:b.x+b.width/2,y:b.y+b.height/2};});
+const g0 = await pg.evaluate(()=>{const b=document.querySelector('.fav_row').getBoundingClientRect();return {x:b.x+b.width*0.6,y:b.y+b.height/2};});   // row_drag: mid-row, nowhere near the grip
 const r1 = await box(1);
 await pg.mouse.move(g0.x, g0.y); await pg.mouse.down();
 for (let i=1;i<=12;i++){ await pg.mouse.move(g0.x, g0.y + (r1.h*2.4)*i/12); await pg.waitForTimeout(25); }

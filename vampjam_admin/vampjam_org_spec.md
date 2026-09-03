@@ -3362,7 +3362,34 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Ends by saying nothing on the site changes until he says "uploaded", and that stopping after step
   three breaks nothing. admin gets a CTA to it.
   Suite vj_289 still green. Still no new trace.
-- NEXT → add entry 287 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 287 fav_bare · b287 · favorites.html — the date leaves the favourites row, and the whole row
+  becomes the drag surface in reorder mode.
+  date_gone: the date and its four formats are out, two builds after going in. He asked for a
+  narrow cycling date and then asked for it gone, and both are fair — the second is the better row.
+  The cassette says which session, the title says which moment, and a favourite IS a moment; the day
+  it fell on was the least of the three. Removed rather than hidden, because a display that displays
+  nothing is a thing the next reader has to work out the deadness of: fmt_date, date_next, the four
+  formats, the remembered mode and the CSS are all gone. The key it used is simply abandoned in his
+  browser. The title measures 167px now, up from 71 — the concern the last build ended on, answered
+  by deleting the thing rather than by squeezing the icons further.
+  row_drag: in reorder mode the drag surface is the WHOLE ROW, not the grip. A grip is a target you
+  have to hit, and on a phone that is a thing to miss; in a mode whose only gesture is dragging,
+  every pixel of the row should be it. The grip stays as the thing that SAYS so — it is the picture
+  of the affordance, not its extent. touch-action:none moves to the row, and nothing inside it takes
+  pointer events. A plain tap is now a zero-distance drag, so the write and the "Order saved" are
+  gated on having actually moved more than 2px.
+  and a process failure worth writing down, because it cost the build twice. I removed the date by
+  SLICING the file between two landmarks — and the second landmark was on the far side of three
+  other blocks, so the cut took the order store, the drag, the sorting state and sort_set with it.
+  node --check passed, because the result was still valid JavaScript; it was just a page missing
+  four features. The robot committed it within seconds. Recovery was git show f38289f:favorites.html
+  piped over the file, then doing it again by NAMED declarations with a length guard on every slice
+  (assert 1100 < len < 1500). The rule this repo already had — never write the file at the end of a
+  script — is not enough on its own: a slice needs a guard, and a guard needs to be checked BEFORE
+  the write, not after.
+  Suites vj_288 and vj_289 updated for the missing date and the mid-row drag; both green, and the
+  drag is now driven from 60% across the row, nowhere near the grip. Still no new trace.
+- NEXT → add entry 288 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

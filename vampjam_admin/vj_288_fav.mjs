@@ -26,7 +26,7 @@ const m = await pg.evaluate(()=>{
 });
 if (m) {
   console.log(`  play triangle  ${m.play.fs}  (session rows are 29px)`);
-  console.log(`  date column    ${m.date.w}px  "${m.date.txt}"   (was inside a 40% link)`);
+  console.log(`  date column    ${m.date ? m.date.w+'px' : 'gone (date_gone)'}`);
   console.log(`  session link   ${m.sess.w}px of ${m.rowW}  "${m.sess.txt}"`);
   console.log(`  title readOnly on an unselected row: ${m.readonly}`);
   console.log('  --- tapping the title: first selects and plays, second edits ---');
@@ -42,15 +42,9 @@ if (m) {
   const b2 = await pg.evaluate(()=>({ ro:document.querySelector('.fav_name').readOnly,
     focused:document.activeElement && document.activeElement.className }));
   console.log(`    after tap 2: readOnly ${b2.ro}, focus on "${b2.focused}"`);
-  console.log('  --- tapping the date cycles the format ---');
-  for (let i=0;i<5;i++){
-    const t = await pg.evaluate(()=>document.querySelector('.fav_date').textContent);
-    process.stdout.write(`    "${t}"`);
-    await pg.locator('.fav_date').first().click(); await pg.waitForTimeout(200);
-  }
-  console.log('');
-  const kept = await pg.evaluate(()=>localStorage.getItem('vampjam_fav_datefmt'));
-  console.log(`    remembered as mode ${kept}`);
+  const cass = await pg.evaluate(()=>{const a=document.querySelector('.fav_sess');
+    return { svg:!!a.querySelector('svg'), text:a.textContent.trim(), href:a.getAttribute('href') };});
+  console.log(`  cassette       svg ${cass.svg}, no text "${cass.text}", -> ${cass.href}`);
 }
 console.log('errors: ' + (errs.length?errs.join(' | '):'none'));
 await pg.screenshot({path:'/tmp/fav_row.png'});
