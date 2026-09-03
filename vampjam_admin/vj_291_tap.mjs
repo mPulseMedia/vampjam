@@ -17,8 +17,13 @@ const run = (dy, steps) => pg.evaluate(async d => {
   const el = document.getElementById('tag_btn');
   const r = el.getBoundingClientRect(), x = r.x + r.width/2, y = r.y + r.height/2;
   window.__h = 0;
-  const on = e => { if (e.target.closest && e.target.closest('#tag_btn')) window.__h++; };
-  document.addEventListener('click', on, false);          // bubble: a swallowed click never arrives
+  // the button acts on TOUCHEND, not click — so count what actually reaches it.
+  // Bubble phase on the button itself: an event stopped at the window in capture
+  // never gets here, which is exactly the thing under test.
+  const on = () => { window.__h++; };
+  el.addEventListener('touchend', on, false);
+  const onc = e => { if (e.target.closest && e.target.closest('#tag_btn')) window.__h++; };
+  document.addEventListener('click', onc, false);
   const mk = (t, cx, cy) => new TouchEvent(t, { bubbles:true, cancelable:true,
     touches: t==='touchend' ? [] : [new Touch({identifier:9, target:el, clientX:cx, clientY:cy})],
     changedTouches: [new Touch({identifier:9, target:el, clientX:cx, clientY:cy})] });
@@ -28,18 +33,20 @@ const run = (dy, steps) => pg.evaluate(async d => {
   el.dispatchEvent(mk('touchend', x, y + d.dy));
   el.dispatchEvent(new MouseEvent('click', { bubbles:true, cancelable:true, clientX:x, clientY:y }));
   await new Promise(r2=>setTimeout(r2,60));
-  document.removeEventListener('click', on, false);
+  el.removeEventListener('touchend', on, false);
+  document.removeEventListener('click', onc, false);
   return window.__h;
 }, { dy, steps });
 
 console.log('  --- the press that should still work ---');
 const tap = await run(0, 0);
-console.log(`    a tap (0px of travel):        ${tap} click through   ${tap===1?'works' :'BUG — swallowed'}`);
+console.log(`    a tap (0px of travel):        ${tap} press through  ${tap>0?'works — the button hears it':'BUG — swallowed'}`);
+console.log('      (a tap reaches it twice: its own touchend handler, then the click)');
 console.log('  --- and the one that should not ---');
 for (const px of [4, 12, 130]) {
   const n = await run(px, Math.max(1, Math.round(px/14)));
-  const want = px <= 10 ? 1 : 0;
-  console.log(`    a ${String(px).padStart(3)}px drag from it:      ${n} click through   ${n===want ? (want?'still a tap':'swallowed, as it should be') : 'BUG'}`);
+  const ok = px <= 10 ? n > 0 : n === 0;
+  console.log(`    a ${String(px).padStart(3)}px drag from it:      ${n} press through  ${ok ? (px<=10?'still a tap':'swallowed, as it should be') : 'BUG'}`);
 }
 console.log('  --- and the drawer still answers the swipe ---');
 const cdp = await pg.context().newCDPSession(pg);

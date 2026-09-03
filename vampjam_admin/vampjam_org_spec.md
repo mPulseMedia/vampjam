@@ -3457,7 +3457,30 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   list and moved it out from under the coordinates, and the debug counters were cumulative so a
   click from an earlier step read as this one's. The guard itself was right the first time — I had
   to stop trusting the test to see it. Still no new trace.
-- NEXT → add entry 291 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 291 swipe_deaf · b291 · drawer.js + 14 html — the fix 290 should have been. A moved finger now
+  reaches no control at all, not just no click.
+  what 290 got wrong, and it is a plain miss: it swallowed the synthesised CLICK, and "Tag the
+  moment" does not act on click. It acts on TOUCHEND, on purpose — the new title's focus() has to
+  land inside the touch gesture or iOS will not open the keyboard. The comment saying so is three
+  lines above the handler. I tested the door the button never uses, the test passed, and I shipped
+  it. Reading the handler before writing the guard would have cost thirty seconds.
+  swipe_deaf is the general mechanism he asked for: once a gesture has travelled its 10px, its
+  touchend is stopped at the WINDOW in the capture phase and never reaches any element's handler.
+  Nothing has to opt in; a control invented tomorrow is covered without knowing this exists. The
+  click guard from 290 stays, because a stopped touchend means the browser still synthesises a
+  click, and that one has to be swallowed too. Two doors, both shut.
+  and it needed one structural change: drawer's own onEnd moves to capture and is registered BEFORE
+  the guard, because stopPropagation on the window stops the event at that node — a bubble listener
+  there would never fire and the drawer would have stopped snapping open and closed.
+  cache_bump — and this may be why he saw no change at all from 290: drawer.js is loaded as
+  drawer.js?v=141 and the query never moved, so Safari had every reason to keep serving the old
+  file. 141 → 142 across 13 pages, and site.css 3 → 4 across 14 while I was there, since that also
+  changed in 289 without a bump. A shared asset edited without moving its version is an edit that
+  may never arrive.
+  vj_291 now counts what reaches the BUTTON's touchend rather than what reaches a click listener:
+  a tap gets through twice (its touchend, then the click), a 4px wobble gets through, 12px and 130px
+  are stopped dead, and the drawer still opens on the 130px pull. Still no new trace.
+- NEXT → add entry 292 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,46 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "294 tap_only",
+        id: "295 swipe_deaf",
         expanded: true,
+        nodes: [
+          { text: "295 swipe_deaf", children: [
+            { text: "prompt_restate", children: [
+              { text: "It still creates a tag when the swipe starts on Tag the moment." },
+              { text: "Do not register ANY button as a click if it is part of a swipe." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "it\u2019s still creating a tag when I swipe starting on the [Tag he moment\" button. DON\u2019T register any button as a click if it\u2019s part of a swipe" }
+            ]},
+            { text: "what_I_got_wrong_last_build", children: [
+              { text: "I swallowed the synthesised CLICK. Tag the moment does not act on click \u2014 it acts on TOUCHEND, on purpose, so the new title\u2019s focus lands inside the gesture and iOS opens the keyboard" },
+              { text: "the comment saying so is three lines above the handler" },
+              { text: "I tested the door the button never uses, the test passed, and I shipped it. reading the handler first would have cost thirty seconds" }
+            ]},
+            { text: "swipe_deaf", children: [
+              { text: "the general rule you asked for: once a gesture has travelled 10px, its touchend is stopped at the WINDOW in capture and never reaches any element\u2019s handler" },
+              { text: "nothing has to opt in. a control invented tomorrow is covered without knowing this exists" },
+              { text: "the click guard stays too \u2014 a stopped touchend still makes the browser synthesise a click, so both doors are shut" },
+              { text: "drawer\u2019s own end handler had to move to capture and register first, or stopping the event there would have stopped the drawer snapping" }
+            ]},
+            { text: "and_this_may_be_why_you_saw_no_change_at_all", children: [
+              { text: "drawer.js is loaded as drawer.js?v=141 and the query never moved, so Safari had every reason to keep serving the old file" },
+              { text: "141 \u2192 142 across 13 pages, and site.css 3 \u2192 4 across 14 while I was there \u2014 that changed two builds ago without a bump either" },
+              { text: "a shared asset edited without moving its version is an edit that may never arrive" }
+            ]},
+            { text: "verify", children: [
+              { text: "the suite counts what reaches the BUTTON\u2019s touchend now, not a click listener" },
+              { text: "tap gets through, 4px wobble gets through, 12px and 130px stopped dead, drawer still opens on the pull" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "294 tap_only",
+        expanded: false,
         nodes: [
           { text: "294 tap_only", children: [
             { text: "prompt_restate", children: [
