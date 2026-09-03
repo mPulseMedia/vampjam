@@ -347,6 +347,7 @@
       });
       order_apply();          // fav_sort: his arrangement wins over the date sort
       render();
+      land_on_tag();          // fav_here: a shared link names a highlight on THIS page
     });
   }
 
@@ -506,6 +507,31 @@
     '<rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/>' +
     '<circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/>' +
     '<path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg>';
+
+  // fav_here — arriving on ?tag=<id>. Select it, put it on screen, and try to
+  // play. The try is likely to be refused: a browser will not start audio without
+  // a gesture, and following a link is not one. That is fine and it is why the
+  // row is SELECTED first — the refusal leaves you looking straight at the right
+  // row with the play button one tap away, rather than at the top of a list of
+  // fifty wondering which one you were sent.
+  function land_on_tag() {
+    var want;
+    try { want = new URLSearchParams(location.search).get('tag'); } catch (e) { return; }
+    if (!want) return;
+    var f = null;
+    for (var i = 0; i < favs.length; i++) if (favs[i].tag.id === want) { f = favs[i]; break; }
+    if (!f) {
+      // un-hearted since the link was made. Say so rather than silently doing
+      // nothing, because from the outside those look identical.
+      toast('That moment is no longer a favorite');
+      return;
+    }
+    current = f;
+    render();
+    var row = listEl.querySelector('[data-fav-id="' + (window.CSS && CSS.escape ? CSS.escape(want) : want) + '"]');
+    if (row) { try { row.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e2) { row.scrollIntoView(); } }
+    play_fav(f);
+  }
 
   function render() {
     listEl.innerHTML = '';
