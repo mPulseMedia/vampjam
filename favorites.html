@@ -105,6 +105,10 @@
     border-bottom: 1px dotted transparent;
   }
   .fav_date:active { color: var(--accent); }
+  /* lap_hit — the title's field laps over these two columns on purpose (that is
+     what the crossfade is), which meant the input was swallowing every tap aimed
+     at the date. The lap is a LOOK; the hit belongs to whatever is on top. */
+  .fav_date, a.fav_sess { position: relative; z-index: 2; }
   a.fav_sess {
     /* title_lap: the column is fixed so the overlap can be measured against it,
        and the title's fade is a quarter of that column at any screen size. It is
@@ -483,7 +487,12 @@
   // ---- play a favorite: load its session's audio, jump to the moment ----
   function play_fav(f) {
     var url = f.src.data.audio && f.src.data.audio.url;
-    if (!url) { toast('This session has no audio bound yet'); return; }
+    if (!url) {
+      // tap_select — select it anyway. Without this the row can never become the
+      // current one, so its title stays readOnly and a session with no audio
+      // bound is a favourite you can never rename.
+      current = f; render(); toast('This session has no audio bound yet'); return;
+    }
     var seek = function () {
       try { player.currentTime = f.tag.t; } catch (e) {}
       player.play().catch(function () {});
