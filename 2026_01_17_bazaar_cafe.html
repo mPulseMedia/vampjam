@@ -1575,6 +1575,24 @@
     var newRows = tagList.querySelectorAll('.tag_row');
     for (var ni = 0; ni < newRows.length; ni++) {
       if (newRows[ni].dataset.tagId === tag.id) {
+        // row_grow — the one row we just made opens from nothing to its full
+        // height over half a second, so a new highlight arrives rather than
+        // blinking into being. The height is animated in PIXELS because a height
+        // of auto cannot be animated from 0; it is measured first, then handed
+        // back to CSS when the animation is done.
+        (function (rw) {
+          var h = rw.getBoundingClientRect().height;
+          rw.classList.add('tag_new');
+          rw.style.height = '0px'; rw.style.minHeight = '0px';
+          rw.getBoundingClientRect();                       // force the 0 to take
+          rw.style.transition = 'height 0.5s cubic-bezier(0.22,0.61,0.36,1), ' +
+                                'min-height 0.5s cubic-bezier(0.22,0.61,0.36,1)';
+          rw.style.height = h + 'px'; rw.style.minHeight = h + 'px';
+          setTimeout(function () {
+            rw.classList.remove('tag_new');
+            rw.style.transition = ''; rw.style.height = ''; rw.style.minHeight = '';
+          }, 520);
+        })(newRows[ni]);
         var newInp = newRows[ni].querySelector('.tag_label');
         if (newInp) {
           newInp.readOnly = false;

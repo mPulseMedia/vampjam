@@ -12,7 +12,7 @@
 <style>  /* tap_zoom: no double-tap zoom on a mis-hit; pinch still works */
   html, body { touch-action: manipulation; }
   h1 { text-align: center; font-size: 22px; margin: 6px 0 14px; }
-  .now_name { text-align: center; color: var(--muted); font-size: 14px; min-height: 20px; margin: 8px 0 2px; }
+  .now_name { text-align: center; color: var(--muted); font-size: 14px; min-height: 20px; margin: 7px 0 12px; }
   details.about_page { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
   details.about_page summary { cursor: pointer; color: var(--fg); font-weight: 600; }
   details.about_page code { background: var(--panel_2); padding: 1px 6px; border-radius: 4px; color: var(--fg); }
@@ -39,7 +39,6 @@
   }
 
   /* ---- de-emphasis: make selected chrome less prominent ---- */
-  .time_row #dur_time, .time_row span:not(#now_time) { color: var(--muted); opacity: 0.4; font-weight: 400; }
   .tag_time { color: var(--muted); opacity: 0.5; font-weight: 400; }
   .tag_time:hover { opacity: 0.9; }
   button.ghost.tag_fav { color: var(--muted); background: transparent; opacity: 0.3; }
@@ -64,8 +63,6 @@
   }
   .fav_bar { width: 100%; height: 9px; background: var(--panel_3); border-radius: 4px; position: relative; cursor: pointer; margin: 6px 0 4px; }
   .fav_fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 4px; width: 0; pointer-events: none; }
-  .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 10px; }
-  .time_row #now_time { color: var(--accent); font-weight: 600; }
 
   .fav_list { background: var(--panel); border-radius: 14px; overflow: hidden; padding: 0 0 14px; margin: 6px 0 24px; box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20); }
   /* cass_link — six things on a 390px row, and the title is the one that carries
@@ -195,9 +192,13 @@
 <div class="fav_player">
   <button class="fav_play" id="play_btn" aria-label="Play">&#9654;</button>
 </div>
-<div class="now_name" id="now_name"></div>
+<!-- name_under — the timeline first, the name beneath it. The name answers
+     "what am I listening to", which is a question you ask about a thing that is
+     already playing, so it reads better as a caption under the bar than as a
+     heading over it. And the clock is gone: on a page of favourites every row is
+     a moment someone chose, not a position to be measured. -->
 <div class="fav_bar" id="fav_bar"><div class="fav_fill" id="fav_fill"></div></div>
-<div class="time_row"><span id="now_time">0:00</span><span>/</span><span id="dur_time">--:--</span></div>
+<div class="now_name" id="now_name"></div>
 
 <div class="fav_list" id="fav_list"><div class="empty">Gathering your favorites…</div></div>
 
@@ -218,8 +219,6 @@
       playBtn = document.getElementById('play_btn'),
       favBar  = document.getElementById('fav_bar'),
       favFill = document.getElementById('fav_fill'),
-      nowTime = document.getElementById('now_time'),
-      durTime = document.getElementById('dur_time'),
       nowName = document.getElementById('now_name'),
       listEl  = document.getElementById('fav_list'),
       toastEl = document.getElementById('toast');
@@ -711,8 +710,8 @@
   player.addEventListener('play', function () { playBtn.innerHTML = ICON_PAUSE ? '\u23F8' : '||'; playBtn.textContent = ''; playBtn.innerHTML = ICON_PAUSE; render(); });
   player.addEventListener('pause', function () { playBtn.innerHTML = ICON_PLAY; render(); });
   player.addEventListener('timeupdate', function () {
-    nowTime.textContent = fmt(player.currentTime);
-    durTime.textContent = fmt(player.duration);
+    // name_under: the clock is gone from the page, so there is nothing to write
+    // the time into. fmt() stays — the rows still use it.
     if (isFinite(player.duration) && player.duration > 0) {
       favFill.style.width = (player.currentTime / player.duration * 100) + '%';
     }

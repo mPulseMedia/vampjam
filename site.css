@@ -199,6 +199,29 @@ body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_pla
    over the highlights. */
 .tag_row button.ghost { font-size: 29px !important; padding: 6px; min-height: 41px; line-height: 0; }
 .tag_row button.play_tag { font-size: 29px !important; padding: 6px 8px 6px 2px; }
+
+/* row_grow — a new highlight opens rather than appearing. The list rebuilds its
+   whole innerHTML on every render, so this cannot be "animate anything newly
+   inserted" — every row would open every time. add_tag marks the ONE row it just
+   made, and the class takes itself off at the end.
+   height is animated in PIXELS, set from the row's measured height, because a
+   height of auto is not a thing you can animate from 0 to. The row is clipped
+   while it opens so its contents do not spill above the row before there is a
+   row to hold them, and it fades and rises the last few pixels so the arrival
+   has a direction. 0.5s, as asked. */
+@keyframes tag_open {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tag_row.tag_new {
+  overflow: hidden;
+  animation: tag_open 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+/* prefers-reduced-motion — someone who has asked the system for less movement
+   gets the row, immediately, and no opinion about it */
+@media (prefers-reduced-motion: reduce) {
+  .tag_row.tag_new { animation: none; transition: none; }
+}
 /* and the favourites row's play is the same kind of thing on the same kind of
    row, so it is the same 29px in a target of the same height */
 .fav_row button.fav_play_sm { font-size: 29px !important; padding: 6px 8px 6px 2px; min-height: 41px; line-height: 0; }
