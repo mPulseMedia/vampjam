@@ -149,7 +149,10 @@
     /* the browser must not claim the gesture, or the page scrolls instead of the row moving */
     touch-action: none; -webkit-user-select: none; user-select: none;
   }
-  .fav_list.sorting .fav_name { pointer-events: none; }
+  /* row_drag — the row takes the gesture, so nothing inside it may. touch-action
+     goes on the ROW, or the browser scrolls the page instead of moving the row. */
+  .fav_list.sorting .fav_row { touch-action: none; cursor: grab; }
+  .fav_list.sorting .fav_row * { pointer-events: none; }
   .fav_list.sorting .fav_row { background: var(--bg); }
   .fav_row.dragging {
     position: relative; z-index: 5; opacity: 0.96;
@@ -429,11 +432,15 @@
   // The dragged row is lifted with a transform and the rows it passes are moved
   // in the DOM as it crosses their midpoints, so what you see IS the new order
   // and the drop has nothing left to compute — it just reads the list back.
+  // row_drag — the surface is the WHOLE ROW, not the grip. A grip is a target you
+  // have to hit, and on a phone that is a thing to miss; in a mode whose only
+  // gesture is dragging, every pixel of the row should be it. The grip stays as
+  // the thing that SAYS so — it is the picture of the affordance, not its extent.
   function grip_wire(grip, row) {
-    grip.addEventListener('pointerdown', function (e) {
+    row.addEventListener('pointerdown', function (e) {
       if (!sorting) return;
       e.preventDefault();
-      try { grip.setPointerCapture(e.pointerId); } catch (eC) {}
+      try { row.setPointerCapture(e.pointerId); } catch (eC) {}
       var startY = e.clientY, dy = 0;
       var h = row.getBoundingClientRect().height;
       row.classList.add('dragging');
@@ -456,18 +463,19 @@
         }
       }
       function up(ev) {
-        grip.removeEventListener('pointermove', move);
-        grip.removeEventListener('pointerup', up);
-        grip.removeEventListener('pointercancel', up);
-        try { grip.releasePointerCapture(ev.pointerId); } catch (eR) {}
+        row.removeEventListener('pointermove', move);
+        row.removeEventListener('pointerup', up);
+        row.removeEventListener('pointercancel', up);
+        try { row.releasePointerCapture(ev.pointerId); } catch (eR) {}
         row.classList.remove('dragging');
         row.style.transform = '';
-        order_take();          // the DOM is the answer; write it down
-        toast('Order saved');
+        // row_drag — with the whole row live, a plain tap is a zero-distance drag.
+        // Only write, and only say so, if something actually moved.
+        if (Math.abs(dy) > 2) { order_take(); toast('Order saved'); }
       }
-      grip.addEventListener('pointermove', move);
-      grip.addEventListener('pointerup', up);
-      grip.addEventListener('pointercancel', up);
+      row.addEventListener('pointermove', move);
+      row.addEventListener('pointerup', up);
+      row.addEventListener('pointercancel', up);
     });
   }
 
