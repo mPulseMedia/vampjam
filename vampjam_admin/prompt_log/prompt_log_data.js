@@ -9,8 +9,48 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "289 fav_sort",
+        id: "290 fav_cass",
         expanded: true,
+        nodes: [
+          { text: "290 fav_cass", children: [
+            { text: "prompt_restate", children: [
+              { text: "You did not understand the \u201948 vs 64\u2019 comment \u2014 if there are steps for you, make a page with SVGs of what to do." },
+              { text: "On fav, replace the session name with a cassette icon that links to the session and the highlight in it. Drop the name." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I don\u2019t understand your \"Still waiting on 48 vs 64 for the audio.\" comment. if I should do steps, make me a page with svg of what I should do.\n\non fav page, replace the session name with an icon f the cessett that links to the session and the highlight within it. nix the session name itslef." }
+            ]},
+            { text: "the_48_vs_64_was_my_fault", children: [
+              { text: "it was waiting on nothing you could usefully decide by ear on a phone. so I decided: 64k mono" },
+              { text: "that is the honest equivalent of the quality you agreed to, before I found this Mac has no HE-AAC encoder" },
+              { text: "all six files are cut and sitting in audio/thin \u2014 three light renditions, three faststart copies of the masters, 510 MB" }
+            ]},
+            { text: "audio_steps_html", children: [
+              { text: "what is left genuinely needs you: R2 is blocked from both the sandbox and your Mac\u2019s proxy, so the upload is yours" },
+              { text: "four steps, each a sentence with the link inside it, gates named before the destination \u2014 the sign-in, the two-factor code, landing on account home instead of R2" },
+              { text: "an SVG of the screen each step lands on, one red ring each. the Finder one is true \u2014 it lists your six real filenames" },
+              { text: "the two Cloudflare ones say on the page that they came from Cloudflare\u2019s documentation, not your screen. send me a screenshot and I will redraw them" },
+              { text: "it ends by saying nothing on the site changes until you say \u2018uploaded\u2019, and stopping after step three breaks nothing. admin links to it" }
+            ]},
+            { text: "cass_link", children: [
+              { text: "the cassette the session rows and the nav already wear, so the eye reads it as \u2018a session\u2019 without being told" },
+              { text: "the name repeated down the whole list \u2014 Sound Union, eight times \u2014 was ellipsised into uselessness, and told you nothing the date did not" },
+              { text: "the link underneath is unchanged: still the tag id and the timestamp, so it opens the session ON that highlight" }
+            ]},
+            { text: "and_it_took_the_crossfade_with_it", children: [
+              { text: "title_lap existed to let the title overlap a column of session-name text. with the text gone the overlap was just collision \u2014 the title ran under the date, which the mask had been hiding" },
+              { text: "the fix is a CSS default worth knowing: a flex item is min-width:auto, meaning \u2018never smaller than my content\u2019, so the field kept full width and ran under whatever was next. min-width:0 lets it shrink" },
+              { text: "six things on a 390px row, so the icons gave up what they could and handed the title ~20px back. it is 71px. if that is still short, the share is the one to lose" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "289 fav_sort",
+        expanded: false,
         nodes: [
           { text: "289 fav_sort", children: [
             { text: "prompt_restate", children: [

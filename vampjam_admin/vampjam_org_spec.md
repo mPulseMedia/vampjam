@@ -3329,7 +3329,40 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   worker at fav_order.json, and the order still there after navigating away without pressing Done.
   Two of the three failures on the way were the TEST, not the page — a fixture giving every session
   the same tag ids, and a grip measured 202px above the viewport. Still no new trace.
-- NEXT → add entry 286 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 286 fav_cass · b286 · favorites.html + audio_steps.html + admin.html + audio/thin — the session
+  name on a favourite becomes a cassette, and the audio work he has to do himself becomes a page.
+  cass_link: the session's NAME leaves the favourites row and a cassette takes its place — the same
+  icon the session rows and the nav button wear, so the eye reads it as "a session" without being
+  told. The name was a strip of text that mostly repeated (Sound Union, eight times down the list),
+  was ellipsised into uselessness anyway, and told him nothing the date did not. The link is
+  unchanged underneath: it still carries the tag id and the timestamp, so it opens the session ON
+  that highlight.
+  and it took the title_lap machinery with it. The crossfade existed to let the title overlap a
+  column of session-name text; with the text gone the overlap was just collision — the title ran
+  under the date, which the mask had been hiding. Both go. The title ellipsises honestly again.
+  min-width — and the fix for the collision is worth naming, because it is the CSS default that
+  causes it: a flex item is min-width:auto, which means "never smaller than my content", so the
+  field kept its full width and ran under whatever was next. min-width:0 is what lets it shrink.
+  The row is six things wide on a 390px phone and the title is the one carrying meaning, so the
+  icons gave up what they could — 4px gap, 6px padding — and handed it about 20px back. It is 71px.
+  If that is still short, the share button is the one to lose.
+  audio_steps.html: he asked, fairly, what "48 vs 64" was waiting on. The answer is that it was
+  waiting on nothing he could usefully decide by ear on a phone, so I decided: 64k mono, the honest
+  equivalent of the quality he agreed to before I found this Mac has no HE-AAC encoder. All six
+  files are cut and sitting in audio/thin — three light renditions and three faststart copies of the
+  masters, 510 MB.
+  What is left genuinely needs him: R2 is blocked from both the sandbox and his Mac's proxy, so the
+  upload is his. So it is a page, in the house style of r2_setup.html, written to the instruction
+  rules: four steps, each a sentence with the link inside it, the gates named before the destination
+  (the sign-in, the two-factor code, landing on account home instead of R2), and an inline SVG of
+  the screen each one lands on with a single red ring. The Finder drawing is true — it lists the six
+  real filenames. The two Cloudflare drawings say on the page that they came from Cloudflare's
+  documentation rather than from his screen, because I have not seen his dashboard, and ask for a
+  screenshot if they are wrong. A copy button holds the folder path for Finder's Go to Folder.
+  Ends by saying nothing on the site changes until he says "uploaded", and that stopping after step
+  three breaks nothing. admin gets a CTA to it.
+  Suite vj_289 still green. Still no new trace.
+- NEXT → add entry 287 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
