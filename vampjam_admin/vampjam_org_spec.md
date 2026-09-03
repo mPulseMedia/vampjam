@@ -3480,7 +3480,33 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   vj_291 now counts what reaches the BUTTON's touchend rather than what reaches a click listener:
   a tap gets through twice (its touchend, then the click), a 4px wobble gets through, 12px and 130px
   are stopped dead, and the drawer still opens on the 130px pull. Still no new trace.
-- NEXT → add entry 292 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 292 row_grow · b292 · site.css + 9 session pages + favorites.html — a new highlight opens instead
+  of appearing, and the favourites header loses its clock.
+  name_under: on favourites the timeline comes first and the session name sits beneath it. The name
+  answers "what am I listening to", which is a question you ask about something already playing, so
+  it reads as a caption under the bar rather than a heading over it. The clock — 0:00 / --:-- — is
+  gone entirely: on a page of favourites every row is a moment somebody chose, not a position to be
+  measured. Its two elements went with it, and the timeupdate handler that wrote into them, so
+  nothing is left addressing an element that is not there.
+  row_grow: the new row animates from nothing to its full height over half a second, with a fade and
+  a six-pixel rise so the arrival has a direction.
+  Two things about it are worth keeping written down. First, it cannot be "animate anything newly
+  inserted": render_tags rebuilds the list's whole innerHTML on every render, so every row would
+  open every time. add_tag already finds the one row it just made in order to focus its title —
+  that same loop marks it, and the mark takes itself off at the end.
+  Second, height is animated in PIXELS off the row's measured height, because a height of auto
+  cannot be animated from zero. And height:0 alone was not enough: the first cut opened from 14px,
+  because the row's own padding is still standing when its height is nothing. The padding has to
+  collapse in the same transition. Measured: 0px at the start, 31 at 125ms, 48 at 250, 55 at 500,
+  and the class, the transition and every inline style cleared afterwards so the row goes back to
+  being an ordinary row.
+  A prefers-reduced-motion block turns it off: someone who has asked the system for less movement
+  gets the row immediately and no opinion about it.
+  The animation lives in site.css and the marking in each page, so the nine pages carry three lines
+  of intent each rather than a copy of the keyframes.
+  cache_bump: drawer.js 142 → 143, site.css 4 → 5. New suite vj_292 measures the growth frame by
+  frame and checks the favourites header order and the absent clock. Still no new trace.
+- NEXT → add entry 293 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

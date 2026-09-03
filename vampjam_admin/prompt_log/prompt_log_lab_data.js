@@ -9,8 +9,44 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "295 swipe_deaf",
+        id: "296 row_grow",
         expanded: true,
+        nodes: [
+          { text: "296 row_grow", children: [
+            { text: "prompt_restate", children: [
+              { text: "On Favorites, remove the time and duration. Move the session name below the timeline." },
+              { text: "On sessions, a new highlight row should grow from nothing to full height over half a second." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On Favorites, remove the time and duration. Move the session name below the timeline.\n\nOn sessions, when I create a new highlight, show the highlight row growing from nothing to the full height of the row smoothly over .5 seconds, so it\u2019s not a jarring visual." }
+            ]},
+            { text: "name_under", children: [
+              { text: "timeline first, name beneath it. the name answers \u2018what am I listening to\u2019, which you ask about something already playing \u2014 it reads as a caption, not a heading" },
+              { text: "the clock is gone entirely. on a page of favourites every row is a moment somebody chose, not a position to be measured" },
+              { text: "its elements went too, and the handler that wrote into them, so nothing is left addressing an element that is not there" }
+            ]},
+            { text: "row_grow", children: [
+              { text: "0 to full height over half a second, with a fade and a six-pixel rise so the arrival has a direction" },
+              { text: "it cannot be \u2018animate anything newly inserted\u2019 \u2014 the list rebuilds its whole innerHTML on every render, so every row would open every time" },
+              { text: "add_tag already finds the one row it just made in order to focus its title. that same loop marks it, and the mark takes itself off at the end" }
+            ]},
+            { text: "two_things_that_bit", children: [
+              { text: "height has to be animated in PIXELS off the measured height \u2014 a height of auto cannot animate from zero" },
+              { text: "and height:0 alone was not enough: the first cut opened from 14px, because the row\u2019s padding is still standing when its height is nothing. the padding collapses in the same transition now" },
+              { text: "measured: 0px, 31 at 125ms, 48 at 250, 55 at 500 \u2014 then class, transition and every inline style cleared so it goes back to being an ordinary row" }
+            ]},
+            { text: "and_a_quiet_one", children: [
+              { text: "prefers-reduced-motion turns it off. someone who asked the system for less movement gets the row immediately and no opinion about it" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "295 swipe_deaf",
+        expanded: false,
         nodes: [
           { text: "295 swipe_deaf", children: [
             { text: "prompt_restate", children: [
