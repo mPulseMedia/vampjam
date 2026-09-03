@@ -200,6 +200,17 @@ body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_pla
 .tag_row button.ghost { font-size: 29px !important; padding: 6px; min-height: 41px; line-height: 0; }
 .tag_row button.play_tag { font-size: 29px !important; padding: 6px 8px 6px 2px; }
 
+/* edit_wide — while you are typing a highlight's title, the field takes the
+   whole row. Everything AFTER it steps out of the way: the timestamp, the end
+   controls, the heart, the share, the remove. They are things you do to a
+   highlight you have finished naming, and while the keyboard is up they are
+   spending the width the words need. The number and the play button stay put, so
+   the text does not jump sideways as you start.
+   :focus-within rather than :has(), which is newer than it needs to be here; and
+   :not(:focus) so a control that itself has focus is never the thing that
+   vanishes under it. The row's own 12px padding is the "just shy of the edge". */
+.tag_row:focus-within .tag_label ~ *:not(:focus) { display: none; }
+
 /* row_grow — a new highlight opens rather than appearing. The list rebuilds its
    whole innerHTML on every render, so this cannot be "animate anything newly
    inserted" — every row would open every time. add_tag marks the ONE row it just
