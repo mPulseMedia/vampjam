@@ -210,6 +210,14 @@ body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_pla
    :not(:focus) so a control that itself has focus is never the thing that
    vanishes under it. The row's own 12px padding is the "just shy of the edge". */
 .tag_row:focus-within .tag_label ~ *:not(:focus) { display: none; }
+/* and the same on a favourite. The shape differs in one way that matters: the
+   field is wrapped in .fav_main rather than being a direct child of the row, so
+   the sibling run starts from the WRAPPER. The controls that step aside are the
+   cassette, the share and the heart — again, all things you do to a favourite you
+   have finished naming.
+   In reorder mode the field is readOnly and nothing in the row takes pointer
+   events, so it can never be focused there and the two modes cannot collide. */
+.fav_row:focus-within .fav_main ~ *:not(:focus) { display: none; }
 
 /* row_grow — a new highlight opens rather than appearing. The list rebuilds its
    whole innerHTML on every render, so this cannot be "animate anything newly
