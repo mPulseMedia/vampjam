@@ -1,1 +1,1 @@
-fav_row
+auto_commit
