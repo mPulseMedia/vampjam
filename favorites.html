@@ -454,6 +454,55 @@
     order_save();
   }
 
+  // grip_wire — the drag. Pointer events, not HTML5 drag-and-drop, because iOS
+  // Safari does not fire dragstart at all: on a phone the native API simply does
+  // not exist, so the only thing that works is doing it by hand.
+  //
+  // The dragged row is lifted with a transform and the rows it passes are moved
+  // in the DOM as it crosses their midpoints, so what you see IS the new order
+  // and the drop has nothing left to compute — it just reads the list back.
+  function grip_wire(grip, row) {
+    grip.addEventListener('pointerdown', function (e) {
+      if (!sorting) return;
+      e.preventDefault();
+      try { grip.setPointerCapture(e.pointerId); } catch (eC) {}
+      var startY = e.clientY, dy = 0;
+      var h = row.getBoundingClientRect().height;
+      row.classList.add('dragging');
+
+      function move(ev) {
+        dy = ev.clientY - startY;
+        row.style.transform = 'translateY(' + dy + 'px)';
+        var mid = row.getBoundingClientRect().top + h / 2;
+        var prev = row.previousElementSibling, next = row.nextElementSibling;
+        // crossed the row above: put ourselves before it
+        if (prev && mid < prev.getBoundingClientRect().top + prev.getBoundingClientRect().height / 2) {
+          startY -= prev.getBoundingClientRect().height;
+          row.style.transform = 'translateY(' + (ev.clientY - startY) + 'px)';
+          listEl.insertBefore(row, prev);
+        // crossed the row below: put ourselves after it
+        } else if (next && mid > next.getBoundingClientRect().top + next.getBoundingClientRect().height / 2) {
+          startY += next.getBoundingClientRect().height;
+          row.style.transform = 'translateY(' + (ev.clientY - startY) + 'px)';
+          listEl.insertBefore(next, row);
+        }
+      }
+      function up(ev) {
+        grip.removeEventListener('pointermove', move);
+        grip.removeEventListener('pointerup', up);
+        grip.removeEventListener('pointercancel', up);
+        try { grip.releasePointerCapture(ev.pointerId); } catch (eR) {}
+        row.classList.remove('dragging');
+        row.style.transform = '';
+        order_take();          // the DOM is the answer; write it down
+        toast('Order saved');
+      }
+      grip.addEventListener('pointermove', move);
+      grip.addEventListener('pointerup', up);
+      grip.addEventListener('pointercancel', up);
+    });
+  }
+
   var sorting = false;
   var sortBtn = document.getElementById('sort_btn');
   function sort_set(on) {
