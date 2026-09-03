@@ -563,8 +563,28 @@
 
   window.addEventListener('touchstart', onStart, { passive: true });
   window.addEventListener('touchmove', onMove, { passive: false });
-  window.addEventListener('touchend', onEnd, { passive: true });
-  window.addEventListener('touchcancel', onEnd, { passive: true });
+  // swipe_deaf: these move to CAPTURE and are registered BEFORE the guard below,
+  // because the guard stops propagation at this same node — bubble listeners here
+  // would never fire and the drawer would stop snapping.
+  window.addEventListener('touchend', onEnd, { passive: true, capture: true });
+  window.addEventListener('touchcancel', onEnd, { passive: true, capture: true });
+
+  // ---- swipe_deaf: a moved finger reaches no control at all -------------------
+  // tap_only (build 290) swallowed the synthesised CLICK, and that was not enough:
+  // "Tag the moment" does not act on click. It acts on TOUCHEND, deliberately —
+  // the new title's focus() has to land inside the touch gesture or iOS will not
+  // open the keyboard. So the guard was watching a door the button never used.
+  //
+  // The rule he asked for is the general one, so this is the general mechanism:
+  // once a gesture has travelled, its touchend is stopped at the window in the
+  // capture phase and never reaches ANY element's handler. Nothing has to opt in,
+  // and a control invented tomorrow is covered without knowing this exists.
+  window.addEventListener('touchend', function (e) {
+    if (tapMoved) e.stopPropagation();
+  }, { capture: true });
+  window.addEventListener('touchcancel', function (e) {
+    if (tapMoved) e.stopPropagation();
+  }, { capture: true });
 
   // the syncing… text breathes so it reads as 'working', not stuck
   (function () {
