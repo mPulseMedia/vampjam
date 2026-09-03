@@ -1,1 +1,1 @@
-fav_cass
+auto_commit
