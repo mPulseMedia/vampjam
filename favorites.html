@@ -261,9 +261,15 @@
   // the deep link fav_jump already builds — session, tag id and time — so what
   // someone else opens is this exact moment, not the top of the session.
   var ICON_SHARE = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
+  // fav_here — the share on a favourite hands out a link back to THIS page, at
+  // this highlight. It used to point at the session page, which is a different
+  // promise: the cassette on the row already goes there, and goes to this moment
+  // inside it. Sharing a favourite should land you among the favourites, on the
+  // one you were shown — otherwise the two controls on the row say the same thing
+  // and the list you were sent to look at is nowhere in sight.
   function fav_link(f) {
-    return new URL(f.src.page + '?tag=' + encodeURIComponent(f.tag.id) +
-                   '&t=' + Math.max(0, Math.round(f.tag.t)), window.location.href).href;
+    return new URL('favorites.html?tag=' + encodeURIComponent(f.tag.id),
+                   window.location.href).href;
   }
   function copy_to_clipboard(text) {
     try { if (navigator.clipboard) { navigator.clipboard.writeText(text); return; } } catch (e) {}
