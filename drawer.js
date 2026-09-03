@@ -527,6 +527,40 @@
     set_open(false);
   }, true);
 
+  // ---- tap_only: a drag is not a tap -----------------------------------------
+  // Pulling the drawer down with a finger that STARTED on a control also pressed
+  // that control when it lifted — on the session pages that meant a swipe from
+  // the transport created a new highlight. The browser synthesises a click on
+  // touchend wherever the gesture began, and nothing was telling the difference.
+  //
+  // The highlight list already had this guard, scoped to itself (swipeMoved), so
+  // a swipe that began on a title was safe and one that began 40px lower was not.
+  // It belongs here instead: drawer.js is on every page, so one copy covers the
+  // whole site rather than eight session pages plus the two lists.
+  //
+  // Capture phase, so it lands before any control's own handler, and time-boxed
+  // so it can only ever swallow the click THIS gesture produced. Desktop is
+  // untouched: with no touch events tapMoved is never set.
+  var TAP_SLOP = 10;                 // the same 10px the list guard used
+  var tapX = 0, tapY = 0, tapMoved = false, tapEnd = 0;
+  window.addEventListener('touchstart', function (e) {
+    if (!e.touches || e.touches.length !== 1) { tapMoved = true; return; }
+    tapMoved = false; tapX = e.touches[0].clientX; tapY = e.touches[0].clientY;
+  }, { passive: true, capture: true });
+  window.addEventListener('touchmove', function (e) {
+    if (!e.touches || !e.touches.length) return;
+    var t = e.touches[0];
+    if (Math.abs(t.clientY - tapY) > TAP_SLOP || Math.abs(t.clientX - tapX) > TAP_SLOP) tapMoved = true;
+  }, { passive: true, capture: true });
+  window.addEventListener('touchend', function () { tapEnd = Date.now(); },
+                          { passive: true, capture: true });
+  document.addEventListener('click', function (e) {
+    if (!tapMoved) return;
+    if (Date.now() - tapEnd > 700) return;    // not this gesture's click
+    e.stopPropagation();
+    e.preventDefault();                       // and a link does not navigate either
+  }, true);
+
   window.addEventListener('touchstart', onStart, { passive: true });
   window.addEventListener('touchmove', onMove, { passive: false });
   window.addEventListener('touchend', onEnd, { passive: true });
