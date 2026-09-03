@@ -345,6 +345,7 @@
         if (da !== db) return da < db ? 1 : -1;
         return a.tag.t - b.tag.t;
       });
+      order_apply();          // fav_sort: his arrangement wins over the date sort
       render();
     });
   }
@@ -388,6 +389,84 @@
     render();
   }
 
+  // ---- fav_sort: the order he arranged, and where it lives -----------------
+  // Favourites come from several sessions, so the order cannot live in any one
+  // session's json — a tag's own `order` means its place within ITS session and
+  // the session pages use it. This is a separate list of tag ids, held in
+  // localStorage for instant effect and mirrored to fav_order.json through the
+  // same worker everything else writes through, so it follows him to a phone.
+  var ORDER_KEY = 'vampjam_fav_order';
+  var ORDER_FILE = 'fav_order.json';
+  var favOrder = [];          // tag ids, the order he put them in
+  var orderDirty = false;
+  try { favOrder = JSON.parse(localStorage.getItem(ORDER_KEY) || '[]') || []; } catch (e) { favOrder = []; }
+  function order_local() {
+    try { localStorage.setItem(ORDER_KEY, JSON.stringify(favOrder)); } catch (e) {}
+  }
+  // order_flush — the remote write. keepalive so it survives the page going away,
+  // which is the whole of "changes should register even if I don't exit the mode".
+  function order_flush(beacon) {
+    if (!orderDirty) return;
+    orderDirty = false;
+    var body = JSON.stringify({ path: ORDER_FILE,
+      content: JSON.stringify({ order: favOrder }, null, 2) + '\n',
+      message: 'reorder favorites' });
+    try {
+      if (beacon && navigator.sendBeacon) {
+        navigator.sendBeacon(SYNC_URL, new Blob([body], { type: 'application/json' }));
+        return;
+      }
+      fetch(SYNC_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: body, keepalive: true }).catch(function () {});
+    } catch (e) {}
+  }
+  var orderTimer = 0;
+  function order_save() {
+    order_local();
+    orderDirty = true;
+    clearTimeout(orderTimer);
+    orderTimer = setTimeout(function () { order_flush(false); }, 900);
+  }
+  // leave_safe — navigating away, backgrounding the tab, or closing it all count
+  // as done. pagehide is the one iOS actually fires.
+  window.addEventListener('pagehide', function () { clearTimeout(orderTimer); order_flush(true); });
+  window.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') { clearTimeout(orderTimer); order_flush(true); }
+  });
+  // order_apply — his arrangement first, in his order; anything he has never
+  // arranged (a favourite hearted since) goes on TOP, newest first, so a new
+  // favourite is never buried at the bottom of a long manual list.
+  function order_apply() {
+    if (!favOrder.length) return;
+    var at = {};
+    favOrder.forEach(function (id, i) { at[id] = i; });
+    var known = [], fresh = [];
+    favs.forEach(function (f) { (at[f.tag.id] === undefined ? fresh : known).push(f); });
+    known.sort(function (a, b) { return at[a.tag.id] - at[b.tag.id]; });
+    favs = fresh.concat(known);
+  }
+  function order_take() {          // read the list back out of the DOM after a drop
+    favOrder = Array.prototype.map.call(listEl.querySelectorAll('.fav_row'),
+      function (r) { return r.dataset.favId; }).filter(Boolean);
+    var by = {};
+    favs.forEach(function (f) { by[f.tag.id] = f; });
+    favs = favOrder.map(function (id) { return by[id]; }).filter(Boolean);
+    order_save();
+  }
+
+  var sorting = false;
+  var sortBtn = document.getElementById('sort_btn');
+  function sort_set(on) {
+    sorting = on;
+    sortBtn.classList.toggle('on', on);
+    sortBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    sortBtn.textContent = on ? 'Done' : 'Reorder';
+    listEl.classList.toggle('sorting', on);
+    if (!on) { clearTimeout(orderTimer); order_flush(false); }
+    render();
+  }
+  sortBtn.addEventListener('click', function () { sort_set(!sorting); });
+
   var suppressNameFocusUntil = 0;   // tap_select: the ghost click after a touch
   function render() {
     listEl.innerHTML = '';
@@ -401,6 +480,35 @@
     favs.forEach(function (f) {
       var row = document.createElement('div');
       row.className = 'fav_row' + (current === f ? ' playing' : '');
+      row.dataset.favId = f.tag.id;          // fav_sort: how the DOM says who it is
+
+      if (sorting) {
+        // fav_sort — one grip, and none of the three buttons that act on the row.
+        // While you are arranging, a mis-tap should move a row, never play one or
+        // un-favourite one.
+        var gr = document.createElement('button');
+        gr.className = 'fav_grip';
+        gr.setAttribute('aria-label', 'Drag to reorder');
+        gr.innerHTML = '&#9776;';            // ☰
+        grip_wire(gr, row);
+        row.appendChild(gr);
+
+        var gm = document.createElement('div');
+        gm.className = 'fav_main';
+        var gn = document.createElement('input');
+        gn.className = 'fav_name';
+        gn.type = 'text'; gn.readOnly = true; gn.value = f.tag.label || '';
+        gm.appendChild(gn);
+        row.appendChild(gm);
+
+        var gd = document.createElement('span');
+        gd.className = 'fav_date';
+        gd.textContent = fmt_date(f.src.date);
+        row.appendChild(gd);
+
+        listEl.appendChild(row);
+        return;
+      }
 
       var pb = document.createElement('button');
       pb.className = 'fav_play_sm';
