@@ -1581,16 +1581,24 @@
         // of auto cannot be animated from 0; it is measured first, then handed
         // back to CSS when the animation is done.
         (function (rw) {
+          var cs = getComputedStyle(rw);
           var h = rw.getBoundingClientRect().height;
+          var pt = cs.paddingTop, pb = cs.paddingBottom;
           rw.classList.add('tag_new');
+          // height:0 alone still leaves the row's padding standing, so it opened
+          // from 14px rather than from nothing. The padding has to collapse too.
           rw.style.height = '0px'; rw.style.minHeight = '0px';
+          rw.style.paddingTop = '0px'; rw.style.paddingBottom = '0px';
           rw.getBoundingClientRect();                       // force the 0 to take
           rw.style.transition = 'height 0.5s cubic-bezier(0.22,0.61,0.36,1), ' +
-                                'min-height 0.5s cubic-bezier(0.22,0.61,0.36,1)';
+                                'min-height 0.5s cubic-bezier(0.22,0.61,0.36,1), ' +
+                                'padding 0.5s cubic-bezier(0.22,0.61,0.36,1)';
           rw.style.height = h + 'px'; rw.style.minHeight = h + 'px';
+          rw.style.paddingTop = pt; rw.style.paddingBottom = pb;
           setTimeout(function () {
             rw.classList.remove('tag_new');
             rw.style.transition = ''; rw.style.height = ''; rw.style.minHeight = '';
+            rw.style.paddingTop = ''; rw.style.paddingBottom = '';
           }, 520);
         })(newRows[ni]);
         var newInp = newRows[ni].querySelector('.tag_label');
