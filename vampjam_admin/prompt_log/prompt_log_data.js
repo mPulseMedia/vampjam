@@ -9,8 +9,52 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "284 thread_focus",
+        id: "285 cache_plan",
         expanded: true,
+        nodes: [
+          { text: "285 cache_plan", children: [
+            { text: "prompt_restate", children: [
+              { text: "On mobile the huge audio files seem to download over and over." },
+              { text: "Can they be buffered so jumping between points, or leaving a session and coming back shortly after, does not refetch?" },
+              { text: "What are the options to cut data use \u2014 mobile matters most, but a fix should suit both." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I think on mobile I\u2019m having to download the huge audio files over and over again and I wonder if we can somehow kind of store them for some period of time in a buffer... loading one session switching to another and then coming back to the first if it\u2019s been just a short period of time maybe that that won\u2019t that first session won\u2019t be emptied from a local Mobile cash is is that possible or what are some options to reduce the data consumption and of course what I care about is on Mobile more than about desktop but I would think it would a solution would apply to both desktop inmobile" }
+            ]},
+            { text: "no_build_this_was_a_question", children: [
+              { text: "measured first, answered second. nothing edited." }
+            ]},
+            { text: "what_I_measured", children: [
+              { text: "faststart: 01-17 and 05-23 have their moov atom at ~99% of the file. the player has to reach the END before it can play or seek at all" },
+              { text: "08-07 v2 is correctly faststart; four release-hosted files I cannot inspect from here" },
+              { text: "17.4 hours of audio, ~970 MB, at 128-190 kbps stereo" },
+              { text: "the page already sets preload=metadata, and already has IndexedDB chunk storage \u2014 used for LOCAL recordings" }
+            ]},
+            { text: "the_honest_no", children: [
+              { text: "iOS Safari will not hold a 50-200 MB media response in its http cache, whatever headers we send. big media fetched by range is largely not retained at all" },
+              { text: "so \u2018set cache-control and it sticks\u2019 is not available at these sizes. the size has to come down, or we hold the bytes ourselves" }
+            ]},
+            { text: "measured_encode_options (180s excerpt, extrapolated)", children: [
+              { text: "64k mono HE-AAC: library 491 MB (from 970). 01-17 25 MB, 05-23 79 MB, 08-07 69 MB" },
+              { text: "48k: library 371 MB. 01-17 19 MB, 05-23 60 MB, 08-07 52 MB" },
+              { text: "32k: library 252 MB. 01-17 13 MB \u2014 small enough that the browser cache would actually keep it" },
+              { text: "for finding highlights 48k mono is fine; cymbals get swirly. keep the masters and add a light rendition" }
+            ]},
+            { text: "recommended_order", children: [
+              { text: "1. faststart on everything \u2014 stream copy, no re-encode, no quality change, one flag" },
+              { text: "2. a light mobile rendition at 48 or 64k mono" },
+              { text: "3. everything onto R2 with immutable cache headers and versioned names (this is move_to_r2, already standing) \u2014 kills the GitHub release redirects too" },
+              { text: "4. only then an IndexedDB keep-last-N cache, reusing the chunk machinery already in session.html" }
+            ]},
+            { text: "waiting_on", children: [
+              { text: "which bitrate, and whether to keep a hi-fi toggle. steps 1 and 2 I can do from the masters in audio/" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "284 thread_focus",
+        expanded: false,
         nodes: [
           { text: "284 thread_focus", children: [
             { text: "prompt_restate", children: [

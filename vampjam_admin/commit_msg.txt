@@ -1,1 +1,1 @@
-cache_plan
+auto_commit
