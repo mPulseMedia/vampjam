@@ -109,26 +109,26 @@
      what the crossfade is), which meant the input was swallowing every tap aimed
      at the date. The lap is a LOOK; the hit belongs to whatever is on top. */
   .fav_date, a.fav_sess { position: relative; z-index: 2; }
+  /* cass_link — the session is a cassette, not its name. The name was a strip of
+     text that mostly repeated ("Sound Union" eight times down the list) and was
+     ellipsised into uselessness anyway; the icon says the same thing in a fixed
+     29px and is a proper target. It still carries the tag id and the timestamp,
+     so it opens the session ON this highlight. Its whole column of width, and
+     the title_lap crossfade that column existed for, go with the text. */
   a.fav_sess {
-    /* title_lap: the column is fixed so the overlap can be measured against it,
-       and the title's fade is a quarter of that column at any screen size. It is
-       22% now rather than 40% because the date left it. */
-    flex: 0 0 22%;
-    color: var(--muted); font-size: 12px; text-align: right;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    /* lap_cross — both sides fade across the same band, so the title dissolves
-       out as the session name dissolves in and either is legible on its own */
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 25%);
-            mask-image: linear-gradient(to right, transparent 0, #000 25%);
-    text-decoration: none; border-bottom: 1px dotted var(--panel_3);
-    padding: 10px 2px; margin: -10px 0; cursor: pointer;
+    flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+    min-width: 41px; min-height: 41px;
+    color: var(--muted); text-decoration: none; border-bottom: none;
+    padding: 0; margin: 0;
   }
-  a.fav_sess:hover { color: var(--fg); border-bottom-color: var(--muted); }
+  a.fav_sess svg { width: 24px; height: 24px; }
+  a.fav_sess:hover { color: var(--fg); }
   a.fav_sess:active { color: var(--accent); }
   .fav_name {
-    /* title_lap: no ellipsis on the title any more — the fade is the ellipsis */
+    /* cass_link: nothing laps over the title any more, so it ellipsises honestly
+       again rather than dissolving into a column that is no longer there */
     width: 100%; background: transparent; border: none; outline: none;
-    text-overflow: clip;
+    overflow: hidden; text-overflow: ellipsis;
     color: var(--fg); font: inherit; font-size: 17px; padding: 2px 0;
     border-bottom: 1px dashed transparent;
   }
@@ -520,6 +520,14 @@
   sortBtn.addEventListener('click', function () { sort_set(!sorting); });
 
   var suppressNameFocusUntil = 0;   // tap_select: the ghost click after a touch
+  // cass_link — lifted verbatim from the session rows and the nav button, because
+  // it must read as the same object in all three places
+  var ICON_CASS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/>' +
+    '<circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/>' +
+    '<path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg>';
+
   function render() {
     listEl.innerHTML = '';
     if (!favs.length) {
@@ -626,8 +634,11 @@
 
       var sess = document.createElement('a');
       sess.className = 'fav_sess';
-      // the link carries the session's NAME only; the date left for its own column
-      sess.textContent = (f.src.name || '').replace(/^\d{4}-\d{2}-\d{2}\s*/, '');
+      // cass_link — the same cassette the session rows and the nav wear, so the
+      // eye reads it as "a session" without being told. No text: the name
+      // repeated down the whole list and told you nothing the date did not.
+      sess.innerHTML = ICON_CASS;
+      sess.setAttribute('aria-label', 'Open this moment in ' + f.src.name);
       sess.title = 'Open this moment in ' + f.src.name;
       sess.href = f.src.page + '?tag=' + encodeURIComponent(f.tag.id) +
                   '&t=' + Math.max(0, Math.round(f.tag.t));
