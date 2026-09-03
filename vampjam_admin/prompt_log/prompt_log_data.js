@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "297 edit_wide",
+        id: "298 edit_wide_fav",
         expanded: true,
+        nodes: [
+          { text: "298 edit_wide_fav", children: [
+            { text: "prompt_restate", children: [
+              { text: "Apply the last change \u2014 the field widening while you edit \u2014 to the favourites rows too." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "apply this last change to rows on favorites too" }
+            ]},
+            { text: "one_difference_in_the_selector", children: [
+              { text: "on a favourite the field is wrapped in .fav_main rather than being a direct child of the row, so the sibling run starts from the WRAPPER not the field" },
+              { text: "the controls that step aside are the cassette, the share and the heart" }
+            ]},
+            { text: "measured", children: [
+              { text: "167px to 295px of a 358px row, ending 10px from the edge" },
+              { text: "10 is the fav row\u2019s own padding; the session row\u2019s is 12. each keeps its own gutter rather than being handed a shared number" },
+              { text: "restores exactly on blur" }
+            ]},
+            { text: "and_reorder_cannot_collide_with_it", children: [
+              { text: "in reorder mode the field is readOnly and nothing in the row takes pointer events, so it can never be focused there" },
+              { text: "checked rather than assumed" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "297 edit_wide",
+        expanded: false,
         nodes: [
           { text: "297 edit_wide", children: [
             { text: "prompt_restate", children: [

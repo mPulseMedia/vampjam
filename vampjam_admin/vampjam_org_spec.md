@@ -3523,7 +3523,18 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   One rule in site.css covers all nine pages, because .tag_label and the row are the same shape
   everywhere. site.css 5 → 6. New suite vj_293 measures the field before, during and after.
   Still no new trace.
-- NEXT → add entry 294 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 294 edit_wide_fav · b294 · site.css — edit_wide on the favourites rows too.
+  Same idea, one difference that matters in the selector: on a favourite the field is wrapped in
+  .fav_main rather than being a direct child of the row, so the sibling run has to start from the
+  WRAPPER, not from the field. The controls that step aside are the cassette, the share and the
+  heart — again all things you do to a favourite you have finished naming.
+  Measured on a 390px phone: 167px to 295px of a 358px row, ending 10px from the edge, which is the
+  fav row's own padding (the session row's is 12px — each keeps its own gutter rather than being
+  given a shared number). Restores exactly on blur.
+  reorder mode cannot collide with it: in that mode the field is readOnly and nothing in the row
+  takes pointer events, so it can never be focused there. Checked rather than assumed.
+  site.css 6 → 7. New suite vj_294. Still no new trace.
+- NEXT → add entry 295 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
