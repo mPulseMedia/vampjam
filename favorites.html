@@ -324,6 +324,38 @@
     }).then(function (r) { if (!r.ok) throw new Error('sync ' + r.status); return r.json(); });
   }
 
+  // date_cycle — four ways to write the same date, tap to move through them, and
+  // the page remembers which. It is the same idea as tapping a highlight's title
+  // on a session page: the thing you tap is the thing that changes, no control
+  // needed beside it. The mode is per-page, not per-row, because a list where
+  // every row states its date differently is a list you cannot scan.
+  var DATE_KEY = 'vampjam_fav_datefmt';
+  var DATE_MODE = 0;
+  try { DATE_MODE = parseInt(localStorage.getItem(DATE_KEY) || '0', 10) || 0; } catch (e) {}
+  var MON_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmt_date(iso) {
+    if (!iso) return '';
+    var p = iso.split('-'), y = +p[0], m = +p[1], d = +p[2];
+    if (!y || !m || !d) return iso;
+    if (DATE_MODE === 0) return MON_SHORT[m - 1] + ' ' + d;          // Jan 17
+    if (DATE_MODE === 1) return m + '/' + d + '/' + String(y).slice(2);  // 1/17/26
+    if (DATE_MODE === 2) {                                           // 8mo — how long ago
+      var then = new Date(y, m - 1, d), now = new Date();
+      var mo = (now.getFullYear() - y) * 12 + (now.getMonth() - (m - 1));
+      if (now.getDate() < d) mo -= 1;
+      if (mo < 1) { var dd = Math.max(0, Math.round((now - then) / 86400000));
+                    return dd < 1 ? 'today' : dd + 'd'; }
+      return mo < 12 ? mo + 'mo' : (Math.floor(mo / 12) + 'y');
+    }
+    return iso;                                                      // 2026-01-17
+  }
+  function date_next() {
+    DATE_MODE = (DATE_MODE + 1) % 4;
+    try { localStorage.setItem(DATE_KEY, String(DATE_MODE)); } catch (e) {}
+    render();
+  }
+
+  var suppressNameFocusUntil = 0;   // tap_select: the ghost click after a touch
   function render() {
     listEl.innerHTML = '';
     if (!favs.length) {
@@ -352,6 +384,31 @@
       name.className = 'fav_name';
       name.type = 'text';
       name.value = f.tag.label || '';
+      // tap_select — copied from the session pages, because it is the same
+      // gesture on the same kind of row. A tap on a row that is NOT the current
+      // one plays it and does not open the keyboard; the row is then current, so
+      // the NEXT tap lands on an editable field and iOS opens the keyboard by
+      // itself. iOS decides by the state at the START of the tap, which is why
+      // readOnly is set at render rather than inside the handler.
+      name.readOnly = (current !== f);
+      var nameTouched = false;
+      function nameTap() {
+        if (!name.readOnly) return;          // current: the native tap is the edit
+        suppressNameFocusUntil = Date.now() + 450;
+        play_fav(f);                         // otherwise select + play; render unlocks it
+      }
+      name.addEventListener('pointerdown', function (e) {
+        if (Date.now() < suppressNameFocusUntil) e.preventDefault();   // no focus from the ghost click
+      });
+      name.addEventListener('focus', function () {
+        if (Date.now() < suppressNameFocusUntil) { try { name.blur(); } catch (e) {} }
+      });
+      name.addEventListener('touchend', function () { nameTouched = true; nameTap(); });
+      name.addEventListener('click', function () {
+        if (nameTouched) { nameTouched = false; return; }   // touch already handled it
+        nameTap();
+      });
+      name.addEventListener('blur', function () { name.readOnly = (current !== f); });
       name.addEventListener('change', function () {
         f.tag.label = name.value.trim();
         write_back(f.src, 'rename fav ' + (f.tag.label || f.tag.id))
@@ -365,9 +422,19 @@
       // fav_jump: and it takes you there, to this highlight. The tag's OWN id
       // goes on the link, not just its time, so it still lands on the right one
       // after the highlight has been nudged or a neighbour has moved next to it.
+      // date_thin — the date is its own narrow column and it is NOT the link, so a
+      // tap on it cycles the format instead of navigating away
+      var dt = document.createElement('span');
+      dt.className = 'fav_date';
+      dt.textContent = fmt_date(f.src.date);
+      dt.title = f.src.date + ' — tap to change how dates read';
+      dt.addEventListener('click', function (e) { e.stopPropagation(); date_next(); });
+      row.appendChild(dt);
+
       var sess = document.createElement('a');
       sess.className = 'fav_sess';
-      sess.textContent = f.src.name;
+      // the link carries the session's NAME only; the date left for its own column
+      sess.textContent = (f.src.name || '').replace(/^\d{4}-\d{2}-\d{2}\s*/, '');
       sess.title = 'Open this moment in ' + f.src.name;
       sess.href = f.src.page + '?tag=' + encodeURIComponent(f.tag.id) +
                   '&t=' + Math.max(0, Math.round(f.tag.t));
