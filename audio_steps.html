@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>vampsf — put the light audio up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css?v=3">
+<script src="theme.js?v=2"></script>
+<script src="sessions.js?v=129"></script>
+<script src="drawer.js?v=141"></script>
+<style>
+  h1 { font-size: 20px; margin: 14px 0 4px; }
+  .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+  .why { background: var(--panel_2); border: 1px solid var(--panel_3); border-radius: 12px;
+         padding: 12px 14px; margin: 14px 0 18px; font-size: 13.5px; line-height: 1.55; }
+  .why b { color: var(--fg); }
+  .section-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+                   color: var(--muted); margin: 22px 0 8px; }
+  ol.steps { margin: 0; padding-left: 22px; }
+  ol.steps > li { margin: 0 0 22px; }
+  .step_title { font-weight: 600; font-size: 15px; margin-bottom: 6px; }
+  ol.steps ul { margin: 6px 0 0; padding-left: 18px; }
+  ol.steps ul li { margin: 0 0 6px; font-size: 13.5px; line-height: 1.5; color: var(--muted); }
+  ol.steps ul li b { color: var(--fg); font-weight: 600; }
+  /* svg_step — the picture takes the slot where words would be, and the marker
+     sits at its top left rather than beside its last line */
+  li > svg.shot { display: block; width: 100%; max-width: 360px; margin: 10px 0 4px;
+                  border-radius: 10px; }
+  ol.steps ul li:has(> svg.shot) { list-style: none; margin-left: -18px; }
+  .files { background: var(--panel_2); border: 1px solid var(--panel_3); border-radius: 10px;
+           padding: 10px 12px; margin: 8px 0; font-size: 12.5px; line-height: 1.7;
+           font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--fg);
+           overflow-x: auto; white-space: pre; }
+  .copy_row { display: flex; gap: 8px; align-items: center; margin: 8px 0 2px; }
+  .copy_btn { background: var(--accent); color: var(--on_accent, #fff); border: none;
+              border-radius: 999px; padding: 8px 15px; font-size: 13px; cursor: pointer; }
+  .note { font-size: 12.5px; color: var(--muted); font-style: italic; margin-top: 6px; }
+  #toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%);
+           background: var(--fg); color: var(--bg); padding: 9px 16px; border-radius: 999px;
+           font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  #toast.show { opacity: 0.94; }
+</style>
+</head>
+<body>
+
+<div class="session_drawer" id="session_drawer"><div class="jam_menu"></div></div>
+
+<header class="brand" style="position:relative;">
+<button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
+<button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
+  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
+</header>
+
+<h1>Four steps — then tell me it's up</h1>
+<div class="sub">Six files are sitting on your Mac. They need to go into the R2 bucket. I can't reach R2 from here, so this part is yours; everything after it is mine.</div>
+
+<div class="why">
+  <b>What this fixes.</b> Two of your sessions had the audio index at the very end of the file,
+  so the player had to reach the end before it could play or seek at all. That's fixed in these
+  copies. And each session now has a <b>light</b> version at about half the size, for when you're
+  on the phone away from wifi.
+  <br><br>
+  <b>Nothing breaks while you do this.</b> The pages still point at the files that are up there
+  now. I only switch them over after you tell me these have landed.
+</div>
+
+<div class="section-label">The six files</div>
+<div class="files">2026-01-17_bazaar_cafe_64k.m4a          25 MB
+2026-01-17_bazaar_cafe_hifi.m4a         48 MB
+2026-05-23_bazaar_cafe_64k.m4a          79 MB
+2026-05-23_bazaar_cafe_hifi.m4a        153 MB
+Sound.Union.2026-08-07.v2_64k.m4a       69 MB
+Sound.Union.2026-08-07.v2_hifi.m4a     136 MB</div>
+<div class="note">510 MB in total. On a slow connection this is a sit-down, not a coffee.</div>
+
+<div class="section-label">Steps</div>
+
+<ol class="steps">
+  <li>
+    <div class="step_title">Open your Mac's folder with the six files in it</div>
+    <ul class="sub">
+      <li>In <b>Finder</b>, press <b>command shift G</b>. A small box opens at the top of the window.</li>
+      <li>Paste the path below into it and press <b>return</b>.</li>
+      <li>Six files appear. Leave this window open — you'll drag out of it in step 4.</li>
+      <li>
+        <svg class="shot" viewBox="0 0 360 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A Finder window listing the six files">
+          <rect x="0.5" y="0.5" width="359" height="149" rx="8" fill="#fbfbf9" stroke="#c9c9c4"/>
+          <rect x="0.5" y="0.5" width="359" height="26" rx="8" fill="#efeeea" stroke="#c9c9c4"/>
+          <circle cx="14" cy="13" r="4" fill="#e0736b"/><circle cx="28" cy="13" r="4" fill="#e2b457"/><circle cx="42" cy="13" r="4" fill="#8fc07a"/>
+          <text x="180" y="17" font-family="-apple-system,system-ui,sans-serif" font-size="10.5" fill="#5c5c58" text-anchor="middle">thin</text>
+          <g font-family="ui-monospace,Menlo,monospace" font-size="8.6" fill="#2b2b28">
+            <text x="16" y="46">2026-01-17_bazaar_cafe_64k.m4a</text>
+            <text x="16" y="62">2026-01-17_bazaar_cafe_hifi.m4a</text>
+            <text x="16" y="78">2026-05-23_bazaar_cafe_64k.m4a</text>
+            <text x="16" y="94">2026-05-23_bazaar_cafe_hifi.m4a</text>
+            <text x="16" y="110">Sound.Union.2026-08-07.v2_64k.m4a</text>
+            <text x="16" y="126">Sound.Union.2026-08-07.v2_hifi.m4a</text>
+          </g>
+          <rect x="8" y="34" width="344" height="100" rx="6" fill="none" stroke="#d1242f" stroke-width="2"/>
+        </svg>
+      </li>
+    </ul>
+    <div class="copy_row">
+      <button class="copy_btn" data-copy="~/claude_cowork/vampjam/audio/thin">Copy the path</button>
+      <span class="note" style="margin:0">~/claude_cowork/vampjam/audio/thin</span>
+    </div>
+  </li>
+
+  <li>
+    <div class="step_title">Sign in to Cloudflare</div>
+    <ul class="sub">
+      <li>Go to <a href="https://dash.cloudflare.com" target="_blank" rel="noopener">dash.cloudflare.com</a>.</li>
+      <li>If it asks you to sign in, use the same account the bucket is on.</li>
+      <li>If a code is texted or emailed to you, that's the two-factor step — enter it.</li>
+      <li>You land on the account home, not on R2. That's expected; the next step gets you there.</li>
+    </ul>
+  </li>
+
+  <li>
+    <div class="step_title">Open the bucket</div>
+    <ul class="sub">
+      <li>In the <b>left sidebar</b>, click <b>Storage &amp; databases</b>. It sits under the <b>Build</b> heading.</li>
+      <li>Click <b>R2 Object Storage</b> in the list that opens under it.</li>
+      <li>Your bucket appears as a row in the middle of the page. Click its name.</li>
+      <li>You land on the bucket's <b>Objects</b> tab, listing the files already up there.</li>
+      <li>
+        <svg class="shot" viewBox="0 0 360 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The Cloudflare dashboard with Storage and databases in the left sidebar">
+          <rect x="0.5" y="0.5" width="359" height="189" rx="8" fill="#ffffff" stroke="#c9c9c4"/>
+          <rect x="0.5" y="0.5" width="359" height="24" rx="8" fill="#f6821f" fill-opacity="0.12" stroke="#c9c9c4"/>
+          <text x="14" y="16" font-family="-apple-system,system-ui,sans-serif" font-size="10" font-weight="600" fill="#8a5a1a">Cloudflare</text>
+          <rect x="0.5" y="24.5" width="118" height="165" fill="#faf9f7" stroke="#e2e1dc"/>
+          <g font-family="-apple-system,system-ui,sans-serif" font-size="9.6" fill="#5c5c58">
+            <text x="14" y="44">Account Home</text>
+            <text x="14" y="66" font-size="8.4" fill="#9a9a94" letter-spacing="1">BUILD</text>
+            <text x="14" y="84" fill="#2b2b28" font-weight="600">Storage &amp; databases</text>
+            <text x="14" y="104">Compute (Workers)</text>
+            <text x="14" y="124">AI</text>
+            <text x="14" y="150" font-size="8.4" fill="#9a9a94" letter-spacing="1">MANAGE</text>
+            <text x="14" y="168">Domains</text>
+          </g>
+          <g font-family="-apple-system,system-ui,sans-serif" font-size="9.6" fill="#9a9a94">
+            <text x="132" y="52">Pick a product from the left</text>
+          </g>
+          <rect x="8" y="74" width="104" height="16" rx="4" fill="none" stroke="#d1242f" stroke-width="2"/>
+        </svg>
+      </li>
+    </ul>
+    <div class="note">Drawn from Cloudflare's own documentation, not from your screen — I haven't seen your dashboard. If it doesn't look like this, send me a screenshot and I'll redraw it.</div>
+  </li>
+
+  <li>
+    <div class="step_title">Drag the six files onto the Objects list</div>
+    <ul class="sub">
+      <li>Put the Finder window from step 1 beside the browser.</li>
+      <li>Select all six files: click the first, then <b>shift click</b> the last.</li>
+      <li>Drag them onto the middle of the <b>Objects</b> list and let go.</li>
+      <li>An upload panel counts them off. Wait until all six say they're done.</li>
+      <li>If dragging doesn't take, click the <b>Upload</b> button at the top right of the list and choose the files instead.</li>
+      <li>
+        <svg class="shot" viewBox="0 0 360 175" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The bucket's Objects tab with the Upload button at the top right">
+          <rect x="0.5" y="0.5" width="359" height="174" rx="8" fill="#ffffff" stroke="#c9c9c4"/>
+          <g font-family="-apple-system,system-ui,sans-serif" font-size="10.5" fill="#2b2b28">
+            <text x="14" y="24" font-weight="600">vampjam</text>
+          </g>
+          <g font-family="-apple-system,system-ui,sans-serif" font-size="9.6">
+            <text x="14" y="46" fill="#2b2b28" font-weight="600">Objects</text>
+            <text x="66" y="46" fill="#9a9a94">Settings</text>
+            <text x="120" y="46" fill="#9a9a94">Metrics</text>
+          </g>
+          <line x1="14" y1="52" x2="46" y2="52" stroke="#f6821f" stroke-width="2"/>
+          <line x1="14" y1="52" x2="346" y2="52" stroke="#e2e1dc"/>
+          <rect x="278" y="14" width="66" height="20" rx="5" fill="#f6821f" fill-opacity="0.14" stroke="#d68a3a"/>
+          <text x="311" y="28" font-family="-apple-system,system-ui,sans-serif" font-size="9.6" fill="#8a5a1a" text-anchor="middle">Upload</text>
+          <g font-family="ui-monospace,Menlo,monospace" font-size="8.4" fill="#5c5c58">
+            <text x="16" y="72">2026-01-17_bazaar_cafe.m4a</text>
+            <text x="16" y="90">Sound.Union.2026-08-07.v2.m4a</text>
+            <text x="16" y="108">2026_08_14_sound_union.m4a</text>
+          </g>
+          <rect x="10" y="118" width="336" height="46" rx="7" fill="#f6821f" fill-opacity="0.05" stroke="#d68a3a" stroke-dasharray="5 4"/>
+          <text x="178" y="146" font-family="-apple-system,system-ui,sans-serif" font-size="10" fill="#8a5a1a" text-anchor="middle">drop the six here</text>
+          <rect x="6" y="114" width="344" height="54" rx="9" fill="none" stroke="#d1242f" stroke-width="2"/>
+        </svg>
+      </li>
+    </ul>
+    <div class="note">Drawn from Cloudflare's own documentation, not from your screen.</div>
+  </li>
+</ol>
+
+<div class="section-label">Then</div>
+<div class="why">
+  Tell me <b>"uploaded"</b> and I'll do the rest: point each session at its light file, add the
+  hi-fi toggle to the player, and set the long cache headers so a file you've heard once doesn't
+  come down twice.
+  <br><br>
+  Nothing on the site changes until then. If you stop after step 3, nothing is broken.
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function () {
+  var t = document.getElementById('toast');
+  function toast(m) { t.textContent = m; t.classList.add('show');
+    setTimeout(function () { t.classList.remove('show'); }, 1600); }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-copy]'), function (b) {
+    b.addEventListener('click', function () {
+      var v = b.getAttribute('data-copy');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(v).then(function () { toast('Copied'); },
+                                             function () { toast('Copy failed'); });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = v; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); toast('Copied'); } catch (e) { toast('Copy failed'); }
+        document.body.removeChild(ta);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
