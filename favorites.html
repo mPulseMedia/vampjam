@@ -93,28 +93,9 @@
      landing on this very highlight. It sits where a thumb already rests, so it
      gets a real tap target and something to press against rather than reading as
      a caption you happen to be able to hit. */
-  /* date_thin — the date is its own column now and a narrow one. It used to ride
-     inside the session link as "2026-01-17 Bazaar Cafe" in a fixed 40% of the
-     row, which spent most of the width on the part that repeats. The date is a
-     stamp, not a label: it wants to be short, and tapping it changes how short. */
-  .fav_date {
-    flex: 0 0 auto; min-width: 3.4em; text-align: right;
-    color: var(--muted); font-size: 12px; white-space: nowrap;
-    padding: 10px 2px; margin: -10px 0; cursor: pointer;
-    -webkit-user-select: none; user-select: none;
-    border-bottom: 1px dotted transparent;
-  }
-  .fav_date:active { color: var(--accent); }
-  /* lap_hit — the title's field laps over these two columns on purpose (that is
-     what the crossfade is), which meant the input was swallowing every tap aimed
-     at the date. The lap is a LOOK; the hit belongs to whatever is on top. */
-  .fav_date, a.fav_sess { position: relative; z-index: 2; }
-  /* cass_link — the session is a cassette, not its name. The name was a strip of
-     text that mostly repeated ("Sound Union" eight times down the list) and was
-     ellipsised into uselessness anyway; the icon says the same thing in a fixed
-     29px and is a proper target. It still carries the tag id and the timestamp,
-     so it opens the session ON this highlight. Its whole column of width, and
-     the title_lap crossfade that column existed for, go with the text. */
+  /* lap_hit — the cassette sits above the title's field, which laps no further
+     but still shares the line */
+  a.fav_sess { position: relative; z-index: 2; }
   a.fav_sess {
     flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
     min-width: 34px; min-height: 41px;
@@ -361,163 +342,14 @@
     }).then(function (r) { if (!r.ok) throw new Error('sync ' + r.status); return r.json(); });
   }
 
-  // date_cycle — four ways to write the same date, tap to move through them, and
-  // the page remembers which. It is the same idea as tapping a highlight's title
-  // on a session page: the thing you tap is the thing that changes, no control
-  // needed beside it. The mode is per-page, not per-row, because a list where
-  // every row states its date differently is a list you cannot scan.
-  var DATE_KEY = 'vampjam_fav_datefmt';
-  var DATE_MODE = 0;
-  try { DATE_MODE = parseInt(localStorage.getItem(DATE_KEY) || '0', 10) || 0; } catch (e) {}
-  var MON_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function fmt_date(iso) {
-    if (!iso) return '';
-    var p = iso.split('-'), y = +p[0], m = +p[1], d = +p[2];
-    if (!y || !m || !d) return iso;
-    if (DATE_MODE === 0) return MON_SHORT[m - 1] + ' ' + d;          // Jan 17
-    if (DATE_MODE === 1) return m + '/' + d + '/' + String(y).slice(2);  // 1/17/26
-    if (DATE_MODE === 2) {                                           // 8mo — how long ago
-      var then = new Date(y, m - 1, d), now = new Date();
-      var mo = (now.getFullYear() - y) * 12 + (now.getMonth() - (m - 1));
-      if (now.getDate() < d) mo -= 1;
-      if (mo < 1) { var dd = Math.max(0, Math.round((now - then) / 86400000));
-                    return dd < 1 ? 'today' : dd + 'd'; }
-      return mo < 12 ? mo + 'mo' : (Math.floor(mo / 12) + 'y');
-    }
-    return iso;                                                      // 2026-01-17
-  }
-  function date_next() {
-    DATE_MODE = (DATE_MODE + 1) % 4;
-    try { localStorage.setItem(DATE_KEY, String(DATE_MODE)); } catch (e) {}
-    render();
-  }
-
-  // ---- fav_sort: the order he arranged, and where it lives -----------------
-  // Favourites come from several sessions, so the order cannot live in any one
-  // session's json — a tag's own `order` means its place within ITS session and
-  // the session pages use it. This is a separate list of tag ids, held in
-  // localStorage for instant effect and mirrored to fav_order.json through the
-  // same worker everything else writes through, so it follows him to a phone.
-  var ORDER_KEY = 'vampjam_fav_order';
-  var ORDER_FILE = 'fav_order.json';
-  var favOrder = [];          // tag ids, the order he put them in
-  var orderDirty = false;
-  try { favOrder = JSON.parse(localStorage.getItem(ORDER_KEY) || '[]') || []; } catch (e) { favOrder = []; }
-  function order_local() {
-    try { localStorage.setItem(ORDER_KEY, JSON.stringify(favOrder)); } catch (e) {}
-  }
-  // order_flush — the remote write. keepalive so it survives the page going away,
-  // which is the whole of "changes should register even if I don't exit the mode".
-  function order_flush(beacon) {
-    if (!orderDirty) return;
-    orderDirty = false;
-    var body = JSON.stringify({ path: ORDER_FILE,
-      content: JSON.stringify({ order: favOrder }, null, 2) + '\n',
-      message: 'reorder favorites' });
-    try {
-      if (beacon && navigator.sendBeacon) {
-        navigator.sendBeacon(SYNC_URL, new Blob([body], { type: 'application/json' }));
-        return;
-      }
-      fetch(SYNC_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: body, keepalive: true }).catch(function () {});
-    } catch (e) {}
-  }
-  var orderTimer = 0;
-  function order_save() {
-    order_local();
-    orderDirty = true;
-    clearTimeout(orderTimer);
-    orderTimer = setTimeout(function () { order_flush(false); }, 900);
-  }
-  // leave_safe — navigating away, backgrounding the tab, or closing it all count
-  // as done. pagehide is the one iOS actually fires.
-  window.addEventListener('pagehide', function () { clearTimeout(orderTimer); order_flush(true); });
-  window.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'hidden') { clearTimeout(orderTimer); order_flush(true); }
-  });
-  // order_apply — his arrangement first, in his order; anything he has never
-  // arranged (a favourite hearted since) goes on TOP, newest first, so a new
-  // favourite is never buried at the bottom of a long manual list.
-  function order_apply() {
-    if (!favOrder.length) return;
-    var at = {};
-    favOrder.forEach(function (id, i) { at[id] = i; });
-    var known = [], fresh = [];
-    favs.forEach(function (f) { (at[f.tag.id] === undefined ? fresh : known).push(f); });
-    known.sort(function (a, b) { return at[a.tag.id] - at[b.tag.id]; });
-    favs = fresh.concat(known);
-  }
-  function order_take() {          // read the list back out of the DOM after a drop
-    favOrder = Array.prototype.map.call(listEl.querySelectorAll('.fav_row'),
-      function (r) { return r.dataset.favId; }).filter(Boolean);
-    var by = {};
-    favs.forEach(function (f) { by[f.tag.id] = f; });
-    favs = favOrder.map(function (id) { return by[id]; }).filter(Boolean);
-    order_save();
-  }
-
-  // grip_wire — the drag. Pointer events, not HTML5 drag-and-drop, because iOS
-  // Safari does not fire dragstart at all: on a phone the native API simply does
-  // not exist, so the only thing that works is doing it by hand.
-  //
-  // The dragged row is lifted with a transform and the rows it passes are moved
-  // in the DOM as it crosses their midpoints, so what you see IS the new order
-  // and the drop has nothing left to compute — it just reads the list back.
-  function grip_wire(grip, row) {
-    grip.addEventListener('pointerdown', function (e) {
-      if (!sorting) return;
-      e.preventDefault();
-      try { grip.setPointerCapture(e.pointerId); } catch (eC) {}
-      var startY = e.clientY, dy = 0;
-      var h = row.getBoundingClientRect().height;
-      row.classList.add('dragging');
-
-      function move(ev) {
-        dy = ev.clientY - startY;
-        row.style.transform = 'translateY(' + dy + 'px)';
-        var mid = row.getBoundingClientRect().top + h / 2;
-        var prev = row.previousElementSibling, next = row.nextElementSibling;
-        // crossed the row above: put ourselves before it
-        if (prev && mid < prev.getBoundingClientRect().top + prev.getBoundingClientRect().height / 2) {
-          startY -= prev.getBoundingClientRect().height;
-          row.style.transform = 'translateY(' + (ev.clientY - startY) + 'px)';
-          listEl.insertBefore(row, prev);
-        // crossed the row below: put ourselves after it
-        } else if (next && mid > next.getBoundingClientRect().top + next.getBoundingClientRect().height / 2) {
-          startY += next.getBoundingClientRect().height;
-          row.style.transform = 'translateY(' + (ev.clientY - startY) + 'px)';
-          listEl.insertBefore(next, row);
-        }
-      }
-      function up(ev) {
-        grip.removeEventListener('pointermove', move);
-        grip.removeEventListener('pointerup', up);
-        grip.removeEventListener('pointercancel', up);
-        try { grip.releasePointerCapture(ev.pointerId); } catch (eR) {}
-        row.classList.remove('dragging');
-        row.style.transform = '';
-        order_take();          // the DOM is the answer; write it down
-        toast('Order saved');
-      }
-      grip.addEventListener('pointermove', move);
-      grip.addEventListener('pointerup', up);
-      grip.addEventListener('pointercancel', up);
-    });
-  }
-
-  var sorting = false;
-  var sortBtn = document.getElementById('sort_btn');
-  function sort_set(on) {
-    sorting = on;
-    sortBtn.classList.toggle('on', on);
-    sortBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    sortBtn.textContent = on ? 'Done' : 'Reorder';
-    listEl.classList.toggle('sorting', on);
-    if (!on) { clearTimeout(orderTimer); order_flush(false); }
-    render();
-  }
-  sortBtn.addEventListener('click', function () { sort_set(!sorting); });
+  // date_gone — the date and its four formats are OUT, two builds after going in.
+  // He asked for a narrow cycling date and then asked for it gone; both are fair,
+  // and the second is the better row. The cassette says which session, the title
+  // says which moment, and a favourite is a moment — the day it happened on was
+  // the least of the three. Removed rather than hidden: fmt_date, date_next, the
+  // four formats and the remembered mode are all gone, because a display nothing
+  // displays is a thing the next reader has to work out the deadness of.
+  // (The key it used, vampjam_fav_datefmt, is simply abandoned in his browser.)
 
   var suppressNameFocusUntil = 0;   // tap_select: the ghost click after a touch
   // cass_link — lifted verbatim from the session rows and the nav button, because
@@ -560,11 +392,6 @@
         gn.type = 'text'; gn.readOnly = true; gn.value = f.tag.label || '';
         gm.appendChild(gn);
         row.appendChild(gm);
-
-        var gd = document.createElement('span');
-        gd.className = 'fav_date';
-        gd.textContent = fmt_date(f.src.date);
-        row.appendChild(gd);
 
         listEl.appendChild(row);
         return;
@@ -623,15 +450,6 @@
       // fav_jump: and it takes you there, to this highlight. The tag's OWN id
       // goes on the link, not just its time, so it still lands on the right one
       // after the highlight has been nudged or a neighbour has moved next to it.
-      // date_thin — the date is its own narrow column and it is NOT the link, so a
-      // tap on it cycles the format instead of navigating away
-      var dt = document.createElement('span');
-      dt.className = 'fav_date';
-      dt.textContent = fmt_date(f.src.date);
-      dt.title = f.src.date + ' — tap to change how dates read';
-      dt.addEventListener('click', function (e) { e.stopPropagation(); date_next(); });
-      row.appendChild(dt);
-
       var sess = document.createElement('a');
       sess.className = 'fav_sess';
       // cass_link — the same cassette the session rows and the nav wear, so the
