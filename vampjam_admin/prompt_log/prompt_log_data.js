@@ -9,8 +9,26 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "285 cache_plan",
+        id: "286 cache_terse",
         expanded: true,
+        nodes: [
+          { text: "286 cache_terse", children: [
+            { text: "prompt_restate", children: [
+              { text: "Same answer, less text." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "give me that again with less text" }
+            ]},
+            { text: "result", children: [
+              { text: "285 re-rendered short. no new findings, nothing edited." },
+              { text: "noted for future replies here: shorter." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "285 cache_plan",
+        expanded: false,
         nodes: [
           { text: "285 cache_plan", children: [
             { text: "prompt_restate", children: [
