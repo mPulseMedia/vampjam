@@ -3506,7 +3506,24 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   of intent each rather than a copy of the keyframes.
   cache_bump: drawer.js 142 → 143, site.css 4 → 5. New suite vj_292 measures the growth frame by
   frame and checks the favourites header order and the absent clock. Still no new trace.
-- NEXT → add entry 293 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 293 edit_wide · b293 · site.css — while you are typing a highlight's title, the field takes the
+  whole row.
+  Everything AFTER the field steps out of the way while it has focus: the timestamp, the end
+  controls, the heart, the share, the remove. They are things you do to a highlight you have
+  finished naming, and with the keyboard up they were spending the width the words needed. The
+  number and the play button stay put, deliberately — hiding those too would shift the text
+  sideways at the moment you start typing, which is exactly when you are looking at it.
+  Measured on a 390px phone: the field goes 123px to 267px of a 358px row and ends 12px from the
+  right edge, which is the row's own padding — the "just shy" is not a number I picked, it is the
+  row's existing gutter. Everything restores exactly on blur.
+  Two small choices in the selector. :focus-within rather than :has(), which is newer than this
+  needs to be. And :not(:focus) on the hidden siblings, so a control that itself has focus is never
+  the thing that vanishes out from under it — on a phone nothing tabs, but the rule should not have
+  a state where focus lands on something it then removes.
+  One rule in site.css covers all nine pages, because .tag_label and the row are the same shape
+  everywhere. site.css 5 → 6. New suite vj_293 measures the field before, during and after.
+  Still no new trace.
+- NEXT → add entry 294 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

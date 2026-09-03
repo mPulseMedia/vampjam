@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "296 row_grow",
+        id: "297 edit_wide",
         expanded: true,
+        nodes: [
+          { text: "297 edit_wide", children: [
+            { text: "prompt_restate", children: [
+              { text: "When editing a highlight, the text box should reach all the way right, just shy of the row\u2019s edge." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When I click to edit a highlight, make the width of the text box reach all the way to the right, just shy of the edge of the row." }
+            ]},
+            { text: "what_moves", children: [
+              { text: "everything AFTER the field steps aside while it has focus \u2014 the timestamp, the end controls, the heart, the share, the remove" },
+              { text: "they are things you do to a highlight you have finished naming, and with the keyboard up they were spending the width the words needed" },
+              { text: "the number and play button stay. hiding those too would shift the text sideways at the moment you start typing \u2014 exactly when you are looking at it" }
+            ]},
+            { text: "measured", children: [
+              { text: "the field goes 123px to 267px of a 358px row" },
+              { text: "it ends 12px from the right edge, which is the row\u2019s own padding \u2014 the \u2018just shy\u2019 is not a number I picked, it is the gutter that was already there" },
+              { text: "everything restores exactly on blur" }
+            ]},
+            { text: "two_small_choices", children: [
+              { text: ":focus-within rather than :has(), which is newer than this needs to be" },
+              { text: ":not(:focus) on the hidden siblings, so a control that itself has focus is never the thing that vanishes out from under it" }
+            ]},
+            { text: "one_rule_nine_pages", children: [
+              { text: "it lives in site.css \u2014 the row is the same shape everywhere" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "296 row_grow",
+        expanded: false,
         nodes: [
           { text: "296 row_grow", children: [
             { text: "prompt_restate", children: [
