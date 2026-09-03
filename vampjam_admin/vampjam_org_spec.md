@@ -3268,7 +3268,36 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   every file is one git mv from home.
   Root json is now ten files: eight live session sidecars, the worker-owned registry, and the nudge
   corpus. No page behaviour changed; no suite. Still no new trace.
-- NEXT → add entry 284 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 284 fav_row · b284 · favorites.html + site.css — the favourites rows pick up the session rows'
+  behaviour: a two-tap title, a narrow date that cycles, and the same play triangle.
+  tap_select, copied from the session pages because it is the same gesture on the same kind of row.
+  A tap on a row that is NOT the current one plays it and does NOT open the keyboard; that makes it
+  current, so the next tap lands on an editable field and iOS opens the keyboard by itself. readOnly
+  is set at RENDER, not inside the handler, because iOS decides by the state at the start of the
+  tap. The ghost-click guard came across too — a touchend and its synthetic click would otherwise
+  count as the two taps.
+  and a real hole it exposed: play_fav returns early when a session has no audio bound, which left
+  `current` alone — so that row could never become current and its title was permanently readOnly.
+  A favourite you can never rename. It selects now even when it cannot play.
+  date_thin: the date had been riding inside the session link as "2026-01-17 Bazaar Cafe" in a fixed
+  40% of the row, spending most of that width on the part that repeats. It is its own column now at
+  ~58px, and the link carries the name alone: 143px of row handed back on a 390px phone.
+  date_cycle: four ways to write it — Jan 17, 1/17/26, 8mo, 2026-01-17 — tapping moves through them,
+  and the page remembers. Per PAGE, not per row: a list where every row states its date differently
+  is a list you cannot scan.
+  lap_hit — and putting a tap target there broke on the title_lap design. The title's input laps OVER
+  those two columns on purpose; that overlap is what the crossfade is made of. It was also
+  swallowing every tap aimed at the date. The lap is a LOOK, so the two right-hand columns take a
+  z-index and the hit goes to whatever is on top.
+  icon_miss: the play triangle was 17px, not the 35px the page asked for. one_size excludes
+  .fav_play, and .fav_play_sm does not match .fav_play — so the row's triangle took 17px !important
+  from a far more specific selector and its own rule lost. Exactly the failure one_size's own comment
+  describes, on the one row nobody had checked it against. Added to the exclusion list and set to the
+  same 29px as .tag_row .play_tag, in a target of the same height.
+  New suite vj_288: the triangle measured at 29px, the date column measured against the row, the
+  first tap selecting without focus and the second focusing, the four formats cycling and persisting.
+  Still no new trace.
+- NEXT → add entry 285 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

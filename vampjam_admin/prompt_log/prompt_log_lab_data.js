@@ -9,8 +9,55 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "287 audio_thin",
+        id: "288 fav_row",
         expanded: true,
+        nodes: [
+          { text: "288 fav_row", children: [
+            { text: "prompt_restate", children: [
+              { text: "On fav, copy the session rows\u2019 row-click/edit-mode behaviour \u2014 first click must not enter edit mode, only the second." },
+              { text: "Less width to the date, and cycle the date." },
+              { text: "Bigger play triangle, like the session highlight rows." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "on fav page, copy the row click hting form the other session regarding the edit mode of the title. when I click on the row first, it should not go into edit mode. only on second click. on fav, alllocate less width to date, and cycle through date (like title does on sesions). on fav rows, make play triabgle bigger like on session highlight rows" }
+            ]},
+            { text: "the_triangle_was_a_bug_not_a_taste", children: [
+              { text: "it was 17px, not the 35 the page asked for" },
+              { text: "one_size excludes .fav_play, and .fav_play_sm does not match .fav_play \u2014 so the row took 17px !important from a far more specific selector and its own rule lost" },
+              { text: "exactly the failure one_size\u2019s own comment describes, on the one row nobody had checked it against. now 29px, same as the session rows" }
+            ]},
+            { text: "tap_select", children: [
+              { text: "a tap on a row that is not current plays it and does NOT open the keyboard; the next tap lands on an editable field and iOS opens the keyboard itself" },
+              { text: "readOnly is set at RENDER, not in the handler \u2014 iOS goes by the state at the start of the tap" },
+              { text: "the ghost-click guard came across too, or a touchend and its synthetic click would count as your two taps" }
+            ]},
+            { text: "and_it_exposed_a_hole", children: [
+              { text: "play_fav returns early when a session has no audio bound, which left current alone" },
+              { text: "so that row could never become current and its title was permanently readOnly \u2014 a favourite you can never rename" },
+              { text: "it selects now even when it cannot play" }
+            ]},
+            { text: "date_thin_and_date_cycle", children: [
+              { text: "the date had been riding inside the session link as \u20182026-01-17 Bazaar Cafe\u2019 in a fixed 40% of the row" },
+              { text: "own column now, ~58px, link carries the name alone \u2014 143px of row handed back on a 390px phone" },
+              { text: "four formats: Jan 17 \u00b7 1/17/26 \u00b7 8mo \u00b7 2026-01-17. tap to move through, remembered" },
+              { text: "per PAGE, not per row \u2014 a list where every row states its date differently is a list you cannot scan" }
+            ]},
+            { text: "lap_hit", children: [
+              { text: "putting a tap target there broke on the title_lap design: the title\u2019s input laps OVER those columns on purpose, and was swallowing every tap aimed at the date" },
+              { text: "the lap is a LOOK. the two right-hand columns take a z-index and the hit goes to whatever is on top" }
+            ]},
+            { text: "verify", children: [
+              { text: "new suite: triangle at 29px, date column measured against the row, first tap selecting without focus and the second focusing, four formats cycling and persisting" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "287 audio_thin",
+        expanded: false,
         nodes: [
           { text: "287 audio_thin", children: [
             { text: "prompt_restate", children: [
