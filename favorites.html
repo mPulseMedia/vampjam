@@ -68,7 +68,10 @@
   .time_row #now_time { color: var(--accent); font-weight: 600; }
 
   .fav_list { background: var(--panel); border-radius: 14px; overflow: hidden; padding: 0 0 14px; margin: 6px 0 24px; box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20); }
-  .fav_row { display: flex; align-items: center; gap: 7px; padding: 8px 12px; min-height: 56px; }
+  /* cass_link — six things on a 390px row, and the title is the one that carries
+     meaning, so the icons give up what they can: a tighter gap and less padding
+     hand it about 20px back. If it is still short, the share is the one to lose. */
+  .fav_row { display: flex; align-items: center; gap: 4px; padding: 8px 10px; min-height: 56px; }
   .fav_row.playing { background: var(--row_active); }
   .fav_play_sm { flex: 0 0 auto; background: none; border: none; color: var(--accent); font-size: 17px; padding: 8px; cursor: pointer; line-height: 0; }
   /* title_lap — the title may run into the FIRST QUARTER of the session name.
@@ -114,7 +117,7 @@
      the title_lap crossfade that column existed for, go with the text. */
   a.fav_sess {
     flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
-    min-width: 41px; min-height: 41px;
+    min-width: 34px; min-height: 41px;
     color: var(--muted); text-decoration: none; border-bottom: none;
     padding: 0; margin: 0;
   }
@@ -132,7 +135,7 @@
   .fav_name:focus { border-bottom-color: var(--panel_3); }
   .fav_name[readonly] { cursor: pointer; }
   .fav_time { display: none; }   /* fav_time_hide: timestamps off the favorite rows for now */
-  .fav_heart { flex: 0 0 auto; background: none; border: none; color: var(--accent); padding: 8px; cursor: pointer; line-height: 0; }
+  .fav_heart { flex: 0 0 auto; background: none; border: none; color: var(--accent); padding: 6px; cursor: pointer; line-height: 0; }
   /* fav_share — muted like every other share on the site; the accent is reserved
      for the heart, which is the one thing on the row that carries state */
   .fav_share_btn { color: var(--muted); }
