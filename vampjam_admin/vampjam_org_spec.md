@@ -3534,7 +3534,25 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   reorder mode cannot collide with it: in that mode the field is readOnly and nothing in the row
   takes pointer events, so it can never be focused there. Checked rather than assumed.
   site.css 6 → 7. New suite vj_294. Still no new trace.
-- NEXT → add entry 295 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 295 edit_plain · b295 · 9 session pages — a highlight's title now edits the way a favourite's
+  does: no box, just a line.
+  It used to take a white ground and a 1px inset ring on focus. That is a CONTROL appearing around
+  text that was already there, and next to the favourites row — where the same act is a line under
+  the words — it read as two different kinds of editing in one app. It is one dashed underline now,
+  transparent until you are in it.
+  The underline is on BOTH states, transparent then coloured, so the row does not move by a pixel
+  when the line arrives: measured 35px tall before and after. The width still changes, from 123 to
+  267, which is edit_wide doing what it was asked to do.
+  Compared against the favourites field directly rather than by eye: same background, same absent
+  shadow, same 1px dashed rgb(220,220,224), same zero radius. The border-radius went too — a
+  rounded corner on a field with no box is a corner on nothing.
+  The rule lives in each page's own <style> rather than in site.css, because site.css is linked
+  BEFORE the page styles and a page rule wins at equal specificity; overriding from site.css would
+  have meant inventing specificity to beat a rule I can simply edit. Nine files, one script, the
+  same replacement in each.
+  New suite vj_295 renders both pages and compares the two fields property by property.
+  Still no new trace.
+- NEXT → add entry 296 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "298 edit_wide_fav",
+        id: "299 edit_plain",
         expanded: true,
+        nodes: [
+          { text: "299 edit_plain", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the session highlight name edit look like the favourite one \u2014 wide, and without the tell-tale edit box." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Have the session highlight name edit look like the favorite highlight name edit.  I like it wide and without the less-tell edit box." }
+            ]},
+            { text: "what_the_box_was", children: [
+              { text: "a white ground and a 1px inset ring on focus \u2014 a CONTROL appearing around text that was already there" },
+              { text: "next to the favourites row, where the same act is a line under the words, it read as two different kinds of editing in one app" },
+              { text: "now: one dashed underline, transparent until you are in it" }
+            ]},
+            { text: "and_nothing_moves", children: [
+              { text: "the underline is on BOTH states, transparent then coloured, so the row does not shift by a pixel when the line arrives" },
+              { text: "measured 35px tall before and after. the width still goes 123 \u2192 267, which is edit_wide doing its job" },
+              { text: "the border-radius went too \u2014 a rounded corner on a field with no box is a corner on nothing" }
+            ]},
+            { text: "compared_not_eyeballed", children: [
+              { text: "rendered both pages and checked the two fields property by property: same background, same absent shadow, same 1px dashed rgb(220,220,224), same zero radius" }
+            ]},
+            { text: "where_the_rule_lives", children: [
+              { text: "each page\u2019s own <style>, not site.css \u2014 site.css is linked BEFORE the page styles and a page rule wins at equal specificity" },
+              { text: "overriding from site.css would have meant inventing specificity to beat a rule I can simply edit. nine files, one script" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "298 edit_wide_fav",
+        expanded: false,
         nodes: [
           { text: "298 edit_wide_fav", children: [
             { text: "prompt_restate", children: [
