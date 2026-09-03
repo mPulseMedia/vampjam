@@ -9,8 +9,44 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "286 cache_terse",
+        id: "287 audio_thin",
         expanded: true,
+        nodes: [
+          { text: "287 audio_thin", children: [
+            { text: "prompt_restate", children: [
+              { text: "Just the choices \u2014 then: 48k mono, hi-fi toggle yes, faststart plus rendition." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "focus just on my choices" },
+              { text: "[chose] 48k mono \u00b7 hi-fi toggle yes \u00b7 faststart + rendition" }
+            ]},
+            { text: "your_48k_was_priced_on_a_codec_this_mac_does_not_have", children: [
+              { text: "no HE-AAC encoder here \u2014 only plain LC-AAC. HE is what makes 48k sound decent" },
+              { text: "so 48k LC will be rougher than the number implied when you picked it" },
+              { text: "rather than argue it: three 60-second clips of the same passage, in the chat, so you decide with your ears" }
+            ]},
+            { text: "done_regardless", children: [
+              { text: "faststart copies of all three deployed masters \u2014 stream copy, no re-encode, no quality change" },
+              { text: "01-17 and 05-23 had their moov at 99%, so the player had to reach the end of the file before it could play or seek. that is fixed" },
+              { text: "all in audio/thin/, verified" }
+            ]},
+            { text: "sizes", children: [
+              { text: "01-17: 48 MB now, 24.8 at 64k, 18.7 at 48k" },
+              { text: "whole library: 970 MB now, 491 at 64k, 371 at 48k" }
+            ]},
+            { text: "learned", children: [
+              { text: "background jobs do NOT survive a device_bash call \u2014 each call is a fresh sandbox and the tree is torn down" },
+              { text: "so encoding runs synchronously, one file per call. a 52-minute encode took 12s; a 2.8-hour one will take about 40" }
+            ]},
+            { text: "waiting_on", children: [
+              { text: "48 or 64 after listening. then I encode the other two and wire the toggle." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "286 cache_terse",
+        expanded: false,
         nodes: [
           { text: "286 cache_terse", children: [
             { text: "prompt_restate", children: [
