@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "293 do_next",
+        id: "294 tap_only",
         expanded: true,
+        nodes: [
+          { text: "294 tap_only", children: [
+            { text: "prompt_restate", children: [
+              { text: "Swiping down with the swipe STARTING on the control panel \u2014 the Tag the moment button in particular \u2014 creates a new moment. It should not." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "seems like when I swipe down but I start my swipe on the contraol pannel, on the tag the moemnt button in particular, it creates a new moment. it should no." }
+            ]},
+            { text: "the_cause", children: [
+              { text: "the browser synthesises a click on touchend wherever the gesture BEGAN. nothing was telling a press from the start of a swipe" },
+              { text: "so the drawer opened AND the button fired, every time" }
+            ]},
+            { text: "the_guard_already_existed_which_is_the_interesting_part", children: [
+              { text: "the highlight list has had this since build 94 \u2014 10px of travel and it swallows the click \u2014 but scoped to the list" },
+              { text: "so a pull that began on a highlight title was safe, and one that began forty pixels lower on the transport was not. same gesture, same page, opposite outcomes" },
+              { text: "it was attached to a region instead of to the problem" }
+            ]},
+            { text: "where_it_goes_now", children: [
+              { text: "drawer.js, which every page loads \u2014 one copy covers the whole site instead of eight session pages plus favourites and the recorder" },
+              { text: "capture phase on document so it lands before any control\u2019s own handler; time-boxed to 700ms after touchend so it can only swallow the click THIS gesture made" },
+              { text: "preventDefault too, so a drag off a link does not navigate. desktop untouched \u2014 with no touch events the flag is never set" },
+              { text: "10px, the same slop the list guard used, so the two agree rather than each having a number" }
+            ]},
+            { text: "verify", children: [
+              { text: "0px tap goes through, 4px wobble goes through, 12px and 130px swallowed, and the drawer still opens on the 130px pull" }
+            ]},
+            { text: "three_of_four_failures_were_the_harness", children: [
+              { text: "the row count moved because the page re-renders from its own fetch" },
+              { text: "the second gesture missed because pressing the button re-lays the list and moved it out from under the coordinates" },
+              { text: "the debug counters were cumulative, so a click from an earlier step read as this one\u2019s" },
+              { text: "the guard was right the first time. I had to stop trusting the test to see it" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "293 do_next",
+        expanded: false,
         nodes: [
           { text: "293 do_next", children: [
             { text: "prompt_restate", children: [

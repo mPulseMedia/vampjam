@@ -3432,7 +3432,32 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   affects every inline SVG on the site, not just this page.
   Caught by rendering it and looking, which is the only way this class of bug has ever been caught
   here. Suites vj_288 and vj_290 still green after the site.css change. Still no new trace.
-- NEXT → add entry 290 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 290 tap_only · b290 · drawer.js — a drag that starts on a control no longer presses it. Pulling
+  the drawer down with a finger that began on "Tag the moment" was creating a highlight.
+  the cause is the browser doing what it always does: on touchend it synthesises a click wherever
+  the gesture BEGAN, and nothing on the page was telling a press from the start of a swipe. So the
+  drawer opened AND the button fired, every time.
+  the guard already existed — and that is the interesting part. The highlight list has had
+  swipeMoved since build 94, scoped to tagList: it watches the finger for 10px of travel and
+  swallows the click if it moved. So a pull that began on a highlight title was safe, and one that
+  began forty pixels lower on the transport was not. Same gesture, same page, opposite outcomes,
+  because the guard was attached to a region instead of to the problem.
+  It goes in drawer.js instead, which is loaded by every page: one copy covers the whole site rather
+  than eight session pages plus the favourites and the recorder. Capture phase on document, so it
+  lands before any control's own handler; time-boxed to 700ms after touchend, so it can only ever
+  swallow the click THIS gesture produced; preventDefault as well as stopPropagation, so a drag off
+  a link does not navigate either. Desktop is untouched — with no touch events the flag is never set.
+  10px, the same slop the list guard used, so the two agree rather than each having a number.
+  New suite vj_291 drives the touch sequence and then the click by hand, because the point under
+  test is the guard's arithmetic and headless Chromium does not run the gesture recogniser the same
+  way. Measured: a 0px tap goes through, a 4px wobble goes through, 12px and 130px are swallowed,
+  and the drawer still opens on the 130px pull.
+  Three of the four failures getting there were the HARNESS: the row count moved because the page
+  re-renders from its own fetch, the second gesture missed because pressing the button re-lays the
+  list and moved it out from under the coordinates, and the debug counters were cumulative so a
+  click from an earlier step read as this one's. The guard itself was right the first time — I had
+  to stop trusting the test to see it. Still no new trace.
+- NEXT → add entry 291 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
