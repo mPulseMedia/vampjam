@@ -9,8 +9,55 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "288 fav_row",
+        id: "289 fav_sort",
         expanded: true,
+        nodes: [
+          { text: "289 fav_sort", children: [
+            { text: "prompt_restate", children: [
+              { text: "A button at the bottom of the favourites page that switches into manual reorder mode." },
+              { text: "In that mode, replace share/heart/play with a hamburger grip on each row, and drag to reorder." },
+              { text: "The button again exits \u2014 but navigating away must register the changes too." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Put a button at the bottom of the favorite page that switches you into Manuel reorder mode and during that replace the share and Heart and play buttons with a three horizontal bar got a hamburger on each row so that I can dragon drop the rose in order to re-order the order that the favorites appear in. And if I click the button again, it takes me out of that reorder mode but also if I just navigate to some other page, those changes should be registered even if I don\u2019t click the exit re-order mode." }
+            ]},
+            { text: "the_mode", children: [
+              { text: "Reorder strips every row to a grip, its title and its date. play, share and heart are GONE while it is on" },
+              { text: "that is the point of the mode, not a side effect: while you are arranging, a mis-tap should move a row, never play one or un-favourite one" },
+              { text: "the button says Done while you are in it" }
+            ]},
+            { text: "the_drag_is_by_hand", children: [
+              { text: "pointer events, not HTML5 drag-and-drop \u2014 Safari on iOS does not fire dragstart at all, so on the device this is for, the native API does not exist" },
+              { text: "the row is lifted with a transform and the rows it passes are moved in the DOM as it crosses their midpoints" },
+              { text: "so what you see IS the new order, and the drop just reads the list back out of the DOM" },
+              { text: "touch-action:none on the grip, or the browser claims the gesture and scrolls the page instead" }
+            ]},
+            { text: "where_the_order_lives", children: [
+              { text: "favourites come from several sessions, so the order cannot live in any one session\u2019s json \u2014 a tag\u2019s own order means its place within ITS session, and the session pages use it for that" },
+              { text: "so: a separate list of tag ids. localStorage for instant effect, mirrored to fav_order.json through the same worker everything else uses, so it follows you to another device" },
+              { text: "anything you have never arranged goes on TOP, newest first \u2014 a favourite hearted since should not be buried at the bottom of a long manual list" }
+            ]},
+            { text: "leave_safe", children: [
+              { text: "\u2018even if I don\u2019t click exit\u2019 is the whole requirement" },
+              { text: "every drop writes localStorage at once and queues the remote write; pagehide and visibilitychange flush it early with sendBeacon, and the fetch carries keepalive so it survives the page going away" },
+              { text: "pagehide is the one iOS actually fires" }
+            ]},
+            { text: "grip_hit", children: [
+              { text: "line-height:0 on a glyph button gives a 16px-tall box \u2014 a thing you miss on a phone while trying to drag it. 41px square now, like every other row target" }
+            ]},
+            { text: "verify", children: [
+              { text: "new suite: button under the list, three buttons gone and 16 grips in their place, a row dragged past two others landing third with the ids written down in that order, one post to fav_order.json, and the order still there after navigating away without pressing Done" },
+              { text: "two of the three failures on the way were the TEST, not the page \u2014 a fixture giving every session the same tag ids, and a grip measured 202px above the viewport" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "288 fav_row",
+        expanded: false,
         nodes: [
           { text: "288 fav_row", children: [
             { text: "prompt_restate", children: [

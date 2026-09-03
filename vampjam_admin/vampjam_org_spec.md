@@ -3297,7 +3297,39 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   New suite vj_288: the triangle measured at 29px, the date column measured against the row, the
   first tap selecting without focus and the second focusing, the four formats cycling and persisting.
   Still no new trace.
-- NEXT → add entry 285 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 285 fav_sort · b285 · favorites.html — a manual reorder mode on the favourites page: one button
+  under the list, a grip on every row while it is on, and an order that survives you walking away.
+  the_mode: pressing Reorder strips every row down to a grip, its title and its date. The play,
+  share and heart buttons are GONE while it is on, which is the point of the mode rather than a
+  side effect: while you are arranging, a mis-tap should move a row, never play one or un-favourite
+  one. The button says Done while you are in it.
+  the_drag is pointer events, written by hand, NOT HTML5 drag-and-drop — Safari on iOS does not
+  fire dragstart at all, so on the device this is for, the native API does not exist. The dragged
+  row is lifted with a transform, and the rows it passes are moved in the DOM as it crosses their
+  midpoints. So what you see IS the new order and the drop has nothing left to work out: it reads
+  the list back out of the DOM. touch-action:none on the grip, or the browser claims the gesture
+  and scrolls the page instead of moving the row.
+  where_the_order_lives, which is the part with a real decision in it: favourites come from several
+  sessions, so the order cannot live in any one session's json — a tag's own `order` means its place
+  within ITS session and the session pages use it for that. So this is a separate list of tag ids:
+  localStorage for instant effect, mirrored to fav_order.json through the same worker everything
+  else writes through, so it follows him to another device. (fav_order.json is root-level, which the
+  worker's path guard requires.)
+  order_apply — his arrangement first, in his order; anything he has never arranged goes on TOP,
+  newest first. A favourite hearted since the last tidy should not appear buried at the bottom of a
+  long manual list.
+  leave_safe: "even if I don't click the exit mode" is the whole requirement, so every drop writes
+  localStorage immediately and queues the remote write; pagehide and visibilitychange flush it early
+  with sendBeacon, and the fetch carries keepalive so it survives the page going away. pagehide is
+  the one iOS actually fires.
+  grip_hit — line-height:0 on a glyph button gives a 16px-tall box. That is a thing you miss on a
+  phone while trying to drag it. 41px square, like every other row target.
+  New suite vj_289: the button under the list, the three buttons gone and 16 grips in their place, a
+  row dragged past two others landing third with the ids written down in that order, one post to the
+  worker at fav_order.json, and the order still there after navigating away without pressing Done.
+  Two of the three failures on the way were the TEST, not the page — a fixture giving every session
+  the same tag ids, and a grip measured 202px above the viewport. Still no new trace.
+- NEXT → add entry 286 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
