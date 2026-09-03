@@ -183,7 +183,11 @@ body.drawer_open .nav_cass, body.drawer_open .nav_share { opacity: 0; pointer-ev
    so the favourites row's triangle was taking 17px from here and its own
    35px !important was losing on specificity. Exactly the failure the note above
    describes, on the one row it had not been checked against. */
-body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(.fav_play_sm):not(.play_tag):not(.ghost):not(svg) { font-size: 17px !important; }
+/* text_in_svg — a <text> inside an SVG is not an <svg>, so this rule was handing
+   every label in every drawing 17px !important and overlapping them into mush.
+   The exclusion has to name the element that carries the size, not its parent.
+   Third time this list has been the bug: .play_tag, then .fav_play_sm, now text. */
+body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(.fav_play_sm):not(.play_tag):not(.ghost):not(svg):not(text):not(tspan) { font-size: 17px !important; }
 
 /* icon_row — ONE row-icon size across the whole app. A session row's cassette and
    share are 29px; a highlight row's play, heart, share and remove are the same
