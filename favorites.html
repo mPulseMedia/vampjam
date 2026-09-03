@@ -93,21 +93,27 @@
      landing on this very highlight. It sits where a thumb already rests, so it
      gets a real tap target and something to press against rather than reading as
      a caption you happen to be able to hit. */
+  /* date_thin — the date is its own column now and a narrow one. It used to ride
+     inside the session link as "2026-01-17 Bazaar Cafe" in a fixed 40% of the
+     row, which spent most of the width on the part that repeats. The date is a
+     stamp, not a label: it wants to be short, and tapping it changes how short. */
+  .fav_date {
+    flex: 0 0 auto; min-width: 3.4em; text-align: right;
+    color: var(--muted); font-size: 12px; white-space: nowrap;
+    padding: 10px 2px; margin: -10px 0; cursor: pointer;
+    -webkit-user-select: none; user-select: none;
+    border-bottom: 1px dotted transparent;
+  }
+  .fav_date:active { color: var(--accent); }
   a.fav_sess {
-    /* title_lap: the overlap is built from these two numbers rather than guessed.
-       The column is FIXED at 40% of the row (it used to size to its text, which
-       is why a percentage lap could not be trusted), and the title's -10% is
-       measured against that same row: 10/40 is a quarter, exactly, at any screen
-       size. Its right edge does not move, so the END of the name — the part that
-       tells you which session — stays put. */
-    flex: 0 0 40%;
+    /* title_lap: the column is fixed so the overlap can be measured against it,
+       and the title's fade is a quarter of that column at any screen size. It is
+       22% now rather than 40% because the date left it. */
+    flex: 0 0 22%;
     color: var(--muted); font-size: 12px; text-align: right;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    /* lap_cross — the date gives way over exactly the band the title laps into.
-       Fading only the title left the two interleaving at half strength, which
-       reads as a rendering fault; fading BOTH across the same quarter makes it a
-       crossfade — the title dissolving out as the date dissolves in — and either
-       one is legible on its own ground. */
+    /* lap_cross — both sides fade across the same band, so the title dissolves
+       out as the session name dissolves in and either is legible on its own */
     -webkit-mask-image: linear-gradient(to right, transparent 0, #000 25%);
             mask-image: linear-gradient(to right, transparent 0, #000 25%);
     text-decoration: none; border-bottom: 1px dotted var(--panel_3);
@@ -123,6 +129,7 @@
     border-bottom: 1px dashed transparent;
   }
   .fav_name:focus { border-bottom-color: var(--panel_3); }
+  .fav_name[readonly] { cursor: pointer; }
   .fav_time { display: none; }   /* fav_time_hide: timestamps off the favorite rows for now */
   .fav_heart { flex: 0 0 auto; background: none; border: none; color: var(--accent); padding: 8px; cursor: pointer; line-height: 0; }
   /* fav_share — muted like every other share on the site; the accent is reserved

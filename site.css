@@ -179,7 +179,11 @@ body.drawer_open .nav_cass, body.drawer_open .nav_share { opacity: 0; pointer-ev
    this selector is both !important and far more specific than a class. That is how
    the highlight rows ended up with 17px icons beside 29px ones on the session
    rows, months after icon_grow was supposed to have made them one size. */
-body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(.play_tag):not(.ghost):not(svg) { font-size: 17px !important; }
+/* icon_miss — .fav_play_sm was not on this list and .fav_play does not match it,
+   so the favourites row's triangle was taking 17px from here and its own
+   35px !important was losing on specificity. Exactly the failure the note above
+   describes, on the one row it had not been checked against. */
+body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(.fav_play_sm):not(.play_tag):not(.ghost):not(svg) { font-size: 17px !important; }
 
 /* icon_row — ONE row-icon size across the whole app. A session row's cassette and
    share are 29px; a highlight row's play, heart, share and remove are the same
@@ -188,6 +192,9 @@ body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_pla
    over the highlights. */
 .tag_row button.ghost { font-size: 29px !important; padding: 6px; min-height: 41px; line-height: 0; }
 .tag_row button.play_tag { font-size: 29px !important; padding: 6px 8px 6px 2px; }
+/* and the favourites row's play is the same kind of thing on the same kind of
+   row, so it is the same 29px in a target of the same height */
+.fav_row button.fav_play_sm { font-size: 29px !important; padding: 6px 8px 6px 2px; min-height: 41px; line-height: 0; }
 /* a ghost button anywhere else is a text control, not a row icon, and keeps the
    app size that one_size no longer hands it */
 button.ghost { font-size: 17px; }
