@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "291 fav_bare",
+        id: "292 fav_here",
         expanded: true,
+        nodes: [
+          { text: "292 fav_here", children: [
+            { text: "prompt_restate", children: [
+              { text: "From the fav page, the share icon on a highlight should link to the FAV page at that highlight \u2014 not to the original session." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "from fav page, when I click share icon on a highlight, have it go to the fav page, and to that highlight. don\u2019t go to the original session." }
+            ]},
+            { text: "the_two_controls_were_saying_the_same_thing", children: [
+              { text: "the cassette goes to the session and lands on this moment inside it. the share was handing out a link that did exactly that too" },
+              { text: "the share now names THIS page \u2014 favorites.html?tag=<id> \u2014 so sharing a favourite lands you among the favourites, on the one you were shown" },
+              { text: "proved by the test: cassette \u2192 the session page, share \u2192 the fav page. different places now" }
+            ]},
+            { text: "land_on_tag", children: [
+              { text: "the other half, and the half that makes the link honest rather than decorative" },
+              { text: "arriving on ?tag= finds it, selects it, scrolls it to the middle of the glass, and tries to play" },
+              { text: "the try will usually be refused \u2014 a browser will not start audio without a gesture, and following a link is not one" },
+              { text: "which is exactly why it SELECTS first: the refusal leaves you looking at the right row with play one tap away, instead of at the top of a list of fifty wondering which one you were sent to" }
+            ]},
+            { text: "and_a_dead_link_says_so", children: [
+              { text: "a tag that is no longer a favourite toasts \u2018That moment is no longer a favorite\u2019" },
+              { text: "from the outside, a dead link and a silent one look identical" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "291 fav_bare",
+        expanded: false,
         nodes: [
           { text: "291 fav_bare", children: [
             { text: "prompt_restate", children: [

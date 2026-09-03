@@ -3389,7 +3389,26 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   the write, not after.
   Suites vj_288 and vj_289 updated for the missing date and the mid-row drag; both green, and the
   drag is now driven from 60% across the row, nowhere near the grip. Still no new trace.
-- NEXT → add entry 288 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 288 fav_here · b288 · favorites.html — the share on a favourite links back to the favourites
+  page, at that highlight, instead of to the session it came from.
+  fav_here: the two controls on a favourite row were making the same promise. The cassette goes to
+  the session and lands on this moment inside it; the share was handing out a link that did exactly
+  that too. So the share now names THIS page — favorites.html?tag=<id> — and sharing a favourite
+  lands you among the favourites, on the one you were shown, rather than in a session with the list
+  you were sent to look at nowhere in sight.
+  land_on_tag: the other half, and the half that makes the link honest rather than decorative.
+  Arriving on ?tag= finds that favourite, selects it, scrolls it to the middle of the glass and
+  tries to play. The try will usually be refused — a browser will not start audio without a gesture,
+  and following a link is not one — which is exactly why the row is SELECTED first: the refusal
+  leaves you looking straight at the right row with its play button one tap away, instead of at the
+  top of a list of fifty wondering which one you were sent to.
+  A tag that is no longer a favourite says so ("That moment is no longer a favorite") rather than
+  doing nothing, because from the outside a dead link and a silent one look identical.
+  New suite vj_290: the copied link measured against the clipboard and shown to name favorites.html
+  rather than the session, following it selecting the right row and scrolling it onto the glass, an
+  un-hearted tag toasting instead of failing quietly, and the two controls on one row proved to
+  point at different places. Still no new trace.
+- NEXT → add entry 289 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
