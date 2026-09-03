@@ -1,1 +1,1 @@
-row_grow
+auto_commit
