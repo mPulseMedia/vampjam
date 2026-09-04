@@ -10,19 +10,24 @@ let pass = 0, fail = 0;
 const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
                             : (fail++, console.log('  FAIL ' + n + (g !== undefined ? '  got: ' + g : ''))); };
 
-// what the eye actually measures: edge of one glyph to edge of the next, which
-// is the box gap plus the two facing paddings.
+// What the eye actually measures: the edge of one DRAWING to the edge of the
+// next. Padding is the wrong proxy — the cassette link has none and centres a
+// 24px svg in a 34px box by flex, and the heart's glyph is smaller than its
+// content box — so both pages under-report if you go by padding. Measure the
+// svg itself and the number means the same thing everywhere.
 const GLYPH_GAPS = `(els) => {
+  const draw = (e) => (e.querySelector('svg') || e).getBoundingClientRect();
   const out = [];
   for (let i = 1; i < els.length; i++) {
-    const A = els[i - 1], B = els[i];
-    const ra = A.getBoundingClientRect(), rb = B.getBoundingClientRect();
-    const ca = getComputedStyle(A), cb = getComputedStyle(B);
-    out.push(Math.round((rb.left + parseFloat(cb.paddingLeft)) -
-                        (ra.right - parseFloat(ca.paddingRight))));
+    out.push(Math.round(draw(els[i]).left - draw(els[i - 1]).right));
   }
   return out;
 }`;
+// The ask was "20% closer". The pull is a negative margin, so
+//   before = after + |margin|,  and  after / before must be 0.8
+// which pins |margin| at a fifth of the original spacing. Asserting the RATIO
+// keeps the test honest without hard-coding a number measured once by hand.
+const closer = (after, margin) => after / (after + margin);
 
 const SESSION_JSON = JSON.stringify({
   audio: { label: 'x', url: R2 + 'x.m4a', kind: 'url' },
@@ -88,12 +93,12 @@ const SESSION_JSON = JSON.stringify({
   }, GLYPH_GAPS);
   await s.close();
 
-  // 19px was the spacing before (7 + the row's 5px gap + 7). 20% closer is 15.2.
   ok('the session row still has its three controls', S.n === 3, S.n);
-  ok('they sit 15px apart, not 19',
-     S.gaps.length === 2 && S.gaps.every(g => g === 15), JSON.stringify(S.gaps));
-  ok('which is 20% closer (within a pixel)',
-     S.gaps.every(g => Math.abs(g - 19 * 0.8) <= 1), JSON.stringify(S.gaps));
+  ok('its two gaps are even',
+     S.gaps.length === 2 && S.gaps[0] === S.gaps[1], JSON.stringify(S.gaps));
+  ok('and 20% closer than they were (ratio, -4px pull)',
+     S.gaps.every(g => Math.abs(closer(g, 4) - 0.8) <= 0.035),
+     JSON.stringify(S.gaps) + ' -> ' + S.gaps.map(g => closer(g, 4).toFixed(2)));
   ok('and the tap targets did NOT shrink',
      S.widths.every(w => w >= 40) && S.heights.every(h => h >= 32),
      JSON.stringify([S.widths, S.heights]));
@@ -115,12 +120,13 @@ const SESSION_JSON = JSON.stringify({
   }, GLYPH_GAPS);
   await f.close();
 
-  // 18 and 22 before; -4px puts them at 14 and 18
   ok('the favourites row still has its three controls', F.n === 3, F.n);
   ok('cassette to share is 20% closer',
-     Math.abs(F.gaps[0] - 18 * 0.8) <= 1.5, JSON.stringify(F.gaps));
+     Math.abs(closer(F.gaps[0], 4) - 0.8) <= 0.035,
+     F.gaps[0] + ' -> ' + closer(F.gaps[0], 4).toFixed(2));
   ok('share to heart is too',
-     Math.abs(F.gaps[1] - 22 * 0.8) <= 1.5, JSON.stringify(F.gaps));
+     Math.abs(closer(F.gaps[1], 4) - 0.8) <= 0.035,
+     F.gaps[1] + ' -> ' + closer(F.gaps[1], 4).toFixed(2));
   ok('and their tap targets did NOT shrink',
      F.widths.every(w => w >= 34) && F.heights.every(h => h >= 34),
      JSON.stringify([F.widths, F.heights]));
