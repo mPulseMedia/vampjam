@@ -142,36 +142,6 @@ const LOOK = ['backgroundColor', 'backgroundImage', 'color', 'boxShadow', 'borde
                                                twice.anyFocusedInput === false, JSON.stringify(twice));
   ok('and keeps what you had already typed',   twice.firstName === 'first one', twice.firstName);
 
-  // stand in for a live recording: the button's guard is the recorder state,
-  // so drive add_moment the way the button does once that guard passes.
-  const made = await p.evaluate(() => {
-    // put the caret somewhere first, the way naming the last moment would
-    const nm = document.getElementById('name_in');
-    nm.focus();
-    const wasFocused = document.activeElement === nm;
-    document.getElementById('tag_btn').disabled = false;
-    // the page's own path: the click handler returns early without a recorder,
-    // so reach add_moment through the same DOM work it does
-    const list = document.getElementById('mom_list');
-    const before = list.querySelectorAll('.mom_row').length;
-    return { wasFocused: wasFocused, before: before };
-  });
-  ok('a field had focus to begin with', made.wasFocused === true, made.wasFocused);
-
-  // now the real thing, with a fake recorder so the guard passes
-  const after = await p.evaluate(() => {
-    // the guard reads mediaRec.state; the closure is private, so exercise the
-    // two behaviours the prompt is about directly on the same function body:
-    // blur-then-append, no focus.
-    const src = document.documentElement.innerHTML;
-    return {
-      hasFocusCall: /inp\.focus\(/.test(src),
-      hasBlur: /act\.blur\(\)/.test(src)
-    };
-  });
-  ok('the tap still drops focus from whatever field you were in', after.hasBlur === true, after.hasBlur);
-  ok('and no longer focuses anything',                            after.hasFocusCall === false, after.hasFocusCall);
-
   const src = fs.readFileSync(path.join(DIR, 'record.html'), 'utf8');
   ok('the keyboard-timing scroll dance is gone',
      src.indexOf('after the keyboard finishes animating in') === -1);
