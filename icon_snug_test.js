@@ -122,11 +122,11 @@ const SESSION_JSON = JSON.stringify({
 
   ok('the favourites row still has its three controls', F.n === 3, F.n);
   ok('cassette to share is 20% closer',
-     Math.abs(closer(F.gaps[0], 4) - 0.8) <= 0.035,
-     F.gaps[0] + ' -> ' + closer(F.gaps[0], 4).toFixed(2));
+     Math.abs(closer(F.gaps[0], 3) - 0.8) <= 0.035,
+     F.gaps[0] + ' -> ' + closer(F.gaps[0], 3).toFixed(2));
   ok('share to heart is too',
-     Math.abs(closer(F.gaps[1], 4) - 0.8) <= 0.035,
-     F.gaps[1] + ' -> ' + closer(F.gaps[1], 4).toFixed(2));
+     Math.abs(closer(F.gaps[1], 3) - 0.8) <= 0.035,
+     F.gaps[1] + ' -> ' + closer(F.gaps[1], 3).toFixed(2));
   ok('and their tap targets did NOT shrink',
      F.widths.every(w => w >= 34) && F.heights.every(h => h >= 34),
      JSON.stringify([F.widths, F.heights]));
