@@ -3614,7 +3614,18 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   New suite time_flip_test.js: 22 assertions on phone and landscape. It needs a 2h20m stub, because
   a shorter one never draws an hour mark and the whole change would go unasserted.
   Still no new trace.
-- NEXT → add entry 299 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 299 clock_up · b305 · the clock and the hi-fi word moved from under the whole timeline to the gap
+  between Tag the Moment and the line, so the reading order top to bottom is now button, clock,
+  hour numbers, line, highlight numbers.
+  The hour labels overflow upward into the bar's 32px top margin, and .time_row's own 8px bottom
+  margin collapses into it, so the row lands 9px clear of "1h" — the same clearance the button had
+  a build ago. No new spacing invented.
+  The button is "Tag the Moment" now, in the markup and in the empty-state line that quotes it.
+  time_flip_test.js grew by 5 assertions x 2 viewports rather than gaining a near-identical
+  sibling file: this is one layout, and a second suite would have been sixty lines of the same
+  routing for four facts. 32 assertions.
+  Still no new trace.
+- NEXT → add entry 300 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

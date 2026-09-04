@@ -105,8 +105,8 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
     ok(t + ' — they clear the Tag button',        m.hoursClearButton, JSON.stringify(m));
     ok(t + ' — highlight numbers sit below it',   m.numsBelow, JSON.stringify(m));
     ok(t + ' — numbers share the marker box',     m.sameBox, JSON.stringify(m));
-    ok(t + ' — no haze on Tag the moment',        m.btnShadow === 'none', m.btnShadow);
-    ok(t + ' — no gradient on Tag the moment',    m.btnImage === 'none', m.btnImage);
+    ok(t + ' — no haze on Tag the Moment',        m.btnShadow === 'none', m.btnShadow);
+    ok(t + ' — no gradient on Tag the Moment',    m.btnImage === 'none', m.btnImage);
     ok(t + ' — no haze under play',               m.playShadow === 'none', m.playShadow);
     ok(t + ' — transport numbers unbolded',       m.ctrlWeight === '400' && m.unitWeight === '400',
                                                   m.ctrlWeight + '/' + m.unitWeight);

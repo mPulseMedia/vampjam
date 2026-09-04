@@ -9,8 +9,41 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "304 time_flip",
+        id: "305 clock_up",
         expanded: true,
+        nodes: [
+          { text: "305 clock_up", children: [
+            { text: "prompt_restate", children: [
+              { text: "Move the running time and the hi-fi word above the timeline, into the gap under Tag the Moment. Capitalise Moment." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "move the timestamp and hi-fi to above the timeline and below the Tag the moment.. Capitalize Moment." }
+            ]},
+            { text: "reading_order", children: [
+              { text: "button \u2192 clock + hi-fi \u2192 1h 2h \u2192 the line \u2192 highlight numbers" }
+            ]},
+            { text: "no_new_spacing", children: [
+              { text: "the hour labels overflow up into the bar\u2019s 32px top margin" },
+              { text: "the clock row\u2019s own 8px bottom margin collapses into it" },
+              { text: "so the row lands 9px clear of 1h \u2014 the same clearance the button had a build ago" }
+            ]},
+            { text: "capital_M", children: [
+              { text: "in the markup and in the empty-state line that quotes the button" }
+            ]},
+            { text: "one_suite_not_two", children: [
+              { text: "time_flip_test.js grew 5 assertions x 2 viewports instead of gaining a near-identical sibling" },
+              { text: "this is one layout; a second file would have been sixty lines of the same routing for four facts" },
+              { text: "32 assertions, all green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "304 time_flip",
+        expanded: false,
         nodes: [
           { text: "304 time_flip", children: [
             { text: "prompt_restate", children: [
