@@ -79,7 +79,7 @@
   .ctrl_row { display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 14px; }
   /* the hour numbers now overflow upward out of the bar, so the bar carries
      the clearance they need — nothing else is up there to make room. */
-  .seek_bar { width: 100%; height: 9px; background: var(--panel_3); border-radius: 4px; position: relative; cursor: pointer; margin: 24px 0 0; }
+  .seek_bar { width: 100%; height: 9px; background: var(--panel_3); border-radius: 4px; position: relative; cursor: pointer; margin: 32px 0 0; }
   .seek_fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 3px; pointer-events: none; }
   .seg_remain { position: absolute; bottom: 0; height: 2px; background: var(--accent); opacity: 0.45; border-radius: 1px; pointer-events: none; }
   /* hour_mark — a vertical bar at each whole hour, poking above and below the
@@ -91,7 +91,7 @@
   .hour_lbl.flip { margin-left: 0; transform: translateX(-100%); padding-right: 4px; }
   /* time_flip — hours read above the line, highlights below it. The numbers
      share tag_markers’ 90% box so each number lands under its own dot. */
-  .tag_numbers { position: relative; height: 16px; margin-bottom: 3px;
+  .tag_numbers { position: relative; height: 16px; margin-bottom: 0;
                  width: 90%; margin-left: auto; margin-right: auto; }
   .tag_num_lbl { position: absolute; transform: translateX(-50%); top: 0; font-size: 13px; line-height: 16px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; z-index: 4; }
   .tag_num { flex: 0 0 auto; min-width: 18px; text-align: right; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
@@ -106,7 +106,7 @@
   .tag_marker:hover { transform: translateX(-50%) scale(1.4); }
   .tag_marker::before { content: ''; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; }
   .tag_marker.active { background: var(--accent_2); box-shadow: 0 0 0 2px var(--accent_2); }
-  /* circle_gone: the numbers above the bar do this job now (and seek on tap) */
+  /* circle_gone: the numbers below the bar do this job now (and seek on tap) */
   .tag_marker { display: none; }
   .zoom_band { display: none; }   /* bar_tune: the light section band is retired */
   .fish_tick { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
@@ -519,8 +519,8 @@
   </div>
   <button class="tag_btn_big" id="tag_btn">Tag the moment</button>
   <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div><div class="seg_remain" id="seg_remain"></div></div>
-  <div class="tag_markers" id="tag_markers"></div>
   <div class="tag_numbers" id="tag_numbers"></div>
+  <div class="tag_markers" id="tag_markers"></div>
   <div class="time_row">
     <span id="now_time">0:00</span>
     <span>/</span>
