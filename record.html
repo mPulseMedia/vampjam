@@ -58,6 +58,10 @@
 
   /* control row mirrors the playback page — side buttons present but inert */
   .ctrl_row { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; margin-bottom: 14px; }
+  /* margins do NOT collapse between flex items, and the session stack is block
+     flow — so the button's own 2px top margin adds here where it disappears
+     there. Two pixels, and it moves everything below it. */
+  .stage > .tag_btn { margin-top: 0; }
   .ctrl_btn {
     width: 48px; height: 48px; border-radius: 50%; border: none;
     background: var(--panel_2); color: var(--accent);
