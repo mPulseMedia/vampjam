@@ -9,8 +9,57 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "315 play_same",
+        id: "316 del_same",
         expanded: true,
+        nodes: [
+          { text: "316 del_same", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the delete button on a recording row look and sit exactly like the one on a session row." },
+              { text: "And do not give away the code in the long-recording delete prompt." },
+              { text: "Then: get rid of the lengthy explanation in the confirmation pop-up \u2014 keep it simple." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Make the delete button on the recording highlight row be the same appearance and location on the row as it is on the session row." },
+              { text: "on the delete a long recording prompt, do not give away the code." },
+              { text: "get rid of the lengthly explanation text in teh confirmaiton popup. keep it simple." }
+            ]},
+            { text: "one_size_sixth_time", children: [
+              { text: "measured: session 29px drawing in a 43x39 target, record 17px in 31x32" },
+              { text: "same declared font-size, half the size on screen" },
+              { text: "my own from rec_match: .mom_del was a bare class and one_size\u2019s 17px !important beat the 18px I wrote" },
+              { text: "the fix is not another exclusion \u2014 the button IS a .ghost, which site.css sizes and one_size already excludes" },
+              { text: "identical on every declaration now, same 12px from the row edge, same centre, last in the row on both" }
+            ]},
+            { text: "code_hush", children: [
+              { text: "the pop-up printed 8764 in the placeholder AND the aria-label" },
+              { text: "that made the speed bump a formality: read it, type it back" },
+              { text: "the person the gate protects is the one who tapped by mistake \u2014 exactly the person the screen was telling" }
+            ]},
+            { text: "ask_short", children: [
+              { text: "the paragraph went: \u201cremoves it from the session list everywhere\u2026\u201d was read once and skipped for ever after" },
+              { text: "now: Delete \"<name>\"? and, when gated, one line \u2014 50 min. Enter the code." },
+              { text: "the duration stays: it is the fact that actually stops the mistake" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite del_same_test.js \u2014 19 assertions" },
+              { text: "the two X\u2019s compared property by property on live pages" },
+              { text: "the code hunted in the placeholder, the aria-label, the title AND anywhere in the overlay markup" },
+              { text: "then the gate exercised: still locks, still opens" }
+            ]},
+            { text: "a_test_caught_up", children: [
+              { text: "del_leave_test asserted you land on index.html \u2014 untrue since list_home, which taught index to pick a surviving session" },
+              { text: "it asserts you are OFF the deleted page with the list up, which is what was always meant" },
+              { text: "it was also missing two page fixtures" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "315 play_same",
+        expanded: false,
         nodes: [
           { text: "315 play_same", children: [
             { text: "prompt_restate", children: [

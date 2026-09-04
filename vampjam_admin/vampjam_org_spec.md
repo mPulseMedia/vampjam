@@ -3839,7 +3839,35 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   the same string. Also asserts the drawing is present BEFORE anything plays, which was the bug.
   Re-ran fav_match (23), icon_snug (12), list_title (22) and grip_only (13): green.
   Still no new trace.
-- NEXT → add entry 310 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 310 del_same · b316 · the X on a recording row is the session row's X; the delete prompt stopped
+  printing the code and stopped explaining itself.
+  del_same — measured before: session 29px drawing in a 43x39 target, record 17px in 31x32. Same
+  declared font-size, half the size on screen. one_size again — the SIXTH time — and this one was
+  mine from rec_match: .mom_del was a bare class, and one_size's 17px !important beat the 18px I
+  had written. The fix is not another exclusion: the button is a .ghost now, which is both the
+  class site.css sizes row icons by and a class one_size already excludes, and .mom_row joined
+  .tag_row on that rule. Now identical on every declaration measured, same 12px from the row edge,
+  same vertical centre, last in the row on both.
+  code_hush — the pop-up was printing 8764 in the input's placeholder AND its aria-label. That made
+  the speed bump a formality: read it, type it back. The person the gate protects is the one who
+  tapped by mistake, and that is exactly the person the screen was telling. Placeholder is "code"
+  and the label is "Confirmation code".
+  ask_short — and the paragraph went. "This removes it from the session list everywhere. Its
+  moments go with it." was read once and skipped for ever after. The question is now
+  `Delete "<name>"?`, plus one line when it is gated: `50 min. Enter the code.` The duration stays
+  because it is the fact that actually stops the mistake.
+  New suite del_same_test.js, 19 assertions: the two X's compared property by property on live
+  pages, and the pop-up checked for the code in the placeholder, the aria-label, the title AND
+  anywhere in the overlay's markup — then the gate exercised to prove it still locks and still
+  opens.
+  del_leave_test needed catching up, not fixing: it asserted you land on index.html, which stopped
+  being true at list_home — index picks a surviving session now. It asserts you are OFF the deleted
+  page with the list up, which is what was always meant. It was also missing two page fixtures.
+  Re-ran rec_calm (22), rec_match (28), icon_snug (12), list_title (22), play_same (16), fav_match
+  (23), del_leave (16): green.
+  site.css v=10, drawer.js v=147.
+  Still no new trace.
+- NEXT → add entry 311 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
