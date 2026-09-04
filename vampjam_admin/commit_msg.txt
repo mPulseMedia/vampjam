@@ -1,1 +1,1 @@
-list_home
+auto_commit
