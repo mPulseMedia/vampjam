@@ -3625,7 +3625,24 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   sibling file: this is one layout, and a second suite would have been sixty lines of the same
   routing for four facts. 32 assertions.
   Still no new trace.
-- NEXT → add entry 300 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 300 grip_only · b306 · row_drag reversed. Only the hamburger starts a drag; the rest of the row is
+  inert again.
+  This is the second reversal of the same decision and the reasoning is worth keeping, because the
+  original argument sounded good: "a grip is a target you have to hit, and on a phone that is a
+  thing to miss." What it missed is that a list you are reordering is usually longer than the
+  screen, and with the whole row live there is no gesture left for scrolling to the place you are
+  dragging TO. A finger put down to scroll picked a row up instead. The small target is the point,
+  not a compromise.
+  pointerdown, the capture and all three follow-up listeners moved from the row to the grip.
+  touch-action:none came OFF the row and stays on the grip alone, so the browser keeps the list's
+  scroll and only the grip's own gesture is taken from it. .fav_row * stays pointer-events:none,
+  with .fav_grip exempted.
+  New suite grip_only_test.js: 13 assertions. The one that matters drags the row BODY a row and a
+  half and asserts the order is byte-identical afterwards; the next drags the grip the same
+  distance and asserts it moved. Checked the suite against the OLD code before shipping — it fails
+  4 of 13 there, including both of those, so it is testing the behaviour and not the wiring.
+  Still no new trace.
+- NEXT → add entry 301 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

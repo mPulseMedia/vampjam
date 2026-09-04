@@ -9,8 +9,41 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "305 clock_up",
+        id: "306 grip_only",
         expanded: true,
+        nodes: [
+          { text: "306 grip_only", children: [
+            { text: "prompt_restate", children: [
+              { text: "Take back the whole-row drag on favourites. Only the hamburger should pick a row up." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On favorites, I take it back and I shouldn\u2019t be able to click anywhere on the road to rearrange them. I should only be able to click on the hamburger to slide and rearrange or re-order them. I take it back and please make it work like that." }
+            ]},
+            { text: "why_the_first_argument_was_wrong", children: [
+              { text: "it said: a grip is a target you have to hit, and on a phone that is a thing to miss" },
+              { text: "what it missed: a list you are reordering is longer than the screen" },
+              { text: "with the whole row live there is no gesture left to scroll to where you are dragging TO \u2014 a finger put down to scroll picks a row up" },
+              { text: "the small target is the point, not a compromise" }
+            ]},
+            { text: "what_moved", children: [
+              { text: "pointerdown, the pointer capture and all three follow-up listeners went from the row to the grip" },
+              { text: "touch-action:none came OFF the row and stays on the grip alone, so the list still scrolls" },
+              { text: "the row stays pointer-events:none with the grip exempted" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite grip_only_test.js \u2014 13 assertions" },
+              { text: "the one that matters drags the row BODY a row and a half and asserts the order is byte-identical after" },
+              { text: "ran it against the OLD code first: 4 of 13 fail there, both of those included \u2014 so it tests the behaviour, not the wiring" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "305 clock_up",
+        expanded: false,
         nodes: [
           { text: "305 clock_up", children: [
             { text: "prompt_restate", children: [
