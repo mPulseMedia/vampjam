@@ -128,11 +128,25 @@ const REG = JSON.stringify([
   ok('the Favorites row is gone from it',     list.fav === false, list.fav);
   ok('and the New recording row with it',     list.nu === false, list.nu);
 
-  // and the header buttons actually go somewhere
-  await p.click('.nav_fav');
-  await p.waitForTimeout(600);
+  await p.close();
+
+  // and the header buttons actually go somewhere. Not from favourites: the
+  // button is blanked there on purpose, so tap it from a session page.
+  const q = await ctx.newPage();
+  q.on('pageerror', e => { fail++; console.log('  FAIL pageerror (nav): ' + e.message); });
+  await q.goto('https://vampsf.com/2026_01_17_bazaar_cafe.html');
+  await q.waitForTimeout(1300);
+  await q.click('.nav_fav');
+  await q.waitForTimeout(700);
   ok('tapping the favourites icon lands on favourites',
-     /favorites\.html/.test(p.url()), p.url());
+     /favorites\.html/.test(q.url()), q.url());
+
+  await q.goto('https://vampsf.com/2026_01_17_bazaar_cafe.html');
+  await q.waitForTimeout(1300);
+  await q.click('.nav_rec');
+  await q.waitForTimeout(700);
+  ok('and the record icon lands on the record screen',
+     /record\.html/.test(q.url()), q.url());
 
   await b.close();
   console.log('\n' + pass + ' pass, ' + fail + ' fail');
