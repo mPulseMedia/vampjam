@@ -416,8 +416,11 @@
         var codeB = del_code_for(durB);
         if (loc) {
           var nm = b.getAttribute('data-name');
-          drawer_confirm('Delete "' + nm + '"?\n\nThis recording only exists on this device — deleting it is final.'
-            + (codeB ? '\n\nIt is ' + dur_words(durB) + ' long. Type the code to unlock Delete.' : ''),
+          // ask_short — the question and, when it is gated, the one fact that
+          // stops the mistake: how long the thing is. The paragraph explaining
+          // what deleting means was read once and skipped for ever after.
+          drawer_confirm('Delete "' + nm + '"?'
+            + (codeB ? '\n\n' + dur_words(durB) + '. Enter the code.' : ''),
             'Delete', function () {
             var pg = b.getAttribute('data-page');
             var onIt = (pg === PKEY);   // del_leave: this is the page under the list
@@ -842,8 +845,8 @@
   function delete_session(page, name, dur) {
     // same themed pop-up as the highlight delete, not the native confirm
     var code = del_code_for(dur);
-    drawer_confirm('Delete "' + name + '"?\n\nThis removes it from the session list everywhere. Its moments go with it.'
-      + (code ? '\n\nIt is ' + dur_words(dur) + ' long. Type the code to unlock Delete.' : ''),
+    drawer_confirm('Delete "' + name + '"?'
+      + (code ? '\n\n' + dur_words(dur) + '. Enter the code.' : ''),
       'Delete', function () { delete_session_go(page, name); }, code);
   }
   function delete_session_go(page, name) {
