@@ -116,6 +116,9 @@
     color: var(--muted); opacity: 0.45; cursor: pointer; line-height: 1;
   }
   .grade_pill.on { color: var(--accent); opacity: 1; }
+  /* the generic button hover/focus ground is far too loud under one small
+     word sitting in the middle of the clock line. */
+  .grade_pill:hover, .grade_pill:focus { background: transparent; box-shadow: none; outline: none; }
   .grade_pill:active { transform: translateY(-50%) scale(0.92); }
   .ctrl_btn {
     appearance: none; -webkit-appearance: none; border: 0;
