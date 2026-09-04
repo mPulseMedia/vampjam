@@ -106,6 +106,13 @@
       var arr = deleted_get();
       if (!arr.some(function (t) { return t.page === page; })) arr.push({ page: page, ts: Date.now() });
       localStorage.setItem(DELETED_KEY, JSON.stringify(arr));
+      // last_drop — index.html reopens whatever you were last on. If that is the
+      // page you just deleted, index sends you back to it, del_gone sends you
+      // back to index, and the two bounce off each other for ever. A tombstoned
+      // page stops being the last one you were on, in the same breath.
+      if (localStorage.getItem('vampjam_last_session') === page) {
+        localStorage.removeItem('vampjam_last_session');
+      }
     } catch (e) {}
   }
   function deleted_remove(page) {
@@ -369,7 +376,7 @@
   }
 
   // remember this session for the index; cache its duration going forward
-  try { localStorage.setItem('vampjam_last_session', PKEY); } catch (e) {}
+  if (!deleted_has(PKEY)) { try { localStorage.setItem('vampjam_last_session', PKEY); } catch (e) {} }
   function capture_dur() {
     var pl = document.getElementById('player');
     if (!pl) return;
@@ -1008,6 +1015,9 @@
     }
   }
   function boot() {
+    // list_home — index.html renders the list itself when nothing survives to
+    // open under it. There is no page beneath, so the list cannot be closed.
+    if (window.VAMPJAM_LIST_HOME) pin_list(true);
     build_menu(); wire_links(); capture_dur(); fetch_auto_sessions(); fetch_local_recs();
     // orphan_sweep waits out the first registry paint, then self-publishes
     // anything the cloud has that the list forgot (6h throttle inside)
