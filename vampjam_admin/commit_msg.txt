@@ -1,1 +1,1 @@
-logo_line
+auto_commit
