@@ -55,34 +55,38 @@ body {
 }
 
 /* ---- the wordmark block at the top of every page ---- */
-.brand { text-align: center; margin: 8px 0 6px; }
+/* logo_line — the wordmark shares the top line with the two controls instead
+   of starting below them. One row: cassette, wordmark, share. */
+.brand {
+  display: flex; align-items: center; justify-content: space-between;
+  text-align: center; margin: 8px 0 6px;
+}
 .brand .wordmark {
   font-family: 'Sacramento', cursive;
   font-size: 68px; line-height: 1; color: var(--fg);
-  display: inline-block; margin: 0;
+  flex: 1 1 auto; min-width: 0; text-align: center; margin: 0;
 }
+/* record.html has a cassette and no share button; without this the wordmark
+   centres in what is left and sits 20px right of true centre. */
+.brand:not(:has(.nav_share)) .wordmark { margin-right: 40px; }
 .wordmark_sf {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 34px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
 }
-/* nav_room — the header pair owns the top band outright, so the wordmark
-   starts below it instead of running under it. It goes on the header, not on
-   the wordmark: several pages set the wordmark's own margin with a two-class
-   rule that would win. */
-.brand, .top_bar { padding-top: max(46px, calc(env(safe-area-inset-top) + 40px)); }
+/* nav_room is gone: the pair no longer owns a band of its own, so the header
+   only needs to clear the notch. That reclaims about 46px at the top of every
+   page. */
+.brand, .top_bar { padding-top: max(6px, env(safe-area-inset-top)); }
 
 /* ---- the header pair: left is where you go, right is what you send ----
    26px glyph in a 40px target, muted, inside the header rather than pinned
    to the viewport, and both step out of the way while the list is open. */
 .nav_cass, .nav_share {
-  position: absolute;
-  top: max(12px, calc(env(safe-area-inset-top) + 6px));
+  position: static; flex: 0 0 auto;
   background: transparent; color: var(--muted); border: none; border-radius: 7px;
   padding: 7px; min-height: 40px; min-width: 40px; cursor: pointer; line-height: 0;
   touch-action: manipulation;
 }
-.nav_cass { left: 0; }
-.nav_share { right: 0; }
 .nav_cass:hover, .nav_share:hover { color: var(--fg); }
 .nav_cass:active, .nav_share:active { transform: scale(0.96); }
 .nav_cass svg, .nav_share svg { width: 26px; height: 26px; }
