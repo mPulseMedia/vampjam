@@ -246,13 +246,20 @@
       momList = document.getElementById('mom_list'),
       status  = document.getElementById('status');
 
+  // save_calm — three dots while anything is in flight. No step names: every
+  // one of them was true and none of them was his to act on.
+  function save_busy() {
+    status.innerHTML = '<div class="save_dots" role="status" aria-label="Saving"><i></i><i></i><i></i></div>';
+  }
+  function save_done() { status.textContent = ''; }
+
   // Back always returns to the session list. Mid-recording it behaves like
   // stop: finish, upload, build the session, THEN leave.
   var pendingBack = false;
   backBtn.addEventListener('click', function () {
     if (mediaRec && mediaRec.state === 'recording') {
       pendingBack = true;
-      status.textContent = 'Finishing…';
+      save_busy();
       stop();
       return;
     }
@@ -600,7 +607,7 @@
     });
   }
   async function upload_core(o) {
-    status.textContent = 'Uploading…';
+    save_busy();
     var blob2 = o.blob;
     var label = o.label || (o.dateIso + ' recording');
     if (label.indexOf(o.dateIso) < 0) label = o.dateIso + ' ' + label;
@@ -649,7 +656,7 @@
       });
       var j = await r.json();
       if (!j.ok) throw new Error('upload ' + (j.error || r.status));
-      status.textContent = 'Creating the session…';
+      // (still just the dots — the step is real but it is not his business)
       var now = Date.now();
       var tags = o.tags.map(function (lt, i) {
         return { id: 't_' + now + '_lt' + (i + 1), t: lt.t, label: lt.label || '' };
@@ -672,13 +679,13 @@
       // the cloud has it — the local safety copy can go
       if (o.locId) { idb_del_rec(o.locId).catch(function () {}); }
 
-      status.innerHTML = 'Session ready &#10003; <a href="' + page + '">open ' +
-        (label || id) + '</a>' +
-        '<br>saved as ' + id + '.' + (o.ext || 'm4a') +
-        (tags.length ? ' · ' + tags.length + ' moment' + (tags.length === 1 ? '' : 's') + ' carried over' : '');
-      if (pendingBack) {
-        setTimeout(function () { window.location.href = 'index.html#sessions'; }, 900);
-      }
+      // save_flow — it is saved, so go and listen to it. The old ending was a
+      // sentence saying the thing was ready with a link to it; the link was the
+      // only part anyone used. Back still means back: if he asked to leave
+      // mid-recording, honour that instead.
+      save_done();
+      var land = pendingBack ? 'index.html#sessions' : page;
+      setTimeout(function () { window.location.replace(land); }, 350);
     } catch (err) {
       pendingBack = false;
       status.innerHTML = 'Something went wrong (' + (err && err.message ? err.message : err) + ') — ' +
@@ -710,7 +717,7 @@
         var m = ready[k];
         var parts = await idb_chunks(m.id);
         if (!parts.length) { await idb_del_rec(m.id); continue; }
-        status.textContent = 'Finishing an earlier upload — ' + (m.label || m.date) + '…';
+        save_busy();
         await upload_core({
           blob: new Blob(parts, { type: m.mime || 'audio/mp4' }),
           label: m.label, dateIso: m.date, ts: m.ts, dur: m.dur,
