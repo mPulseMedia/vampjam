@@ -3823,7 +3823,23 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   one level too high would have taken them with it, and that is the way this change fails.
   drawer.js v=146 on 14 pages.
   Still no new trace.
-- NEXT → add entry 309 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 309 play_same · b315 · the favourites play button was showing a font's triangle where every other
+  play button on the site shows a drawing.
+  Not a size bug, which is what it looked like. Both buttons are 84/70 and both set the glyph to
+  1em of the button's 56/44px font — measured identical. But favourites shipped a literal U+25B6 in
+  the markup and only swapped in ICON_PLAY on the first play or pause event, so until you pressed
+  it you were looking at a character. At the same em, the character carries far more ink than the
+  path does, which is exactly why it read as too big.
+  The markup ships an empty button now and the drawing goes in at boot, the way the session page
+  has always done it. A leftover on the play handler went with it — `ICON_PAUSE ? '\u23F8' : '||'`
+  written into innerHTML, then cleared, then overwritten by ICON_PAUSE: three assignments where one
+  is true, and a ternary on a constant that is never falsy.
+  New suite play_same_test.js, 16 assertions at two widths: the button holds an svg and no text at
+  all, the two buttons match in size, their triangles match in size, and the path data is literally
+  the same string. Also asserts the drawing is present BEFORE anything plays, which was the bug.
+  Re-ran fav_match (23), icon_snug (12), list_title (22) and grip_only (13): green.
+  Still no new trace.
+- NEXT → add entry 310 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

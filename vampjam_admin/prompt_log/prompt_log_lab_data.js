@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "314 list_title",
+        id: "315 play_same",
         expanded: true,
+        nodes: [
+          { text: "315 play_same", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the triangle in every big play button the same. The favourites one is too big." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make the tirangle in the big play button the same on all such buttons. it\u2019s too nig on favotires page" }
+            ]},
+            { text: "not_a_size_bug", children: [
+              { text: "both buttons are 84/70, both set the glyph to 1em of 56/44px \u2014 measured identical" },
+              { text: "favourites shipped a literal U+25B6 in the markup and only swapped in the SVG on the first play/pause event" },
+              { text: "so until you pressed it you were looking at a CHARACTER" },
+              { text: "at the same em a character carries far more ink than the path \u2014 which is why it read as too big" }
+            ]},
+            { text: "the_fix", children: [
+              { text: "empty button in the markup; the drawing goes in at boot, the way the session page has always done it" },
+              { text: "a leftover went with it: ICON_PAUSE ? \u23F8 : || written to innerHTML, then cleared, then overwritten by ICON_PAUSE" },
+              { text: "three assignments where one is true, and a ternary on a constant that is never falsy" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite play_same_test.js \u2014 16 assertions at two widths" },
+              { text: "the button holds an svg and NO text, the buttons match, the triangles match, and the path data is literally the same string" },
+              { text: "and the drawing is present BEFORE anything plays \u2014 which was the bug" },
+              { text: "re-ran fav_match 23, icon_snug 12, list_title 22, grip_only 13 \u2014 green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "314 list_title",
+        expanded: false,
         nodes: [
           { text: "314 list_title", children: [
             { text: "prompt_restate", children: [
