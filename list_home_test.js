@@ -15,10 +15,17 @@ const SESSION = JSON.stringify({
   tags: [{ id: 't1', t: 10, label: 'one' }]
 });
 
-async function makeCtx(b, registry) {
+// sessions.js is the STATIC list — the eight hand-built session pages. index
+// reads it as well as the dynamic registry, so a test about "nothing left" has
+// to empty it too, or the app is quite right to open 2026_08_14.
+async function makeCtx(b, registry, staticList) {
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
   await ctx.route('**/*', async (r) => {
     const u = r.request().url();
+    if (/\/sessions\.js/.test(u)) {
+      return r.fulfill({ status: 200, contentType: 'application/javascript',
+        body: 'window.VAMPJAM_SESSIONS = ' + JSON.stringify(staticList || []) + ';' });
+    }
     if (u.startsWith('https://vampsf.com/')) {
       const rel = u.replace('https://vampsf.com/', '').split('?')[0] || 'index.html';
       const p = path.join(DIR, rel);
@@ -57,7 +64,8 @@ const quiet = async (p, fn, arg) => { try { return await p.evaluate(fn, arg); } 
   // index reopens "the last session you were on". If that is the one you just
   // deleted, index sends you to it and del_gone sends you back — for ever.
   {
-    const ctx = await makeCtx(b, [row(A, 'One', '2026-09-01'), row(B, 'Two', '2026-09-02')]);
+    const ctx = await makeCtx(b, [row(A, 'One', '2026-09-01'), row(B, 'Two', '2026-09-02')],
+                               [row(A, 'One', '2026-09-01'), row(B, 'Two', '2026-09-02')]);
     const p = await ctx.newPage();
     let bounces = 0;
     p.on('framenavigated', f => { if (f === p.mainFrame()) bounces++; });
@@ -99,7 +107,7 @@ const quiet = async (p, fn, arg) => { try { return await p.evaluate(fn, arg); } 
 
   // ============ 2. nothing left: index IS the list ============
   {
-    const ctx = await makeCtx(b, []);
+    const ctx = await makeCtx(b, [], []);
     const p = await ctx.newPage();
     p.on('pageerror', e => { fail++; console.log('  FAIL pageerror: ' + e.message); });
     await p.goto('https://vampsf.com/index.html');
@@ -137,7 +145,8 @@ const quiet = async (p, fn, arg) => { try { return await p.evaluate(fn, arg); } 
 
   // ============ 3. a first visit, sessions present, is unchanged ============
   {
-    const ctx = await makeCtx(b, [row(A, 'One', '2026-09-01'), row(B, 'Two', '2026-09-02')]);
+    const ctx = await makeCtx(b, [row(A, 'One', '2026-09-01'), row(B, 'Two', '2026-09-02')],
+                               [row(A, 'One', '2026-09-01'), row(B, 'Two', '2026-09-02')]);
     const p = await ctx.newPage();
     p.on('pageerror', e => { fail++; console.log('  FAIL pageerror: ' + e.message); });
     await p.goto('https://vampsf.com/index.html').catch(() => {});
@@ -150,7 +159,8 @@ const quiet = async (p, fn, arg) => { try { return await p.evaluate(fn, arg); } 
 
   // ============ 4. a tombstoned "last" is skipped, not obeyed ============
   {
-    const ctx = await makeCtx(b, [row(A, 'One', '2026-09-01'), row(B, 'Two', '2026-09-02')]);
+    const ctx = await makeCtx(b, [row(A, 'One', '2026-09-01'), row(B, 'Two', '2026-09-02')],
+                               [row(A, 'One', '2026-09-01'), row(B, 'Two', '2026-09-02')]);
     const p = await ctx.newPage();
     p.on('pageerror', e => { fail++; console.log('  FAIL pageerror: ' + e.message); });
     await p.goto('https://vampsf.com/index.html').catch(() => {});
