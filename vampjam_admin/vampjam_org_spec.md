@@ -3686,7 +3686,31 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   New suite tag_quiet_test.js, 18 assertions, including a property-by-property comparison of the
   two buttons across the two pages. Checked against the old code first: 4 fail there.
   Still no new trace.
-- NEXT → add entry 303 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 303 del_leave · b309 · deleting the session you are looking at no longer leaves you standing on the
+  corpse.
+  The bug was structural, not cosmetic: the delete happens from a list that slides down OVER the
+  session page, and the page underneath stays in normal flow. So the moment the row disappeared
+  from the list you could swipe the list shut and land on a player with no audio, no moments and a
+  title for something that no longer exists — and nothing about that screen said so.
+  Two halves. While the delete is in flight the list is PINNED: listPinned makes set_open(false) a
+  no-op and toggle() return early, and every close in the file already funnels through those two,
+  so the caret, the swipe, the tap-outside and close_then are all covered by one guard rather than
+  four. When the write lands, location.replace to the session list; if it fails, unpin and give the
+  page back, because the session is still there.
+  del_gone is the same hole from the other side: Back, a bookmark or an old link into a session
+  this device has already tombstoned now replaces itself with the list on load, instead of
+  rendering an empty player.
+  New suite del_leave_test.js, 15 assertions across four scenarios — the happy path (with the
+  worker write deliberately slowed so the window in which you could swipe back is a real window,
+  and all three ways of closing tried inside it), reopening a deleted page directly, deleting a
+  session you are NOT on (nothing pins, the list still closes), and a delete that fails (unpins,
+  and you can get back down). Ran against the old code first: 5 of 15 fail.
+  Harness note worth keeping: these pages navigate out from under the assertions, so every read is
+  wrapped — an evaluate racing a teardown throws rather than answering, and waitForURL is not
+  reliable across it. Poll p.url() instead.
+  drawer.js v=145 on 13 pages.
+  Still no new trace.
+- NEXT → add entry 304 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
