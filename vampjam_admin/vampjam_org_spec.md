@@ -3788,7 +3788,29 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   the circles compared property by property, and the seeking exercised for real: -15s, +5s, and
   the clamp at both ends. Re-ran grip_only (13), rec_match (28) and time_flip (32): green.
   Still no new trace.
-- NEXT → add entry 307 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 307 icon_snug · b313 · the controls at the right end of a highlight row sit 20% closer, and REC is
+  back on the centre line.
+  rec_centre — my own regression from rec_match, and he caught it in one look. The session page's
+  phone rule is justify-content: space-between, which spreads its SEVEN children to the timeline's
+  edges. I copied that rule to the record page, where six of the seven are display:none — so
+  space-between put the only visible child at the start and REC sat hard left. One visible child
+  means centre.
+  icon_snug — done with a negative margin on the second and subsequent controls, not with less
+  padding: the glyphs move, the tap targets keep their full width. Session: 19px between drawings,
+  -4px, now 15. Favourites: 15 and 16, -3px, now 12 and 13.
+  The measurement is the lesson. I first sized the favourites pull off the buttons' padding and got
+  -4, which overshot to 27%: padding is the wrong proxy there, because the cassette link has no
+  padding at all and centres a 24px svg inside a 34px box by flex, while the heart's glyph is
+  smaller than its content box. Measuring drawing-edge to drawing-edge — the svg's own rect — gives
+  a number that means the same thing on both pages, and the suite measures it that way.
+  The assertions are ratios, not remembered pixel counts: the pull is a negative margin, so
+  before = after + |margin| and after/before must be 0.8, which pins the margin at a fifth of the
+  original spacing without hard-coding anything measured once by hand.
+  New suite icon_snug_test.js, 12 assertions, including that the tap targets did not shrink and
+  that the row's padding is untouched. Re-ran fav_match (23), rec_match (28), grip_only (13) and
+  time_flip (32): green.
+  Still no new trace.
+- NEXT → add entry 308 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

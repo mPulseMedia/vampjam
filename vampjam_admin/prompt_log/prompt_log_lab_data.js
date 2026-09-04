@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "312 fav_match",
+        id: "313 icon_snug",
         expanded: true,
+        nodes: [
+          { text: "313 icon_snug", children: [
+            { text: "prompt_restate", children: [
+              { text: "Move the buttons at the right end of the highlight rows 20% closer together." },
+              { text: "Mid-build: the record button is on the left \u2014 fix it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Move the buttons on the right side of the highlighted rows 20% closer to each other." },
+              { text: "Is the record button on the left? Please fix." }
+            ]},
+            { text: "rec_centre", children: [
+              { text: "my own regression from rec_match, caught in one look" },
+              { text: "the session page\u2019s phone rule is justify-content:space-between, spreading its SEVEN children to the timeline\u2019s edges" },
+              { text: "I copied it to record, where six of the seven are display:none \u2014 so the only visible child went to the start" },
+              { text: "one visible child means centre" }
+            ]},
+            { text: "icon_snug", children: [
+              { text: "a negative margin on the second and later controls, not less padding" },
+              { text: "the glyphs move; the tap targets keep their full width" },
+              { text: "session 19 \u2192 15 (-4). favourites 15 and 16 \u2192 12 and 13 (-3)" }
+            ]},
+            { text: "the_measurement_was_the_lesson", children: [
+              { text: "I first sized the favourites pull off the buttons\u2019 PADDING and got -4, which overshot to 27%" },
+              { text: "padding is the wrong proxy: the cassette link has none and centres a 24px svg in a 34px box by flex, and the heart\u2019s glyph is smaller than its content box" },
+              { text: "drawing-edge to drawing-edge \u2014 the svg\u2019s own rect \u2014 means the same thing on both pages" }
+            ]},
+            { text: "assert_the_ratio", children: [
+              { text: "before = after + |margin|, so after/before must be 0.8" },
+              { text: "that pins the margin at a fifth of the original spacing, with no pixel count remembered from a hand measurement" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite icon_snug_test.js \u2014 12 assertions, incl. targets not shrinking and the row padding untouched" },
+              { text: "re-ran fav_match 23, rec_match 28, grip_only 13, time_flip 32 \u2014 green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "312 fav_match",
+        expanded: false,
         nodes: [
           { text: "312 fav_match", children: [
             { text: "prompt_restate", children: [
