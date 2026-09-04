@@ -27,9 +27,11 @@
   /* nav_cass owns the placement now — see the shared block below */
   /* admin_same: the wordmark was 58/29 here and 68/34 on every other page —
      it comes from site.css now, and the bar carries .brand so it matches. */
+  /* the session title is an h1 with the pencil inside it: 33px tall, margin
+     14/4. This is the same two things in the same box, so it is the same box. */
   .name_row {
     display: flex; align-items: center; justify-content: center; gap: 6px;
-    width: 100%; margin: 14px 0 4px;
+    width: 100%; margin: 14px 0 4px; min-height: 33px;
   }
   /* name_match — the session page's title is an h1: 17px, 600, full contrast,
      margin 14/4. This is an input doing the same job in the same place, so it
@@ -51,7 +53,8 @@
   /* stack_match — the session page has no wrapper gap; every space between two
      things is one of their margins. A 16px gap on top of those margins is why
      the two screens drifted apart vertically even where the parts matched. */
-  .stage { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 0; }
+  /* 8px is what .sticky_player contributes above the control row over there */
+  .stage { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 8px; padding-top: 8px; }
 
   /* control row mirrors the playback page — side buttons present but inert */
   .ctrl_row { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; margin-bottom: 14px; }
