@@ -65,15 +65,32 @@ body {
   font-family: 'Sacramento', cursive;
   font-size: 68px; line-height: 1; color: var(--fg);
   flex: 1 1 auto; min-width: 0; text-align: center; margin: 0;
+  /* nav_pair — four 40px targets leave about 230px on a 390px phone, and the
+     wordmark is wider than that at 68px. It gives way rather than pushing the
+     row off the screen. */
+  white-space: nowrap;
+}
+@media (max-width: 430px) {
+  .brand .wordmark { font-size: 54px; }
+  .brand .wordmark_sf { font-size: 27px; }
 }
 /* record.html has a cassette and no share button; without this the wordmark
    centres in what is left and sits 20px right of true centre. */
 .brand:not(:has(.nav_share)) .wordmark { margin-right: 40px; }
 /* the markup puts both controls before the wordmark, so the row is ordered
    here rather than by moving the buttons in nine files. */
+/* nav_pair — four controls now, two a side, with the wordmark holding the
+   middle. Order, not markup: the buttons are written (or injected) in whatever
+   sequence is convenient and land where they belong. */
 .brand .nav_cass  { order: 1; }
-.brand .wordmark  { order: 2; }
-.brand .nav_share { order: 3; }
+.brand .nav_fav   { order: 2; }
+.brand .wordmark  { order: 3; }
+.brand .nav_rec   { order: 4; }
+.brand .nav_share { order: 5; }
+/* the injected pair are anchors wearing the buttons' clothes */
+.brand .nav_fav, .brand .nav_rec, .brand .nav_rec_none { text-decoration: none; display: flex; align-items: center; justify-content: center; }
+/* record.html writes its own favourites button (it has no drawer.js) */
+.brand .nav_rec_none { order: 2; }
 .wordmark_sf {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 34px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
