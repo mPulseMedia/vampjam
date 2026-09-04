@@ -3595,7 +3595,26 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   phone, landscape and desktop on both pages.
   site.css v=9 on 14 pages.
   Still no new trace.
-- NEXT → add entry 298 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 298 time_flip · b304 · the two sides of the timeline swapped: the hour marks and their 1h / 2h
+  numbers read above the line, the highlight numbers below it.
+  .hour_mark used to poke 5px up and 20px down to make room for a number hanging beneath; it now
+  pokes 20px up and 5px down, and .hour_lbl anchors bottom: calc(100% + 6px) instead of top.
+  The tag_numbers strip moved in the markup from before the seek bar to just after it, and took
+  tag_markers' 90% box so each number lands under its own dot. (The dots themselves are still
+  display:none from circle_gone — the strip is a spacer — but if they ever return the numbers are
+  already in register with them. Its comment said "the numbers above the bar"; corrected.)
+  The bar carries the clearance the labels need, margin-top 32px: they overflow upward now and
+  there is nothing else above them to make the room. Measured 9px clear of the Tag button.
+  Three things taken back in the same breath, all of them loudness:
+  haze_off — Tag the moment loses its coloured glow, its vertical gradient and its inset white
+  highlight; flat accent, and the press is still a squeeze. The play button's shadow went with it:
+  rgba(106,191,105) is green, a leftover from a palette this app no longer has.
+  bold_off — the transport circles (-2m … +2m, both the number and its unit) and the running time
+  drop from 600 to 400. They are labels, not emphasis.
+  New suite time_flip_test.js: 22 assertions on phone and landscape. It needs a 2h20m stub, because
+  a shorter one never draws an hour mark and the whole change would go unasserted.
+  Still no new trace.
+- NEXT → add entry 299 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
