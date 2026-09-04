@@ -258,9 +258,16 @@
       });
   }
 
-  // new_dot — a solid red disc, because that is what a record button is. Same
-  // r=9 as the outline it replaces, so it keeps the row's icon footprint.
-  var ICO_NEW = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>';
+  // nav_pair — two more header glyphs, drawn to the header's idiom: 26px,
+  // stroke 1.6, currentColor, no fills except where a fill IS the meaning.
+  // ICO_FAVLIST — a heart with three rules beside it. Not a heart alone: this
+  // goes to a LIST of favourites, and the row-heart on a moment already means
+  // "favourite this". The lines are what say list.
+  var ICO_FAVLIST = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.6 18.2l-.8-.75C3.6 14.6 1.7 12.85 1.7 10.7c0-1.75 1.35-3.1 3.1-3.1 1 0 1.95.47 2.55 1.2.6-.73 1.55-1.2 2.55-1.2 1.75 0 3.1 1.35 3.1 3.1 0 2.15-1.9 3.9-5.1 6.75l-.3.75z"/><path d="M16.5 9h5.8M16.5 13h5.8M16.5 17h5.8"/></svg>';
+  // ICO_REC_H — the record glyph in the header's grey: a stroked ring with a
+  // filled centre. The disc in the list was red because it was the only red
+  // thing there; up here it is one of four icons and wears their colour.
+  var ICO_REC_H = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.8" fill="currentColor" stroke="none"/></svg>';
   var ICO_HEART_M = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.2-1.1C6.2 15.1 3.2 12.4 3.2 9.1c0-2.6 2-4.6 4.6-4.6 1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.6 2 4.6 4.6 0 3.3-3 6-7.6 10.1L12 20.3z"/></svg>';
   // row_x — the same X the highlight rows use for "remove this", instead of a
   // trash can. Two glyphs for one idea is one glyph too many, and the X is the one
@@ -332,22 +339,10 @@
     // then told not to behave like one: no hover, no press, nothing to tap.
     // list_title — "Recordings", not "Sessions": every row under it is something
     // that was recorded, and the word the app uses for the act is Record.
+    // nav_pair — Favorites and New recording moved OUT of this list and into the
+    // header, where they are always one tap away instead of two. What is left is
+    // what the heading says: recordings, and nothing else.
     var rows = ['<div class="jam_item jam_title"><span class="jam_name">Recordings</span></div>'];
-    var favSeen = false;
-    try { favSeen = localStorage.getItem('vampjam_fav_seen') === '1'; } catch (eF) {}
-    if (favSeen) {
-      // fav_share — the Favorites row shares like a session row does: same button,
-      // same slot, same handler (wire_links binds every .jam_share in the menu, so
-      // this needed markup and nothing else). The empty menu_sub and del spacer
-      // after it are what keep its right edge lined up with the sessions below.
-      var favCur = (PKEY === 'favorites.html') ? ' current' : '';
-      rows.push('<div class="jam_item' + favCur + '"><a class="jam_link' + favCur + '" href="favorites.html">'
-        + '<span class="jam_left"><span class="jam_ico">' + ICO_HEART_M + '</span><span class="jam_name">Favorites</span></span></a>'
-        + '<button class="jam_share" data-href="favorites.html" aria-label="Copy link to Favorites">' + ICO_SHARE + '</button>'
-        + '<span class="menu_sub"></span><span class="jam_del_sp"></span></div>');
-    }
-    rows.push('<div class="jam_item jam_new"><a class="jam_link" href="record.html">'
-      + '<span class="jam_left"><span class="jam_ico">' + ICO_NEW + '</span><span class="jam_name">New recording</span></span></a></div>');
     all.forEach(function (s) {
       var cur = (s.page === PKEY) ? ' current' : '';
       // dur_hide: rows show only the moment count — durations stay in the
@@ -482,7 +477,37 @@
       if (typeof window.toast === 'function') window.toast('Link copied: ' + url);
     });
   }
-  function wire_header() { wire_page_sessions(); wire_page_share(); }
+  // nav_pair — the two new header buttons are INJECTED, not written into
+  // fifteen files. The cassette and the share already live here in spirit (both
+  // are wired from this file); these two live here outright. A page never links
+  // to itself: favourites has no favourites button, record has no record button.
+  function nav_add() {
+    var head = document.querySelector('.brand');
+    if (!head) return;
+    var cass  = head.querySelector('.nav_cass');
+    var share = head.querySelector('.nav_share');
+
+    if (cass && !head.querySelector('.nav_fav') && HERE !== 'favorites.html') {
+      var f = document.createElement('a');
+      f.className = 'nav_cass nav_fav';   // nav_cass carries the header's look
+      f.href = 'favorites.html';
+      f.setAttribute('aria-label', 'Favorites');
+      f.title = 'Favorites';
+      f.innerHTML = ICO_FAVLIST;
+      cass.insertAdjacentElement('afterend', f);
+    }
+    if (!head.querySelector('.nav_rec') && HERE !== 'record.html') {
+      var r = document.createElement('a');
+      r.className = 'nav_share nav_rec';  // nav_share carries the header's look
+      r.href = 'record.html';
+      r.setAttribute('aria-label', 'New recording');
+      r.title = 'New recording';
+      r.innerHTML = ICO_REC_H;
+      if (share) share.insertAdjacentElement('beforebegin', r);
+      else head.appendChild(r);
+    }
+  }
+  function wire_header() { nav_add(); wire_page_sessions(); wire_page_share(); }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', wire_header);
   } else {
