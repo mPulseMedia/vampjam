@@ -22,7 +22,20 @@
     // shadow the session card's bottom only when the list is taller than the drawer
     d.classList.toggle('sess_overflow', d.classList.contains('open') && d.scrollHeight > d.clientHeight + 2);
   }
+  // del_leave — deleting the session you are LOOKING AT used to leave you on a
+  // corpse: a page whose audio and moments are gone, one swipe below the open
+  // list. While that delete is in flight the list is pinned open, so there is
+  // no way back down to the dead page; when it lands you are taken to the list
+  // for real. Every close in this file funnels through set_open(false), so one
+  // guard here covers the caret, the swipe, the tap-outside and close_then.
+  var listPinned = false;
+  function pin_list(on) {
+    listPinned = on;
+    try { document.body.classList.toggle('list_pinned', on); } catch (e) {}
+    if (on) set_open(true);
+  }
   function set_open(on) {
+    if (!on && listPinned) return;
     var d = drawer(); if (!d) return;
     d.classList.toggle('open', on);
     // control_panel — the page below the open list stays in normal flow, so the
@@ -37,6 +50,7 @@
   window.addEventListener('resize', update_sess_overflow);
   function toggle() {
     var d = drawer(); if (!d) return;
+    if (listPinned) return;
     var opening = !d.classList.contains('open');
     if (opening) { build_menu(); wire_links(); }   // fresh rows (e.g. Favorites) on every open
     set_open(opening);
@@ -248,6 +262,15 @@
     return m ? HERE + '?' + m[1] + '=' + m[2] : HERE;
   })();
 
+  // del_gone — and the same page must not be reachable a second time. Back, a
+  // bookmark or a link into a session this device has already deleted lands on
+  // the list instead of on an empty player.
+  (function () {
+    if (PKEY.indexOf('session.html') !== 0) return;   // only the generic player
+    if (!deleted_has(PKEY)) return;
+    location.replace('index.html#sessions');
+  })();
+
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function fmt_dur(s) { s = Math.round(s || 0); if (!s) return ''; var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60); return h > 0 ? h + ':' + pad(m) : m + 'm'; }
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
@@ -384,11 +407,14 @@
             + (codeB ? '\n\nIt is ' + dur_words(durB) + ' long. Type the code to unlock Delete.' : ''),
             'Delete', function () {
             var pg = b.getAttribute('data-page');
+            var onIt = (pg === PKEY);   // del_leave: this is the page under the list
+            if (onIt) { deleted_add(pg); pin_list(true); }
             deleting[pg] = true; build_menu(); wire_links();
             idb_delete_local(loc, function () {
               delete deleting[pg];
               window.VAMPJAM_SESSIONS_LOCAL = (window.VAMPJAM_SESSIONS_LOCAL || []).filter(function (s2) { return s2.page !== pg; });
               build_menu(); wire_links();
+              if (onIt) { location.replace('index.html#sessions'); return; }
               if (typeof window.toast === 'function') window.toast('Deleted ' + nm);
             });
           }, codeB);
@@ -806,6 +832,8 @@
     deleted_add(page);      // remember locally FIRST — stale registry reads can't bring it back
     my_recs_remove(page);   // and this device stops vouching for it
     deleting[page] = true;
+    var onIt = (page === PKEY);   // del_leave: this is the page under the list
+    if (onIt) pin_list(true);
     build_menu(); wire_links();   // row stays, grayed, trash -> red spinner
     var id = (page.split('p=')[1] || '').replace(/[^A-Za-z0-9_\-]/g, '');
     // freshest registry first (GitHub API), so we don't resurrect or drop
@@ -824,12 +852,14 @@
         var pend = pending_get();
         if (pend && pend.page === page) pending_clear();
         build_menu(); wire_links();
+        if (onIt) { location.replace('index.html#sessions'); return; }
         if (typeof window.toast === 'function') window.toast('Deleted ' + name);
       })
       .catch(function () {
         // the delete didn't land: restore the row and its trash button
         delete deleting[page];
         deleted_remove(page);
+        if (onIt) pin_list(false);   // the session is still there — give it back
         build_menu(); wire_links();
         if (typeof window.toast === 'function') window.toast('Delete failed — try again');
         else window.alert('Delete failed — try again');
