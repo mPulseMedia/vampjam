@@ -74,11 +74,73 @@ const LOOK = ['backgroundColor', 'backgroundImage', 'color', 'boxShadow', 'borde
   ok('nor a gradient', record.backgroundImage === 'none' && session.backgroundImage === 'none',
      record.backgroundImage + ' / ' + session.backgroundImage);
 
-  // ---------- tag_quiet ----------
+  // ---------- tag_quiet: the real thing, with a fake microphone ----------
+  // Headless chromium has no mic and no MediaRecorder worth the name, so both
+  // are replaced before the page's script runs. Everything after this is the
+  // page's own code path: press REC, press Tag the Moment, look at the DOM.
   const p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (record): ' + e.message); });
+  await p.addInitScript(() => {
+    const blob = new Blob([new Uint8Array(64)], { type: 'audio/mp4' });
+    class FakeRec {
+      constructor() { this.state = 'inactive'; this.ondataavailable = null; this.onstop = null; }
+      start() { this.state = 'recording'; }
+      stop() { this.state = 'inactive';
+               if (this.ondataavailable) this.ondataavailable({ data: blob });
+               if (this.onstop) this.onstop(); }
+      requestData() { if (this.ondataavailable) this.ondataavailable({ data: blob }); }
+      pause() {} resume() {}
+    }
+    FakeRec.isTypeSupported = () => true;
+    window.MediaRecorder = FakeRec;
+    if (!navigator.mediaDevices) Object.defineProperty(navigator, 'mediaDevices', { value: {} });
+    navigator.mediaDevices.getUserMedia = () =>
+      Promise.resolve({ getTracks: () => [{ stop() {} }] });
+  });
   await p.goto('https://vampsf.com/record.html');
   await p.waitForTimeout(700);
+
+  await p.click('#rec_btn');
+  await p.waitForFunction(() => document.getElementById('tag_btn').disabled === false, { timeout: 8000 })
+         .catch(() => {});
+  const rolling = await p.evaluate(() => ({
+    recording: document.getElementById('rec_btn').classList.contains('recording'),
+    tagArmed:  document.getElementById('tag_btn').disabled === false
+  }));
+  ok('REC starts a recording',            rolling.recording, JSON.stringify(rolling));
+  ok('and arms Tag the Moment',           rolling.tagArmed, JSON.stringify(rolling));
+
+  // put the caret in a field, the way naming the last moment leaves it
+  await p.evaluate(() => document.getElementById('name_in').focus());
+  const held = await p.evaluate(() => document.activeElement.id);
+  ok('a field holds the caret to begin with', held === 'name_in', held);
+
+  await p.click('#tag_btn');
+  await p.waitForTimeout(250);
+  const tapped = await p.evaluate(() => ({
+    rows:   document.querySelectorAll('.mom_row').length,
+    active: document.activeElement.tagName,
+    activeId: document.activeElement.id || document.activeElement.className,
+    anyFocusedInput: !!document.querySelector('input:focus, textarea:focus')
+  }));
+  ok('the tap makes a moment',                 tapped.rows === 1, JSON.stringify(tapped));
+  ok('and leaves NO field focused',            tapped.anyFocusedInput === false, JSON.stringify(tapped));
+  ok('so nothing can raise the keyboard',      tapped.active !== 'INPUT' && tapped.active !== 'TEXTAREA',
+                                               tapped.active + ' ' + tapped.activeId);
+
+  // a second tap, from the same state, must behave the same
+  await p.evaluate(() => { const i = document.querySelector('.mom_name'); i.focus(); i.value = 'first one'; });
+  await p.click('#tag_btn');
+  await p.waitForTimeout(250);
+  const twice = await p.evaluate(() => ({
+    rows: document.querySelectorAll('.mom_row').length,
+    anyFocusedInput: !!document.querySelector('input:focus, textarea:focus'),
+    firstName: document.querySelectorAll('.mom_name')[0].value
+  }));
+  ok('a second tap makes a second moment',     twice.rows === 2, JSON.stringify(twice));
+  ok('it drops the caret out of the row you were naming',
+                                               twice.anyFocusedInput === false, JSON.stringify(twice));
+  ok('and keeps what you had already typed',   twice.firstName === 'first one', twice.firstName);
 
   // stand in for a live recording: the button's guard is the recorder state,
   // so drive add_moment the way the button does once that guard passes.
