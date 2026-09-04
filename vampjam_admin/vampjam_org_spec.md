@@ -3642,7 +3642,32 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   distance and asserts it moved. Checked the suite against the OLD code before shipping — it fails
   4 of 13 there, including both of those, so it is testing the behaviour and not the wiring.
   Still no new trace.
-- NEXT → add entry 301 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 301 rec_calm · b307 · four things around recording, all of them the same idea: say less, and only
+  when it is true.
+  code_gate — drawer_confirm takes an optional code. Past five minutes the Delete button starts
+  disabled and arms only when 8764 is typed; the message also says how long the recording is, which
+  is the part that actually stops the mistake. Both delete paths use it (a local recording and a
+  cloud session), so the trash button now carries data-dur. It is not security and is not pretended
+  to be — the code is in the file, and the person it protects against is the one who was not paying
+  attention.
+  rec_glow — the REC button was wearing a red halo the whole time, so the halo said nothing. It is
+  flat now, and gains the halo only while tape is moving. The old animation was a 1.2s ring that
+  expanded and vanished, which reads as urgency; it is a 4.2s in-and-out breath now, which reads as
+  running. Reduced-motion gets a steady glow instead of nothing, because the glow is the signal.
+  save_calm — 'Uploading…', 'Creating the session…' and the two-line 'Session ready ✓ … saved as
+  … · N moments carried over' are gone, replaced by three pulsing dots with no words. Every one of
+  those messages was true and not one was his to act on. Words come back only on failure, where
+  there IS something to do.
+  save_flow — a finished save now goes to the session page. The old ending printed a sentence whose
+  only useful part was the link inside it. Back still wins: if he pressed Back mid-recording, it
+  finishes and returns to the list as before.
+  New suite rec_calm_test.js: 22 assertions — a 4-minute session confirms with no code and an armed
+  button, a 50-minute one starts locked, 1234 leaves it locked and 8764 opens it; the button has no
+  shadow and no animation idle, and breathes for more than 3s while recording; the dots are three,
+  animate, and carry no text.
+  drawer.js v=144 on 13 pages.
+  Still no new trace.
+- NEXT → add entry 302 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

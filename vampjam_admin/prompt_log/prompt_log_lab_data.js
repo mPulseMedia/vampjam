@@ -9,8 +9,57 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "306 grip_only",
+        id: "307 rec_calm",
         expanded: true,
+        nodes: [
+          { text: "307 rec_calm", children: [
+            { text: "prompt_restate", children: [
+              { text: "Past five minutes, make the delete confirmation also ask for a typed code, 8764. Not real security \u2014 a speed bump." },
+              { text: "Take the fuzz off the REC button except while it is actually recording, and make that a very slow glow." },
+              { text: "When a recording saves, take me to the session page." },
+              { text: "Replace the gobbledygook at the bottom during saving with a minimal animation." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "If I wanna delete a recording that is longer than five minutes, you already present me with one custom pop-up, making me confirm. If it\u2019s longer than five minutes, then put a text field where I enter a code in order to delete it and make that code 8764 it doesn\u2019t have to be encrypted and complicated and high security. It\u2019s just an extra blockso that people don\u2019t accidentally delete a long recording.. also make the REC recording button non-fuzzy except when it\u2019s actually running and recording and when it\u2019s actually recording make it slow slowly very slowly glow or Eben flow in. It\u2019s fuzzy. It\u2019s lightness around it to indicate that it\u2019s recording and when I finish the recording and it saves it, navigate me to the Paige the session page for playback as soon as it is saved and replace the gobbledygook that you put at the bottom of the page when it\u2019s in the process of saving with just some minimal animation that indicates that it is in the process of saving." }
+            ]},
+            { text: "code_gate", children: [
+              { text: "drawer_confirm takes an optional code; past 5 minutes Delete starts disabled and arms on 8764" },
+              { text: "the message also says how long the recording is \u2014 that is the part that actually stops the mistake" },
+              { text: "both paths use it, local and cloud, so the trash button carries data-dur now" },
+              { text: "not pretended to be security: the code is in the file, and the person it stops is the one not paying attention" }
+            ]},
+            { text: "rec_glow", children: [
+              { text: "the halo was on all the time, so it said nothing" },
+              { text: "flat when idle; halo only while tape is moving" },
+              { text: "the old 1.2s ring expanded and vanished \u2014 urgency. a 4.2s in-and-out breath reads as running" },
+              { text: "reduced-motion gets a STEADY glow, not nothing \u2014 the glow is the signal" }
+            ]},
+            { text: "save_calm", children: [
+              { text: "Uploading\u2026, Creating the session\u2026 and the two-line Session ready paragraph all gone" },
+              { text: "three pulsing dots, no words" },
+              { text: "every one of those messages was true and not one was his to act on" },
+              { text: "words come back on failure, where there IS something to do" }
+            ]},
+            { text: "save_flow", children: [
+              { text: "a finished save goes to the session page" },
+              { text: "the old ending printed a sentence whose only useful part was the link inside it" },
+              { text: "Back still wins: pressed mid-recording it finishes and returns to the list" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite rec_calm_test.js \u2014 22 assertions" },
+              { text: "4-minute session: no code, armed. 50-minute: locked, 1234 leaves it locked, 8764 opens it" },
+              { text: "button has no shadow and no animation idle; breathes >3s while recording" },
+              { text: "the dots are three, animate, and carry no text" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "306 grip_only",
+        expanded: false,
         nodes: [
           { text: "306 grip_only", children: [
             { text: "prompt_restate", children: [
