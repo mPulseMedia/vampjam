@@ -258,7 +258,9 @@
       });
   }
 
-  var ICO_NEW = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>';
+  // new_dot — a solid red disc, because that is what a record button is. Same
+  // r=9 as the outline it replaces, so it keeps the row's icon footprint.
+  var ICO_NEW = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>';
   var ICO_HEART_M = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.2-1.1C6.2 15.1 3.2 12.4 3.2 9.1c0-2.6 2-4.6 4.6-4.6 1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.6 2 4.6 4.6 0 3.3-3 6-7.6 10.1L12 20.3z"/></svg>';
   // row_x — the same X the highlight rows use for "remove this", instead of a
   // trash can. Two glyphs for one idea is one glyph too many, and the X is the one

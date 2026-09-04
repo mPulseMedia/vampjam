@@ -160,7 +160,11 @@ body.drawer_open .nav_cass, body.drawer_open .nav_share { opacity: 0; pointer-ev
 .jam_ico { flex: 0 0 auto; display: inline-flex; color: var(--accent); }
 .jam_item.jam_admin .jam_ico { color: var(--muted); }
 .jam_count { color: var(--muted); font-size: 14px; margin-left: 5px; }
-.jam_item.jam_new .jam_ico { color: var(--accent); }
+/* new_dot — the REC button's red, spelled out rather than themed: a record
+   dot is red in every palette, and this one has to read as the same object
+   as the big circle on the record screen. (In the light theme --danger is
+   already this exact hex; in the others it is not, which is the point.) */
+.jam_item.jam_new .jam_ico { color: #d70015; }
 .jam_ico svg { display: block; }
 .jam_share { flex: 0 0 auto; background: transparent; color: var(--muted); border: none; border-radius: 7px;
              padding: 6px 6px; margin-left: 6px; min-height: 32px; cursor: pointer; line-height: 0; }
