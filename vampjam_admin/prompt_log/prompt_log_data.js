@@ -9,8 +9,52 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "309 del_leave",
+        id: "310 list_home",
         expanded: true,
+        nodes: [
+          { text: "310 list_home", children: [
+            { text: "prompt_restate", children: [
+              { text: "Deleting the loaded session freaked out. Just stay on the session list and do not let me scroll down to the dead page." },
+              { text: "Or do what a first visit does. Maybe the app always needs a session \u2014 but that cannot work from scratch." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "it freaked out when I deleted a session that was loaded. it should just stay on the session list screen, and not let me scroll down to show the loaded session. Or do what happens when I navigate to teh site for the first tim, with no session loaded. Mabe it alway s needs a session, but that won\u2019t work when starting from scratch." }
+            ]},
+            { text: "what_freaked_out", children: [
+              { text: "a redirect loop. measured 914 navigations in about twelve seconds" },
+              { text: "index reopened the session just deleted; del_gone bounced it back to index; index reopened it" },
+              { text: "neither side was wrong on its own \u2014 last build only fixed one of them" }
+            ]},
+            { text: "last_drop", children: [
+              { text: "tombstoning a page clears vampjam_last_session if that is what it pointed at" },
+              { text: "and a tombstoned page stops recording itself as last" },
+              { text: "that alone breaks the loop" }
+            ]},
+            { text: "index_pick", children: [
+              { text: "index consults the tombstones for the remembered page AND the fallback" },
+              { text: "and looks at this device\u2019s own roster, so a recording made ten seconds ago counts before the registry catches up" }
+            ]},
+            { text: "list_home", children: [
+              { text: "the gap he named: there was no screen that is just the list" },
+              { text: "every page is a session with the list sliding over it, so with nothing left underneath there was nowhere to land" },
+              { text: "index only redirects when it has somewhere real to go; otherwise it BECOMES the list" },
+              { text: "drawer open, pinned, a line saying no sessions yet, and a Record button" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite list_home_test.js \u2014 16 assertions" },
+              { text: "the loop is counted, not eyeballed: main-frame navigations, 914 before and under 8 now" },
+              { text: "plus the empty home and its pin, a first visit still opening a session, and a tombstoned last being skipped" },
+              { text: "sessions.js is stubbed per scenario \u2014 it is the STATIC eight, and \u201cnothing left\u201d has to empty that too" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "309 del_leave",
+        expanded: false,
         nodes: [
           { text: "309 del_leave", children: [
             { text: "prompt_restate", children: [

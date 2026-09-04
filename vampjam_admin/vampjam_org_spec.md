@@ -3710,7 +3710,30 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   reliable across it. Poll p.url() instead.
   drawer.js v=145 on 13 pages.
   Still no new trace.
-- NEXT → add entry 304 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 304 list_home · b310 · the fix for del_leave was half a fix, and the missing half was a redirect
+  loop. Measured: 914 navigations in about twelve seconds.
+  index.html was one line of logic — open the session you were last on, else the newest — and
+  del_leave sent the deleted page straight into it. index reopened the session that had just been
+  deleted; del_gone bounced it back to index; index reopened it. Neither side was wrong on its own.
+  Three changes, smallest first.
+  last_drop — tombstoning a page now also clears vampjam_last_session if that is what it pointed
+  at, and the page stops recording itself as "last" once it is tombstoned. That alone breaks the
+  loop.
+  index_pick — index consults the tombstones for BOTH the remembered page and the fallback, and
+  looks at this device's own roster as well as the static list, so a recording made ten seconds ago
+  still counts before the shared registry has caught up.
+  list_home — and the real gap he named: there was no screen that is just the list. Every page is a
+  session with the list sliding over it, so with nothing left to be underneath there was nowhere to
+  land. index now only redirects when it has somewhere real to go; otherwise it stops being a
+  redirect and becomes the list itself — drawer open, pinned (nothing is under it), with a line
+  saying there are no sessions yet and a Record button.
+  New suite list_home_test.js, 16 assertions: the loop itself (counting main-frame navigations —
+  914 against the old code, under 8 now), the empty home and its pin, a first visit with sessions
+  present still opening one, and a tombstoned "last" being skipped rather than obeyed. sessions.js
+  is stubbed per scenario, because it is the STATIC list of eight hand-built pages and a test about
+  "nothing left" has to empty that too — otherwise the app is quite right to open 2026_08_14.
+  Still no new trace.
+- NEXT → add entry 305 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
