@@ -9,8 +9,63 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "310 list_home",
+        id: "311 rec_match",
         expanded: true,
+        nodes: [
+          { text: "311 rec_match", children: [
+            { text: "prompt_restate", children: [
+              { text: "Line the record screen up with the session screen \u2014 appearance, position, font size, the REC button the size of play, the Tag button in the same place in the stack." },
+              { text: "Tighten the extra gap at the bottom of the playback list, where the last row looks taller." },
+              { text: "Make the recording moment rows look like the playback highlight rows \u2014 height, position, shadows \u2014 minus play, heart and share, but keep a delete." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make the record page align more precisely with the session playback page in terms of the appearance and location at font size of the session make the record button be the same size as the play button move the rearrange the order of the tag button in the play bar, etc., so that they are basically so that they\u2019re the same and by the way on the bottom of the playback session, there\u2019s kind of an extra gap or the last row is extra tall because there\u2019s something below it. See if you can tighten that up and also make the highlight rose. Look the same as the playback session highlight Rose in terms of Heit and Location and shadows and all that stuff but of course the recording highlight Rose won\u2019t have the play button or the Hart or the share or the delete maybe they\u2019ll have the delete button yeah put that there, but I want him to look just about the same so that when it switches from the record screen to the playback screen they\u2019ll be a minimal differences and only those differences that pertain" }
+            ]},
+            { text: "measured_not_eyeballed", children: [
+              { text: "both pages rendered, band by band: control row 148, Tag 232, clock 304, line 361, numbers 373, list 411" },
+              { text: "they agreed on none of those before" }
+            ]},
+            { text: "rec_size", children: [
+              { text: "the REC circle was 92 against play\u2019s 84, with no phone or landscape rule at all" },
+              { text: "so it changed size relative to play as the screen changed. same three now: 84 / 70 / 68" }
+            ]},
+            { text: "rec_order", children: [
+              { text: "record had the bar above the button and the numbers above the bar" },
+              { text: "now: button, clock, line, numbers under it \u2014 and the hour marks flipped with them" }
+            ]},
+            { text: "stack_match", children: [
+              { text: "the biggest cause of the drift: .stage is a flex column with gap:16px" },
+              { text: "the session stack is block flow, spaced by each element\u2019s own margin \u2014 so the gap added to every one" },
+              { text: "MARGINS DO NOT COLLAPSE BETWEEN FLEX ITEMS: the button\u2019s 2px top margin added here where it vanishes there" },
+              { text: "two pixels, and everything below it moved" }
+            ]},
+            { text: "row_match", children: [
+              { text: ".mom_list / .mom_row are .tag_list / .tag_row \u2014 panel, radius, inset shadow, 12px gutter, 55px row, 5px gap, same hairline" },
+              { text: "the row keeps only what pertains: mom_drop, the X. it removes the tag, renumbers the rows and redraws the bar" },
+              { text: "no play, no heart, no share \u2014 there is nothing to play yet" }
+            ]},
+            { text: "the_gap_he_saw", children: [
+              { text: "two things, not one" },
+              { text: ".tag_list had 20px padding under the last row plus 24px margin" },
+              { text: "and .tag_markers sat above the list as a 22px empty strip \u2014 its dots have been display:none since circle_gone" },
+              { text: "66px of nothing. padding gone, margin 12, strip height 0 but still in the DOM because render_tag_markers writes into it" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite rec_match_test.js \u2014 28 assertions" },
+              { text: "eleven bands compared across the two LIVE pages within 2px, row and panel property by property, title compared" },
+              { text: "and the delete exercised end to end: row goes, numbers renumber, the bar\u2019s number goes with it" },
+              { text: "record runs against a stubbed MediaRecorder so it is genuinely mid-take while being measured" },
+              { text: "re-ran time_flip 32, audio_grade 18, tag_quiet 18, rec_calm 22 \u2014 all green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "310 list_home",
+        expanded: false,
         nodes: [
           { text: "310 list_home", children: [
             { text: "prompt_restate", children: [
