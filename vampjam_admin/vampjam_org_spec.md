@@ -3867,7 +3867,19 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   (23), del_leave (16): green.
   site.css v=10, drawer.js v=147.
   Still no new trace.
-- NEXT → add entry 311 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 311 new_dot · b317 · the New recording row wears a solid red disc instead of an outlined plus.
+  Same r=9 in the same 29px box, so the row's icon footprint is unchanged and it still lines up
+  with the cassettes below it — only the ink changed.
+  The red is written out as #d70015 rather than themed. A record dot is red in every palette, and
+  this one has to read as the same object as the big circle on the record screen, which is that hex
+  in every theme. (In the light theme --danger happens to be exactly this colour; in the other two
+  it is not, which is the reason not to use it.)
+  New suite new_dot_test.js, 11 assertions: filled not stroked, one circle and no plus, the radius
+  and the 29px footprint kept, the other rows unchanged in size and still not red, and the colour
+  compared against the REC button rendered on the record screen rather than against a string.
+  site.css v=11, drawer.js v=148.
+  Still no new trace.
+- NEXT → add entry 312 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

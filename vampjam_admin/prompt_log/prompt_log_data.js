@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "316 del_same",
+        id: "317 new_dot",
         expanded: true,
+        nodes: [
+          { text: "317 new_dot", children: [
+            { text: "prompt_restate", children: [
+              { text: "In the session list, make the New recording icon a solid red circle." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "on the session list page, make the icon for the New recording item be a solid red circle," }
+            ]},
+            { text: "same_footprint", children: [
+              { text: "same r=9 in the same 29px box as the outlined plus it replaces" },
+              { text: "so it still lines up with the cassettes below it \u2014 only the ink changed" }
+            ]},
+            { text: "why_the_red_is_not_themed", children: [
+              { text: "written out as #d70015, not var(--danger)" },
+              { text: "a record dot is red in every palette, and this has to read as the same object as the big circle on the record screen" },
+              { text: "in the light theme --danger IS this hex; in the other two it is not \u2014 which is the reason not to use it" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite new_dot_test.js \u2014 11 assertions" },
+              { text: "filled not stroked, one circle and no plus, radius and 29px footprint kept" },
+              { text: "the other rows unchanged in size and still not red" },
+              { text: "and the colour compared against the REC button RENDERED on the record screen, not against a string" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "316 del_same",
+        expanded: false,
         nodes: [
           { text: "316 del_same", children: [
             { text: "prompt_restate", children: [
