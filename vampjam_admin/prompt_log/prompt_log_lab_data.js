@@ -9,8 +9,55 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "303 logo_line",
+        id: "304 time_flip",
         expanded: true,
+        nodes: [
+          { text: "304 time_flip", children: [
+            { text: "prompt_restate", children: [
+              { text: "Swap the two sides of the session timeline: hours above the line, highlight numbers below." },
+              { text: "Then, mid-build: do not bold the blue current time." },
+              { text: "Then: take the haze off Tag the moment \u2014 the \u201cjuicy\u201d ask is withdrawn \u2014 and unbold the -2m\u2026+2m circles." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "on the session timelines, move the 1h 2h to above the line, and the highlight numbers to below" },
+              { text: "and dont bold the blue current time." },
+              { text: "remove the haze around the Tag the Moment button. I asked for \"jucy\" a while back. I take it back. un-bold the -2m...+2m buttons too" }
+            ]},
+            { text: "the_swap", children: [
+              { text: "the hour hairline poked 5px up and 20px down to hold a number beneath it; now 20 up, 5 down" },
+              { text: "the label anchors bottom:calc(100% + 6px) instead of top" },
+              { text: "the number strip moved in the markup from before the bar to just after it" }
+            ]},
+            { text: "numbers_in_register", children: [
+              { text: "the strip took tag_markers\u2019 90% box, so a number lands under its own dot" },
+              { text: "the dots are still display:none from circle_gone, but if they come back the two agree" }
+            ]},
+            { text: "room_above", children: [
+              { text: "the labels overflow UPWARD now and nothing else is up there to make room" },
+              { text: "the bar carries it: margin-top 32px. measured 9px clear of the Tag button" }
+            ]},
+            { text: "haze_off", children: [
+              { text: "Tag the moment loses the coloured glow, the vertical gradient and the inset white highlight" },
+              { text: "flat accent; the press is still a squeeze" },
+              { text: "the play button\u2019s shadow went too \u2014 rgba(106,191,105) is GREEN, left over from a palette this app no longer has" }
+            ]},
+            { text: "bold_off", children: [
+              { text: "the transport circles (number and unit both) and the running time drop 600 \u2192 400" },
+              { text: "they are labels, not emphasis" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite time_flip_test.js \u2014 22 assertions on phone and landscape" },
+              { text: "it needs a 2h20m stub: anything shorter never draws an hour mark, and the whole change would go unasserted" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "303 logo_line",
+        expanded: false,
         nodes: [
           { text: "303 logo_line", children: [
             { text: "prompt_restate", children: [
