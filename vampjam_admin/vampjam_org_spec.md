@@ -3578,7 +3578,24 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Cache Rule. Said so on do_this_next rather than quietly dropping it, with the honest note that
   iOS Safari evicts audio anyway.
   Still no new trace.
-- NEXT → add entry 297 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 297 logo_line · b302 · the wordmark moved up onto the same line as the two controls, so the
+  header reads cassette · vampSF · share instead of a band of icons with the logo underneath.
+  .brand became a flex row with align-items:center. The pair stopped being position:absolute and
+  became ordinary flex items; the wordmark takes flex:1 and centres inside it, which puts it on the
+  page's true centre line rather than the centre of what is left over.
+  The markup in all nine pages puts both buttons BEFORE the wordmark, so the row is ordered in CSS
+  (order 1/2/3) rather than by moving a button in nine files.
+  nav_room is retired: .brand's padding-top was max(46px, safe-area + 40px) to hold a band open
+  above the logo. It only needs to clear the notch now, which gives about 46px back at the top of
+  every page.
+  record.html is the one header with a cassette and no share; :not(:has(.nav_share)) gives its
+  wordmark a 40px right margin so it still lands on centre.
+  New suite logo_line_test.js: 30 assertions — one row, correct order with no overlap, centred to
+  within 3px, both icons still the topmost element at their own centre, no sideways scroll — across
+  phone, landscape and desktop on both pages.
+  site.css v=9 on 14 pages.
+  Still no new trace.
+- NEXT → add entry 298 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
