@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "308 tag_quiet",
+        id: "309 del_leave",
         expanded: true,
+        nodes: [
+          { text: "309 del_leave", children: [
+            { text: "prompt_restate", children: [
+              { text: "If I delete the session I am currently on, keep me on the list \u2014 do not let me get back down to the loaded session, which is now empty." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "If I delete a session and it is currently the loaded session, then don\u2019t let me see the page in the configuration where it will just keep me on the session list view and don\u2019t let me go to the view where I can see the loaded session, which is actually empty and has been deleted" }
+            ]},
+            { text: "why_it_happened", children: [
+              { text: "the list slides down OVER the session page and the page underneath stays in normal flow" },
+              { text: "so the moment the row left the list you could swipe the list shut onto a player with no audio, no moments, and a title for something gone" },
+              { text: "and nothing on that screen said so" }
+            ]},
+            { text: "pinned_then_gone", children: [
+              { text: "while the delete is in flight the list is pinned: set_open(false) is a no-op and toggle() returns early" },
+              { text: "every close in the file already funnels through those two, so one guard covers caret, swipe, tap-outside and close_then" },
+              { text: "when the write lands, location.replace to the list" },
+              { text: "if it fails, unpin and give the page back \u2014 the session is still there" }
+            ]},
+            { text: "del_gone", children: [
+              { text: "the same hole from the other side" },
+              { text: "Back, a bookmark or an old link into a session this device tombstoned now replaces itself with the list on load" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite del_leave_test.js \u2014 15 assertions, four scenarios" },
+              { text: "the worker write is deliberately slowed so the window you could swipe back in is a real window, and all three ways of closing are tried inside it" },
+              { text: "plus: reopening a deleted page directly, deleting a session you are NOT on, and a delete that fails" },
+              { text: "5 of 15 fail against the old code" }
+            ]},
+            { text: "harness_note", children: [
+              { text: "these pages navigate out from under the assertions" },
+              { text: "an evaluate racing a teardown THROWS rather than answering, and waitForURL is not reliable across it" },
+              { text: "wrap every read; poll p.url() instead" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "308 tag_quiet",
+        expanded: false,
         nodes: [
           { text: "308 tag_quiet", children: [
             { text: "prompt_restate", children: [
