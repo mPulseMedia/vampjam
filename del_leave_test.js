@@ -119,9 +119,16 @@ const quiet = async (p, fn) => { try { await p.evaluate(fn); } catch (e) {} };
     await p.waitForTimeout(100);
     ok('nor a tap outside it',       (await listState(p)).open !== false);
 
-    const left = await urlWithin(p, /index\.html/, 15000);
-    ok('when the delete lands you are on the session list',
-       left && /index\.html#sessions$/.test(p.url()), p.url());
+    // NOT "index.html": since list_home, index picks a surviving session rather
+    // than being a destination itself. The requirement is that you are off the
+    // dead page and looking at the list.
+    const left = await urlWithin(p, /^(?!.*here_one).*$/, 15000);
+    ok('when the delete lands you are off the deleted page',
+       left && !/here_one/.test(p.url()), p.url());
+    await p.waitForTimeout(900);
+    const landed = await listState(p);
+    ok('and the list is open where you land',
+       landed.open === true || /index\.html$/.test(p.url()), JSON.stringify(landed) + ' ' + p.url());
     await ctx.close();
   }
 
@@ -136,9 +143,9 @@ const quiet = async (p, fn) => { try { await p.evaluate(fn); } catch (e) {} };
       JSON.stringify([{ page: k, ts: Date.now() }])), HERE);
     // the page replaces itself while loading, so goto never sees 'load'
     await p.goto('https://vampsf.com/' + HERE).catch(() => {});
-    const bounced = await urlWithin(p, /index\.html/, 8000);
-    ok('a deleted session opened directly bounces to the list',
-       bounced && /index\.html#sessions$/.test(p.url()), p.url());
+    const bounced = await urlWithin(p, /^(?!.*here_one).*$/, 8000);
+    ok('a deleted session opened directly bounces away from itself',
+       bounced && !/here_one/.test(p.url()), p.url());
     await ctx.close();
   }
 
