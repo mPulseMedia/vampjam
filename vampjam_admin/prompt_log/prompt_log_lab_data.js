@@ -9,8 +9,46 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "311 rec_match",
+        id: "312 fav_match",
         expanded: true,
+        nodes: [
+          { text: "312 fav_match", children: [
+            { text: "prompt_restate", children: [
+              { text: "Align favourites the same way. Put the -2m \u2026 +2m circles on it, and leave everything else alone." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Align the favorites page too. Put the -2m ... +2m buttons on the favorites page, but don\u2019t change the other buttons or elements; just align them too." }
+            ]},
+            { text: "same_band", children: [
+              { text: "title 99, control row 148-218, play circle 70 on a phone \u2014 the numbers the other two screens now hit" },
+              { text: "below that they diverge honestly: no Tag button and no clock here, so the bar sits where those would have been" }
+            ]},
+            { text: "fav_nudge", children: [
+              { text: "these circles are REAL, not the inert placeholders the record screen carries" },
+              { text: "clamped at both ends: +2m three seconds from the end lands on the end" },
+              { text: "with nothing loaded they do nothing \u2014 play is what starts, and a seek that also started would be two controls in one" }
+            ]},
+            { text: "two_things_found", children: [
+              { text: "the page\u2019s @media (max-width:480px) block sits ABOVE the base rules, so at equal specificity the base rule won" },
+              { text: "the circles never shrank and the row overflowed 390px until the phone rules named the element too" },
+              { text: ".sticky_player had three rules in this file for an element the page has never had \u2014 removed" },
+              { text: "the 12px it would have contributed went to the control row, where a comment now says why" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite fav_match_test.js \u2014 23 assertions" },
+              { text: "bands compared against the LIVE session page, circles compared property by property" },
+              { text: "and the seeking exercised for real: -15s, +5s, and the clamp at both ends" },
+              { text: "re-ran grip_only 13, rec_match 28, time_flip 32 \u2014 green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "311 rec_match",
+        expanded: false,
         nodes: [
           { text: "311 rec_match", children: [
             { text: "prompt_restate", children: [

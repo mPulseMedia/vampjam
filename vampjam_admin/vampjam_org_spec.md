@@ -3765,7 +3765,30 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   runs against a stubbed MediaRecorder so it is genuinely mid-take while being measured.
   Re-ran time_flip (32), audio_grade (18), tag_quiet (18) and rec_calm (22): all still green.
   Still no new trace.
-- NEXT → add entry 306 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 306 fav_match · b312 · favourites gets the same header band as the other two screens, and the six
+  seek circles it never had.
+  Measured: title 99, control row 148-218, play circle 70 on a phone — the same numbers the session
+  and record pages now hit. Below that the two diverge honestly: favourites has no Tag button and
+  no clock, so its bar sits where those would have been.
+  fav_nudge — the circles are real here, not the inert placeholders the record screen carries. They
+  move the playing favourite and are clamped at both ends, so +2m three seconds from the end lands
+  on the end. With nothing loaded they do nothing rather than starting something: the play button
+  is what starts, and a seek button that also started would be two controls in one.
+  The play button keeps its own class (.fav_play) — the page's JS knows it by that name and so does
+  the one_size exclusion list — and takes the play button's size, 84 / 70, losing its shadow the way
+  the others did.
+  Two things found on the way. The page's @media (max-width: 480px) block sits ABOVE the base
+  rules, so at equal specificity the base rule won and the circles never shrank — the phone rules
+  needed element selectors to get past their own file order; the row overflowed 390px until they
+  did. And .sticky_player had three rules in this file for an element the page has never had:
+  removed, with the 12px it would have contributed handed to the control row, which is where the
+  comment now explains it.
+  list_tight here too: 14px of padding under the last row plus 24px of margin.
+  New suite fav_match_test.js, 23 assertions — the bands compared against the live session page,
+  the circles compared property by property, and the seeking exercised for real: -15s, +5s, and
+  the clamp at both ends. Re-ran grip_only (13), rec_match (28) and time_flip (32): green.
+  Still no new trace.
+- NEXT → add entry 307 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
