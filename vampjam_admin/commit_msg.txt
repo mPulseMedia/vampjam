@@ -1,1 +1,1 @@
-play_same
+auto_commit

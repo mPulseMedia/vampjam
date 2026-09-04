@@ -221,7 +221,13 @@
   <button class="ctrl_btn" id="back_120" title="Back 2 min"><span class="cu">&minus;</span><span class="cn">2</span><span class="cu">m</span></button>
   <button class="ctrl_btn" id="back_15"  title="Back 15 sec"><span class="cu">&minus;</span><span class="cn">15</span><span class="cu">s</span></button>
   <button class="ctrl_btn small" id="back_5" title="Back 5 sec"><span class="cu">&minus;</span><span class="cn">5</span><span class="cu">s</span></button>
-  <button class="fav_play" id="play_btn" aria-label="Play">&#9654;</button>
+  <!-- play_same — no glyph in the markup. The session page fills this button
+       with the same SVG at boot; this one shipped a literal U+25B6 and only
+       swapped it on the first play/pause event, so until you pressed it you
+       were looking at a font’s triangle where every other play button on the
+       site has a drawing. Same em size, much more ink — which is why it read
+       as too big. -->
+  <button class="fav_play" id="play_btn" aria-label="Play"></button>
   <button class="ctrl_btn small" id="fwd_5"  title="Forward 5 sec"><span class="cu">+</span><span class="cn">5</span><span class="cu">s</span></button>
   <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec"><span class="cu">+</span><span class="cn">15</span><span class="cu">s</span></button>
   <button class="ctrl_btn" id="fwd_120" title="Forward 2 min"><span class="cu">+</span><span class="cn">2</span><span class="cu">m</span></button>
@@ -750,11 +756,13 @@
     if (el) el.addEventListener('click', function () { nudge(pair[1]); });
   });
 
+  // play_same — the drawing goes in at boot, not on the first event
+  playBtn.innerHTML = ICON_PLAY;
   playBtn.addEventListener('click', function () {
     if (!current) { if (favs.length) play_fav(favs[0]); return; }
     if (player.paused) player.play().catch(function () {}); else player.pause();
   });
-  player.addEventListener('play', function () { playBtn.innerHTML = ICON_PAUSE ? '\u23F8' : '||'; playBtn.textContent = ''; playBtn.innerHTML = ICON_PAUSE; render(); });
+  player.addEventListener('play', function () { playBtn.innerHTML = ICON_PAUSE; render(); });
   player.addEventListener('pause', function () { playBtn.innerHTML = ICON_PLAY; render(); });
   player.addEventListener('timeupdate', function () {
     // name_under: the clock is gone from the page, so there is nothing to write
