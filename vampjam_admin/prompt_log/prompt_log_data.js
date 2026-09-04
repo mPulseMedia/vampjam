@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "307 rec_calm",
+        id: "308 tag_quiet",
         expanded: true,
+        nodes: [
+          { text: "308 tag_quiet", children: [
+            { text: "prompt_restate", children: [
+              { text: "Take the haze off Tag the Moment on the record screen and make it identical to the session one." },
+              { text: "And emphatically: pressing it while recording must drop focus from whatever field you are in \u2014 the highlight you just made, or any other \u2014 and must NOT bring up a text field or the keyboard." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On the Record screen remove the Hayes around the tag the moment but make it look like the tag the moment on the session screen identical. Also, let\u2019s make it so that when recording when I click tag the moment, it does not bring up a text field it does not bring up the keyboard there\u2019s something to peculiar well actually before doing that let\u2019s I want you to systematically and emphatically do the following when recording if I click tag the moment, then first remove of a highlight I just created the highlight I most recently created or whatever text field I might be in do that" }
+            ]},
+            { text: "btn_same", children: [
+              { text: "record.html had its own copy of the button, and haze_off only touched the nine session pages" },
+              { text: "so they had visibly drifted \u2014 one flat, one with a gradient and a glow" },
+              { text: "same declarations now, plus the btn_gray specificity re-assert, plus the :disabled state only this screen needs" },
+              { text: "label matched too" }
+            ]},
+            { text: "tag_quiet", children: [
+              { text: "the tap used to blur, then hand the keyboard straight to the new row \u2014 with two scheduled scroll corrections for the keyboard animating in" },
+              { text: "backwards: you press this because something is happening in the room" },
+              { text: "a keyboard over half the screen with a caret waiting is the worst possible next event" },
+              { text: "the blur stays; nothing takes focus. naming happens afterwards, by tapping the row" },
+              { text: "an unnamed row says \u201ctap to name\u201d so it does not read as broken" }
+            ]},
+            { text: "proof_is_behaviour_not_source", children: [
+              { text: "MediaRecorder and getUserMedia replaced before the page script runs, so REC really starts and Tag really fires" },
+              { text: "the assertion is input:focus being null after the tap" },
+              { text: "twice \u2014 the second time from inside a row being named, which also proves the typed text survives" },
+              { text: "18 assertions incl. a property-by-property comparison of the two buttons; 4 fail against the old code" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "307 rec_calm",
+        expanded: false,
         nodes: [
           { text: "307 rec_calm", children: [
             { text: "prompt_restate", children: [

@@ -3667,7 +3667,26 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   animate, and carry no text.
   drawer.js v=144 on 13 pages.
   Still no new trace.
-- NEXT → add entry 302 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 302 tag_quiet · b308 · the record screen's Tag the Moment is now the session pages' button, and
+  pressing it no longer opens a keyboard.
+  btn_same — record.html carried its own copy of the button, and haze_off only touched the nine
+  session pages, so the two had visibly drifted: one flat, one with a gradient and a glow. It is
+  the same declarations now, plus the btn_gray specificity re-assert and the :disabled state the
+  record screen alone needs. The label matched too — "Tag the Moment".
+  tag_quiet — the tap used to blur whatever field you were in and then hand the keyboard straight
+  to the new row's name, complete with two scheduled scroll corrections for the keyboard animating
+  in. That is backwards. You press this button because something is happening in the room; a
+  keyboard covering half the screen with a caret waiting for you to type is the worst possible
+  next event. The blur stays and nothing takes focus. Naming is a thing you do afterwards, by
+  tapping the row, and an unnamed row now says "tap to name" so it does not read as broken.
+  The suite proves the behaviour rather than the source: MediaRecorder and getUserMedia are
+  replaced before the page script runs, so REC really starts, Tag really fires, and the assertion
+  is `document.querySelector('input:focus')` being null after the tap — twice, the second time
+  from inside a row that was being named, which also proves the typed text survives.
+  New suite tag_quiet_test.js, 18 assertions, including a property-by-property comparison of the
+  two buttons across the two pages. Checked against the old code first: 4 fail there.
+  Still no new trace.
+- NEXT → add entry 303 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
