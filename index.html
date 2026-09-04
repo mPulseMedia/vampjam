@@ -4,19 +4,94 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>vampsf</title>
+<link rel="stylesheet" href="site.css?v=9">
+<script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
 <script>
-  // Index just opens the session you were last on, else the most recent one.
+  // list_home — index used to be one line: open the session you were last on,
+  // else the newest. That is right whenever there IS one, and it was the whole
+  // bug when there was not: it happily reopened a session that had just been
+  // deleted, which bounced straight back here, for ever.
+  //
+  // So index now decides, and only redirects when it has somewhere real to go:
+  //   the page you were last on, if it still exists
+  //   else the newest session that still exists
+  //   else nothing — and this page becomes the session list itself.
   (function () {
-    var sessions = window.VAMPJAM_SESSIONS || [];
+    function dead() {
+      try {
+        var arr = JSON.parse(localStorage.getItem('vampjam_deleted_pages') || '[]');
+        return (Array.isArray(arr) ? arr : []).map(function (t) { return t && t.page; });
+      } catch (e) { return []; }
+    }
+    var gone = dead();
+    function alive(p) { return !!p && gone.indexOf(p) < 0; }
+
+    var listed = (window.VAMPJAM_SESSIONS || []).filter(function (s) { return alive(s.page); });
+    var mine = [];
+    try {
+      mine = (JSON.parse(localStorage.getItem('vampjam_my_recs') || '[]') || [])
+        .filter(function (m) { return m && alive(m.page); });
+    } catch (e) {}
+
     var last = null;
     try { last = localStorage.getItem('vampjam_last_session'); } catch (e) {}
-    var valid = last && (sessions.some(function (s) { return s.page === last; }) ||
-                         /^session\.html\?p=[A-Za-z0-9_\-]+$/.test(last));
-    var target = valid ? last : (sessions.length ? sessions[sessions.length - 1].page : 'admin.html');
-    location.replace(target + (location.hash || ''));
+    // a p= page this device recorded counts as real even before the shared
+    // registry has caught up with it
+    var lastOk = alive(last) && (
+      listed.some(function (s) { return s.page === last; }) ||
+      mine.some(function (m) { return m.page === last; }) ||
+      /^session\.html\?p=[A-Za-z0-9_\-]+$/.test(last));
+
+    var target = lastOk ? last
+      : (listed.length ? listed[listed.length - 1].page
+        : (mine.length ? mine[mine.length - 1].page : null));
+
+    if (target) { location.replace(target + (location.hash || '')); }
+    else { window.VAMPJAM_LIST_HOME = true; }   // stay here and be the list
   })();
 </script>
+<script src="drawer.js?v=145"></script>
+<style>
+  /* the empty home is deliberately almost nothing: the list fills the screen,
+     and the only two things under it are the two things you can do next. */
+  body { min-height: 100dvh; }
+  .home_note { text-align: center; color: var(--muted); padding: 30px 22px 10px; line-height: 1.6; }
+  .home_note b { color: var(--fg); font-weight: 600; }
+  .home_act { display: flex; justify-content: center; gap: 12px; padding: 4px 16px 30px; flex-wrap: wrap; }
+  .home_act a {
+    text-decoration: none; border-radius: 999px; padding: 12px 22px;
+    background: var(--accent); color: var(--on_accent, #fff); font-weight: 600;
+  }
+  .home_act a.quiet { background: transparent; color: var(--muted); border: 1px solid var(--panel_3); font-weight: 400; }
+</style>
 </head>
-<body style="background:#ffffff"></body>
+<body>
+
+<div class="session_drawer" id="session_drawer"><div class="jam_menu"></div></div>
+
+<header class="brand" style="position:relative;">
+<button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
+<button class="nav_share" id="page_share" aria-label="Copy link" title="Copy link"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
+  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
+</header>
+
+<div class="home_note" id="home_note" hidden>
+  <b>No sessions yet.</b><br>Record one and it lands in the list above.
+</div>
+<div class="home_act" id="home_act" hidden>
+  <a href="record.html">Record</a>
+ <a href="favorites.html" class="quiet">Favorites</a>
+</div>
+
+<script>
+(function () {
+  // only the empty home shows the two buttons; when index is redirecting there
+  // is nothing to paint and a flash of this would be a flash of the wrong page.
+  if (!window.VAMPJAM_LIST_HOME) return;
+  document.getElementById('home_note').hidden = false;
+  document.getElementById('home_act').hidden = false;
+})();
+</script>
+</body>
 </html>
