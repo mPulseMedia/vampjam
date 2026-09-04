@@ -1,19 +1,4 @@
 {
-  "audio": {
-    "label": "2026-09-04 1:02p San Francisco",
-    "url": "https://pub-33cfd8558d314eb58642c8550608850b.r2.dev/2026_09_04_san_francisco_1_02_42p.m4a",
-    "kind": "url"
-  },
-  "tags": [
-    {
-      "id": "t_1788552165355_lt1",
-      "t": 2.7,
-      "label": ""
-    },
-    {
-      "id": "t_1788552165355_lt2",
-      "t": 5.4,
-      "label": ""
-    }
-  ]
+  "deleted": true,
+  "tags": []
 }
