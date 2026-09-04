@@ -9,8 +9,71 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "301 audio_live",
+        id: "303 logo_line",
         expanded: true,
+        nodes: [
+          { text: "303 logo_line", children: [
+            { text: "prompt_restate", children: [
+              { text: "On sessions and favourites, lift the vampSF logo up so it sits between the cassette on the left and the share icon on the right." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On the control panel for sessions and favorites, move the vampSFG logo up so it sits between the cassette logo on the left and the share icon on the right." }
+            ]},
+            { text: "one_row", children: [
+              { text: ".brand is a flex row now, align-items:center \u2014 cassette \u00b7 vampSF \u00b7 share" },
+              { text: "the pair stopped being position:absolute and became ordinary flex items" },
+              { text: "the wordmark takes flex:1 and centres inside it, so it lands on the page\u2019s true centre line, not the centre of the leftovers" }
+            ]},
+            { text: "ordered_in_css", children: [
+              { text: "all nine pages put both buttons BEFORE the wordmark in the markup" },
+              { text: "so order:1/2/3 puts them in the right places rather than editing a button in nine files" }
+            ]},
+            { text: "nav_room_retired", children: [
+              { text: "the header used to hold a 46px band open above the logo for the two icons" },
+              { text: "it only needs to clear the notch now \u2014 about 46px back at the top of every page" }
+            ]},
+            { text: "the_odd_one", children: [
+              { text: "record.html has a cassette and no share button" },
+              { text: ":not(:has(.nav_share)) gives its wordmark a 40px right margin so it still lands on centre" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite logo_line_test.js \u2014 30 assertions across phone, landscape and desktop on both pages" },
+              { text: "one row, correct order with no overlap, centred to within 3px, both icons still the topmost thing at their own centre, no sideways scroll" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "302 chat_short",
+        expanded: false,
+        nodes: [
+          { text: "302 chat_short", children: [
+            { text: "prompt_restate", children: [
+              { text: "That receipt was far too long. Cut it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "huh? make that WAY shorter chat reponse" }
+            ]},
+            { text: "what_went_wrong", children: [
+              { text: "44 lines of outline for a change he can see by opening the page" },
+              { text: "his standing read is twice as verbose as it should be, and this was worse than that" },
+              { text: "the detail belongs in the spec and the log, which already had it \u2014 the chat was repeating them" }
+            ]},
+            { text: "reissued", children: [
+              { text: "same build, 13 lines" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 nothing built this prompt." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "301 audio_live",
+        expanded: false,
         nodes: [
           { text: "301 audio_live", children: [
             { text: "prompt_restate", children: [
