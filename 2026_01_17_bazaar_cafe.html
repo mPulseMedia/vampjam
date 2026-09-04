@@ -110,7 +110,7 @@
   .tag_marker { display: none; }
   .zoom_band { display: none; }   /* bar_tune: the light section band is retired */
   .fish_tick { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
-  .time_row { position: relative; display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
+  .time_row { position: relative; display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 0; }
   .time_row #now_time { color: var(--accent); }
   /* grade_pill — sits at the right end of the time row so the clock stays
      centred. Dim when you are on the light file, lit when you are not. */
@@ -521,16 +521,16 @@
     <button class="ctrl_btn" id="fwd_15"  title="Forward 15 sec"><span class="cu">+</span><span class="cn">15</span><span class="cu">s</span></button>
     <button class="ctrl_btn" id="fwd_120" title="Forward 2 min"><span class="cu">+</span><span class="cn">2</span><span class="cu">m</span></button>
   </div>
-  <button class="tag_btn_big" id="tag_btn">Tag the moment</button>
-  <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div><div class="seg_remain" id="seg_remain"></div></div>
-  <div class="tag_numbers" id="tag_numbers"></div>
-  <div class="tag_markers" id="tag_markers"></div>
+  <button class="tag_btn_big" id="tag_btn">Tag the Moment</button>
   <div class="time_row">
     <span id="now_time">0:00</span>
     <span>/</span>
     <span id="dur_time">--:--</span>
     <button class="grade_pill" id="grade_pill" hidden aria-pressed="false" title="Sound quality">hi-fi</button>
   </div>
+  <div class="seek_bar" id="seek_bar"><div class="seek_fill" id="seek_fill"></div><div class="seg_remain" id="seg_remain"></div></div>
+  <div class="tag_numbers" id="tag_numbers"></div>
+  <div class="tag_markers" id="tag_markers"></div>
   <div class="player_msg" id="player_msg"></div>
 </div>
 
@@ -1909,7 +1909,7 @@
     if (!tags.length) {
       var d = document.createElement('div');
       d.className = 'empty';
-      d.textContent = 'No tags yet — hit play and tap "Tag the moment".';
+      d.textContent = 'No tags yet — hit play and tap "Tag the Moment".';
       tagList.appendChild(d);
       return;
     }
