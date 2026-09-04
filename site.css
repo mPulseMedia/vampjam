@@ -69,6 +69,11 @@ body {
 /* record.html has a cassette and no share button; without this the wordmark
    centres in what is left and sits 20px right of true centre. */
 .brand:not(:has(.nav_share)) .wordmark { margin-right: 40px; }
+/* the markup puts both controls before the wordmark, so the row is ordered
+   here rather than by moving the buttons in nine files. */
+.brand .nav_cass  { order: 1; }
+.brand .wordmark  { order: 2; }
+.brand .nav_share { order: 3; }
 .wordmark_sf {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 34px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
