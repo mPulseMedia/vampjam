@@ -1,1 +1,1 @@
-grip_only
+auto_commit
