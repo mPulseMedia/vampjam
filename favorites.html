@@ -13,7 +13,8 @@
   html, body { touch-action: manipulation; }
   /* fav_match — the session page's h1: same size, weight and margins, so the
      control row below it starts on the same line as it does over there. */
-  h1 { text-align: center; font-size: 17px; margin: 14px 0 4px; font-weight: 600; }
+  h1 { text-align: center; font-size: 17px; margin: 14px 0 4px; font-weight: 600;
+       min-height: 33px; line-height: 33px; }
   .now_name { text-align: center; color: var(--muted); font-size: 14px; min-height: 20px; margin: 7px 0 12px; }
   details.about_page { background: var(--panel); border-radius: 12px; padding: 10px 14px; margin-top: 14px; color: var(--muted); font-size: 13px; }
   details.about_page summary { cursor: pointer; color: var(--fg); font-weight: 600; }
@@ -33,12 +34,14 @@
   }
   .sticky_player.scrolled::after { opacity: 1; }
 
-  /* ctrl_edge, the session page's numbers exactly */
+  /* ctrl_edge, the session page's numbers exactly. NOTE the element selectors:
+     this block sits ABOVE the base rules in this file, so at equal specificity
+     the base rule would win and the circles would never shrink. */
   @media (max-width: 480px) {
-    .ctrl_row { justify-content: space-between; gap: 3px; margin-left: 0; margin-right: 0; }
-    .ctrl_btn { width: 44px; height: 44px; }
-    .ctrl_btn.small { width: 44px; height: 44px; }
-    .fav_play { width: 70px; height: 70px; font-size: 44px; }
+    div.ctrl_row { justify-content: space-between; gap: 3px; margin-left: 0; margin-right: 0; }
+    button.ctrl_btn { width: 44px; height: 44px; }
+    button.ctrl_btn.small { width: 44px; height: 44px; }
+    button.fav_play { width: 70px; height: 70px; font-size: 44px; }
   }
 
   /* ---- de-emphasis: make selected chrome less prominent ---- */
