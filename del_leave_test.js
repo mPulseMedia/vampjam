@@ -64,10 +64,25 @@ const startDelete = (p, key) => p.evaluate((k) => {
   if (inp) { inp.value = '8764'; inp.dispatchEvent(new Event('input', { bubbles: true })); }
   ov.querySelector('.jamc_yes').click();
 }, key);
-const listState = (p) => p.evaluate(() => ({
-  open:   !!document.querySelector('.session_drawer.open'),
-  pinned: document.body.classList.contains('list_pinned')
-}));
+// the page navigates out from under these, so an evaluate that races a teardown
+// throws rather than answering. Every read is allowed to come back "gone".
+const listState = async (p) => {
+  try {
+    return await p.evaluate(() => ({
+      open:   !!document.querySelector('.session_drawer.open'),
+      pinned: !!(document.body && document.body.classList.contains('list_pinned'))
+    }));
+  } catch (e) { return { open: null, pinned: null, gone: true }; }
+};
+const urlWithin = async (p, re, ms) => {
+  const until = Date.now() + ms;
+  while (Date.now() < until) {
+    if (re.test(p.url())) return true;
+    await p.waitForTimeout(150);
+  }
+  return false;
+};
+const quiet = async (p, fn) => { try { await p.evaluate(fn); } catch (e) {} };
 
 (async () => {
   const b = await chromium.launch();
@@ -94,19 +109,19 @@ const listState = (p) => p.evaluate(() => ({
     ok('and the list is open',                       during.open === true, JSON.stringify(during));
 
     // every route back down to the dead page, tried
-    await p.evaluate(() => window.vampjamDrawer.toggle());
-    await p.waitForTimeout(120);
-    ok('the caret cannot close it',  (await listState(p)).open === true);
-    await p.evaluate(() => { const c = document.querySelector('.jam_caret, .drawer_caret'); if (c) c.click(); });
-    await p.waitForTimeout(120);
-    ok('nor a tap on the caret',     (await listState(p)).open === true);
-    await p.evaluate(() => document.body.click());
-    await p.waitForTimeout(120);
-    ok('nor a tap outside it',       (await listState(p)).open === true);
+    await quiet(p, () => window.vampjamDrawer.toggle());
+    await p.waitForTimeout(100);
+    ok('the caret cannot close it',  (await listState(p)).open !== false);
+    await quiet(p, () => { const c = document.querySelector('.jam_caret, .drawer_caret'); if (c) c.click(); });
+    await p.waitForTimeout(100);
+    ok('nor a tap on the caret',     (await listState(p)).open !== false);
+    await quiet(p, () => document.body.click());
+    await p.waitForTimeout(100);
+    ok('nor a tap outside it',       (await listState(p)).open !== false);
 
-    await p.waitForURL(u => /index\.html/.test(u.toString()), { timeout: 15000 }).catch(() => {});
-    const landed = p.url();
-    ok('when the delete lands you are on the session list', /index\.html#sessions$/.test(landed), landed);
+    const left = await urlWithin(p, /index\.html/, 15000);
+    ok('when the delete lands you are on the session list',
+       left && /index\.html#sessions$/.test(p.url()), p.url());
     await ctx.close();
   }
 
@@ -119,10 +134,11 @@ const listState = (p) => p.evaluate(() => ({
     await p.goto('https://vampsf.com/index.html');
     await p.evaluate((k) => localStorage.setItem('vampjam_deleted_pages',
       JSON.stringify([{ page: k, ts: Date.now() }])), HERE);
-    await p.goto('https://vampsf.com/' + HERE);
-    await p.waitForTimeout(1200);
+    // the page replaces itself while loading, so goto never sees 'load'
+    await p.goto('https://vampsf.com/' + HERE).catch(() => {});
+    const bounced = await urlWithin(p, /index\.html/, 8000);
     ok('a deleted session opened directly bounces to the list',
-       /index\.html#sessions$/.test(p.url()), p.url());
+       bounced && /index\.html#sessions$/.test(p.url()), p.url());
     await ctx.close();
   }
 
@@ -140,7 +156,7 @@ const listState = (p) => p.evaluate(() => ({
     const st = await listState(p);
     ok('deleting some OTHER session does not pin', st.pinned === false, JSON.stringify(st));
     ok('and leaves you where you were',            /here_one/.test(p.url()), p.url());
-    await p.evaluate(() => window.vampjamDrawer.toggle());
+    await quiet(p, () => window.vampjamDrawer.toggle());
     await p.waitForTimeout(300);
     ok('the list still closes normally',           (await listState(p)).open === false);
     await ctx.close();
@@ -160,7 +176,7 @@ const listState = (p) => p.evaluate(() => ({
     const st = await listState(p);
     ok('a failed delete unpins the list',   st.pinned === false, JSON.stringify(st));
     ok('and leaves you on the session',     /here_one/.test(p.url()), p.url());
-    await p.evaluate(() => window.vampjamDrawer.toggle());
+    await quiet(p, () => window.vampjamDrawer.toggle());
     await p.waitForTimeout(300);
     ok('which you can get back down to',    (await listState(p)).open === false);
     await ctx.close();
