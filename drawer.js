@@ -263,7 +263,7 @@
   // ICO_FAVLIST — a heart with three rules beside it. Not a heart alone: this
   // goes to a LIST of favourites, and the row-heart on a moment already means
   // "favourite this". The lines are what say list.
-  var ICO_FAVLIST = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.6 18.2l-.8-.75C3.6 14.6 1.7 12.85 1.7 10.7c0-1.75 1.35-3.1 3.1-3.1 1 0 1.95.47 2.55 1.2.6-.73 1.55-1.2 2.55-1.2 1.75 0 3.1 1.35 3.1 3.1 0 2.15-1.9 3.9-5.1 6.75l-.3.75z"/><path d="M16.5 9h5.8M16.5 13h5.8M16.5 17h5.8"/></svg>';
+  var ICO_FAVLIST = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 17.3C3.4 14.3 1.5 12.6 1.5 10.5c0-1.6 1.3-2.9 2.9-2.9 0.9 0 1.8 0.43 2.4 1.13 0.6-0.7 1.5-1.13 2.4-1.13 1.6 0 2.9 1.3 2.9 2.9 0 2.1-1.9 3.8-5.3 6.8z"/><path d="M15.4 8.4h7.1M15.4 12h7.1M15.4 15.6h7.1"/></svg>';
   // ICO_REC_H — the record glyph in the header's grey: a stroked ring with a
   // filled centre. The disc in the list was red because it was the only red
   // thing there; up here it is one of four icons and wears their colour.
@@ -487,18 +487,22 @@
     var cass  = head.querySelector('.nav_cass');
     var share = head.querySelector('.nav_share');
 
-    if (cass && !head.querySelector('.nav_fav') && HERE !== 'favorites.html') {
+    // nav_here — a button that would point at the page you are ALREADY on keeps
+    // its slot and loses its ink. Omitting it instead moved the wordmark off the
+    // centre line on exactly the pages that have one fewer control, and the
+    // wordmark visibly jumped as you walked between screens.
+    if (cass && !head.querySelector('.nav_fav')) {
       var f = document.createElement('a');
-      f.className = 'nav_cass nav_fav';   // nav_cass carries the header's look
+      f.className = 'nav_cass nav_fav' + (HERE === 'favorites.html' ? ' nav_here' : '');
       f.href = 'favorites.html';
       f.setAttribute('aria-label', 'Favorites');
       f.title = 'Favorites';
       f.innerHTML = ICO_FAVLIST;
       cass.insertAdjacentElement('afterend', f);
     }
-    if (!head.querySelector('.nav_rec') && HERE !== 'record.html') {
+    if (!head.querySelector('.nav_rec')) {
       var r = document.createElement('a');
-      r.className = 'nav_share nav_rec';  // nav_share carries the header's look
+      r.className = 'nav_share nav_rec' + (HERE === 'record.html' ? ' nav_here' : '');
       r.href = 'record.html';
       r.setAttribute('aria-label', 'New recording');
       r.title = 'New recording';

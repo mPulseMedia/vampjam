@@ -91,6 +91,9 @@ body {
 .brand .nav_fav, .brand .nav_rec, .brand .nav_rec_none { text-decoration: none; display: flex; align-items: center; justify-content: center; }
 /* record.html writes its own favourites button (it has no drawer.js) */
 .brand .nav_rec_none { order: 2; }
+/* nav_here — the slot stays, the ink goes. Not display:none: the point is
+   to hold the space so the wordmark keeps the centre line on every page. */
+.brand .nav_here { visibility: hidden; pointer-events: none; }
 .wordmark_sf {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 34px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;
