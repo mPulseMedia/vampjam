@@ -3733,7 +3733,39 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   is stubbed per scenario, because it is the STATIC list of eight hand-built pages and a test about
   "nothing left" has to empty that too — otherwise the app is quite right to open 2026_08_14.
   Still no new trace.
-- NEXT → add entry 305 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 305 rec_match · b311 · the record screen and the session screen are the same screen with different
+  verbs. Measured band by band, they now land on the same lines: control row 148, Tag the Moment
+  232, clock 304, timeline 361, moment numbers 373, list 411. Before this they agreed on none of
+  them.
+  rec_size — the REC circle was 92px against play's 84, and had no phone or landscape rule at all,
+  so it changed size relative to play as the screen changed. Same three sizes now: 84 / 70 / 68.
+  rec_order — the record page put the bar above the button and the numbers above the bar. It is the
+  session order now: button, clock, line, numbers under it. The hour marks flipped with it, the way
+  time_flip did on the session pages.
+  name_match — the title was 500 weight and muted; the session's h1 is 600 and full contrast. Same
+  box too (33px, margin 14/4) so the row below starts where it does over there.
+  stack_match — the biggest single cause of the drift: .stage is a flex column with gap:16px, and
+  the session stack is block flow whose spacing is each element's own margin. The gap added to
+  every margin. Gap is 0 now and the margins do the work — and one leftover from that difference is
+  worth remembering: MARGINS DO NOT COLLAPSE BETWEEN FLEX ITEMS, so the button's 2px top margin
+  added here where it vanishes there. Two pixels, and everything below it moved.
+  row_match — .mom_list / .mom_row are .tag_list / .tag_row: same panel, radius, inset shadow, 12px
+  gutter, 55px row, 5px gap, and the same adjacent-sibling hairline. The row keeps only the control
+  that pertains while you are still recording — mom_drop, the X, which removes the tag, renumbers
+  the rows and redraws the bar. No play, no heart, no share: there is nothing to play yet.
+  list_tight and marker_gone — his "extra gap at the bottom, or the last row is taller". Two
+  things: .tag_list carried 20px of padding under the last row plus 24px of margin, and .tag_markers
+  sat above the list as 22px of empty strip (its dots have been display:none since circle_gone). 44
+  + 22 = 66px of nothing. The padding is gone, the margin is 12, and the marker strip is height 0
+  but still in the DOM, because render_tag_markers is the main render entry point and writes into
+  it.
+  New suite rec_match_test.js, 28 assertions: eleven bands compared across the two live pages
+  within 2px, the row and panel compared property by property, the title compared, and the delete
+  exercised end to end (row goes, numbers renumber, the bar's number goes with it). The record page
+  runs against a stubbed MediaRecorder so it is genuinely mid-take while being measured.
+  Re-ran time_flip (32), audio_grade (18), tag_quiet (18) and rec_calm (22): all still green.
+  Still no new trace.
+- NEXT → add entry 306 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
