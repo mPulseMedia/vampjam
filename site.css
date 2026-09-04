@@ -190,7 +190,7 @@ body.drawer_open .nav_cass, body.drawer_open .nav_share { opacity: 0; pointer-ev
    And <g> has to be on it too, which is the part that took a second look: a
    drawing usually sets font-size on the GROUP and lets the labels inherit, so
    excluding <text> alone still handed the group 17px and the text inherited it. */
-body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(.fav_play_sm):not(.play_tag):not(.ghost):not(svg):not(g):not(text):not(tspan) { font-size: 17px !important; }
+body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_play):not(.fav_play_sm):not(.play_tag):not(.grade_pill):not(.ghost):not(svg):not(g):not(text):not(tspan) { font-size: 17px !important; }
 
 /* icon_row — ONE row-icon size across the whole app. A session row's cassette and
    share are 29px; a highlight row's play, heart, share and remove are the same

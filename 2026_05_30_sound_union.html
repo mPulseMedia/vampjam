@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=7">
+<link rel="stylesheet" href="site.css?v=8">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
 <script src="drawer.js?v=143"></script>
@@ -105,8 +105,18 @@
   .tag_marker { display: none; }
   .zoom_band { display: none; }   /* bar_tune: the light section band is retired */
   .fish_tick { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--bg); pointer-events: none; transform: translateX(-50%); }
-  .time_row { display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
+  .time_row { position: relative; display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 8px; }
   .time_row #now_time { color: var(--accent); font-weight: 600; }
+  /* grade_pill — sits at the right end of the time row so the clock stays
+     centred. Dim when you are on the light file, lit when you are not. */
+  .grade_pill {
+    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    background: transparent; border: 0; padding: 2px 4px; min-height: 0;
+    font-size: 11px !important; font-weight: 600; letter-spacing: 0.04em;
+    color: var(--muted); opacity: 0.45; cursor: pointer; line-height: 1;
+  }
+  .grade_pill.on { color: var(--accent); opacity: 1; }
+  .grade_pill:active { transform: translateY(-50%) scale(0.92); }
   .ctrl_btn {
     appearance: none; -webkit-appearance: none; border: 0;
     background: var(--panel_2); color: var(--accent); font: inherit; font-weight: 600;
@@ -506,6 +516,7 @@
     <span id="now_time">0:00</span>
     <span>/</span>
     <span id="dur_time">--:--</span>
+    <button class="grade_pill" id="grade_pill" hidden aria-pressed="false" title="Sound quality">hi-fi</button>
   </div>
   <div class="player_msg" id="player_msg"></div>
 </div>
@@ -588,6 +599,7 @@
   var seekBar   = $('seek_bar');
   var seekFill  = $('seek_fill');
   var playBtn   = $('play_btn');
+  var gradePill = $('grade_pill');
   var back5     = $('back_5');
   var fwd5      = $('fwd_5');
   var back15    = $('back_15');
@@ -731,7 +743,41 @@
       var id = drive_id(src.url);
       if (id) return 'https://drive.usercontent.google.com/download?id=' + id + '&export=download&authuser=0';
     }
-    return src.url;
+    return grade_url(src);
+  }
+  // ============ audio_grade — light by default, hi-fi when you ask ============
+  // A session can carry up to three files. audio.url is the original and is
+  // always there; audio.lite is a 64k mono cut (about a third of the bytes) and
+  // audio.hifi is the full-band cut. A phone gets .lite unless you tap the pill,
+  // because the point of the exercise was to stop re-downloading 150 MB.
+  //
+  // grade_fell — audio.url is the safety net, not decoration. If a rendition is
+  // missing or 404s, the player drops back to the original rather than going
+  // silent, and it stays there for the rest of the load.
+  var GRADE_KEY  = 'vampjam_hifi';
+  var grade_fell = false;
+  var grade_at   = 0;      // last position we actually heard, for a mid-swap seek
+  function grade_on() {
+    try { return localStorage.getItem(GRADE_KEY) === '1'; } catch (e) { return false; }
+  }
+  function grade_set(v) {
+    try { localStorage.setItem(GRADE_KEY, v ? '1' : '0'); } catch (e) {}
+  }
+  function grade_has(src) { return !!(src && (src.lite || src.hifi)); }
+  function grade_url(src) {
+    if (!src) return '';
+    if (grade_fell) return src.url;
+    var want = grade_on() ? src.hifi : src.lite;
+    return want || src.url;
+  }
+  // audio_out — the shape written back to the repo. Built by hand rather than
+  // serialising the live object, so a rendition can never be dropped by a tag
+  // edit and an empty string can never be written in place of a missing one.
+  function audio_out(a) {
+    var o = { label: a.label, url: a.url, kind: a.kind };
+    if (a.lite) o.lite = a.lite;
+    if (a.hifi) o.hifi = a.hifi;
+    return o;
   }
   function derive_label(url) {
     if (!url) return 'Audio';
@@ -868,7 +914,7 @@
   function save_data_to_repo(message) {
     if (!WORKER_URL) return Promise.reject(new Error('worker not configured'));
     var payload = {
-      audio: audio || null,
+      audio: audio ? audio_out(audio) : null,
       tags: tags.slice().sort(function (a, b) { return a.t - b.t; }).map(function (t) {
         var o = { id: t.id, t: t.t, label: t.label || '' };
         if (t.e != null) o.e = t.e;
@@ -1269,6 +1315,8 @@
       var a = data.audio;
       if (a && typeof a === 'object' && a.url) {
         audio = { label: a.label || derive_label(a.url), url: a.url, kind: a.kind || detect_kind(a.url) };
+        if (a.lite) audio.lite = a.lite;
+        if (a.hifi) audio.hifi = a.hifi;
       } else if (data.url && !data.tags) {
         audio = { label: data.label || derive_label(data.url), url: data.url, kind: data.kind || detect_kind(data.url) };
       } else {
@@ -1342,7 +1390,57 @@
     var url = resolve_url(audio);
     if (player.src !== url) player.src = url;
     playerMsg.textContent = '';
+    grade_paint();
   }
+  // grade_paint — the pill only exists for a session that actually has a second
+  // file. The five older sessions have one file and show nothing.
+  function grade_paint() {
+    if (!gradePill) return;
+    if (!grade_has(audio) || grade_fell) { gradePill.hidden = true; return; }
+    gradePill.hidden = false;
+    var on = grade_on();
+    gradePill.classList.toggle('on', on);
+    gradePill.setAttribute('aria-pressed', on ? 'true' : 'false');
+    gradePill.title = on ? 'Hi-fi — tap for the light file' : 'Light file — tap for hi-fi';
+  }
+  // grade_swap — changing file mid-listen must not move you. Remember where you
+  // are, load the other cut, seek back, and resume only if you were playing.
+  function grade_swap() {
+    if (!audio || !grade_has(audio)) return;
+    var at  = player.currentTime || grade_at || 0;
+    var was = !player.paused;
+    grade_set(!grade_on());
+    var u = resolve_url(audio);
+    grade_paint();
+    if (!u || player.src === u) return;
+    player.src = u;
+    var land = function () {
+      player.removeEventListener('loadedmetadata', land);
+      try { player.currentTime = at; } catch (e) {}
+      if (was) { var p = player.play(); if (p && p.catch) p.catch(function () {}); }
+    };
+    player.addEventListener('loadedmetadata', land);
+    player.load();
+  }
+  if (gradePill) gradePill.addEventListener('click', grade_swap);
+  player.addEventListener('timeupdate', function () {
+    if (player.currentTime > 0) grade_at = player.currentTime;
+  });
+  // grade_back — a rendition that will not load falls back to the original once.
+  player.addEventListener('error', function () {
+    if (!audio || grade_fell) return;
+    if (resolve_url(audio) === audio.url) return;
+    grade_fell = true;
+    var at = grade_at;
+    player.src = audio.url;
+    var land = function () {
+      player.removeEventListener('loadedmetadata', land);
+      try { if (at) player.currentTime = at; } catch (e) {}
+    };
+    player.addEventListener('loadedmetadata', land);
+    player.load();
+    grade_paint();
+  });
 
   function open_edit_form(prefill) {
     audioEditForm.style.display = 'block';
