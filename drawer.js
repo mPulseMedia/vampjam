@@ -324,7 +324,9 @@
     // list_title — the list gets a heading, the way any list of things does. It is
     // built as a jam_item so it inherits the row's height and gutters exactly, and
     // then told not to behave like one: no hover, no press, nothing to tap.
-    var rows = ['<div class="jam_item jam_title"><span class="jam_name">Sessions</span></div>'];
+    // list_title — "Recordings", not "Sessions": every row under it is something
+    // that was recorded, and the word the app uses for the act is Record.
+    var rows = ['<div class="jam_item jam_title"><span class="jam_name">Recordings</span></div>'];
     var favSeen = false;
     try { favSeen = localStorage.getItem('vampjam_fav_seen') === '1'; } catch (eF) {}
     if (favSeen) {
@@ -693,9 +695,14 @@
       // win it back — the same reason the row already had to be measured rather
       // than assumed.
       '.session_drawer .jam_item{gap:5px;padding:7px 12px;}' +
-      // list_title — a heading, not a row you can press
+      // list_title — a heading, not a row you can press. Centred: it names the
+      // whole list rather than labelling the column the rows start in, and
+      // .jam_item is a flex row, so the centring goes on the row AND on the name
+      // (which is the flex item that actually holds the text).
       '.jam_title{font-weight:700;color:var(--fg);letter-spacing:0.01em;' +
-        'min-height:46px;border-top:none;cursor:default;}' +
+        'min-height:46px;border-top:none;cursor:default;' +
+        'justify-content:center;text-align:center;}' +
+      '.jam_title .jam_name{flex:0 1 auto;text-align:center;}' +
       '.jam_title:hover{background:transparent;}' +
       '.jam_title + .jam_item{border-top:1px solid var(--panel_3);}' +
       // name_roll: the current row's name is scrolled, so it must not also
