@@ -3552,7 +3552,33 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   same replacement in each.
   New suite vj_295 renders both pages and compares the two fields property by property.
   Still no new trace.
-- NEXT → add entry 296 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 296 audio_live · b301 · the three re-encoded sessions now play the light cut, with a hi-fi word to
+  swap, and the file that was playing yesterday left in place underneath as the fallback.
+  audio.lite and audio.hifi join audio.url in the session JSON. url is deliberately NOT replaced:
+  R2 answers nothing from the sandbox, nothing from his Mac's shell, and his Chrome takes
+  open_url but refuses execute_javascript — so the six filenames could not be checked against
+  anything before shipping. Rather than point the site at URLs I had not seen resolve, the player
+  falls back to url once on a media error and hides the pill. Worst case is the old big file.
+  grade_pill is the word "hi-fi" at the right end of .time_row, absolutely positioned so the clock
+  stays centred; dim on the light file, accent when lit, hidden outright when the session has only
+  one file. The swap reads currentTime, sets src, seeks back on loadedmetadata and resumes only if
+  it was playing. localStorage vampjam_hifi remembers it.
+  one_size caught it a FOURTH time in the making: the pill is a button, and 17px !important beats a
+  bare class every time. site.css now excludes .grade_pill and every page moved to v=8.
+  The trap that mattered more: save_data_to_repo serialised the live audio object, so any tag edit
+  would have written the renditions back — or, with an absent key, dropped them. audio_out builds
+  the payload by hand from label/url/kind plus whichever renditions exist, and the suite adds a tag
+  and reads the worker POST body to prove all three survive.
+  New suite audio_grade_test.js: 18 assertions across default, swap, stickiness, fallback,
+  round-trip and the one-file case. Two harness lessons in it — headless chromium has no AAC
+  decoder (an m4a stub errors code 4 and reads exactly like a product bug), and a route.fulfill
+  without a 206 leaves nothing seekable, so every currentTime assignment snaps silently back to 0.
+  The cache header was the third thing promised and is NOT done: r2.dev sends no caching
+  instruction and has no setting that changes it. It needs a custom domain on the bucket plus one
+  Cache Rule. Said so on do_this_next rather than quietly dropping it, with the honest note that
+  iOS Safari evicts audio anyway.
+  Still no new trace.
+- NEXT → add entry 297 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
