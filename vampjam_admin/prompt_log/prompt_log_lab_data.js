@@ -9,8 +9,81 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "299 edit_plain",
+        id: "301 audio_live",
         expanded: true,
+        nodes: [
+          { text: "301 audio_live", children: [
+            { text: "prompt_restate", children: [
+              { text: "The six files are in R2. Do the half I promised: point the sessions at them, add the hi-fi toggle, set the cache headers." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "uploaded" }
+            ]},
+            { text: "three_sessions_switched", children: [
+              { text: "01-17 bazaar_cafe, 05-23 bazaar_cafe, 08-07 sound_union now carry lite + hifi alongside url" },
+              { text: "audio.url is UNCHANGED and still points at yesterday\u2019s file \u2014 it is the fallback, not dead weight" },
+              { text: "05-23 was the last GitHub-release session of the three; its release URL survives as that fallback" }
+            ]},
+            { text: "could_not_verify_the_names", children: [
+              { text: "R2 is unreachable from the sandbox AND from his Mac\u2019s shell \u2014 even the file already in production returns nothing" },
+              { text: "his Chrome answers open_url and list_tabs but refuses execute_javascript and get_page_content, so no fetch from a real network either" },
+              { text: "so I did not guess: a rendition that will not load falls back to audio.url once and hides the pill. worst case is the old big file, never silence" },
+              { text: "the check is a ten-second listen, and that is the whole of do_this_next now" }
+            ]},
+            { text: "grade_pill", children: [
+              { text: "the word hi-fi at the right end of the time row, absolutely positioned so the clock stays centred" },
+              { text: "dim on the light file, accent when lit; hidden entirely on a session with only one file" },
+              { text: "swap keeps the position: read currentTime, set src, seek back on loadedmetadata, resume only if it was playing" },
+              { text: "choice remembered in localStorage vampjam_hifi" }
+            ]},
+            { text: "one_size_again", children: [
+              { text: "FOURTH time. the pill is a button, so 17px !important would have won \u2014 site.css now has :not(.grade_pill), bumped to v=8 on 14 pages" },
+              { text: "the test asserts 11px, not that the rule exists \u2014 the assertion is what would have caught it" }
+            ]},
+            { text: "audio_out", children: [
+              { text: "the real trap: save_data_to_repo serialised the live audio object, so ANY tag edit would have written lite/hifi straight back out \u2014 or dropped them" },
+              { text: "the payload is now built by hand from label/url/kind plus whichever renditions exist, and a test adds a tag and reads the POST body to prove it" }
+            ]},
+            { text: "harness_notes", children: [
+              { text: "headless chromium has no AAC decoder \u2014 an m4a stub errors with code 4, which read as a product bug until I looked" },
+              { text: "and route.fulfill without a 206 leaves the element with nothing seekable, so every currentTime assignment snaps back to 0" },
+              { text: "the fixture is a 400s WAV served with real Range support. 18 assertions, all green" }
+            ]},
+            { text: "cache_header_is_not_mine", children: [
+              { text: "said so on the page rather than quietly dropping it: r2.dev sends no caching instruction and has no setting to change it" },
+              { text: "it needs a custom domain on the bucket plus one Cache Rule \u2014 his fifteen minutes, offered, not pushed" },
+              { text: "and said plainly that iOS Safari evicts audio anyway, so it buys less than it sounds like" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "300 do_next_still",
+        expanded: false,
+        nodes: [
+          { text: "300 do_next_still", children: [
+            { text: "prompt_restate", children: [
+              { text: "Are the steps on vampjam_do_this_next.html still outstanding?" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "di still need to do the steps here: https://vampsf.com/vampjam_do_this_next.html" }
+            ]},
+            { text: "answer", children: [
+              { text: "yes \u2014 nothing on the site pointed at the new files yet" },
+              { text: "that switch is the only thing waiting on the word uploaded, and it had not been done" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 nothing changed this prompt." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "299 edit_plain",
+        expanded: false,
         nodes: [
           { text: "299 edit_plain", children: [
             { text: "prompt_restate", children: [
