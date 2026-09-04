@@ -90,20 +90,34 @@
   .rec_state.on .rec_dot { opacity: 1; animation: dot_blink 1.2s ease-in-out infinite; }
   .rec_state.on { color: var(--fg); }
   @keyframes dot_blink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+  /* btn_same — this is .tag_btn_big from the session pages, declaration for
+     declaration. Same button, same job, two files; it should not be possible to
+     tell which screen a screenshot came from by looking at it. Flat accent, no
+     gradient, no glow (see haze_off), and the press is a squeeze. */
   .tag_btn {
-    width: 100%; max-width: 300px; padding: 18px 20px; border: none; border-radius: 999px;
-    /* btn_calm: solid accent under the gradient; no :hover drift (see session pages) */
-    background-color: var(--accent);
-    background-image: linear-gradient(180deg, var(--accent_hover, #339cff) 0%, var(--accent) 55%, var(--accent_active, #0062c4) 100%);
-    color: var(--on_accent, #fff);
+    display: block; width: 100%; max-width: 300px; margin: 2px auto 12px; padding: 18px 20px;
+    border: none; border-radius: 999px;
     font: inherit; font-size: 20px; font-weight: 700; letter-spacing: 0.01em; cursor: pointer;
-    box-shadow: 0 10px 22px -8px var(--accent), 0 3px 8px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.28);
-    transition: transform 0.08s ease, box-shadow 0.15s ease;
+    background-color: var(--accent);
+    background-image: none;
+    color: var(--on_accent, #fff);
+    box-shadow: none;
+    transition: transform 0.08s ease;
   }
-  .tag_btn:active {
-    transform: scale(0.96) translateY(1px);
-    box-shadow: 0 5px 12px -6px var(--accent), 0 2px 4px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.18);
+  /* btn_gray — re-assert the blue at a specificity the generic button rules
+     cannot beat, exactly as the session pages do. */
+  button.tag_btn,
+  button.tag_btn:hover,
+  button.tag_btn:active,
+  button.tag_btn:focus {
+    background-color: var(--accent);
+    background-image: none;
+    color: var(--on_accent, #fff);
+    box-shadow: none;
   }
+  button.tag_btn:active { transform: scale(0.96) translateY(1px); }
+  /* the one thing the session version has no need of: this button waits for a
+     recording to exist. */
   .tag_btn:disabled { opacity: 0.35; cursor: default; box-shadow: none; }
 
   /* the growing time bar — same bones as the playback page, but it charts the
@@ -219,7 +233,7 @@
          does — the tick writes to it and does not need to know. -->
     <div class="time_row"><span class="now" id="cur_time" hidden>0:00</span><span id="dur_time">0:00</span></div>
   </div>
-  <button class="tag_btn" id="tag_btn" disabled>Tag the moment</button>
+  <button class="tag_btn" id="tag_btn" disabled>Tag the Moment</button>
   <div class="mom_list" id="mom_list"></div>
   <div class="status" id="status"></div>
 </div>
@@ -429,10 +443,14 @@
   });
 
   // ---- moments list: grows with every tag; names are editable and ship with the session ----
+  // tag_quiet — the tap marks the moment and does NOTHING else. It used to hand
+  // the keyboard straight to the new row's name, which is backwards: you press
+  // this button because something is happening in the room, and the last thing
+  // you want in that second is a keyboard covering half the screen and a caret
+  // waiting for you to type. Naming is a thing you do afterwards, by tapping the
+  // row. So: whatever field you were in loses focus first — the moment you just
+  // named, the session name, anything — and no field takes it.
   function add_moment() {
-    // keyboard already up (naming the previous moment)? put it away FIRST —
-    // Safari misbehaves when focus hops between fields mid-keyboard — then
-    // create the row and hand the keyboard straight to the new name below.
     var act = document.activeElement;
     if (act && act.blur && (act.tagName === 'INPUT' || act.tagName === 'TEXTAREA')) {
       act.blur();   // any field, not just a moment name (the session name counts too)
@@ -442,32 +460,18 @@
     row.className = 'mom_row';
     var n = liveTags.length + 1;
     row.innerHTML = '<span class="mom_num">' + n + '</span>' +
-      '<input class="mom_name" type="text" autocomplete="off" autocapitalize="sentences" inputmode="text">' +
+      '<input class="mom_name" type="text" autocomplete="off" autocapitalize="sentences" inputmode="text" placeholder="tap to name">' +
       '<span class="mom_time">' + fmt(sec) + '</span>';
     momList.appendChild(row);
     momList.style.display = 'block';
     liveTags.push({ t: sec, row: row });
     render_bar();
-    // caret straight into the empty name — synchronously, inside the tap
-    // gesture, so the phone keyboard opens (desktop just gets the blinking beam)
-    var inp = row.querySelector('.mom_name');
-    if (inp) {
-      // preventScroll: iOS otherwise scrolls the page into the void ("black
-      // shelf") when focus moves between inputs while the keyboard is up
-      try { inp.focus({ preventScroll: true }); } catch (eF) { inp.focus(); }
-      try { inp.setSelectionRange(0, 0); } catch (e) {}
-      // the page stays put; the LIST scrolls the new row into view above the keyboard
-      setTimeout(function () {
-        window.scrollTo(0, 0);
-        fit_mom_list();
-        momList.scrollTop = momList.scrollHeight;
-      }, 0);
-      setTimeout(function () {
-        window.scrollTo(0, 0);
-        fit_mom_list();
-        momList.scrollTop = momList.scrollHeight;
-      }, 350);   // again after the keyboard finishes animating in
-    }
+    // no focus, no keyboard. Just show the row that was made.
+    setTimeout(function () {
+      window.scrollTo(0, 0);
+      fit_mom_list();
+      momList.scrollTop = momList.scrollHeight;
+    }, 0);
   }
 
   async function start() {
