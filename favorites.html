@@ -184,6 +184,11 @@
      heart / share / x 17 -> 23 */
   .fav_play_sm { font-size: 35px !important; }
   .fav_row button.ghost { font-size: 23px; }
+  /* icon_snug — cassette, share and heart sat 15 and 16px apart. 20% closer
+     is 12 and 13. A negative margin, not less padding: the glyphs move, the
+     tap targets keep their width. (.fav_time between them is display:none,
+     so the share really is the cassette's next visible neighbour.) */
+  .fav_row .fav_heart { margin-left: -3px; }
   /* row_rule: hairline between favourite rows */
   .fav_row + .fav_row { border-top: 1px solid var(--panel_3); }
   .tag_numbers, .num_strip { height: 20px !important; }

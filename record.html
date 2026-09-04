@@ -220,7 +220,11 @@
   /* ctrl_edge — the session page's phone rule. The circles are hidden here, so
      what this really keeps in step is the REC button's size at each width. */
   @media (max-width: 480px) {
-    .ctrl_row { justify-content: space-between; gap: 3px; margin-left: 0; margin-right: 0; }
+    /* rec_centre — NOT space-between here. Over there the row has seven children
+       and space-between spreads them to the timeline's edges; here six of them
+       are display:none, so space-between put the only visible child at the start
+       and REC sat on the left. One child, so it is centred. */
+    .ctrl_row { justify-content: center; gap: 3px; margin-left: 0; margin-right: 0; }
     .rec_btn { width: 70px; height: 70px; font-size: 20px; }
   }
 

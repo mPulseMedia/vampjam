@@ -329,6 +329,13 @@
   .tag_row + .tag_row { border-top: 1px solid var(--panel_3); }
   .tag_row.active button.ghost { background: transparent; }
   .tag_row button.ghost { padding: 5px 7px; min-height: 32px; font-size: 18px; border-radius: 7px; background: transparent; color: var(--muted); }
+  /* icon_snug — heart, share and X sat 19px apart (7px padding + the row's
+     5px gap + 7px padding). 20% closer is 15. Done with a negative margin
+     rather than less padding, so the tap targets keep their full width —
+     the glyphs move, the things you can hit do not shrink. The rule starts
+     at the SECOND button, so the group tightens without sliding toward the
+     title. */
+  .tag_row button.ghost + button.ghost { margin-left: -4px; }
   .tag_row button.ghost:hover { background: transparent; color: var(--fg); }
   .tag_row button.ghost:active { background: transparent; }
   .tag_row.dragging { opacity: 0.4; }
