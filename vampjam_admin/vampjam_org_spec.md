@@ -3810,7 +3810,20 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   that the row's padding is untouched. Re-ran fav_match (23), rec_match (28), grip_only (13) and
   time_flip (32): green.
   Still no new trace.
-- NEXT → add entry 308 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 308 list_title · b314 · the session drawer's heading is "Recordings" now, and centred.
+  The word: every row under it is something that was recorded, and the act is called Record on the
+  button that makes them, so Sessions was the one place the app used a different noun for the same
+  thing. The cassette button in the corner keeps its "Sessions" aria-label — that is the name of
+  where you are going, not of the list.
+  The centring took two declarations, not one: .jam_item is a flex row, so justify-content centres
+  the flex item, and the name inside it needed flex: 0 1 auto and its own text-align — left as
+  flex: 1 it would fill the row and centre nothing.
+  New suite list_title_test.js, 22 assertions across the four pages that carry the drawer, each one
+  opening the list for real. It also asserts the ROWS below did not move — a centring rule scoped
+  one level too high would have taken them with it, and that is the way this change fails.
+  drawer.js v=146 on 14 pages.
+  Still no new trace.
+- NEXT → add entry 309 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,38 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "313 icon_snug",
+        id: "314 list_title",
         expanded: true,
+        nodes: [
+          { text: "314 list_title", children: [
+            { text: "prompt_restate", children: [
+              { text: "Rename the session list heading to \u201cRecordings\u201d and centre it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Change the session list title to the text \"Recordings\" and center the title" }
+            ]},
+            { text: "the_word", children: [
+              { text: "every row under it is something that was recorded, and the button that makes them says Record" },
+              { text: "Sessions was the one place the app used a different noun for the same thing" },
+              { text: "the cassette button keeps its Sessions label \u2014 that names where you are going, not the list" }
+            ]},
+            { text: "two_declarations_not_one", children: [
+              { text: ".jam_item is a flex row, so justify-content centres the flex ITEM" },
+              { text: "the name needed flex:0 1 auto and its own text-align \u2014 as flex:1 it fills the row and centres nothing" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite list_title_test.js \u2014 22 assertions across the four pages that carry the drawer, each opening the list for real" },
+              { text: "and it asserts the ROWS below did not move: a centring rule scoped one level too high would have taken them with it" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "313 icon_snug",
+        expanded: false,
         nodes: [
           { text: "313 icon_snug", children: [
             { text: "prompt_restate", children: [
