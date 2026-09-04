@@ -104,8 +104,14 @@
   var deleting = {};
 
   // drawer_confirm — the same themed pop-up the highlight delete uses,
-  // self-contained here so it works on every page that has the drawer
-  function drawer_confirm(msg, yesLabel, onYes) {
+  // self-contained here so it works on every page that has the drawer.
+  //
+  // code_gate — pass a code and the Delete button will not arm until it is
+  // typed. It is not security; it is a speed bump, and it exists only so that a
+  // long recording cannot go in two taps. Anyone who wants the code can read it
+  // in this file — that is fine, because the person it protects against is the
+  // one who was not paying attention.
+  function drawer_confirm(msg, yesLabel, onYes, code) {
     var ov = document.createElement('div');
     ov.className = 'jamc_overlay';
     var card = document.createElement('div');
@@ -122,13 +128,50 @@
     yesBtn.className = 'jamc_yes';
     yesBtn.textContent = yesLabel || 'OK';
     function close() { ov.remove(); }
+    function go() { close(); onYes(); }
+    var codeIn = null;
+    if (code) {
+      codeIn = document.createElement('input');
+      codeIn.className = 'jamc_code';
+      codeIn.type = 'text';
+      codeIn.inputMode = 'numeric';
+      codeIn.autocomplete = 'off';
+      codeIn.setAttribute('aria-label', 'Type ' + code + ' to confirm');
+      codeIn.placeholder = 'type ' + code;
+      yesBtn.disabled = true;
+      function check() {
+        var ok = codeIn.value.replace(/\s+/g, '') === code;
+        yesBtn.disabled = !ok;
+        codeIn.classList.toggle('ok', ok);
+      }
+      codeIn.addEventListener('input', check);
+      codeIn.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !yesBtn.disabled) go();
+      });
+      card.appendChild(m);
+      card.appendChild(codeIn);
+    } else {
+      card.appendChild(m);
+    }
     noBtn.addEventListener('click', close);
-    yesBtn.addEventListener('click', function () { close(); onYes(); });
+    yesBtn.addEventListener('click', function () { if (!yesBtn.disabled) go(); });
     ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
     row.appendChild(noBtn); row.appendChild(yesBtn);
-    card.appendChild(m); card.appendChild(row);
+    card.appendChild(row);
     ov.appendChild(card);
     document.body.appendChild(ov);
+    if (codeIn) setTimeout(function () { codeIn.focus(); }, 30);
+  }
+  // long_rec — a recording past this needs the code. Five minutes: below it a
+  // deletion is a tap you can afford to get wrong.
+  var LONG_REC = 300;
+  var DEL_CODE = '8764';
+  function del_code_for(dur) { return (Number(dur) || 0) > LONG_REC ? DEL_CODE : null; }
+  function dur_words(dur) {
+    var s2 = Math.round(Number(dur) || 0);
+    var mm = Math.floor(s2 / 60), hh = Math.floor(mm / 60);
+    if (hh) return hh + 'h ' + (mm % 60) + 'm';
+    return mm + ' min';
   }
 
   // my_recs — recordings this device successfully registered. Registry writes
@@ -283,9 +326,9 @@
       var del = isDel
         ? '<span class="jam_spin" aria-label="Deleting…"></span>'
         : (isLocal
-          ? '<button class="jam_del" data-local="' + s.page.split('local=')[1] + '" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this local recording">' + ICO_X + '</button>'
+          ? '<button class="jam_del" data-local="' + s.page.split('local=')[1] + '" data-page="' + s.page + '" data-name="' + esc(disp) + '" data-dur="' + (s.dur || 0) + '" aria-label="Delete this local recording">' + ICO_X + '</button>'
           : (isAuto
-            ? '<button class="jam_del" data-page="' + s.page + '" data-name="' + esc(disp) + '" aria-label="Delete this session">' + ICO_X + '</button>'
+            ? '<button class="jam_del" data-page="' + s.page + '" data-name="' + esc(disp) + '" data-dur="' + (s.dur || 0) + '" aria-label="Delete this session">' + ICO_X + '</button>'
             // dur_align: rows without a trash can reserve its slot, so every
             // row's duration column ends on the same right edge
             : '<span class="jam_del_sp"></span>'));
@@ -333,9 +376,13 @@
       b.addEventListener('click', function (e) {
         e.preventDefault(); e.stopPropagation();
         var loc = b.getAttribute('data-local');
+        var durB = b.getAttribute('data-dur');
+        var codeB = del_code_for(durB);
         if (loc) {
           var nm = b.getAttribute('data-name');
-          drawer_confirm('Delete "' + nm + '"?\n\nThis recording only exists on this device — deleting it is final.', 'Delete', function () {
+          drawer_confirm('Delete "' + nm + '"?\n\nThis recording only exists on this device — deleting it is final.'
+            + (codeB ? '\n\nIt is ' + dur_words(durB) + ' long. Type the code to unlock Delete.' : ''),
+            'Delete', function () {
             var pg = b.getAttribute('data-page');
             deleting[pg] = true; build_menu(); wire_links();
             idb_delete_local(loc, function () {
@@ -344,10 +391,10 @@
               build_menu(); wire_links();
               if (typeof window.toast === 'function') window.toast('Deleted ' + nm);
             });
-          });
+          }, codeB);
           return;
         }
-        delete_session(b.getAttribute('data-page'), b.getAttribute('data-name'));
+        delete_session(b.getAttribute('data-page'), b.getAttribute('data-name'), durB);
       });
     });
     // share button on each session row: copy that session's page link (no timestamp)
@@ -628,6 +675,12 @@
       '.jamc_card{background:var(--panel);color:var(--fg);border-radius:14px;padding:20px 22px;' +
         'max-width:320px;width:84%;box-shadow:0 12px 40px rgba(0,0,0,0.45);}' +
       '.jamc_msg{margin-bottom:16px;font-size:16px;white-space:pre-line;}' +
+      '.jamc_code{display:block;width:100%;box-sizing:border-box;margin:0 0 16px;padding:12px 14px;' +
+      'border:1px solid var(--panel_3);border-radius:10px;background:var(--bg);color:var(--fg);' +
+      'font-size:19px;letter-spacing:0.22em;text-align:center;font-variant-numeric:tabular-nums;}' +
+      '.jamc_code:focus{outline:none;border-color:var(--accent);}' +
+      '.jamc_code.ok{border-color:var(--accent);}' +
+      '.jamc_row button:disabled{opacity:0.4;cursor:default;}' +
       '.jamc_row{display:flex;gap:10px;justify-content:flex-end;}' +
       '.jamc_row button{border:none;border-radius:10px;padding:10px 16px;font-size:15px;cursor:pointer;}' +
       '.jamc_cancel{background:var(--panel_3);color:var(--fg);}' +
@@ -742,10 +795,12 @@
       body: JSON.stringify({ path: path, content: content, message: message })
     }).then(function (r) { if (!r.ok) throw new Error('sync ' + r.status); return r.json(); });
   }
-  function delete_session(page, name) {
+  function delete_session(page, name, dur) {
     // same themed pop-up as the highlight delete, not the native confirm
-    drawer_confirm('Delete "' + name + '"?\n\nThis removes it from the session list everywhere. Its moments go with it.',
-      'Delete', function () { delete_session_go(page, name); });
+    var code = del_code_for(dur);
+    drawer_confirm('Delete "' + name + '"?\n\nThis removes it from the session list everywhere. Its moments go with it.'
+      + (code ? '\n\nIt is ' + dur_words(dur) + ' long. Type the code to unlock Delete.' : ''),
+      'Delete', function () { delete_session_go(page, name); }, code);
   }
   function delete_session_go(page, name) {
     deleted_add(page);      // remember locally FIRST — stale registry reads can't bring it back
