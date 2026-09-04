@@ -95,7 +95,11 @@
                  width: 90%; }
   .tag_num_lbl { position: absolute; transform: translateX(-50%); top: 0; font-size: 13px; line-height: 16px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; z-index: 4; }
   .tag_num { flex: 0 0 auto; min-width: 18px; text-align: right; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
-  .tag_markers { position: relative; height: 14px; margin-top: 4px; margin-bottom: 4px; width: 90%; margin-left: auto; margin-right: auto; }
+  /* marker_gone — the dots inside this have been display:none since
+     circle_gone; the strip itself was 22px of empty space between the numbers
+     and the highlight list. It stays in the DOM (render_tag_markers is the
+     main render entry point and writes into it) but takes no room. */
+  .tag_markers { position: relative; height: 0; margin: 0 auto; width: 90%; overflow: hidden; }
   .tag_marker {
     position: absolute; top: 2px; width: 10px; height: 10px; z-index: 2;
     background: var(--marker, #fff); border-radius: 50%;
