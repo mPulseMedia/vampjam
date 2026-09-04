@@ -1,5 +1,7 @@
-// time_flip_test — hours read above the timeline, highlight numbers below it,
-// nothing collides, and the loud styling is gone.
+// time_flip_test — everything around the session timeline, in order:
+//   Tag the Moment / clock + hi-fi / 1h 2h / the line / highlight numbers
+// plus the loudness that was taken back out of it.
+// (grew with clock_up; it is one layout, so it is one suite.)
 const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path');
 const DIR = process.env.VJ_DIR || '/tmp/vj';
@@ -58,12 +60,20 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
     const m = await p.evaluate(() => {
       const r = s => { const e = document.querySelector(s); return e && e.getBoundingClientRect(); };
       const all = s => [...document.querySelectorAll(s)];
-      const bar = r('.seek_bar'), btn = r('.tag_btn_big');
+      const bar = r('.seek_bar'), btn = r('.tag_btn_big'), row = r('.time_row');
       const lbls = all('.hour_lbl').map(e => e.getBoundingClientRect());
       const nums = all('.tag_num_lbl').filter(e => getComputedStyle(e).visibility !== 'hidden')
                      .map(e => e.getBoundingClientRect());
       const cs = s => getComputedStyle(document.querySelector(s));
       return {
+        // clock_up — the clock and the hi-fi word live between the button and
+        // the hour numbers now, not under the whole timeline.
+        clockBelowButton: row.top >= btn.bottom,
+        clockAboveHours:  lbls.length > 0 && lbls.every(l => l.top >= row.bottom),
+        clockAboveBar:    row.bottom <= bar.top,
+        pillOnTheRow:     (() => { const g = r('.grade_pill');
+                                   return g.top >= row.top - 1 && g.bottom <= row.bottom + 1; })(),
+        label: document.getElementById('tag_btn').textContent,
         hourCount: lbls.length,
         numCount:  nums.length,
         hoursAbove: lbls.length > 0 && lbls.every(l => l.bottom <= bar.top),
@@ -85,6 +95,11 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
     });
 
     const t = vp.tag;
+    ok(t + ' — the button reads Tag the Moment',  m.label === 'Tag the Moment', m.label);
+    ok(t + ' — clock sits under the button',      m.clockBelowButton, JSON.stringify(m));
+    ok(t + ' — clock sits above 1h / 2h',         m.clockAboveHours, JSON.stringify(m));
+    ok(t + ' — clock sits above the line',        m.clockAboveBar, JSON.stringify(m));
+    ok(t + ' — hi-fi rides the clock row',        m.pillOnTheRow, JSON.stringify(m));
     ok(t + ' — hour marks are drawn at all',      m.hourCount >= 2, m.hourCount);
     ok(t + ' — 1h / 2h sit above the line',       m.hoursAbove, JSON.stringify(m));
     ok(t + ' — they clear the Tag button',        m.hoursClearButton, JSON.stringify(m));
