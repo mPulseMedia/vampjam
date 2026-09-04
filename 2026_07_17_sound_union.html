@@ -127,19 +127,19 @@
   .grade_pill:active { transform: translateY(-50%) scale(0.92); }
   .ctrl_btn {
     appearance: none; -webkit-appearance: none; border: 0;
-    background: var(--panel_2); color: var(--accent); font: inherit; font-weight: 600;
+    background: var(--panel_2); color: var(--accent); font: inherit; font-weight: 400;
     border-radius: 50%; width: 52px; height: 52px; cursor: pointer; flex: 0 0 auto;
     display: flex; align-items: center; justify-content: center;
     font-size: 12px; line-height: 1; padding: 0; white-space: nowrap;
     transition: background-color 0.12s, transform 0.06s;
   }
-  .ctrl_btn .cn { font-size: 17px; font-weight: 600; }
-  .ctrl_btn .cu { font-size: 11px; font-weight: 600; }
+  .ctrl_btn .cn { font-size: 17px; font-weight: 400; }
+  .ctrl_btn .cu { font-size: 11px; font-weight: 400; }
   .ctrl_btn:hover  { background: var(--panel_3); }
   .ctrl_btn:active { background: var(--accent_2); color: var(--on_accent, #0b0d0f); transform: scale(0.95); }
   .ctrl_btn.play_btn {
     width: 84px; height: 84px; background: var(--accent); color: var(--on_accent, #0b0d0f);
-    font-size: 56px; box-shadow: 0 4px 14px rgba(106,191,105,0.25);
+    font-size: 56px;
   }
   .ctrl_btn.play_btn:hover  { background: var(--accent_hover, #f0c97a); }
   .ctrl_btn.play_btn:active { background: var(--accent_active, #c89943); transform: scale(0.95); }
@@ -194,10 +194,10 @@
        iOS sometimes dropped it (keyboard up, sticky layer re-rasterised) and the
        button went pale with white text. The colour can no longer fall away. */
     background-color: var(--accent);
-    background-image: linear-gradient(180deg, var(--accent_hover, #339cff) 0%, var(--accent) 55%, var(--accent_active, #0062c4) 100%);
+    background-image: none;
     color: var(--on_accent, #fff); border-radius: 999px;
-    box-shadow: 0 10px 22px -8px var(--accent), 0 3px 8px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.28);
-    transition: transform 0.08s ease, box-shadow 0.15s ease;
+    box-shadow: none;
+    transition: transform 0.08s ease;
   }
   /* no :hover rule — iOS keeps hover stuck after a tap, so the button drifted
      to a different look and stayed there. Only the press itself shows. */
@@ -208,12 +208,12 @@
   button.tag_btn_big:active,
   button.tag_btn_big:focus {
     background-color: var(--accent);
-    background-image: linear-gradient(180deg, var(--accent_hover, #339cff) 0%, var(--accent) 55%, var(--accent_active, #0062c4) 100%);
+    background-image: none;
     color: var(--on_accent, #fff);
+    box-shadow: none;
   }
   button.tag_btn_big:active {
     transform: scale(0.96) translateY(1px);
-    box-shadow: 0 5px 12px -6px var(--accent), 0 2px 4px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.18);
   }
   .tag_toolbar_spacer {
     flex: 0 0 auto; visibility: hidden;
