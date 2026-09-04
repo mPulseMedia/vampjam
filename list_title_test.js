@@ -37,7 +37,10 @@ const REGISTRY = JSON.stringify([
   });
 
   // every page that carries the drawer should agree
-  for (const page of ['favorites.html', '2026_01_17_bazaar_cafe.html', 'record.html', 'admin.html']) {
+  // NOT record.html: it does not load drawer.js (no session list while the tape
+  // is running). Its cassette navigates to index.html#sessions, so this suite
+  // was measuring the page it LANDED on and calling it a pass.
+  for (const page of ['favorites.html', '2026_01_17_bazaar_cafe.html', 'index.html', 'admin.html']) {
     const p = await ctx.newPage();
     p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (' + page + '): ' + e.message); });
     await p.goto('https://vampsf.com/' + page);
