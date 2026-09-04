@@ -96,7 +96,9 @@ const SESSION = JSON.stringify({
              rows: document.querySelectorAll('.fav_row').length,
              scrollW: document.documentElement.scrollWidth,
              vw: document.documentElement.clientWidth,
-             deadCss: document.documentElement.innerHTML.indexOf('.sticky_player') };
+             // the RULE, not the word: a comment explaining why the row carries
+             // the sticky player's old padding is not the dead rule coming back
+             deadCss: document.documentElement.innerHTML.indexOf('.sticky_player {') };
   }, band.toString());
 
   ok('the title sits on the same line',   near(S.title.top, F.title.top), S.title.top + ' vs ' + F.title.top);
