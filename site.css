@@ -206,7 +206,10 @@ body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_pla
    29px now, in targets of the same height. They are the same kind of thing on the
    same kind of row, and the eye compares them directly whenever the list slides
    over the highlights. */
-.tag_row button.ghost { font-size: 29px !important; padding: 6px; min-height: 41px; line-height: 0; }
+/* del_same — a moment row on the record screen carries the same X as a
+   highlight row, so it belongs to the same rule. Without this it was a
+   .mom_del that one_size caught (17px) sitting where a 29px drawing goes. */
+.tag_row button.ghost, .mom_row button.ghost { font-size: 29px !important; padding: 6px; min-height: 41px; line-height: 0; }
 .tag_row button.play_tag { font-size: 29px !important; padding: 6px 8px 6px 2px; }
 
 /* edit_wide — while you are typing a highlight's title, the field takes the

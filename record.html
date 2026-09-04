@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>vampsf — Record</title>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=9">
+<link rel="stylesheet" href="site.css?v=10">
 <script src="theme.js?v=2"></script>
 <style>
   /* rec_same — the page box comes from site.css like every other page's. What was
@@ -188,14 +188,16 @@
   }
   .mom_name:focus { border-bottom-color: var(--panel_3); }
   .mom_name::placeholder { color: var(--muted); opacity: 0.6; }
-  /* the only control a moment carries while you are still recording: the one
-     that undoes a tag you did not mean. Same ghost X as the session row. */
-  .mom_del {
-    flex: 0 0 auto; border: none; background: transparent; color: var(--muted);
-    opacity: 0.3; padding: 5px 7px; min-height: 32px; font-size: 18px;
-    border-radius: 7px; cursor: pointer; line-height: 0;
-  }
-  .mom_del:hover { opacity: 0.95; color: var(--danger, #c75450); background: var(--panel_2); }
+  /* del_same — the only control a moment carries while you are still recording,
+     and it is the session row's X, declaration for declaration. It is a .ghost
+     now: that is the class site.css sizes row icons by (29px) and the class
+     one_size excludes — as a bare .mom_del it was being forced to 17px and sat
+     beside nothing at all, half the size of the same X one screen later. */
+  .mom_row button.ghost { padding: 5px 7px; min-height: 32px; font-size: 18px; border-radius: 7px; background: transparent; color: var(--muted); }
+  .mom_row button.ghost:hover  { background: transparent; color: var(--fg); }
+  .mom_row button.ghost:active { background: transparent; }
+  button.ghost.mom_del { flex: 0 0 auto; border: none; color: var(--muted); background: transparent; opacity: 0.3; cursor: pointer; }
+  button.ghost.mom_del:hover { opacity: 0.95; color: var(--danger, #c75450); background: var(--panel_2); }
   .mom_del svg { width: 1em; height: 1em; }
   .mom_time { display: none; }   /* row_time_hide: timestamps off the moment rows for now */
 
@@ -539,7 +541,7 @@
     row.innerHTML = '<span class="mom_num">' + n + '</span>' +
       '<input class="mom_name" type="text" autocomplete="off" autocapitalize="sentences" inputmode="text" placeholder="tap to name">' +
       '<span class="mom_time">' + fmt(sec) + '</span>' +
-      '<button class="mom_del" type="button" aria-label="Remove this moment">' + ICON_X + '</button>';
+      '<button class="ghost mom_del" type="button" aria-label="Remove this moment">' + ICON_X + '</button>';
     momList.appendChild(row);
     momList.style.display = 'block';
     liveTags.push({ t: sec, row: row });

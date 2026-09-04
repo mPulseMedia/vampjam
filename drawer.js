@@ -157,8 +157,12 @@
       codeIn.type = 'text';
       codeIn.inputMode = 'numeric';
       codeIn.autocomplete = 'off';
-      codeIn.setAttribute('aria-label', 'Type ' + code + ' to confirm');
-      codeIn.placeholder = 'type ' + code;
+      // code_hush — the pop-up must not print the code. It was in the placeholder
+      // and in the aria-label, which made the speed bump a formality: read it,
+      // type it back. The person this protects is the one who tapped by mistake,
+      // and they are exactly the person the screen was telling.
+      codeIn.setAttribute('aria-label', 'Confirmation code');
+      codeIn.placeholder = 'code';
       yesBtn.disabled = true;
       function check() {
         var ok = codeIn.value.replace(/\s+/g, '') === code;

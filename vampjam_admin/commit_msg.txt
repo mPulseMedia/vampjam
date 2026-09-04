@@ -1,1 +1,1 @@
-del_same
+auto_commit
