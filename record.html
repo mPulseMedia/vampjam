@@ -421,6 +421,8 @@
       state: state, ts: Date.now(), mime: mime, ext: ext
     }).catch(function () {});
   }
+  // the session row's X, the same drawing
+  var ICON_X = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var liveTags = [], recDur = 0;   // liveTags: [{ t: seconds, row: element }]
   var debugT = null;               // test hook: overrides elapsed for bar rendering
 
@@ -470,6 +472,29 @@
     curTimeEl.textContent = fmt(t);
     durTimeEl.textContent = fmt(t);
   }
+  // mom_drop — the one control a moment carries while you are recording. It is
+  // for the tag you did not mean, so it takes effect at once: no confirm, and
+  // nothing is lost that was not made two seconds ago. The rows renumber and
+  // the bar redraws, because the numbers on the bar are the row numbers.
+  momList.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.mom_del') : null;
+    if (!b) return;
+    var row = b.closest('.mom_row');
+    if (!row) return;
+    liveTags = liveTags.filter(function (lt) { return lt.row !== row; });
+    row.remove();
+    renumber();
+    if (!liveTags.length) momList.style.display = 'none';
+    render_bar();
+    save_meta(mediaRec && mediaRec.state === 'recording' ? 'recording' : 'ready');
+  });
+  function renumber() {
+    Array.prototype.forEach.call(momList.querySelectorAll('.mom_row'), function (r, i) {
+      var n = r.querySelector('.mom_num');
+      if (n) n.textContent = (i + 1);
+    });
+  }
+
   // a number doesn't move any playhead (there is none) — it scrolls to its row
   numStrip.addEventListener('click', function (e) {
     var d = e.target.closest ? e.target.closest('.mom_no') : null;
