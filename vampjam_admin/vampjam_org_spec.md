@@ -3978,7 +3978,48 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   del_leave 16. Green.
   site.css v=15, drawer.js v=153.
   Still no new trace.
-- NEXT → add entry 316 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 316 list_fold · b322 · leaving a page for the list folds that page shut under its own row.
+  Opening the list pushed the whole page down and parked it below the rows. That says "here is a
+  list, your page is under it somewhere" — it never says WHERE. The list already knows: one of its
+  rows IS this page. So the page now collapses into that row, the rows above hold still, the rows
+  below ride up into the space, and what is left is the list with your row lit in the middle of it.
+  The shape that makes it possible: at boot drawer.js wraps everything after the drawer in
+  #fold_page and appends a SECOND drawer, #session_low, after it. build_menu splits the same rows
+  array at the current row — [0..cur] to the top drawer, [cur+1..] to the low one — so the DOM
+  reads top-of-list, page, rest-of-list, which is literally the picture.
+  One number drives the whole thing: k, 0 = the page, 1 = the list. Rows grow by k, the page
+  shrinks by the same k. The finger drag sets k directly, so a pull and a tap are the same motion
+  at two speeds rather than two animations that have to be kept looking alike.
+  The seam is invisible when it lands: the two halves share the row hairline, only the outer
+  corners round, and the low half's first row grows the border that .jam_item + .jam_item cannot
+  reach across containers.
+  fold_back — folded open, tapping your own lit row unfolds rather than navigating. Reloading
+  yourself is the wrong answer to "take me back where I was", and it is the return path Paul said
+  we would figure out later, so it is in.
+  Three things had to be kept from breaking, and each one is a real trap:
+    · #fold_page is a bare wrapper — no padding, no border — so margins still collapse through it
+      and the page lays out exactly as it did unwrapped.
+    · overflow:hidden would make it a scrollport and kill the session page's sticky player, so it
+      is only on while the height is actually moving, and once folded shut.
+    · the landscape split has body { display: grid } with body > * { grid-column: 1 }, which the
+      wrapper would have swallowed. In that media query the wrapper is display:contents and the
+      low half is display:none — the grid sees the page's own children again and the old fixed
+      sheet opens as before. There is no fold in landscape and there should not be.
+  Swipe-up-to-close had to be re-aimed: folded open there is no list scrollport to exhaust, the
+  list IS the document, so the "already at the bottom" test reads the document's scroll.
+  record.html cannot fold into its row — it deliberately does not carry the list, so there is no
+  list to fold into. It does the half it can: collapse toward the top edge, then hand over. Same
+  motion, split across the navigation.
+  list_fold_test is new, 24 assertions, and they are geometric rather than class-based: the lit
+  row still on screen after the fold, rows above and below it, and the next row's top within 2px
+  of the lit row's bottom — which is the whole claim, that the page collapsed out from between
+  them. Plus landscape not folding and the player surviving being folded shut.
+  Re-ran sixteen suites: nav_state 15, nav_pair 42, list_title 22, del_same 19, play_same 16,
+  list_home 16, del_leave 16, rec_calm 22, rec_match 28, fav_match 23, icon_snug 12, grip_only 13,
+  tag_quiet 18, time_flip 32, logo_line 30, audio_grade 18. Green.
+  drawer.js v=154.
+  Still no new trace.
+- NEXT → add entry 317 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
