@@ -967,7 +967,7 @@
     line('dur', recDur + 's');
     line('loc_id', LOC_ID + ' chunks=' + chunkSeq);
     line('name', nameIn.value);
-    line('moments', liveTags.length);
+    line('moments', moments.length);
     line('status', (status.textContent || '').trim());
     L.push('');
     L.push('-- on this device (IndexedDB) --');
