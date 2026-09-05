@@ -35,19 +35,19 @@
     "count": 1
   },
   {
+    "page": "session.html?p=2026_09_04_11_23p_portola_valley",
+    "name": "2026-09-04 11:23p Portola Valley",
+    "date": "2026-09-04",
+    "dur": 298,
+    "count": 0
+  },
+  {
     "page": "session.html?p=2026_09_04_redwood_city_10_12_38p",
     "name": "2026-09-04 7:31p Redwood City",
     "date": "2026-09-04",
     "dur": 9676,
     "count": 3,
     "pending": true,
-    "ts": 1788589383861
-  },
-  {
-    "page": "session.html?p=2026_09_04_11_23p_portola_valley",
-    "name": "2026-09-04 11:23p Portola Valley",
-    "date": "2026-09-04",
-    "dur": 298,
-    "count": 0
+    "ts": 1788598340777
   }
 ]
