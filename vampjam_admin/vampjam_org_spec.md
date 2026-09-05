@@ -3909,7 +3909,30 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   index.html instead.
   site.css v=13, drawer.js v=150.
   Still no new trace.
-- NEXT → add entry 313 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 313 both_ways · b319 · nav_pair went one step too far. Favorites and New recording are back in the
+  session list, and they are still in the header — both, not either. The header icons are the fast
+  route; the rows are how you find them before you know what the icons mean. A list you have opened
+  is a place to look things up, and those two were the only things in it that were not sessions,
+  which is what made removing them look tidy rather than lossy.
+  The record symbol is now two drawings on purpose, with two names. ICO_NEW_ROW is the solid red
+  disc: in the list it is the only red thing in a column of blue cassettes, and the one row that
+  starts something rather than opening something. ICO_REC_H is the grey ring with a filled centre:
+  in the header it is one of four icons and wears their colour. Same idea, drawn for where it is.
+  share_here — the record page has a real share button in the top right now, in the slot that was a
+  blank placeholder. It carries its own handler, because this page deliberately does not load
+  drawer.js, which is where every other page's share is wired; it copies the page address with no
+  query and says so in the status line rather than borrowing a toast it does not have. One blank
+  slot remains there — the record button, since you are on it — and the wordmark is still on the
+  page's centre line.
+  nav_pair_test grew to 36 assertions rather than gaining a sibling: this build edits the exact
+  assertions that one makes, so a second file would have been the same routing twice with two
+  answers. It now checks the rows are present, that the row's disc is still red while the header's
+  ring is not, and clicks the record page's share and reads the clipboard back.
+  Re-ran list_title (22), del_leave (16), list_home (16), rec_calm (22), rec_match (28), icon_snug
+  (12) and tag_quiet (18): green.
+  drawer.js v=151.
+  Still no new trace.
+- NEXT → add entry 314 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,48 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "318 nav_pair",
+        id: "319 both_ways",
         expanded: true,
+        nodes: [
+          { text: "319 both_ways", children: [
+            { text: "prompt_restate", children: [
+              { text: "Keep New recording and Favorites in the session list as well as in the header." },
+              { text: "And put a share button in the top right of the Record page." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Also, I guess keep it in the sessions shelf sessions list as well the new recording and the favorites" },
+              { text: "On the Record page keep the share button in the top right corner" }
+            ]},
+            { text: "one_step_too_far", children: [
+              { text: "nav_pair took the two rows OUT when it put the icons in \u2014 that was mine, not asked for" },
+              { text: "the header icons are the fast route; the rows are how you find them before you know the icons" },
+              { text: "they were the only rows that were not sessions, which is what made removing them look tidy rather than lossy" }
+            ]},
+            { text: "two_drawings_on_purpose", children: [
+              { text: "ICO_NEW_ROW \u2014 the solid red disc. in the list it is the only red thing among blue cassettes, and the one row that STARTS something" },
+              { text: "ICO_REC_H \u2014 the grey ring with a filled centre. in the header it is one of four icons and wears their colour" },
+              { text: "same idea, drawn for where it is" }
+            ]},
+            { text: "share_here", children: [
+              { text: "a real share in the slot that was a blank placeholder" },
+              { text: "it carries its own handler: this page does not load drawer.js, where every other share is wired" },
+              { text: "copies the address with no query, and says so in the status line rather than borrowing a toast it does not have" },
+              { text: "one blank slot left \u2014 the record button, since you are on it \u2014 and the wordmark still holds the centre" }
+            ]},
+            { text: "the_suite_grew_rather_than_split", children: [
+              { text: "36 assertions in nav_pair_test, not a sibling file" },
+              { text: "this build edits the exact assertions that one makes \u2014 a second file would be the same routing twice with two answers" },
+              { text: "it checks the rows are back, the row disc is still red while the header ring is not, and clicks the record share and reads the clipboard back" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "318 nav_pair",
+        expanded: false,
         nodes: [
           { text: "318 nav_pair", children: [
             { text: "prompt_restate", children: [
