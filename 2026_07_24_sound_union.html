@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="site.css?v=19">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
-<script src="drawer.js?v=159"></script>
+<script src="drawer.js?v=160"></script>
 <style>
   /* admin_same: the pre-theme fallback palette is in site.css now. */
   /* kbd_black: literal fallback so the page is never transparent (a
@@ -563,6 +563,9 @@
   // ============ per-page identity ============
   // Each new page only needs to change PAGE_ID. The audio source lives in sources/<PAGE_ID>.json.
   var PAGE_ID    = 'sound_union_2026_07_24';
+  // the row this page IS in the session list. The eight hand-built pages take
+  // their list name from sessions.js and have no registry row; reg_rename says so.
+  var PAGE_KEY   = location.pathname.split('/').pop() || 'session.html';
   var REPO_OWNER = 'mPulseMedia';
   var REPO_NAME  = 'vampjam';
   var WORKER_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
@@ -1504,7 +1507,11 @@
       if (typeof window.vampjamRegRename === 'function') {
         return window.vampjamRegRename(PAGE_KEY, next).catch(function () {});
       }
-    }).then(function () { toast('Renamed'); })
+    }).then(function (wrote) {
+      // the eight hand-built pages take their list name from sessions.js, not
+      // from the registry — say so rather than implying the list changed
+      toast(wrote === null ? 'Renamed here — the list keeps its own name' : 'Renamed');
+    })
       .catch(function (err) {
         audio.label = prev; titleEl.textContent = prev; render_audio_label();
         toast('Rename failed: ' + err.message);
