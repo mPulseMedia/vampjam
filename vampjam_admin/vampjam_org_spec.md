@@ -4269,7 +4269,49 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   clipboard byte for byte and says so.
   Re-ran rec_dump 37, rec_calm 22, rec_match 28, tag_quiet 18. Green.
   Still no new trace.
-- NEXT → add entry 325 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 325 row_more · b332 · a row shows its title and three dots; the dots open into its actions with
+  share at the far right.
+  Session rows in the list and highlight rows on a page both carried three or four controls at
+  rest, all of them competing with the title for width. Now a row is its title and three plain
+  dots — not a hamburger, not a ring, "there is more here" — and one button width is what the
+  title competes with. Tap the dots and they become the row's actions, share at the far right:
+  on a session row delete, then the highlight count, then share; on a highlight row heart, then
+  delete, then share. One row open at a time; a tap anywhere else closes it.
+  In the list it is markup: build_menu writes .jam_more and a .jam_acts group per row that has
+  anything to show, and rows with nothing behind them (the title, New recording, Admin) get no
+  dots at all. The Favorites row follows the same rule. wire_links binds the dots; the outside
+  closer lives in drawer.js and covers both kinds of row, since every session page loads it.
+  On the nine session pages the highlight renderer wraps heart, delete and share in .tag_acts
+  behind .tag_more; the open state is kept by tag id (openActsId), so a heart tap — which
+  re-renders the list — does not fold the row shut under the finger.
+  The CSS is in site.css: the group is display:none until the row is .acts_open, the dots go the
+  other way, and the group inherits the row's gap so the controls inside it sit exactly where they
+  sat as direct children (icon_snug measured the difference: 5px tighter without it).
+  Found by the suite, and a real bug: edit_wide's rule — .tag_row:focus-within .tag_label ~
+  *:not(:focus) — hid the WHOLE group the instant its share button took focus on mousedown. The
+  button was focused; its wrapper was not; the wrapper is the sibling. The mouseup then landed on
+  the title and the click went to the row. It first looked like a Playwright quirk and a manual
+  pointer sequence hid it, which is exactly the wrong lesson; traced event by event, the group's
+  display flipped to none on focusin. The rule now hangs off the field itself — .tag_row
+  .tag_label:focus ~ * — which is what it always meant: everything after the title steps aside
+  while the TITLE has focus, and at no other time. The favourites twin is tightened the same way.
+  A second selector at the group's own specificity keeps that true while the row is open, because
+  row_more's inline-flex is declared later in the file and would win the tie.
+  row_more_test is new, 24 assertions: what a row visibly shows left to right, shut and open; the
+  dots at the far right; share rightmost and the order behind it on both kinds of row; the title
+  measurably wider shut; one row at a time; the outside tap; the Favorites row; no dots on rows
+  with nothing to show; the open state surviving a heart's re-render; a plain click on share
+  copying; a focused share not hiding its own group; typing a title still clearing everything
+  after it; and every session page carrying the dots.
+  icon_snug and del_same measure the controls behind the dots now, so both open them first;
+  del_same's "same distance from the edge" became "share holds the edge the X used to, and the X
+  sits one button in", which is what row_more means. Left alone this build, and said so: the
+  favourites rows (grip, play, heart, share) and the recording moment rows (delete only) — the
+  same rule would fit both, and the recording row would be a dot that reveals one X.
+  Re-ran all twenty-two suites. Green.
+  site.css v=19, drawer.js v=159.
+  Still no new trace.
+- NEXT → add entry 326 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

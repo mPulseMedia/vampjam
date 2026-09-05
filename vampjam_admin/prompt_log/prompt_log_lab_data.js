@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "331 rec_fix_note",
+        id: "332 row_more",
         expanded: true,
+        nodes: [
+          { text: "332 row_more", children: [
+            { text: "prompt_restate", children: [
+              { text: "On session rows and highlight rows, move share all the way right." },
+              { text: "Every row defaults to just three dots at the right \u2014 not a hamburger, a there-is-more \u2014 so one button width competes with the title." },
+              { text: "Tap the dots: they become the buttons that are there now, share rightmost; on a session row the highlight count next to it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "On both the session, Rose and the highlight Rose move the share button all the way to the right and I know and then what I wanna do is I wanna make all the roads default to have just like the three dots within a circle nuts all the way on the ride or maybe just they\u2019re not even within a circle. They\u2019re just kind of three dots. This isn\u2019t the hamburger. This is like the there\u2019s more here and when I click this of the default will be that only those three dots are showing there on the right so it\u2019s just one button width that\u2019s competing with the room for the title of the thing and if I click that three dot, then it turns into the buttons that are there now where the right most one would be share and then I think for a session list will be the number of highlights and then the and for the highlight, I don\u2019t know, but the right mouse should be shared as well" }
+            ]},
+            { text: "what_a_row_is_now", children: [
+              { text: "its title and three plain dots. one row open at a time; a tap anywhere else closes it" },
+              { text: "session row, opened: delete \u00b7 count \u00b7 share" },
+              { text: "highlight row, opened: heart \u00b7 delete \u00b7 share" },
+              { text: "rows with nothing behind them \u2014 the heading, New recording, Admin \u2014 have no dots. Favorites follows the rule" },
+              { text: "a heart tap re-renders the list; the row stays open under the finger" }
+            ]},
+            { text: "a_real_bug_found", children: [
+              { text: "while typing a title, everything after it steps aside \u2014 a rule from before. it fired on ANY focus in the row, and hid the whole action group the instant share took focus" },
+              { text: "the mouseup landed on the title and the tap went nowhere. it looked like a test quirk first; traced event by event it was the page" },
+              { text: "the rule now hangs off the title field itself, which is what it always meant. favourites tightened the same way" }
+            ]},
+            { text: "left_alone_and_said_so", children: [
+              { text: "favourites rows (grip, play, heart, share) and recording moment rows (one X) \u2014 the same rule fits both; say the word" }
+            ]},
+            { text: "row_more_test", children: [
+              { text: "new, 24 \u2014 what a row visibly shows shut and open, share rightmost on both kinds, the title measurably wider shut, one at a time, outside tap, the re-render, a plain click on share, the focus bug, every page" },
+              { text: "icon_snug and del_same open the dots first now; del_same\u2019s edge check became share holds the edge, the X sits one button in" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "all twenty-two suites, green. site.css v=19, drawer.js v=159" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "331 rec_fix_note",
+        expanded: false,
         nodes: [
           { text: "331 rec_fix_note", children: [
             { text: "prompt_restate", children: [
