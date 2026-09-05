@@ -4095,7 +4095,37 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   icon_snug 12, grip_only 13, tag_quiet 18, time_flip 32, logo_line 30, audio_grade 18. Green.
   drawer.js v=157.
   Still no new trace.
-- NEXT → add entry 319 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 319 fold_pace · b325 · three times slower, eased at both ends, and the name now travels at the
+  page's speed rather than at its own.
+  380ms read as fast and jarring, and row_fly's curve only eased ONE end — slow away, quick, then
+  a stop. Now 1140ms on cubic-bezier(0.65,0,0.35,1): away slowly, quick through the middle,
+  settling slowly again. Measured on the way out, per 150ms: 1, 18, 55, 135, 219, then 127, 52, 12.
+  The numbers are the animation, so they live in two constants and get interpolated into the
+  stylesheet rather than typed a second time where they can drift.
+  fold_pace's real content is the second half of the ask. The name and the list were sharing a
+  DURATION, not a speed: the name has a shorter way to go, so it dawdled while the rows raced past
+  it, and the two never looked attached. It is no longer a CSS transition at all — the clone is
+  driven per frame off the same curve evaluated in JS, advancing by the same pixels the LIT ROW
+  advances. Measured: 1/1, 18/18, 55/56, 135/134, 219/219, and then the name is home at ~900ms and
+  holds while the list carries on up past it. Which is what a thing that has arrived looks like.
+  The curve is now evaluated in JS as well as declared in CSS, so bez() is the one definition and
+  the scroll ride uses it too instead of a hand-rolled shape that merely resembled it.
+  record.html takes the same curve at 520ms — shorter on purpose, because that one holds up a
+  navigation and nothing is being read while it runs.
+  row_fly_test grew to 29. Four new assertions, all measured rather than declared: that the last
+  third is slower than the middle (an ease-in alone would have passed the two checks already
+  there and still slammed at the end); that the flight lasts about a second; that the name and the
+  row move the same distance between the same two frames, to within 12%; and that the name settles
+  several frames BEFORE the row does. Two of those needed fixing first — the sampler's clock
+  starts at page load, so the flight is a difference not an absolute, and "still moving at the end"
+  is better asked as "which one settled first".
+  The three fold suites also had their waits tripled; they were timed against 380ms.
+  Re-ran eighteen suites: list_fold 24, fold_in 17, nav_state 15, nav_pair 42, list_title 22,
+  del_same 19, play_same 16, list_home 16, del_leave 16, rec_calm 22, rec_match 28, fav_match 23,
+  icon_snug 12, grip_only 13, tag_quiet 18, time_flip 32, logo_line 30, audio_grade 18. Green.
+  drawer.js v=158.
+  Still no new trace.
+- NEXT → add entry 320 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
