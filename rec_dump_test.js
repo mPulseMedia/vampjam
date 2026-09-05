@@ -93,12 +93,16 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
   const d = await p.evaluate(() => ({
     box: document.getElementById('dump_box').value,
     hidden: document.getElementById('dump_box').hidden,
-    status: document.getElementById('status').textContent.trim()
+    status: document.getElementById('status').textContent.trim(),
+    btn: document.getElementById('dump_btn').textContent.trim(),
+    retry: !!document.getElementById('retry_link')
   }));
   const clip = await p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
   ok('the box appears, filled',                  d.hidden === false && d.box.length > 400, d.box.length);
   ok('and the clipboard has the same text',      clip === d.box, (clip || '').length + ' vs ' + d.box.length);
-  ok('the status says it is copied',             /copied/i.test(d.status), d.status);
+  ok('the BUTTON says it is copied',             /copied/i.test(d.btn), d.btn);
+  ok('and the status line was left alone',       /upload 413/.test(d.status), d.status);
+  ok('so the try-again link survived the dump',  d.retry === true, d.retry);
   ok('the dump names the stuck recording',       /loc_test1/.test(d.box), '');
   ok('with its size',                            /bytes=12\.0 MB/.test(d.box), (d.box.match(/bytes=[^\s]+ ?\w+/) || [])[0]);
   ok('its state and length',                     /state=ready/.test(d.box) && /5400s/.test(d.box), '');
@@ -113,8 +117,8 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
   ok('and it is dated',                          /rec_dump 20\d\d-/.test(d.box), '');
   ok('the recovery attempt said what it was doing',
      /stage\s+recover loc_test1: 4 chunks, 12\.0 MB, 5400s/.test(d.box), '');
-  ok('and the bytes actually went up, with progress',
-     /sent\s+100% 12\.0 MB of 12\.0 MB/.test(d.box), (d.box.match(/sent .*/) || [])[0]);
+  ok('and the upload went out as an XHR with the whole body',
+     /fetch\s+POST .*vampjam-upload.* body=12582912 xhr/.test(d.box), (d.box.match(/fetch .*upload.*/) || [])[0]);
 
   // ---------- try again: every stage shows its name, and it is all logged ----------
   const seen = [];

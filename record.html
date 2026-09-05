@@ -1066,8 +1066,13 @@
       var copied = false;
       try { if (nav_clip()) { await navigator.clipboard.writeText(text); copied = true; } } catch (e5) {}
       if (!copied) { try { box.focus(); box.select(); copied = document.execCommand('copy'); } catch (e6) {} }
-      status.textContent = copied ? 'Copied — paste it to me' : 'Select the box below and copy';
+      // the confirmation goes on the BUTTON, not the status line — the status
+      // line is the upload's own story and holds the try-again link; writing
+      // over it would have thrown the link away at the exact moment it matters
+      btn.textContent = copied ? 'copied — paste it to me' : 'select the box below and copy';
       btn.disabled = false;
+      clearTimeout(btn._t);
+      btn._t = setTimeout(function () { btn.textContent = 'copy debug info'; }, 2600);
     });
     function nav_clip() { return !!(navigator.clipboard && navigator.clipboard.writeText); }
   })();
