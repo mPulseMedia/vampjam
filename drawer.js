@@ -43,11 +43,96 @@
     // the body class stays available as a styling hook
     try { document.body.classList.toggle('drawer_open', on); } catch (eB) {}
     var c = caret(); if (c) c.classList.toggle('open', on);
+    var lo = low(); if (lo) lo.classList.toggle('open', on);
+    if (fold_ok()) { fold_go(on); return; }
     // newest-first: the panel always opens scrolled to the top
     if (on) { setTimeout(function () { update_sess_overflow(); d.scrollTop = 0; }, 250); }
     else { d.classList.remove('sess_overflow'); }
   }
   window.addEventListener('resize', update_sess_overflow);
+
+  // ---- list_fold: the page collapses under its own row in the list ---------
+  // Opening the list used to push the whole page down and park it below the
+  // rows, which said "here is a list, and your page is somewhere under it".
+  // It never said WHERE. The list already knows: one of its rows IS this page.
+  // So the page now folds shut into that row — rows above it hold still, rows
+  // below it ride up into the space — and what you are left looking at is the
+  // list with your row still lit in the middle of it.
+  //
+  // The shape that makes this possible: everything after the drawer is wrapped
+  // once, at boot, in #fold_page, and a SECOND drawer (#session_low) carries
+  // the rows that come after the current one. So the DOM reads top-of-list,
+  // page, rest-of-list — which is what the picture is.
+  var SPLIT_MQ_F = '(orientation: landscape) and (pointer: coarse) and (max-height: 520px)';
+  function fold_page() { return document.getElementById('fold_page'); }
+  function low()       { return document.getElementById('session_low'); }
+  function fold_ok() {
+    // the landscape split opens its own fixed sheet over the left half, and
+    // index-as-list has no page under it to fold. Both keep the old behaviour.
+    if (window.VAMPJAM_LIST_HOME) return false;
+    if (window.matchMedia(SPLIT_MQ_F).matches) return false;
+    return !!fold_page();
+  }
+  function fold_build() {
+    var d = drawer();
+    if (!d || !d.parentNode || document.getElementById('fold_page')) return;
+    var w = document.createElement('div');
+    w.id = 'fold_page';
+    d.parentNode.insertBefore(w, d.nextSibling);
+    // every already-executed script comes along too; moving a script that has
+    // run does not run it again, and by DOMContentLoaded they all have.
+    while (w.nextSibling) w.appendChild(w.nextSibling);
+    var lo = document.createElement('div');
+    lo.id = 'session_low';
+    lo.className = 'session_drawer session_low';
+    lo.innerHTML = '<div class="jam_menu"></div>';
+    w.parentNode.appendChild(lo);
+  }
+  var foldH = null;                       // natural heights, measured per gesture
+  function fold_measure() {
+    var d = drawer(), lo = low(), fp = fold_page();
+    var tm = d && d.querySelector('.jam_menu'), lm = lo && lo.querySelector('.jam_menu');
+    return {
+      // +12 for .jam_menu's own top margin, which is outside scrollHeight
+      top:  tm ? tm.scrollHeight + 12 : 0,
+      low:  (lm && lm.children.length) ? lm.scrollHeight : 0,
+      page: fp ? fp.scrollHeight : 0
+    };
+  }
+  // k is the whole animation: 0 = the page, 1 = the list. Rows grow by k, the
+  // page shrinks by the same k, so the two are always exactly the one motion.
+  function fold_apply(k) {
+    var d = drawer(), lo = low(), fp = fold_page();
+    if (!d || !fp || !foldH) return;
+    d.style.maxHeight = Math.round(foldH.top * k) + 'px';
+    if (lo) lo.style.maxHeight = Math.round(foldH.low * k) + 'px';
+    fp.style.height = Math.round(foldH.page * (1 - k)) + 'px';
+  }
+  function fold_clear() {
+    var d = drawer(), lo = low(), fp = fold_page();
+    if (d) d.style.maxHeight = '';
+    if (lo) lo.style.maxHeight = '';
+    if (fp) fp.style.height = '';
+  }
+  var foldT = null;
+  function fold_go(on) {
+    var b = document.body, d = drawer();
+    if (!d) return;
+    clearTimeout(foldT);
+    foldH = fold_measure();
+    b.classList.add('fold_run', 'fold_jump');
+    fold_apply(on ? 0 : 1);
+    void d.offsetHeight;                       // land the start frame
+    b.classList.remove('fold_jump');
+    requestAnimationFrame(function () { fold_apply(on ? 1 : 0); });
+    foldT = setTimeout(function () {
+      b.classList.remove('fold_run');
+      b.classList.toggle('fold_on', !!on);
+      fold_clear();
+      if (on) window.scrollTo(0, 0);
+    }, 320);
+  }
+
   function toggle() {
     var d = drawer(); if (!d) return;
     if (listPinned) return;
@@ -353,6 +438,7 @@
     // back: the header icons are the fast way, the rows are the way you find
     // them when you do not yet know the icons mean that. The two are not in
     // competition — a list you opened is a place to look things up.
+    var curIdx = -1;                 // where the list folds: the row that is this page
     var rows = ['<div class="jam_item jam_title"><span class="jam_name">Recordings</span></div>'];
     rows.push('<div class="jam_item jam_new"><a class="jam_link" href="record.html">'
       + '<span class="jam_left"><span class="jam_ico">' + ICO_NEW_ROW + '</span><span class="jam_name">New recording</span></span></a></div>');
@@ -364,6 +450,7 @@
       // the menu). The empty menu_sub and del spacer keep its right edge lined
       // up with the sessions below.
       var favCur = (PKEY === 'favorites.html') ? ' current' : '';
+      if (favCur) curIdx = rows.length;
       rows.push('<div class="jam_item' + favCur + '"><a class="jam_link' + favCur + '" href="favorites.html">'
         + '<span class="jam_left"><span class="jam_ico">' + ICO_HEART_M + '</span><span class="jam_name">Favorites</span></span></a>'
         + '<button class="jam_share" data-href="favorites.html" aria-label="Copy link to Favorites">' + ICO_SHARE + '</button>'
@@ -392,6 +479,7 @@
             // row's duration column ends on the same right edge
             : '<span class="jam_del_sp"></span>'));
       // share_left: the share button sits just left of the duration column
+      if (cur) curIdx = rows.length;
       rows.push('<div class="jam_item' + cur + (isDel ? ' jam_deleting' : '') + '"><a class="jam_link' + cur + '" href="' + s.page + '">'
         + '<span class="jam_left"><span class="jam_ico">' + ICO_CASS + '</span>'
         + '<span class="jam_name">' + esc(disp) + '</span></span></a>'
@@ -401,7 +489,20 @@
     rows.push('<div class="jam_item jam_admin"><a class="jam_link" href="admin.html">'
       + '<span class="jam_left"><span class="jam_ico">' + ICO_GEAR + '</span><span class="jam_name">Admin</span></span>'
       + '<span class="menu_sub">setup</span></a></div>');
-    menu.innerHTML = rows.join('');
+    // fold_split — the rows above the current one stay in the top drawer, the
+    // rows below it go to the low one, and the page sits in the gap between.
+    // No current row (a page the list does not name) means no split, and the
+    // list behaves exactly as it did before.
+    var lowMenu = document.querySelector('#session_low .jam_menu');
+    var split = fold_ok() && curIdx > 0 && !!lowMenu;
+    if (split) {
+      menu.innerHTML = rows.slice(0, curIdx + 1).join('');
+      lowMenu.innerHTML = rows.slice(curIdx + 1).join('');
+    } else {
+      menu.innerHTML = rows.join('');
+      if (lowMenu) lowMenu.innerHTML = '';
+    }
+    try { document.body.classList.toggle('fold_split', !!split); } catch (eS) {}
   }
 
   // remember this session for the index; cache its duration going forward
@@ -418,13 +519,27 @@
 
   // ---- session links: animate the drawer closed, then navigate ----
   function wire_links() {
-    var menu = document.querySelector('.session_drawer .jam_menu');
-    if (!menu) return;
+    var menus = document.querySelectorAll('.session_drawer .jam_menu');
+    if (!menus.length) return;
+    var menu = { querySelectorAll: function (sel) {
+      var out = [];
+      Array.prototype.forEach.call(menus, function (m) {
+        Array.prototype.push.apply(out, m.querySelectorAll(sel));
+      });
+      return out;
+    } };
     Array.prototype.forEach.call(menu.querySelectorAll('a[href]'), function (a) {
       a.addEventListener('click', function (e) {
         var href = a.getAttribute('href');
         if (!href || href.charAt(0) === '#') return;
         e.preventDefault();
+        // fold_back — the lit row is the page you are standing on. Folded open,
+        // tapping it is not navigation, it is unfolding: the list opens back up
+        // around the page it came from. Reloading yourself would be the wrong
+        // answer to "take me back to where I was".
+        if (a.classList.contains('current') && document.body.classList.contains('fold_on')) {
+          set_open(false); return;
+        }
         close_then(function () { window.location.href = href; });
       });
     });
