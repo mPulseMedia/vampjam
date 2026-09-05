@@ -9,8 +9,32 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "333 worker_go",
+        id: "334 worker_live",
         expanded: true,
+        nodes: [
+          { text: "334 worker_live", children: [
+            { text: "prompt_restate", children: [
+              { text: "The paste worked." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "worked" }
+            ]},
+            { text: "checked", children: [
+              { text: "the repo: the Redwood City session is still marked syncing and its session file has not arrived \u2014 so the receiver is live but the phone has not sent yet" }
+            ]},
+            { text: "next", children: [
+              { text: "open the Record page on the phone. it finds the recording and sends 28 pieces; a few minutes on wifi" },
+              { text: "when it lands the list row loses its syncing mark and the page goes to the session. I will see the session file arrive in the repo" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 nothing changed this prompt." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "333 worker_go",
+        expanded: false,
         nodes: [
           { text: "333 worker_go", children: [
             { text: "prompt_restate", children: [
