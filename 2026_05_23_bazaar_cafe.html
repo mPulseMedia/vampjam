@@ -435,6 +435,7 @@
   button.ghost.tag_fav.on { color: var(--accent); opacity: 1; }
   button.ghost.tag_del { color: var(--muted); background: transparent; opacity: 0.3; }
   button.ghost.tag_del:hover { opacity: 0.95; color: var(--danger, #c75450); background: var(--panel_2); }
+  .audio_warn { font-size: 12.5px; line-height: 1.45; color: var(--warn, #8a6d1a); margin: 0 0 8px; }
   #audio_edit_btn { color: var(--muted); background: transparent; opacity: 0.4; }
   #audio_edit_btn:hover { opacity: 0.9; }
   .sort_toggle { background: transparent; opacity: 0.5; }
@@ -501,12 +502,14 @@
 
 
 
-<h1 style="display:flex;align-items:center;justify-content:center;gap:6px;">2026-05-23 Bazaar Cafe <button class="ghost" id="audio_edit_btn" title="Change audio file" aria-label="Change audio file"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M14.5 6.5l3 3"/></svg></button></h1>
+<h1 style="display:flex;align-items:center;justify-content:center;gap:6px;">2026-05-23 Bazaar Cafe <button class="ghost" id="audio_edit_btn" title="Rename" aria-label="Rename this recording"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M14.5 6.5l3 3"/></svg></button></h1>
 
 <!-- audio edit form (hidden, toggled by pencil) -->
 <div class="audio_card" id="audio_card" style="display:none;">
   <span class="audio_label empty" id="audio_label" style="display:none;">Loading…</span>
   <div class="audio_edit_form" id="audio_edit_form" style="display:none">
+    <div class="audio_warn">This is the audio FILE, not the name. Renaming here points the page
+      at a file that may not exist — the name is the pencil by the title.</div>
     <input type="text" id="audio_url_in" placeholder="Paste audio URL (Google Drive share, direct URL, or filename next to this page)">
     <input type="text" id="audio_label_in" placeholder="Label (optional — auto-derived if blank)">
     <div class="audio_edit_actions">
@@ -1485,10 +1488,81 @@
     audioUrlIn.value = '';
     audioLabelIn.value = '';
   }
+  // name_edit — the pencil sits beside the title, so it renames the title. It
+  // used to open the audio-file form, whose FIRST field was the file URL: the
+  // one control that reads as "change this name" was the one that repointed the
+  // page at a file that does not exist. The file form is still here, one
+  // deliberate step further in, from a link inside the rename editor.
+  var titleEl = $('session_title');
+  function name_apply(next) {
+    next = (next || '').trim();
+    if (!next || !audio || next === audio.label) return;
+    var prev = audio.label;
+    audio.label = next;
+    titleEl.textContent = next;
+    document.title = 'vampsf — ' + next;
+    render_audio_label();
+    toast('Renaming…');
+    save_data_to_repo('rename ' + PAGE_ID).then(function () {
+      // and the list draws from the registry, not from this file
+      if (typeof window.vampjamRegRename === 'function') {
+        return window.vampjamRegRename(PAGE_KEY, next).catch(function () {});
+      }
+    }).then(function () { toast('Renamed'); })
+      .catch(function (err) {
+        audio.label = prev; titleEl.textContent = prev; render_audio_label();
+        toast('Rename failed: ' + err.message);
+      });
+  }
+  function name_edit_open() {
+    if (document.getElementById('name_in')) return;
+    var cs = getComputedStyle(titleEl);
+    var inp = document.createElement('input');
+    inp.id = 'name_in';
+    inp.type = 'text';
+    inp.value = (audio && audio.label) || titleEl.textContent || '';
+    inp.setAttribute('aria-label', 'Recording name');
+    inp.style.cssText = 'font:inherit;font-size:' + cs.fontSize + ';font-weight:' + cs.fontWeight
+      + ';color:var(--fg);background:transparent;border:none;border-bottom:2px solid var(--accent);'
+      + 'text-align:center;padding:0 2px;max-width:min(78vw,520px);width:'
+      + Math.max(160, Math.ceil(titleEl.getBoundingClientRect().width) + 24) + 'px;outline:none;';
+    titleEl.style.display = 'none';
+    titleEl.parentNode.insertBefore(inp, titleEl);
+    var done = false;
+    function finish(save) {
+      if (done) return; done = true;
+      if (save) name_apply(inp.value);
+      inp.remove(); titleEl.style.display = '';
+    }
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+      else if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+    });
+    inp.addEventListener('blur', function () { finish(true); });
+    inp.focus(); inp.select();
+    // the way to the audio file, said plainly, below the field
+    if (!document.getElementById('name_file_link')) {
+      var a = document.createElement('div');
+      a.id = 'name_file_link';
+      a.style.cssText = 'text-align:center;font-size:12.5px;color:var(--muted);margin:2px 0 6px;';
+      a.innerHTML = '<a href="#" style="color:var(--muted);">change the audio file instead</a>';
+      titleEl.closest('h1').insertAdjacentElement('afterend', a);
+      a.querySelector('a').addEventListener('mousedown', function (e) { e.preventDefault(); });
+      a.querySelector('a').addEventListener('click', function (e) {
+        e.preventDefault();
+        finish(false);
+        a.remove();
+        audioCard.style.display = 'block';
+        open_edit_form();
+      });
+      var kill = setInterval(function () {
+        if (!document.getElementById('name_in')) { a.remove(); clearInterval(kill); }
+      }, 150);
+    }
+  }
   audioEditBtn.addEventListener('click', function () {
     if (audioEditForm.style.display === 'block') { close_edit_form(); audioCard.style.display = 'none'; return; }
-    audioCard.style.display = 'block';
-    open_edit_form();
+    name_edit_open();
   });
   audioCancelBtn.addEventListener('click', function () { close_edit_form(); audioCard.style.display = 'none'; });
 
