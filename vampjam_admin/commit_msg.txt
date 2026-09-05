@@ -1,1 +1,1 @@
-part_upload
+auto_commit
