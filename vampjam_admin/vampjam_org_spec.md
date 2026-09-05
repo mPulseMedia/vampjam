@@ -3952,7 +3952,33 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   play_same 16, list_home 16, del_leave 16, rec_calm 22. Green.
   site.css v=14, drawer.js v=152.
   Still no new trace.
-- NEXT → add entry 315 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 315 nav_state · b321 · the header icons stop being grey outlines and say four things in colour.
+  here_lit only tinted the current page's icon; Paul wanted the colour to go all the way into the
+  drawing and to mean something specific in each case, so this build gives the strip a vocabulary:
+  blue = you are here, red = the recorder, green = that just happened, filled = a tape is running.
+  The heart FILLS blue on favourites rather than outlining — .brand .nav_fav.nav_on svg
+  path:first-child { fill: currentColor }, aimed at the first path only so the three list lines
+  stay lines and do not blob into a rectangle beside it.
+  The recorder goes RED on the record page, off accent on purpose: a red circle is what a recorder
+  is, and blue there would have been the wrong word in a strip where blue already means "here".
+  That contradicts an assertion here_lit wrote, so nav_pair_test was corrected rather than left to
+  fail — the old line asserted accent, the new one asserts #d70015, with the reason in a comment.
+  Share is the only one that is a moment rather than a state: share_hit() adds .nav_hit for 1200ms
+  and the class is written into the hover rule too, or the pointer sitting on the button after a
+  tap would repaint it var(--fg) and eat the green. Exported as window.vampjamShareHit so
+  record.html's hand-written share button reaches the same code path instead of copying it.
+  The cassette fills while audio plays: wire_cass_live() swaps in ICO_CASS_ON on play/pause/ended/
+  emptied and paints once at boot, with the reels and the window knocked out in var(--bg) so a
+  solid cassette still reads as a cassette and not a lozenge.
+  nav_state_test is new — 15 assertions, and it is a colour test, so every one of them reads
+  getComputedStyle rather than checking a class is present. Two of them cost a fix each: the share
+  "comes back on its own" read var(--fg) because click leaves the mouse parked on the button, so
+  the test now moves the pointer off before both reads and also asserts .nav_hit came off.
+  Re-ran nav_pair 42, list_title 22, del_same 19, play_same 16, rec_calm 22, list_home 16,
+  del_leave 16. Green.
+  site.css v=15, drawer.js v=153.
+  Still no new trace.
+- NEXT → add entry 316 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
