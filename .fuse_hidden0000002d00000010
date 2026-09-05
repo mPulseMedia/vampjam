@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>vampsf — Record</title>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css?v=15">
+<script src="theme.js?v=2"></script>
+<style>
+  /* rec_same — the page box comes from site.css like every other page's. What was
+     here was a near-copy that had drifted: an 18px gutter against the site's 16,
+     a 10px top against its 3, its own font-family, and its own html rule. All of
+     that is in the shared sheet, and the copy was the only reason this page sat
+     on a slightly different grid from the rest of the site.
+     What is kept is the one thing that is genuinely this page's own: the recorder
+     is a single centred column, so body stays a flex column. The min-height goes
+     with it, because the column has to reach the bottom of the glass. */
+  body {
+    min-height: 100vh; min-height: 100dvh;
+    display: flex; flex-direction: column; align-items: center;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+  /* and the page's own bands take the site's width rather than a narrower one of
+     their own — 560 was chosen when this page did not share a stylesheet */
+  .top_bar { width: 100%; position: relative; text-align: center; min-height: 44px; margin-top: 4px; }
+  /* nav_cass owns the placement now — see the shared block below */
+  /* fold_out: leaving for the list collapses the page toward the top edge,
+     which is the half of the fold this page can do on its own */
+  body { transition: transform 0.26s ease, opacity 0.26s ease; transform-origin: top center; }
+  body.fold_out { transform: scaleY(0.04); opacity: 0; pointer-events: none; }
+  /* fold_in: opened from the New recording row, this page grows the same way
+     it leaves — the departure played backwards */
+  body.fold_in { transform: scaleY(0.04); opacity: 0; }
+  /* admin_same: the wordmark was 58/29 here and 68/34 on every other page —
+     it comes from site.css now, and the bar carries .brand so it matches. */
+  /* the session title is an h1 with the pencil inside it: 33px tall, margin
+     14/4. This is the same two things in the same box, so it is the same box. */
+  .name_row {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: 100%; margin: 14px 0 4px; min-height: 33px;
+  }
+  /* name_match — the session page's title is an h1: 17px, 600, full contrast,
+     margin 14/4. This is an input doing the same job in the same place, so it
+     is the same size, weight and colour. It was 500 and muted, which read as a
+     placeholder for the title rather than the title. */
+  #name_in {
+    background: none; border: none; outline: none; text-align: center;
+    color: var(--fg); font: inherit; font-size: 17px; font-weight: 600;
+    width: auto; min-width: 40px; max-width: 80%;
+    border-bottom: 1px dashed transparent; padding: 2px 4px;
+  }
+  #name_in:focus { color: var(--fg); border-bottom-color: var(--panel_3); }
+  .pencil_btn {
+    background: none; border: none; padding: 6px; cursor: pointer;
+    color: var(--muted); opacity: 0.7; display: flex;
+  }
+  .pencil_btn svg { width: 17px; height: 17px; }
+
+  /* stack_match — the session page has no wrapper gap; every space between two
+     things is one of their margins. A 16px gap on top of those margins is why
+     the two screens drifted apart vertically even where the parts matched. */
+  /* 8px is what .sticky_player contributes above the control row over there */
+  .stage { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 0; padding-top: 10px; }
+
+  /* control row mirrors the playback page — side buttons present but inert */
+  .ctrl_row { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; margin-bottom: 14px; }
+  /* margins do NOT collapse between flex items, and the session stack is block
+     flow — so the button's own 2px top margin adds here where it disappears
+     there. Two pixels, and it moves everything below it. */
+  .stage > .tag_btn { margin-top: 0; }
+  .ctrl_btn {
+    width: 48px; height: 48px; border-radius: 50%; border: none;
+    background: var(--panel_2); color: var(--accent);
+    font: inherit; font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    display: none;   /* nothing to seek while recording */
+  }
+  /* rec_red — the button is red all the time and says REC, rather than being a
+     pale disc with a red dot on it that turns red once you press it. The one
+     control on the page you came here to press should look like the one control
+     on the page you came here to press. Recording is now told by the pulse and by
+     the word changing to STOP, not by the button finally becoming its own colour. */
+  /* rec_size — the play button's circle, exactly: 84 base, 70 on a phone, 68 in
+     the landscape split. It is the same control in the same place on the next
+     screen, so it should not change size when the screen does. */
+  .rec_btn {
+    width: 84px; height: 84px; border-radius: 50%;
+    border: none; cursor: pointer; flex: 0 0 auto;
+    font: 700 23px/1 -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    letter-spacing: 0.06em;
+    background: #d70015; color: #ffffff;
+    display: flex; align-items: center; justify-content: center;
+    /* rec_glow — flat while idle. The halo is not decoration on this button; it
+       is the one thing that says tape is moving, so it must not be there when
+       it is not. */
+    box-shadow: none;
+    transition: box-shadow 0.4s ease;
+  }
+  /* and while it IS recording: a slow breath, not a pulse. The old ring expanded
+     and vanished every 1.2s, which reads as urgency. Four seconds in and out
+     reads as running. */
+  .rec_btn.recording { background: #d70015; color: #fff; animation: rec_breathe 4.2s ease-in-out infinite; }
+  @keyframes rec_breathe {
+    0%, 100% { box-shadow: 0 0 12px 2px rgba(215,0,21,0.26); }
+    50%      { box-shadow: 0 0 36px 11px rgba(215,0,21,0.55); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rec_btn.recording { animation: none; box-shadow: 0 0 22px 6px rgba(215,0,21,0.42); }
+  }
+  .rec_state[hidden], .time_row .now[hidden] { display: none !important; }
+  .rec_state { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 17px; min-height: 24px; font-variant-numeric: tabular-nums; }
+  .rec_dot { width: 10px; height: 10px; border-radius: 50%; background: #d70015; opacity: 0; }
+  .rec_state.on .rec_dot { opacity: 1; animation: dot_blink 1.2s ease-in-out infinite; }
+  .rec_state.on { color: var(--fg); }
+  @keyframes dot_blink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+  /* btn_same — this is .tag_btn_big from the session pages, declaration for
+     declaration. Same button, same job, two files; it should not be possible to
+     tell which screen a screenshot came from by looking at it. Flat accent, no
+     gradient, no glow (see haze_off), and the press is a squeeze. */
+  .tag_btn {
+    display: block; width: 100%; max-width: 300px; margin: 2px auto 12px; padding: 18px 20px;
+    border: none; border-radius: 999px;
+    font: inherit; font-size: 20px; font-weight: 700; letter-spacing: 0.01em; cursor: pointer;
+    background-color: var(--accent);
+    background-image: none;
+    color: var(--on_accent, #fff);
+    box-shadow: none;
+    transition: transform 0.08s ease;
+  }
+  /* btn_gray — re-assert the blue at a specificity the generic button rules
+     cannot beat, exactly as the session pages do. */
+  button.tag_btn,
+  button.tag_btn:hover,
+  button.tag_btn:active,
+  button.tag_btn:focus {
+    background-color: var(--accent);
+    background-image: none;
+    color: var(--on_accent, #fff);
+    box-shadow: none;
+  }
+  button.tag_btn:active { transform: scale(0.96) translateY(1px); }
+  /* the one thing the session version has no need of: this button waits for a
+     recording to exist. */
+  .tag_btn:disabled { opacity: 0.35; cursor: default; box-shadow: none; }
+
+  /* the growing time bar — same bones as the playback page, but it charts the
+     recording so far: 10-minute segments, hour marks, moment dots. No playhead. */
+  .bar_wrap { width: 100%; }   /* visible from load — the bar waits in place */
+  .num_strip { position: relative; height: 16px; margin: 3px auto 0; width: 90%; }
+  .mom_no { position: absolute; transform: translateX(-50%); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; padding: 2px 5px; z-index: 4; }
+  .time_row { position: relative; display: flex; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; margin-bottom: 0; }
+  .time_row .now { color: var(--accent); font-weight: 600; }
+  .rec_bar {
+    width: 100%; height: 9px; background: var(--panel_3); border-radius: 4px;
+    position: relative; pointer-events: none; margin: 32px 0 0;
+  }
+  .rec_bar.filled { background: var(--accent); }   /* recording: the whole bar is recorded audio */
+  .seg_tick { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--bg); transform: translateX(-50%); }
+  /* time_flip, the same way round as the session page: hours above the line,
+     moment numbers below it */
+  .hour_mark { position: absolute; top: -20px; bottom: -5px; width: 1px; background: var(--muted); opacity: 0.7; border-radius: 0; z-index: 1; }
+  .hour_lbl { position: absolute; bottom: calc(100% + 6px); margin-left: 4px; font-size: 13px; line-height: 1; color: var(--muted); white-space: nowrap; }
+
+
+  /* moments list — same shape as the playback page's highlight list */
+  /* row_match — .tag_list / .tag_row from the session page, declaration for
+     declaration. Same panel, same inset shadow, same 54px row, same 12px
+     gutter, same hairline between rows. The one thing kept from here is the
+     max-height fit: this list has a keyboard to stay clear of. */
+  .mom_list {
+    width: 100%; background: var(--panel); border-radius: 14px;
+    overflow: hidden; overflow-y: auto;
+    padding: 0; margin: 18px 0 12px; display: none;
+    box-shadow: inset 0 6px 7px -5px rgba(0,0,0,0.20);
+    touch-action: pan-y; font-size: 17px;
+  }
+  .mom_row {
+    display: flex; align-items: center; gap: 5px;
+    /* 55, not the 54 the session declares: over there the play button is 41px
+       tall and wins over the declared minimum. Same rendered row, measured. */
+    padding: 7px 12px; min-height: 55px; box-sizing: border-box;
+    border-radius: 0; background: transparent; flex-wrap: nowrap;
+  }
+  /* row_rule — the same hairline, drawn by the same adjacent-sibling rule */
+  .mom_row + .mom_row { border-top: 1px solid var(--panel_3); }
+  .mom_row.flash { background: var(--row_active); transition: background 0.25s; }
+  .mom_num { flex: 0 0 auto; min-width: 18px; text-align: right; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; padding: 6px 2px; }
+  .mom_name {
+    background: transparent; border: 0; color: var(--fg); font: inherit;
+    width: 100%; padding: 5px 7px 4px; border-radius: 0;
+    flex: 1 1 40px; min-width: 0; outline: none;
+    border-bottom: 1px dashed transparent;
+    touch-action: manipulation;
+  }
+  .mom_name:focus { border-bottom-color: var(--panel_3); }
+  .mom_name::placeholder { color: var(--muted); opacity: 0.6; }
+  /* del_same — the only control a moment carries while you are still recording,
+     and it is the session row's X, declaration for declaration. It is a .ghost
+     now: that is the class site.css sizes row icons by (29px) and the class
+     one_size excludes — as a bare .mom_del it was being forced to 17px and sat
+     beside nothing at all, half the size of the same X one screen later. */
+  .mom_row button.ghost { padding: 5px 7px; min-height: 32px; font-size: 18px; border-radius: 7px; background: transparent; color: var(--muted); }
+  .mom_row button.ghost:hover  { background: transparent; color: var(--fg); }
+  .mom_row button.ghost:active { background: transparent; }
+  button.ghost.mom_del { flex: 0 0 auto; border: none; color: var(--muted); background: transparent; opacity: 0.3; cursor: pointer; }
+  button.ghost.mom_del:hover { opacity: 0.95; color: var(--danger, #c75450); background: var(--panel_2); }
+  .mom_del svg { width: 1em; height: 1em; }
+  .mom_time { display: none; }   /* row_time_hide: timestamps off the moment rows for now */
+
+  .status { min-height: 40px; text-align: center; color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 480px; word-break: break-word; }
+  /* save_calm — while it saves you get three dots, not a running commentary of
+     which upload step we are on. The steps were true and none of them were his
+     to act on. Words come back only when something goes wrong. */
+  .save_dots { display: flex; gap: 7px; justify-content: center; align-items: center; height: 22px; }
+  .save_dots i {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--muted);
+    opacity: 0.25; animation: save_pulse 1.2s ease-in-out infinite;
+  }
+  .save_dots i:nth-child(2) { animation-delay: 0.16s; }
+  .save_dots i:nth-child(3) { animation-delay: 0.32s; }
+  @keyframes save_pulse {
+    0%, 100% { opacity: 0.25; transform: scale(0.85); }
+    40%      { opacity: 1;    transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) { .save_dots i { animation: none; opacity: 0.55; } }
+
+  /* full_width: phone landscape stretches the record screen edge to edge */
+  /* ctrl_edge — the session page's phone rule. The circles are hidden here, so
+     what this really keeps in step is the REC button's size at each width. */
+  @media (max-width: 480px) {
+    /* rec_centre — NOT space-between here. Over there the row has seven children
+       and space-between spreads them to the timeline's edges; here six of them
+       are display:none, so space-between put the only visible child at the start
+       and REC sat on the left. One child, so it is centred. */
+    .ctrl_row { justify-content: center; gap: 3px; margin-left: 0; margin-right: 0; }
+    .rec_btn { width: 70px; height: 70px; font-size: 20px; }
+  }
+
+  @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
+    body { padding-left: clamp(8px, env(safe-area-inset-left), 24px); padding-right: clamp(8px, env(safe-area-inset-right), 24px); }   /* land_margin */
+    /* rec_same: they take the site's width now, so there is nothing to widen */
+  }
+  .status a { color: var(--accent); font-weight: 600; }
+
+  .tag_numbers, .num_strip { height: 20px !important; }
+
+  /* nav_room — the pill owns the top band outright, so the wordmark starts
+     below it instead of running under it. Without this the big centred
+     wordmark reaches back far enough to sit under the pill on a phone. It goes
+     on the header, not on the wordmark: several pages set the wordmark's own
+     margin with a two-class rule that would win. */
+</style>
+</head>
+<body>
+
+<div class="brand top_bar">
+  <!-- nav_pair — this page does NOT load drawer.js (no session list while the
+       tape is running), so its header button is written here rather than
+       injected. There is no record button: you are on it. -->
+  <a class="nav_share nav_rec_none" href="favorites.html" aria-label="Favorites" title="Favorites"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 17.3C3.4 14.3 1.5 12.6 1.5 10.5c0-1.6 1.3-2.9 2.9-2.9 0.9 0 1.8 0.43 2.4 1.13 0.6-0.7 1.5-1.13 2.4-1.13 1.6 0 2.9 1.3 2.9 2.9 0 2.1-1.9 3.8-5.3 6.8z"/><path d="M15.4 8.4h7.1M15.4 12h7.1M15.4 15.6h7.1"/></svg></a>
+  <!-- two kept slots on the right: the record button (you are on it) and the
+       share (this page has never had one \u2014 there is nothing to share until
+       the recording exists). Without both, the wordmark sits 20px right of
+       centre here and nowhere else. -->
+  <!-- here_lit — the record icon, shown and lit: this IS the record page. Not a
+       link, because there is nowhere to go. -->
+  <span class="nav_share nav_rec nav_on" role="img" aria-label="New recording — you are here" title="New recording — you are here"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.8" fill="currentColor" stroke="none"/></svg></span>
+  <!-- and a real share. This page carries its own handler because it does not
+       load drawer.js, which is where every other page's share is wired. -->
+  <button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page" style="order:5;"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
+  <button class="nav_cass" id="back_btn" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
+  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
+</div>
+
+<div class="name_row">
+  <input id="name_in" type="text" autocomplete="off" autocapitalize="words" aria-label="Session name">
+  <button class="pencil_btn" id="pencil_btn" aria-label="Edit session name">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>
+  </button>
+</div>
+
+<div class="stage">
+  <div class="ctrl_row">
+    <button class="ctrl_btn" tabindex="-1">&minus;2m</button>
+    <button class="ctrl_btn" tabindex="-1">&minus;15s</button>
+    <button class="ctrl_btn" tabindex="-1">&minus;5s</button>
+    <button class="rec_btn" id="rec_btn" aria-label="Record">REC</button>
+    <button class="ctrl_btn" tabindex="-1">+5s</button>
+    <button class="ctrl_btn" tabindex="-1">+15s</button>
+    <button class="ctrl_btn" tabindex="-1">+2m</button>
+  </div>
+  <!-- count_gone — the counter that sat under the button is gone. It said the same
+       thing as the counter below the bar, a few pixels higher, and the button now
+       says whether you are recording all by itself. The element stays (hidden) so
+       the code that writes to it every tick needs no guard and cannot be the thing
+       that breaks a recording. -->
+  <div class="rec_state" id="rec_state" hidden><span class="rec_dot"></span><span id="rec_time">0:00</span></div>
+  <!-- rec_order — the same order as the session page: the button you press, then
+       the clock, then the line, then the numbers underneath it. -->
+  <button class="tag_btn" id="tag_btn" disabled>Tag the Moment</button>
+  <div class="bar_wrap" id="bar_wrap">
+    <!-- time_one — one counter, the grey one. The blue "now" and the slash in
+         front of it were a duration read as a position: while you are recording
+         there is no total to be a fraction of, so "0:00 / 0:12" was two numbers
+         where one is true. cur_time stays hidden for the same reason rec_state
+         does — the tick writes to it and does not need to know. -->
+    <div class="time_row"><span class="now" id="cur_time" hidden>0:00</span><span id="dur_time">0:00</span></div>
+    <div class="rec_bar" id="rec_bar"></div>
+    <div class="num_strip" id="num_strip"></div>
+  </div>
+  <div class="mom_list" id="mom_list"></div>
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+(function () {
+  var WORKER_UPLOAD_URL = 'https://vampjam-upload.crimson-dust-a18d.workers.dev/';
+  var WORKER_SYNC_URL   = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
+  var RAW_BASE          = 'https://raw.githubusercontent.com/mPulseMedia/vampjam/main/';
+  var SEG = 600;   // the bar breaks into 10-minute segments, like playback
+
+  var backBtn = document.getElementById('back_btn'),
+      nameIn  = document.getElementById('name_in'),
+      pencil  = document.getElementById('pencil_btn'),
+      recBtn  = document.getElementById('rec_btn'),
+      recState= document.getElementById('rec_state'),
+      timeEl  = document.getElementById('rec_time'),
+      tagBtn  = document.getElementById('tag_btn'),
+      barWrap = document.getElementById('bar_wrap'),
+      recBar  = document.getElementById('rec_bar'),
+      numStrip = document.getElementById('num_strip'),
+      curTimeEl = document.getElementById('cur_time'),
+      durTimeEl = document.getElementById('dur_time'),
+      momList = document.getElementById('mom_list'),
+      status  = document.getElementById('status');
+
+  // save_calm — three dots while anything is in flight. No step names: every
+  // one of them was true and none of them was his to act on.
+  function save_busy() {
+    status.innerHTML = '<div class="save_dots" role="status" aria-label="Saving"><i></i><i></i><i></i></div>';
+  }
+  function save_done() { status.textContent = ''; }
+
+  // Back always returns to the session list. Mid-recording it behaves like
+  // stop: finish, upload, build the session, THEN leave.
+  // fold_in — arriving from the New recording row. drawer.js left a note; this
+  // page does not load drawer.js, so it reads the note itself and plays its own
+  // departure backwards. Same motion in both directions, which is the point.
+  (function () {
+    var raw = null;
+    try { raw = sessionStorage.getItem('vampjam_fold_in'); sessionStorage.removeItem('vampjam_fold_in'); } catch (e) { return; }
+    if (!raw) return;
+    var n = null;
+    try { n = JSON.parse(raw); } catch (e) { return; }
+    if (!n || Date.now() - n.t > 5000) return;
+    if (String(n.page).split('#')[0].indexOf('record.html') !== 0) return;
+    document.body.classList.add('fold_in');
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { document.body.classList.remove('fold_in'); });
+    });
+  })();
+
+  var pendingBack = false;
+  backBtn.addEventListener('click', function () {
+    if (mediaRec && mediaRec.state === 'recording') {
+      pendingBack = true;
+      save_busy();
+      stop();
+      return;
+    }
+    fold_out(function () { window.location.href = 'index.html#sessions'; });
+  });
+  // fold_out — this page cannot fold INTO its row the way the others do,
+  // because it does not carry the list (no session list while the tape is
+  // running, deliberately). What it can do is leave the same way: collapse
+  // toward the top edge, then hand over to the list, which comes up with the
+  // New recording row lit. Same motion, split across the navigation.
+  function fold_out(go) {
+    try {
+      document.body.classList.add('fold_out');
+      setTimeout(go, 260);
+    } catch (e) { go(); }
+  }
+  pencil.addEventListener('click', function () { nameIn.focus(); nameIn.select(); });
+
+  // share_here — the same thing drawer.js does for every other page: copy this
+  // page's URL with no query on it. Written here because this page deliberately
+  // does not load drawer.js (no session list while the tape is running).
+  (function () {
+    var sh = document.getElementById('page_share');
+    if (!sh) return;
+    sh.addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation();
+      var url = window.location.origin + window.location.pathname;
+      try { if (navigator.clipboard) navigator.clipboard.writeText(url); } catch (err) {}
+      // nav_state — the same dark green acknowledgement every other page's
+      // share gives. Written here for the same reason the handler is.
+      sh.classList.add('nav_hit');
+      clearTimeout(sh._hitT);
+      sh._hitT = setTimeout(function () { sh.classList.remove('nav_hit'); }, 1200);
+      status.textContent = 'Link copied';
+      setTimeout(function () {
+        if (status.textContent === 'Link copied') status.textContent = '';
+      }, 1600);
+    });
+  })();
+
+  // ---- session name: date + local time by default; date + city with location ----
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  var d0 = new Date();
+  var ISO = d0.getFullYear() + '-' + pad(d0.getMonth() + 1) + '-' + pad(d0.getDate());
+  var h24 = d0.getHours();
+  // (seconds live only inside rec_id_from now)
+  // name_time: the visible name carries hours:minutes + a/p (seconds stay in
+  // the file id only, where they keep recordings a minute apart distinct)
+  var HM  = ((h24 % 12) || 12) + ':' + pad(d0.getMinutes()) + (h24 < 12 ? 'a' : 'p');
+  var DEFT = ISO + ' ' + HM;
+  nameIn.value = DEFT;
+  function size_name() { nameIn.style.width = Math.max(3, nameIn.value.length + 1) + 'ch'; }
+  nameIn.addEventListener('input', size_name); size_name();
+  var nameEdited = false;
+  nameIn.addEventListener('input', function () { nameEdited = true; });
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=' + pos.coords.latitude +
+            '&longitude=' + pos.coords.longitude + '&localityLanguage=en')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          var city = j && (j.locality || j.city);
+          if (city && !nameEdited) { nameIn.value = ISO + ' ' + HM + ' ' + city; size_name(); }
+        }).catch(function () {});
+    }, function () {}, { timeout: 6000, maximumAge: 600000 });
+  }
+
+  // ---- recording ----
+  // ---- local store: every recording persists to IndexedDB as it happens, so
+  // a reload, crash, or failed upload never loses audio. A recording stays
+  // 'local' (visible in the session list) until the cloud has it.
+  function rec_db() {
+    return new Promise(function (res, rej) {
+      var rq = indexedDB.open('vampjam_rec', 1);
+      rq.onupgradeneeded = function () {
+        var db = rq.result;
+        if (!db.objectStoreNames.contains('recs')) db.createObjectStore('recs', { keyPath: 'id' });
+        if (!db.objectStoreNames.contains('chunks')) db.createObjectStore('chunks', { keyPath: ['id', 'seq'] });
+      };
+      rq.onsuccess = function () { res(rq.result); };
+      rq.onerror = function () { rej(rq.error); };
+    });
+  }
+  function idb_put(store, val) {
+    return rec_db().then(function (db) {
+      return new Promise(function (res, rej) {
+        var tx = db.transaction(store, 'readwrite');
+        tx.objectStore(store).put(val);
+        tx.oncomplete = res; tx.onerror = function () { rej(tx.error); };
+      });
+    });
+  }
+  function idb_all(store) {
+    return rec_db().then(function (db) {
+      return new Promise(function (res, rej) {
+        var g = db.transaction(store, 'readonly').objectStore(store).getAll();
+        g.onsuccess = function () { res(g.result || []); };
+        g.onerror = function () { rej(g.error); };
+      });
+    });
+  }
+  function idb_chunks(id) {
+    return rec_db().then(function (db) {
+      return new Promise(function (res, rej) {
+        var g = db.transaction('chunks', 'readonly').objectStore('chunks')
+          .getAll(IDBKeyRange.bound([id, 0], [id, Infinity]));
+        g.onsuccess = function () {
+          res((g.result || []).sort(function (x, y) { return x.seq - y.seq; }).map(function (c) { return c.blob; }));
+        };
+        g.onerror = function () { rej(g.error); };
+      });
+    });
+  }
+  function idb_del_rec(id) {
+    return rec_db().then(function (db) {
+      return new Promise(function (res, rej) {
+        var tx = db.transaction(['recs', 'chunks'], 'readwrite');
+        tx.objectStore('recs').delete(id);
+        tx.objectStore('chunks').delete(IDBKeyRange.bound([id, 0], [id, Infinity]));
+        tx.oncomplete = res; tx.onerror = function () { rej(tx.error); };
+      });
+    });
+  }
+
+  var mediaRec = null, chunks = [], startT = 0, timer = null, blob = null, mime = '', ext = 'm4a';
+  var LOC_ID = null, chunkSeq = 0;
+  function live_tag_data() {
+    return liveTags.map(function (lt) {
+      var nm = '';
+      try { nm = (lt.row.querySelector('.mom_name').value || '').trim(); } catch (e) {}
+      return { t: lt.t, label: nm };
+    });
+  }
+  function save_meta(state) {
+    if (!LOC_ID) return;
+    idb_put('recs', {
+      id: LOC_ID, label: nameIn.value || DEFT, date: ISO,
+      dur: Math.round(elapsed()), tags: live_tag_data(),
+      state: state, ts: Date.now(), mime: mime, ext: ext
+    }).catch(function () {});
+  }
+  // the session row's X, the same drawing
+  var ICON_X = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  var liveTags = [], recDur = 0;   // liveTags: [{ t: seconds, row: element }]
+  var debugT = null;               // test hook: overrides elapsed for bar rendering
+
+  function pickMime() {
+    var c = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'];
+    for (var i = 0; i < c.length; i++) {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported(c[i])) return c[i];
+    }
+    return '';
+  }
+  function fmt(s) { s = Math.floor(s); var m = Math.floor(s / 60), ss = s % 60; return m + ':' + pad(ss); }
+  function elapsed() {
+    if (debugT !== null) return debugT;
+    if (mediaRec && mediaRec.state === 'recording') return (Date.now() - startT) / 1000;
+    return recDur;
+  }
+  function tick() { timeEl.textContent = fmt(elapsed()); render_bar(); }
+
+  // ---- the growing bar: segments, hour marks, moment dots (no playhead) ----
+  function render_bar() {
+    var t = elapsed();
+    recBar.classList.toggle('filled', t > 0);
+    if (t <= 0) {
+      // not recording yet: the empty light-gray bar sits where it will live
+      recBar.innerHTML = ''; numStrip.innerHTML = '';
+      curTimeEl.textContent = '0:00'; durTimeEl.textContent = '0:00';
+      return;
+    }
+    var html = '';
+    for (var k = SEG; k < t; k += SEG) {
+      html += '<div class="seg_tick" style="left:' + (k / t * 100) + '%"></div>';
+    }
+    for (var h = 3600; h < t; h += 3600) {
+      var x = h / t * 100;
+      html += '<div class="hour_mark" style="left:' + x + '%"></div>' +
+              '<div class="hour_lbl" style="left:' + x + '%">' + (h / 3600) + 'h</div>';
+    }
+    recBar.innerHTML = html;
+    var nums = '';
+    liveTags.forEach(function (lt, i) {
+      var x = (lt.t / t * 100);
+      nums += '<div class="mom_no" data-i="' + i + '" style="left:' + x + '%" title="moment ' + (i + 1) + ' @ ' + fmt(lt.t) + '">' + (i + 1) + '</div>';
+    });
+    numStrip.innerHTML = nums;
+    // while recording, the current time IS the duration — shown as a pair anyway
+    // so the bar reads like the playback page
+    curTimeEl.textContent = fmt(t);
+    durTimeEl.textContent = fmt(t);
+  }
+  // mom_drop — the one control a moment carries while you are recording. It is
+  // for the tag you did not mean, so it takes effect at once: no confirm, and
+  // nothing is lost that was not made two seconds ago. The rows renumber and
+  // the bar redraws, because the numbers on the bar are the row numbers.
+  momList.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('.mom_del') : null;
+    if (!b) return;
+    var row = b.closest('.mom_row');
+    if (!row) return;
+    liveTags = liveTags.filter(function (lt) { return lt.row !== row; });
+    row.remove();
+    renumber();
+    if (!liveTags.length) momList.style.display = 'none';
+    render_bar();
+    save_meta(mediaRec && mediaRec.state === 'recording' ? 'recording' : 'ready');
+  });
+  function renumber() {
+    Array.prototype.forEach.call(momList.querySelectorAll('.mom_row'), function (r, i) {
+      var n = r.querySelector('.mom_num');
+      if (n) n.textContent = (i + 1);
+    });
+  }
+
+  // a number doesn't move any playhead (there is none) — it scrolls to its row
+  numStrip.addEventListener('click', function (e) {
+    var d = e.target.closest ? e.target.closest('.mom_no') : null;
+    if (!d) return;
+    var lt = liveTags[parseInt(d.getAttribute('data-i'), 10)];
+    if (!lt || !lt.row) return;
+    lt.row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    lt.row.classList.add('flash');
+    setTimeout(function () { lt.row.classList.remove('flash'); }, 900);
+  });
+
+  // ---- moments list: grows with every tag; names are editable and ship with the session ----
+  // tag_quiet — the tap marks the moment and does NOTHING else. It used to hand
+  // the keyboard straight to the new row's name, which is backwards: you press
+  // this button because something is happening in the room, and the last thing
+  // you want in that second is a keyboard covering half the screen and a caret
+  // waiting for you to type. Naming is a thing you do afterwards, by tapping the
+  // row. So: whatever field you were in loses focus first — the moment you just
+  // named, the session name, anything — and no field takes it.
+  function add_moment() {
+    var act = document.activeElement;
+    if (act && act.blur && (act.tagName === 'INPUT' || act.tagName === 'TEXTAREA')) {
+      act.blur();   // any field, not just a moment name (the session name counts too)
+    }
+    var sec = Math.round(elapsed() * 10) / 10;
+    var row = document.createElement('div');
+    row.className = 'mom_row';
+    var n = liveTags.length + 1;
+    row.innerHTML = '<span class="mom_num">' + n + '</span>' +
+      '<input class="mom_name" type="text" autocomplete="off" autocapitalize="sentences" inputmode="text" placeholder="tap to name">' +
+      '<span class="mom_time">' + fmt(sec) + '</span>' +
+      '<button class="ghost mom_del" type="button" aria-label="Remove this moment">' + ICON_X + '</button>';
+    momList.appendChild(row);
+    momList.style.display = 'block';
+    liveTags.push({ t: sec, row: row });
+    render_bar();
+    // no focus, no keyboard. Just show the row that was made.
+    setTimeout(function () {
+      window.scrollTo(0, 0);
+      fit_mom_list();
+      momList.scrollTop = momList.scrollHeight;
+    }, 0);
+  }
+
+  async function start() {
+    try {
+      var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mime = pickMime(); ext = mime.indexOf('webm') >= 0 ? 'webm' : 'm4a';
+      mediaRec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      chunks = []; liveTags = []; recDur = 0; blob = null;
+      LOC_ID = 'loc_' + Date.now(); chunkSeq = 0;
+      momList.innerHTML = ''; momList.style.display = 'none';
+      save_meta('recording');   // the local session row exists from second zero
+      recBar.innerHTML = ''; numStrip.innerHTML = '';
+      mediaRec.ondataavailable = function (e) {
+        if (e.data && e.data.size) {
+          chunks.push(e.data);
+          // persist as we go — a reload mid-recording keeps everything so far
+          idb_put('chunks', { id: LOC_ID, seq: chunkSeq++, blob: e.data }).catch(function () {});
+          save_meta('recording');
+        }
+      };
+      mediaRec.onstop = function () {
+        blob = new Blob(chunks, { type: mime || 'audio/mp4' });
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        save_meta('ready');
+        upload();
+      };
+      mediaRec.start(5000);   // 5s slices so the local copy is never far behind
+      startT = Date.now(); timer = setInterval(tick, 250); tick();
+      recBtn.classList.add('recording'); recBtn.textContent = 'STOP';   // rec_red
+      recState.classList.add('on');
+      tagBtn.disabled = false;
+      status.textContent = '';
+    } catch (err) {
+      status.textContent = 'microphone blocked: ' + (err && err.message ? err.message : err);
+    }
+  }
+  function stop() {
+    recDur = Math.round((Date.now() - startT) / 1000);
+    if (mediaRec && mediaRec.state !== 'inactive') mediaRec.stop();
+    clearInterval(timer);
+    recBtn.classList.remove('recording'); recBtn.textContent = 'REC';   // rec_red
+    recState.classList.remove('on');
+    tagBtn.disabled = true;
+    render_bar();
+  }
+  recBtn.addEventListener('click', function () {
+    if (mediaRec && mediaRec.state === 'recording') stop(); else start();
+  });
+
+  tagBtn.addEventListener('click', function () {
+    if (!mediaRec || mediaRec.state !== 'recording') return;
+    add_moment();
+  });
+
+  // ---- upload + auto session (stop -> straight to a ready session) ----
+  function slug(t) {
+    return String(t).toLowerCase()
+      .replace(/[—–-]/g, '_').replace(/[^a-z0-9_]+/g, '_')
+      .replace(/_+/g, '_').replace(/^_|_$/g, '');
+  }
+  function not_deleted(list) {
+    var dead = [];
+    try { dead = (JSON.parse(localStorage.getItem('vampjam_deleted_pages') || '[]') || []).map(function (t) { return t.page; }); } catch (e) {}
+    return list.filter(function (e2) { return e2 && dead.indexOf(e2.page) < 0; });
+  }
+  function sync_write(path, content, message) {
+    return fetch(WORKER_SYNC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: path, content: content, message: message })
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error('sync ' + r.status + ': ' + t.slice(0, 80)); });
+      return r.json();
+    });
+  }
+  // my_recs — roster of recordings this device registered (shared with
+  // drawer.js). Registry writes built on a stale CDN read used to drop
+  // earlier rows; every write unions this roster back in.
+  var MY_KEY = 'vampjam_my_recs';
+  function my_recs_get() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(MY_KEY) || '[]');
+      if (!Array.isArray(arr)) return [];
+      return arr.filter(function (m) { return m && m.page; }).slice(-40);
+    } catch (e) { return []; }
+  }
+  function my_recs_put(entry) {
+    try {
+      var arr = my_recs_get().filter(function (m) { return m.page !== entry.page; });
+      arr.push(entry);
+      localStorage.setItem(MY_KEY, JSON.stringify(arr.slice(-40)));
+    } catch (e) {}
+  }
+  function reg_union(list) {
+    var dead = [];
+    try { dead = (JSON.parse(localStorage.getItem('vampjam_deleted_pages') || '[]') || []).map(function (t) { return t.page; }); } catch (e) {}
+    var have = {};
+    list.forEach(function (s2) { if (s2 && s2.page) have[s2.page] = true; });
+    my_recs_get().forEach(function (m) {
+      if (!have[m.page] && dead.indexOf(m.page) < 0) {
+        list.push({ page: m.page, name: m.name, date: m.date, dur: m.dur || 0, count: m.count || 0 });
+      }
+    });
+    return list;
+  }
+  // freshest possible registry — the GitHub API sees a commit instantly while
+  // the raw CDN can lag minutes; every registry WRITE starts from this
+  function reg_fresh() {
+    return fetch('https://api.github.com/repos/mPulseMedia/vampjam/contents/sessions_auto.json?ref=main&t=' + Date.now(),
+      { headers: { Accept: 'application/vnd.github.raw+json' }, cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('api ' + r.status); return r.json(); })
+      .then(function (j) { if (!Array.isArray(j)) throw new Error('api shape'); return j; })
+      .catch(function () {
+        return fetch(RAW_BASE + 'sessions_auto.json?v=' + Date.now(), { cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : []; })
+          .then(function (j) { return Array.isArray(j) ? j : []; })
+          .catch(function () { return []; });
+      });
+  }
+  function rec_id_from(label, dateIso, ts) {
+    var id = slug(label) || 'rec';
+    if (!/\d{4}_\d{2}_\d{2}/.test(id)) id += '_' + dateIso.replace(/-/g, '_');
+    if (!/\d{1,2}_\d{2}_\d{2}[ap]/.test(id)) {
+      // the name's minutes-only time (name_time) gives way to the id's full
+      // h_mm_ss time, so recordings a minute apart never collide
+      id = id.replace(/_\d{1,2}_\d{2}[ap](?=_|$)/, '').replace(/_+/g, '_');
+      var d = new Date(ts || Date.now());
+      id += '_' + ((d.getHours() % 12) || 12) + '_' + pad(d.getMinutes()) + '_' + pad(d.getSeconds()) + (d.getHours() < 12 ? 'a' : 'p');
+    }
+    return id;
+  }
+  async function upload() {
+    if (!blob) return;
+    return upload_core({
+      blob: blob, label: nameIn.value || DEFT, dateIso: ISO, ts: Date.now(),
+      dur: recDur, tags: live_tag_data(), ext: ext, locId: LOC_ID
+    });
+  }
+  async function upload_core(o) {
+    save_busy();
+    var blob2 = o.blob;
+    var label = o.label || (o.dateIso + ' recording');
+    if (label.indexOf(o.dateIso) < 0) label = o.dateIso + ' ' + label;
+    var id = rec_id_from(label, o.dateIso, o.ts);
+    var page = 'session.html?p=' + id;
+    var ISO2 = o.dateIso, recDur2 = o.dur || 0;
+    // remember which cloud page this local copy becomes, so the session list
+    // shows ONE row that flips local -> syncing -> normal (never two)
+    if (o.locId) {
+      try {
+        var db0 = await rec_db();
+        await new Promise(function (res) {
+          var tx = db0.transaction('recs', 'readwrite');
+          var st0 = tx.objectStore('recs');
+          var g0 = st0.get(o.locId);
+          g0.onsuccess = function () {
+            var mm = g0.result;
+            if (mm) { mm.cloudPage = page; st0.put(mm); }
+          };
+          tx.oncomplete = res; tx.onerror = res;
+        });
+      } catch (eCp) {}
+    }
+    // placeholder first: every device's session list shows a syncing… row.
+    // The write starts from the freshest registry (GitHub API, not the
+    // lagging CDN) + this device's roster, so it can't clobber earlier rows.
+    try {
+      var pre = await reg_fresh();
+      pre = not_deleted(reg_union(pre).filter(function (e2) { return e2 && e2.page !== page; }));
+      pre.push({ page: page, name: label, date: ISO2, dur: recDur2, count: o.tags.length, pending: true, ts: Date.now() });
+      await sync_write('sessions_auto.json', JSON.stringify(pre, null, 2), 'placeholder ' + id);
+      try {
+        localStorage.setItem('vampjam_pending_session',
+          JSON.stringify({ page: page, name: label, date: ISO2, dur: recDur2, count: o.tags.length, ts: Date.now() }));
+      } catch (e3) {}
+    } catch (ePre) {}
+    try {
+      var r = await fetch(WORKER_UPLOAD_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': blob2.type || 'audio/mp4',
+          'X-File-Name': id + '.' + (o.ext || 'm4a'),
+          'X-Upload-Secret': ''
+        },
+        body: blob2
+      });
+      var j = await r.json();
+      if (!j.ok) throw new Error('upload ' + (j.error || r.status));
+      // (still just the dots — the step is real but it is not his business)
+      var now = Date.now();
+      var tags = o.tags.map(function (lt, i) {
+        return { id: 't_' + now + '_lt' + (i + 1), t: lt.t, label: lt.label || '' };
+      });
+      await sync_write(id + '.json', JSON.stringify({
+        audio: { label: label, url: j.url, kind: 'url' },
+        tags: tags
+      }, null, 2), 'auto session ' + id);
+      var list = await reg_fresh();
+      list = not_deleted(reg_union(list).filter(function (e2) { return e2 && e2.page !== page; }));
+      list.push({ page: page, name: label, date: ISO2, dur: recDur2, count: tags.length });
+      await sync_write('sessions_auto.json', JSON.stringify(list, null, 2), 'register ' + id);
+      // roster: from now on every registry write vouches for this recording
+      my_recs_put({ page: page, name: label, date: ISO2, dur: recDur2, count: tags.length, ts: Date.now() });
+      try {
+        localStorage.setItem('vampjam_pending_session',
+          JSON.stringify({ page: page, name: label, date: ISO2, dur: recDur2, count: tags.length, ts: Date.now(), done: true }));
+      } catch (e4) {}
+
+      // the cloud has it — the local safety copy can go
+      if (o.locId) { idb_del_rec(o.locId).catch(function () {}); }
+
+      // save_flow — it is saved, so go and listen to it. The old ending was a
+      // sentence saying the thing was ready with a link to it; the link was the
+      // only part anyone used. Back still means back: if he asked to leave
+      // mid-recording, honour that instead.
+      save_done();
+      var land = pendingBack ? 'index.html#sessions' : page;
+      setTimeout(function () { window.location.replace(land); }, 350);
+    } catch (err) {
+      pendingBack = false;
+      status.innerHTML = 'Something went wrong (' + (err && err.message ? err.message : err) + ') — ' +
+        '<a href="#" id="retry_link">try again</a>' +
+        '<br>your recording is safe on this device — it shows in Sessions as local';
+      var rl = document.getElementById('retry_link');
+      if (rl) rl.addEventListener('click', function (e) { e.preventDefault(); upload_core(o); });
+    }
+  }
+
+  // ---- recovery: finish anything this device still holds locally ----
+  // a 'recording' state means the page died mid-recording — its chunks are the
+  // recording; 'ready' means the upload never completed. Both retry here.
+  (async function recover_locals() {
+    try {
+      var metas = await idb_all('recs');
+      if (!metas.length) return;
+      for (var i = 0; i < metas.length; i++) {
+        if (metas[i].state === 'recording') {
+          metas[i].state = 'ready';
+          await idb_put('recs', metas[i]);
+        }
+      }
+      var up = /[?&]up=([A-Za-z0-9_\-]+)/.exec(window.location.search);
+      var ready = metas.filter(function (m) { return m.state === 'ready'; });
+      if (up) ready.sort(function (x, y) { return (y.id === up[1]) - (x.id === up[1]); });
+      for (var k = 0; k < ready.length; k++) {
+        if (mediaRec && mediaRec.state === 'recording') return;   // don't fight a live take
+        var m = ready[k];
+        var parts = await idb_chunks(m.id);
+        if (!parts.length) { await idb_del_rec(m.id); continue; }
+        save_busy();
+        await upload_core({
+          blob: new Blob(parts, { type: m.mime || 'audio/mp4' }),
+          label: m.label, dateIso: m.date, ts: m.ts, dur: m.dur,
+          tags: m.tags || [], ext: m.ext || 'm4a', locId: m.id
+        });
+      }
+    } catch (e) {}
+  })();
+
+  // keep the moments list sized to the visible viewport (keyboard-aware):
+  // everything above stays on screen; the list itself scrolls
+  function fit_mom_list() {
+    var vv = window.visualViewport;
+    var vh = vv ? (vv.height + vv.offsetTop) : window.innerHeight;
+    var top = momList.getBoundingClientRect().top + (window.scrollY || 0);
+    var h = vh - top - 10;
+    momList.style.maxHeight = (h > 90 ? h : 90) + 'px';
+  }
+  if (window.visualViewport) {
+    // kbd_black: the keyboard must never leave the page scrolled past its own
+    // bottom — that gap is the browser's canvas, and it paints black
+    function kbd_guard() {
+      window.scrollTo(0, 0);
+      var max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      if (window.scrollY > max + 1) window.scrollTo(0, max);
+      fit_mom_list();
+      momList.scrollTop = momList.scrollHeight;
+    }
+    window.visualViewport.addEventListener('resize', kbd_guard);
+    window.visualViewport.addEventListener('scroll', kbd_guard);
+  }
+  window.addEventListener('resize', fit_mom_list);
+
+  render_bar();   // the bar shows from page load, empty and light gray
+
+  // test hook: lets an automated check render the bar at any elapsed length
+  window.__rec_set_elapsed = function (sec) { debugT = sec; render_bar(); };
+})();
+</script>
+
+</body>
+</html>

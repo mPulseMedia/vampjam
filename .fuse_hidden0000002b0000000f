@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="site.css?v=15">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
-<script src="drawer.js?v=157"></script>
+<script src="drawer.js?v=156"></script>
 <style>
   /* admin_same: the palette, the reset, the page box and the wordmark all come
      from site.css now — this page used to carry its own drifted copies. */

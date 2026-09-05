@@ -150,12 +150,33 @@
     var fp = fold_page();
     return fp ? fp.querySelector('h1') : null;
   }
-  function box(el) {
+  // the <h1> is a centred flex box the width of the screen, so its rect's left
+  // edge is nowhere near the left edge of the WORDS. The clone has to leave
+  // from and land on the text, so the title is measured with a Range over its
+  // own text node — the row name, which is a plain ellipsised span, is not.
+  function text_left(el) {
+    try {
+      var node = null, i;
+      for (i = 0; i < el.childNodes.length; i++) {
+        var c = el.childNodes[i];
+        if (c.nodeType === 3 && c.textContent.trim()) { node = c; break; }
+        if (c.nodeType === 1 && c.tagName !== 'BUTTON' && c.textContent.trim()) { node = c; break; }
+      }
+      if (!node) return null;
+      var rg = document.createRange();
+      rg.selectNodeContents(node);
+      var b = rg.getBoundingClientRect();
+      return b && b.width ? b.left : null;
+    } catch (e) { return null; }
+  }
+  function box(el, tight) {
     if (!el) return null;
     var r = el.getBoundingClientRect();
     if (!r.width || !r.height) return null;
     var cs = getComputedStyle(el);
-    return { x: r.left, y: r.top, w: r.width, h: r.height,
+    var x = tight ? text_left(el) : null;
+    return { x: (x === null || x === undefined) ? r.left : x,
+             y: r.top, w: r.width, h: r.height,
              size: parseFloat(cs.fontSize) || 17, weight: cs.fontWeight, color: cs.color };
   }
   // a and b are measured in the two end states; the clone is drawn in b's
@@ -168,14 +189,16 @@
     var k = b.size ? (a.size / b.size) : 1;
     c.style.cssText = 'position:fixed;left:0;top:0;margin:0;padding:0;z-index:200;'
       + 'white-space:nowrap;pointer-events:none;transform-origin:left center;'
-      + 'font-size:' + b.size + 'px;font-weight:' + b.weight + ';color:' + b.color + ';'
+      + 'font-size:' + b.size + 'px;font-weight:' + b.weight + ';color:' + a.color + ';'
       + 'line-height:' + b.h + 'px;height:' + b.h + 'px;'
-      + 'transition:transform ' + FOLD_MS + 'ms ' + FOLD_EASE + ';'
+      + 'transition:transform ' + FOLD_MS + 'ms ' + FOLD_EASE + ','
+      +            'color ' + FOLD_MS + 'ms ' + FOLD_EASE + ';'
       + 'transform:translate(' + a.x + 'px,' + (a.y + a.h / 2 - b.h / 2) + 'px) scale(' + k + ')';
     document.body.appendChild(c);
     void c.offsetWidth;
     requestAnimationFrame(function () {
       c.style.transform = 'translate(' + b.x + 'px,' + b.y + 'px) scale(1)';
+      c.style.color = b.color;
     });
     return c;
   }
@@ -196,14 +219,14 @@
     fold_apply(on ? 1 : 0);
     window.scrollTo(0, 0);            // both ends finish at the top; measure there
     void d.offsetHeight;
-    var endName = on ? box(name_el()) : null;
-    var endTtl  = on ? null : box(title_el());
+    var endName = on ? box(name_el(), false) : null;
+    var endTtl  = on ? null : box(title_el(), true);
 
     fold_apply(on ? 0 : 1);
     window.scrollTo(0, y0);
     void d.offsetHeight;
-    var startTtl  = on ? box(title_el()) : null;
-    var startName = on ? null : box(name_el());
+    var startTtl  = on ? box(title_el(), true) : null;
+    var startName = on ? null : box(name_el(), false);
 
     var ttl = title_el(), nm = name_el();
     var text = (ttl && ttl.textContent.trim()) || (nm && nm.textContent.trim()) || '';
