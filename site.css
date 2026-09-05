@@ -267,6 +267,9 @@ body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_pla
    always meant: everything after the title steps aside while the TITLE has
    focus, and at no other time. */
 .tag_row .tag_label:focus ~ * { display: none; }
+/* and the open group, spelled out at the group's own specificity: row_more's
+   inline-flex is declared later in this file and would otherwise win the tie */
+.tag_row.acts_open .tag_label:focus ~ .tag_acts { display: none; }
 /* and the same on a favourite. The shape differs in one way that matters: the
    field is wrapped in .fav_main rather than being a direct child of the row, so
    the sibling run starts from the WRAPPER. The controls that step aside are the
