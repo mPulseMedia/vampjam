@@ -273,6 +273,11 @@
   // that starts something rather than opening something; up there it is one of
   // four grey icons. Same idea, two drawings, on purpose.
   var ICO_NEW_ROW = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>';
+  // nav_state — the cassette, filled. Same silhouette as the outline it swaps
+  // for, with the two reels and the tape between them knocked out in the page's
+  // own background so it reads as a cassette and not a blob. It appears only
+  // while audio on this page is actually playing.
+  var ICO_CASS_ON = '<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M5 5.5h14a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-7a3 3 0 0 1 3-3z"/><circle cx="8" cy="12" r="2.4" fill="var(--bg)"/><circle cx="16" cy="12" r="2.4" fill="var(--bg)"/><rect x="9.9" y="11.1" width="4.2" height="1.8" rx="0.9" fill="var(--bg)"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var ICO_HEART_M = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.2-1.1C6.2 15.1 3.2 12.4 3.2 9.1c0-2.6 2-4.6 4.6-4.6 1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.6 2 4.6 4.6 0 3.3-3 6-7.6 10.1L12 20.3z"/></svg>';
   // row_x — the same X the highlight rows use for "remove this", instead of a
   // trash can. Two glyphs for one idea is one glyph too many, and the X is the one
@@ -495,9 +500,22 @@
       // moment as the seconds are. Sharing a moment is the row's own button.
       var url = window.location.origin + window.location.pathname;
       try { if (navigator.clipboard) navigator.clipboard.writeText(url); } catch (err) {}
+      // nav_state — the button says it took. A toast says it too, but the toast
+      // is at the bottom of the screen and your thumb is at the top.
+      share_hit(b);
       if (typeof window.toast === 'function') window.toast('Link copied: ' + url);
     });
   }
+  // share_hit — dark green for a moment, then back. Green because it is the one
+  // colour in this header that means "done" rather than "here" (blue) or
+  // "recording" (red), and a copy is a thing that finished.
+  function share_hit(b) {
+    if (!b) return;
+    b.classList.add('nav_hit');
+    clearTimeout(b._hitT);
+    b._hitT = setTimeout(function () { b.classList.remove('nav_hit'); }, 1200);
+  }
+  window.vampjamShareHit = share_hit;
   // nav_pair — the two new header buttons are INJECTED, not written into
   // fifteen files. The cassette and the share already live here in spirit (both
   // are wired from this file); these two live here outright. A page never links
@@ -542,7 +560,23 @@
       else head.appendChild(r);
     }
   }
-  function wire_header() { nav_add(); wire_page_sessions(); wire_page_share(); }
+  // cass_live — the header cassette fills while this page's audio is playing.
+  // One listener pair on the page's own <audio>; pages without one (record,
+  // admin) simply never light it.
+  function wire_cass_live() {
+    var cass = document.querySelector('.brand .nav_cass:not(.nav_fav)');
+    var au = document.getElementById('player');
+    if (!cass || !au) return;
+    var off = cass.innerHTML;
+    function paint() {
+      var on = !au.paused && !au.ended && au.currentTime > 0;
+      cass.classList.toggle('cass_live', on);
+      cass.innerHTML = on ? ICO_CASS_ON : off;
+    }
+    ['play', 'pause', 'ended', 'emptied'].forEach(function (e) { au.addEventListener(e, paint); });
+    paint();
+  }
+  function wire_header() { nav_add(); wire_page_sessions(); wire_page_share(); wire_cass_live(); }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', wire_header);
   } else {

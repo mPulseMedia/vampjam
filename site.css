@@ -91,11 +91,24 @@ body {
 .brand .nav_fav, .brand .nav_rec, .brand .nav_rec_none { text-decoration: none; display: flex; align-items: center; justify-content: center; }
 /* record.html writes its own favourites button (it has no drawer.js) */
 .brand .nav_rec_none { order: 2; }
-/* here_lit — the icon for the page you are on is SHOWN, in the accent, and is
-   not a link. It still holds its slot, so the wordmark keeps the centre line
-   on every page; now it also says which of the four you are looking at. */
+/* here_lit / nav_state — the header speaks in three colours and nothing else:
+   BLUE   you are here
+   RED    this is the recorder
+   GREEN  that just happened
+   Everything not saying one of those is the same muted grey. */
 .brand .nav_on { color: var(--accent); pointer-events: none; }
 .brand .nav_on:hover { color: var(--accent); }
+/* a lit heart is FILLED, not outlined — the first path is the heart, the second
+   is the three rules, which stay drawn as lines because that is what they are. */
+.brand .nav_fav.nav_on svg path:first-child { fill: currentColor; }
+/* the recorder is red when it is the page you are on. Blue would have said
+   "current" in the same breath as the big red button below says "record", and
+   only one of those two reds is allowed to mean recording. */
+.brand .nav_rec.nav_on { color: #d70015; }
+/* nav_hit — the share went. Dark green: the header's other two colours are
+   places, this one is an event. */
+.brand .nav_hit, .brand .nav_hit:hover { color: #0f6b3d; }
+.brand .nav_cass.cass_live { color: var(--accent); }
 .wordmark_sf {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 34px; font-weight: 650; letter-spacing: 0.5px; margin-left: 3px;

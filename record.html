@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>vampsf — Record</title>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=14">
+<link rel="stylesheet" href="site.css?v=15">
 <script src="theme.js?v=2"></script>
 <style>
   /* rec_same — the page box comes from site.css like every other page's. What was
@@ -359,6 +359,11 @@
       e.preventDefault(); e.stopPropagation();
       var url = window.location.origin + window.location.pathname;
       try { if (navigator.clipboard) navigator.clipboard.writeText(url); } catch (err) {}
+      // nav_state — the same dark green acknowledgement every other page's
+      // share gives. Written here for the same reason the handler is.
+      sh.classList.add('nav_hit');
+      clearTimeout(sh._hitT);
+      sh._hitT = setTimeout(function () { sh.classList.remove('nav_hit'); }, 1200);
       status.textContent = 'Link copied';
       setTimeout(function () {
         if (status.textContent === 'Link copied') status.textContent = '';
