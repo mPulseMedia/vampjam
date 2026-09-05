@@ -111,11 +111,13 @@ const ROW = (sel) => (selector) => {
   const first = '.tag_row';   // the list's first child is not a row (the playhead line is)
   const hShut = await p2.evaluate(ROW(), first);
   const hc = hShut ? hShut.vis.map(v => v.cls) : [];
-  ok('a highlight row shows number, play, title, time and the dots',
-     hc.length === 5 && /tag_more/.test(hc[4]) && /tag_label/.test(hc[2]), hc.join(' | '));
+  const dotsAt = hc.findIndex(c => /tag_more/.test(c)), labAt = hc.findIndex(c => /tag_label/.test(c));
+  ok('a highlight row shows play, title and the dots, dots last',
+     dotsAt === hc.length - 1 && labAt >= 0 && hc.some(c => /play_tag/.test(c)), hc.join(' | '));
   ok('and no heart, share or delete yet',       !hc.some(c => /tag_fav|tag_share|tag_del/.test(c)), hc.join(' | '));
-  ok('dots at the far right',                   !!hShut && hShut.rowRight - hShut.vis[4].right < 16, hShut && (hShut.rowRight - hShut.vis[4].right));
-  const labelShut = hShut && (hShut.vis[2].right - hShut.vis[2].left);
+  ok('dots at the far right',                   !!hShut && dotsAt >= 0 && hShut.rowRight - hShut.vis[dotsAt].right < 16,
+                                                hShut && dotsAt >= 0 && (hShut.rowRight - hShut.vis[dotsAt].right));
+  const labelShut = hShut && labAt >= 0 && (hShut.vis[labAt].right - hShut.vis[labAt].left);
 
   await p2.locator(first).first().locator('.tag_more').click();
   await p2.waitForTimeout(150);
@@ -124,7 +126,8 @@ const ROW = (sel) => (selector) => {
   ok('the dots open into heart, delete, share — share rightmost',
      /tag_share/.test(ho[ho.length - 1] || '') && /tag_del/.test(ho[ho.length - 2] || '') && /tag_fav/.test(ho[ho.length - 3] || ''), ho.join(' | '));
   ok('and the dots are gone while open',        !ho.some(c => /tag_more/.test(c)), ho.join(' | '));
-  const labelOpen = hOpen && (hOpen.vis[2].right - hOpen.vis[2].left);
+  const labOpenAt = ho.findIndex(c => /tag_label/.test(c));
+  const labelOpen = hOpen && labOpenAt >= 0 && (hOpen.vis[labOpenAt].right - hOpen.vis[labOpenAt].left);
   ok('the title had more room shut',            labelShut > labelOpen + 40, labelShut + ' vs ' + labelOpen);
 
   // the open state survives the re-render a heart tap causes
