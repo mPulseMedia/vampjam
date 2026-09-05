@@ -70,67 +70,84 @@ Everything else I do myself — you don't need to act on anything I send into th
 <div class="one_thing">
   <div class="one_num">1</div>
   <div>
-    <div class="one_title">Play three sessions for ten seconds each</div>
-    <div class="one_why">Two minutes. Your six files are up and the site now points at them.
-    I could not reach R2 from here to check the names myself, so a listen is the check.</div>
+    <div class="one_title">Paste the new upload worker into Cloudflare</div>
+    <div class="one_why">Three minutes, on the Mac. Your 2h41m Redwood City recording is safe on
+    your phone and is blocked only by this. The moment the worker is updated, the Record page
+    sends it up by itself in 8&nbsp;MB pieces — nothing else for you to do.</div>
   </div>
 </div>
 
 <div class="why">
-  <b>What changed.</b> These three sessions now play the <b>light</b> file by default —
-  roughly a third of the bytes of what they used to pull down:
+  <b>What was wrong.</b> A 2h41m take is about 150&nbsp;MB. Cloudflare stops any single upload at
+  100&nbsp;MB, and the little program that receives your files (the "worker") also tried to hold
+  the whole file in memory at once. Two walls, same place. Every try — yours and the page's own —
+  got as far as registering the session and then hit that wall, which is why the session list
+  shows it as <b>syncing…</b>.
   <br><br>
-  &middot; 2026-01-17 Bazaar Cafe<br>
-  &middot; 2026-05-23 Bazaar Cafe<br>
-  &middot; 2026-08-07 Sound Union
+  <b>What changed.</b> The Record page now sends a recording in <b>8&nbsp;MB pieces</b> and the
+  worker stitches them back into one file. That needs the new worker code to be in Cloudflare,
+  and Cloudflare is your login, not mine. That paste is the one thing waiting on you.
   <br><br>
-  <b>A new "hi-fi" word sits at the right of the clock</b> under the timeline. Tap it and the
-  same moment keeps playing from the full-quality file — it does not jump you back to the start,
-  and it remembers the choice on that phone until you tap it again. On the five older sessions
-  there is only one file, so nothing appears there.
-  <br><br>
-  <b>Nothing can break.</b> If I got a filename wrong, the player notices the file will not load
-  and quietly falls back to the file that was playing yesterday. So the worst case is that you
-  hear the old big file and the hi-fi word disappears — never silence.
+  <b>Until you do it</b> the page will not keep banging on the wall: for a file this size it says
+  plainly that the worker needs updating and sends you here. Short recordings still upload the
+  old way in the meantime.
 </div>
 
-<div class="section-label">Steps</div>
+<div class="section-label">Steps — on the Mac</div>
 
 <ol class="steps">
   <li>
-    <div class="step_title">Open each of the three sessions and press play</div>
+    <div class="step_title">Copy the new worker code</div>
     <ul class="sub">
-      <li>Ten seconds each is enough. You are only checking that sound comes out.</li>
-      <li>Look under the timeline: you should see the word <b>hi-fi</b> at the right-hand end,
-          dim, next to the times.</li>
-      <li>
-        <svg class="shot" viewBox="0 0 360 96" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The player timeline with the hi-fi word at the right end of the time row">
-          <rect x="0.5" y="0.5" width="359" height="95" rx="8" fill="#14171a" stroke="#2a2f35"/>
-          <rect x="20" y="26" width="320" height="6" rx="3" fill="#2a2f35"/>
-          <rect x="20" y="26" width="118" height="6" rx="3" fill="#e0b063"/>
-          <circle cx="138" cy="29" r="6" fill="#e0b063"/>
-          <circle cx="196" cy="29" r="3" fill="#7d8894"/>
-          <circle cx="248" cy="29" r="3" fill="#7d8894"/>
-          <text x="160" y="60" font-family="-apple-system,system-ui,sans-serif" font-size="11" fill="#e0b063" text-anchor="end">18:42</text>
-          <text x="168" y="60" font-family="-apple-system,system-ui,sans-serif" font-size="11" fill="#6b7480" text-anchor="middle">/</text>
-          <text x="176" y="60" font-family="-apple-system,system-ui,sans-serif" font-size="11" fill="#6b7480">52:10</text>
-          <text x="340" y="60" font-family="-apple-system,system-ui,sans-serif" font-size="11" font-weight="600" fill="#7d8894" text-anchor="end">hi-fi</text>
-          <rect x="308" y="47" width="36" height="18" rx="5" fill="none" stroke="#d1242f" stroke-width="2"/>
-          <text x="344" y="84" font-family="-apple-system,system-ui,sans-serif" font-size="10" fill="#8a939e" text-anchor="end">tap for the big file</text>
-        </svg>
-      </li>
+      <li>Tap the button. It copies the whole program — about 130 lines — nothing to edit.</li>
+      <li class="copy_row"><button class="copy_btn" data-copy-worker>Copy worker code</button>
+          <span class="note">cloudflare/r2_upload_worker.js in the repo, if you would rather open it there</span></li>
     </ul>
   </li>
 
   <li>
-    <div class="step_title">If one of them does not play</div>
+    <div class="step_title">Open the worker in Cloudflare</div>
     <ul class="sub">
-      <li>Tell me <b>which session</b>. That means a filename in R2 does not match what I wrote,
-          and it is one line for me to fix.</li>
-      <li>Nothing else needs doing. Do not re-upload anything.</li>
+      <li>Go to <b>dash.cloudflare.com</b> and sign in.</li>
+      <li>Left side: <b>Workers &amp; Pages</b>. You should see a list with <b>vampjam-upload</b>
+          and <b>vampjam-sync</b> in it.</li>
+      <li>Click <b>vampjam-upload</b> — that one, not sync.</li>
+      <li>Top right of that page: a button that says <b>Edit code</b> (on some screens it is
+          under a <b>&lt;/&gt;</b> icon). Click it. You are looking at a code editor with the old
+          program in it.</li>
+    </ul>
+  </li>
+
+  <li>
+    <div class="step_title">Replace what is there</div>
+    <ul class="sub">
+      <li>Click anywhere inside the code, then <b>⌘A</b> (select all), then <b>⌘V</b> (paste).
+          The old program is gone and the new one is in its place.</li>
+      <li>Top right: <b>Deploy</b>. Click it. If it asks to confirm, confirm.</li>
+      <li>You are done when the button goes quiet and there is no red anywhere. Nothing else
+          on that page needs touching — the bucket and the settings are unchanged.</li>
+    </ul>
+  </li>
+
+  <li>
+    <div class="step_title">Then just open the Record page on your phone</div>
+    <ul class="sub">
+      <li>It finds the recording, says <b>uploading 8.0 MB of 150 MB…</b> and counts up. A couple
+          of minutes on wifi.</li>
+      <li>When it is done it takes you straight to the session. If anything is off, tap
+          <b>send debug info to Claude</b> at the bottom and tell me.</li>
     </ul>
   </li>
 </ol>
+
+<div class="section-label">Earlier — still worth a listen when you have a minute</div>
+
+<div class="why">
+  <b>Three sessions play the light file now</b> — 2026-01-17 Bazaar Cafe, 2026-05-23 Bazaar Cafe,
+  2026-08-07 Sound Union — with a <b>hi-fi</b> word at the right of the clock to switch. Ten
+  seconds of each is the check that I got the filenames right. If one does not play, tell me
+  which.
+</div>
 
 <div class="section-label">Optional — only if you want the second listen to be free</div>
 <div class="why">
@@ -170,6 +187,122 @@ Everything else I do myself — you don't need to act on anything I send into th
 </div>
 
 
+<script type="text/plain" id="worker_src">// vampjam — R2 upload Worker
+// Accepts a POST with a recorded audio body and stores it in the vampjam-audio
+// R2 bucket, returning the public URL so a session can point at it.
+//
+// ONE-TIME SETUP (Cloudflare dashboard → Workers & Pages → Create Worker,
+// paste this in, then):
+//   1. Settings → Bindings → add an R2 bucket binding:
+//        Variable name: BUCKET      Bucket: vampjam-audio
+//   2. Settings → Variables & Secrets, add:
+//        PUBLIC_BASE   = https://pub-33cfd8558d314eb58642c8550608850b.r2.dev
+//        UPLOAD_SECRET = (any long random string you make up)
+//   3. Deploy. Copy the worker URL (…workers.dev).
+//   4. In admin.html set WORKER_UPLOAD_URL to that URL and UPLOAD_SECRET to the
+//      same string you chose above.
+//
+// The client (record.html / admin.html recorder) POSTs the audio blob with:
+//   Content-Type: audio/mp4 | audio/webm
+//   X-File-Name:  desired file name
+//   X-Upload-Secret: the shared secret
+//
+// part_upload — a long take is bigger than one request is allowed to be. A
+// 2h41m recording is ~150 MB; Cloudflare stops a request body at 100 MB, and
+// this worker used to read the whole body into memory in a 128 MB box, which
+// is the same wall from the inside. So there is a second way in, in pieces:
+//   POST ?op=init                 headers as above         -> { uploadId, key }
+//   POST ?op=part&key=&id=&n=     body = piece n (8 MB)    -> { partNumber, etag }
+//   POST ?op=done&key=&id=        body = { parts:[{partNumber, etag}] } -> { ok, url }
+//   POST ?op=abort&key=&id=
+// The plain POST with no ?op still works exactly as before, for small files
+// and for any client that has not been updated.
+
+export default {
+  async fetch(request, env) {
+    const cors = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, X-Upload-Secret, X-File-Name',
+    };
+    if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
+    if (request.method !== 'POST') return json({ error: 'POST only' }, 405, cors);
+
+    if (env.UPLOAD_SECRET && request.headers.get('X-Upload-Secret') !== env.UPLOAD_SECRET) {
+      return json({ error: 'unauthorized' }, 401, cors);
+    }
+
+    const url = new URL(request.url);
+    const op = url.searchParams.get('op');
+    const base = (env.PUBLIC_BASE || '').replace(/\/+$/, '');
+    const ctype = request.headers.get('Content-Type') || 'audio/mp4';
+
+    function clean_name() {
+      let name = (request.headers.get('X-File-Name') || ('rec_' + Date.now()))
+        .replace(/[^A-Za-z0-9._-]/g, '_');
+      if (!/\.[A-Za-z0-9]+$/.test(name)) name += ctype.includes('webm') ? '.webm' : '.m4a';
+      return name;
+    }
+    function key_of() {
+      const k = url.searchParams.get('key') || '';
+      return /^[A-Za-z0-9._-]+$/.test(k) ? k : null;
+    }
+
+    try {
+      if (op === 'init') {
+        const name = clean_name();
+        const mpu = await env.BUCKET.createMultipartUpload(name, { httpMetadata: { contentType: ctype } });
+        return json({ ok: true, uploadId: mpu.uploadId, key: mpu.key }, 200, cors);
+      }
+
+      if (op === 'part') {
+        const key = key_of(), id = url.searchParams.get('id');
+        const n = parseInt(url.searchParams.get('n') || '', 10);
+        if (!key || !id || !(n >= 1 && n <= 10000)) return json({ error: 'part needs key, id, n' }, 400, cors);
+        const body = await request.arrayBuffer();
+        if (!body || body.byteLength === 0) return json({ error: 'empty part' }, 400, cors);
+        const mpu = env.BUCKET.resumeMultipartUpload(key, id);
+        const part = await mpu.uploadPart(n, body);
+        return json({ ok: true, partNumber: part.partNumber, etag: part.etag, size: body.byteLength }, 200, cors);
+      }
+
+      if (op === 'done') {
+        const key = key_of(), id = url.searchParams.get('id');
+        if (!key || !id) return json({ error: 'done needs key, id' }, 400, cors);
+        let parts = [];
+        try { parts = (await request.json()).parts || []; } catch (e) {}
+        if (!parts.length) return json({ error: 'done needs parts' }, 400, cors);
+        const mpu = env.BUCKET.resumeMultipartUpload(key, id);
+        const obj = await mpu.complete(parts.map(p => ({ partNumber: p.partNumber, etag: p.etag })));
+        return json({ ok: true, name: key, size: obj.size, url: base ? base + '/' + key : null }, 200, cors);
+      }
+
+      if (op === 'abort') {
+        const key = key_of(), id = url.searchParams.get('id');
+        if (key && id) { try { await env.BUCKET.resumeMultipartUpload(key, id).abort(); } catch (e) {} }
+        return json({ ok: true }, 200, cors);
+      }
+
+      // ---- the original one-shot path, unchanged ----
+      const name = clean_name();
+      const body = await request.arrayBuffer();
+      if (!body || body.byteLength === 0) return json({ error: 'empty body' }, 400, cors);
+      await env.BUCKET.put(name, body, { httpMetadata: { contentType: ctype } });
+      return json({ ok: true, name, size: body.byteLength, url: base ? base + '/' + name : null }, 200, cors);
+    } catch (err) {
+      return json({ error: String(err && err.message || err) }, 500, cors);
+    }
+  },
+};
+
+function json(obj, status, cors) {
+  return new Response(JSON.stringify(obj), {
+    status,
+    headers: { ...cors, 'Content-Type': 'application/json' },
+  });
+}
+</script>
+
 <div id="toast"></div>
 
 <script>
@@ -177,6 +310,10 @@ Everything else I do myself — you don't need to act on anything I send into th
   var t = document.getElementById('toast');
   function toast(m) { t.textContent = m; t.classList.add('show');
     setTimeout(function () { t.classList.remove('show'); }, 1600); }
+  // the worker code is copied from the page itself, so what he pastes is
+  // exactly what is committed — no second copy to drift
+  var wb = document.querySelector('[data-copy-worker]');
+  if (wb) wb.setAttribute('data-copy', (document.getElementById('worker_src') || {}).textContent || '');
   Array.prototype.forEach.call(document.querySelectorAll('[data-copy]'), function (b) {
     b.addEventListener('click', function () {
       var v = b.getAttribute('data-copy');
