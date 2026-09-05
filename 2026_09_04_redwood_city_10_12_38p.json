@@ -1,0 +1,24 @@
+{
+  "audio": {
+    "label": "2026-09-04 7:31p Redwood City",
+    "url": "https://pub-33cfd8558d314eb58642c8550608850b.r2.dev/2026_09_04_redwood_city_10_12_38p.m4a",
+    "kind": "url"
+  },
+  "tags": [
+    {
+      "id": "t_1788644672057_lt1",
+      "t": 1.9,
+      "label": ""
+    },
+    {
+      "id": "t_1788644672057_lt2",
+      "t": 9.6,
+      "label": ""
+    },
+    {
+      "id": "t_1788644672057_lt3",
+      "t": 113,
+      "label": "Thank you very much"
+    }
+  ]
+}
