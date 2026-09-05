@@ -585,6 +585,8 @@
   var ICON_LINK  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>';
   var ICON_X     = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var ICON_SHARE = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
+  var ICON_MORE  = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
+  var openActsId = null;   // row_more: which highlight's actions are open
   var ICON_HEART = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3l-1.2-1.1C6.2 15.1 3.2 12.4 3.2 9.1c0-2.6 2-4.6 4.6-4.6 1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.6 2 4.6 4.6 0 3.3-3 6-7.6 10.1L12 20.3z"/></svg>';
   var ICON_CHEV_L = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>';
   var ICON_CHEV_R = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>';
@@ -2207,10 +2209,30 @@
           render_tags();
         });
       });
-      row.appendChild(favBtn);
+      // row_more — the row shows three dots and its title. The dots open into
+      // heart, delete, share — share at the far right — and close again on a
+      // tap anywhere else. The open state lives on the tag id, so a re-render
+      // (a heart tap re-renders) does not fold it shut under the finger.
+      var moreBtn = document.createElement('button');
+      moreBtn.className = 'ghost tag_more';
+      moreBtn.title = 'More';
+      moreBtn.setAttribute('aria-label', 'More');
+      moreBtn.innerHTML = ICON_MORE;
+      moreBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (window.vampjamActsClose) window.vampjamActsClose(row);
+        openActsId = tag.id;
+        row.classList.add('acts_open');
+      });
+      row.appendChild(moreBtn);
+      var acts = document.createElement('span');
+      acts.className = 'tag_acts';
+      row.appendChild(acts);
+      if (tag.id === openActsId) row.classList.add('acts_open');
+      acts.appendChild(favBtn);
 
       var linkBtn = document.createElement('button');
-      linkBtn.className = 'ghost';
+      linkBtn.className = 'ghost tag_share';
       linkBtn.title = 'Copy direct link';
       linkBtn.innerHTML = ICON_SHARE;
       linkBtn.addEventListener('click', function () {
@@ -2218,7 +2240,6 @@
         copy_to_clipboard(url);
         toast('Link copied: ' + url);
       });
-      row.appendChild(linkBtn);
 
       var delBtn = document.createElement('button');
       delBtn.className = 'ghost tag_del';
@@ -2236,7 +2257,8 @@
             .catch(function (err) {});
         });
       });
-      row.appendChild(delBtn);
+      acts.appendChild(delBtn);
+      acts.appendChild(linkBtn);
 
       tagList.appendChild(row);
     });
