@@ -117,8 +117,10 @@ const REG = JSON.stringify([
   ok('and visible, not blanked',       F.kids[1].vis === 'visible', F.kids[1].vis);
   ok('still holding its slot',         F.kids[1].width === 40, F.kids[1].width);
   ok('and no longer a link',           F.kids[1].href === null, F.kids[1].href);
+  // nav_state moved this one off accent on purpose: the recorder lights RED,
+  // because a red circle is what the recorder is. Blue would be the wrong word.
   ok('on record, the record icon is lit',
-     /nav_on/.test(R.kids[3].cls) && R.kids[3].color === ACCENT,
+     /nav_on/.test(R.kids[3].cls) && R.kids[3].color === 'rgb(215, 0, 21)',
      R.kids[3].cls + ' ' + R.kids[3].color);
   ok('and it is drawn, not an empty box', R.kids[3].svg === true, R.kids[3].svg);
   ok('nothing is hidden in either header any more',
