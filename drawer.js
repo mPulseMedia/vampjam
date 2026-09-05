@@ -105,12 +105,27 @@
     var d = drawer(), lo = low(), fp = fold_page();
     if (!d || !fp || !foldH) return;
     d.style.maxHeight = Math.round(foldH.top * k) + 'px';
-    if (lo) lo.style.maxHeight = Math.round(foldH.low * k) + 'px';
+    // fold_anchor — clipping a shrinking box takes the BOTTOM off, which would
+    // eat the lit row first and leave the rows above it sitting still. The rows
+    // above are what should move. Sliding the menu up by exactly what the box
+    // lost pins its bottom edge to the seam instead: the lit row rides the top
+    // of the page all the way, and everything above it leaves upward.
+    var tm = d.querySelector('.jam_menu');
+    if (tm) tm.style.transform = 'translateY(' + Math.round(-foldH.top * (1 - k)) + 'px)';
+    // fold_push — the rows BELOW are not shrunk, they are pushed. They keep
+    // their real height the whole time and the growing page shoves them off the
+    // bottom edge; folding back up, the page lets them come back to meet the
+    // lit row. Shrinking them would have looked like they were being deleted.
+    if (lo) lo.style.maxHeight = (foldH.low ? foldH.low + 'px' : '0px');
     fp.style.height = Math.round(foldH.page * (1 - k)) + 'px';
   }
   function fold_clear() {
     var d = drawer(), lo = low(), fp = fold_page();
-    if (d) d.style.maxHeight = '';
+    if (d) {
+      d.style.maxHeight = '';
+      var tm = d.querySelector('.jam_menu');
+      if (tm) tm.style.transform = '';
+    }
     if (lo) lo.style.maxHeight = '';
     if (fp) fp.style.height = '';
   }
