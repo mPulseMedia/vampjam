@@ -157,8 +157,9 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   const lastThird = Math.abs(last[1] - twoThird[1]);
   ok('and it settles rather than stopping dead',
      lastThird < leg2 * 0.8, 'middle ' + leg2 + ' then ' + lastThird);
+  // the sampler's clock starts at page load, so the flight is the difference
   ok('the whole thing takes about a second, not a blink',
-     last[0] > 900 && last[0] < 1500, last[0] + 'ms');
+     (last[0] - first[0]) > 900 && (last[0] - first[0]) < 1500, (last[0] - first[0]) + 'ms');
 
   // the pace claim: the name travels at the ROW's speed, not its own. Sample
   // both per frame and compare how far each moved between the same two frames.
@@ -174,12 +175,24 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   ok('the name moves at the row\u2019s speed, not its own',
      moving.length > 2 && matched.length >= moving.length - 1,
      matched.length + ' of ' + moving.length + ' frames matched');
-  // and because its journey is shorter, it must finish first and hold still
-  const tail = path0.slice(-4);
-  const stopped = tail.every(v => Math.abs(v[1] - last[1]) <= 2);
-  const rowStillGoing = Math.abs(tail[tail.length - 1][3] - tail[0][3]) > 4;
+  // and because its journey is shorter it must ARRIVE first — the list then
+  // carries on up past it, which is what a thing that has landed looks like
+  const settle = (idx) => {
+    const endV = path0[path0.length - 1][idx];
+    for (let i = 0; i < path0.length; i++) {
+      if (path0[i][idx] === null) continue;
+      let held = true;
+      for (let j = i; j < path0.length; j++) {
+        if (path0[j][idx] !== null && Math.abs(path0[j][idx] - endV) > 2) { held = false; break; }
+      }
+      if (held) return i;
+    }
+    return path0.length;
+  };
+  const iName = settle(1), iRow = settle(3);
   ok('it comes to rest early and lets the list finish past it',
-     stopped && rowStillGoing, 'name still ' + stopped + ', row moving ' + rowStillGoing);
+     iName < iRow - 2, 'name settled at frame ' + iName + ', row at ' + iRow
+                       + ' of ' + path0.length);
 
   // fold_anchor — the rows above ride up out of the way rather than the lit
   // row being clipped off the bottom
