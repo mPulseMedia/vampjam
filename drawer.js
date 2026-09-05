@@ -579,6 +579,8 @@
   // he already reaches for. (The action is unchanged: it still deletes the
   // session, still behind the same confirmation.)
   var ICO_X = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  // row_more — three plain dots, no ring: "there is more here", not a menu
+  var ICO_MORE = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
   var HERE = (location.pathname.split('/').pop() || '');
   // On the generic session page (session.html?p=<id>) the identity includes the
   // recording id, so duration cache + current-row detection stay per-recording.
@@ -663,8 +665,9 @@
       if (favCur) curIdx = rows.length;
       rows.push('<div class="jam_item' + favCur + '"><a class="jam_link' + favCur + '" href="favorites.html">'
         + '<span class="jam_left"><span class="jam_ico">' + ICO_HEART_M + '</span><span class="jam_name">Favorites</span></span></a>'
-        + '<button class="jam_share" data-href="favorites.html" aria-label="Copy link to Favorites">' + ICO_SHARE + '</button>'
-        + '<span class="menu_sub"></span><span class="jam_del_sp"></span></div>');
+        + '<button class="jam_more" aria-label="More" title="More">' + ICO_MORE + '</button>'
+        + '<span class="jam_acts"><span class="jam_del_sp"></span><span class="menu_sub"></span>'
+        + '<button class="jam_share" data-href="favorites.html" aria-label="Copy link to Favorites">' + ICO_SHARE + '</button></span></div>');
     }
     all.forEach(function (s) {
       var cur = (s.page === PKEY) ? ' current' : '';
@@ -693,8 +696,12 @@
       rows.push('<div class="jam_item' + cur + (isDel ? ' jam_deleting' : '') + '"><a class="jam_link' + cur + '" href="' + s.page + '">'
         + '<span class="jam_left"><span class="jam_ico">' + ICO_CASS + '</span>'
         + '<span class="jam_name">' + esc(disp) + '</span></span></a>'
-        + '<button class="jam_share" data-href="' + s.page + '" aria-label="Copy link to this session">' + ICO_SHARE + '</button>'
-        + '<span class="menu_sub">' + right + '</span>' + del + '</div>');
+        // row_more — a row shows three dots and its title, nothing else. The
+        // dots open into the row's actions, share at the far right; the title
+        // gets the width back the rest of the time.
+        + '<button class="jam_more" aria-label="More" title="More">' + ICO_MORE + '</button>'
+        + '<span class="jam_acts">' + del + '<span class="menu_sub">' + right + '</span>'
+        + '<button class="jam_share" data-href="' + s.page + '" aria-label="Copy link to this session">' + ICO_SHARE + '</button></span></div>');
     });
     rows.push('<div class="jam_item jam_admin"><a class="jam_link" href="admin.html">'
       + '<span class="jam_left"><span class="jam_ico">' + ICO_GEAR + '</span><span class="jam_name">Admin</span></span>'
@@ -726,6 +733,22 @@
       }
     });
   }
+
+  // row_more — one open row at a time, on the list AND on the highlight rows
+  // of a session page (which share this closer, since every session page
+  // loads this file). A tap anywhere that is not inside an open row shuts it.
+  function acts_close_all(except) {
+    Array.prototype.forEach.call(document.querySelectorAll('.jam_item.acts_open, .tag_row.acts_open'), function (r) {
+      if (r !== except) r.classList.remove('acts_open');
+    });
+  }
+  window.vampjamActsClose = acts_close_all;
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t && t.closest && t.closest('.acts_open')) return;
+    if (t && t.closest && t.closest('.jam_more, .tag_more')) return;
+    acts_close_all(null);
+  }, true);
 
   // ---- session links: animate the drawer closed, then navigate ----
   function wire_links() {
@@ -794,6 +817,15 @@
           return;
         }
         delete_session(b.getAttribute('data-page'), b.getAttribute('data-name'), durB);
+      });
+    });
+    // row_more — the dots open this row's actions and close every other row's
+    Array.prototype.forEach.call(menu.querySelectorAll('.jam_more'), function (b) {
+      b.addEventListener('click', function (e) {
+        e.preventDefault(); e.stopPropagation();
+        var row = b.closest('.jam_item');
+        acts_close_all(row);
+        if (row) row.classList.add('acts_open');
       });
     });
     // share button on each session row: copy that session's page link (no timestamp)
