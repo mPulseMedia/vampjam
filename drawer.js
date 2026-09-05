@@ -746,7 +746,8 @@
       // control_panel below (logo/player/transport) it closes right away;
       // started inside the list it first scrolls the list, and only closes
       // when the list is already at its own bottom and you swipe again.
-      var inList = !!(e.target && d.contains(e.target));
+      var lo = low();
+      var inList = !!(e.target && (d.contains(e.target) || (lo && lo.contains(e.target))));
       drag = { mode: 'close', y0: t.clientY, x0: t.clientX, active: false, inList: inList };
       return;
     }
@@ -777,18 +778,31 @@
         if (window.scrollY > 0) { drag = null; return; }             // scrolled away since start
       } else { // close
         if (dy >= 0) { drag = null; return; }                        // close needs an upward swipe
-        if (drag.inList && d.scrollHeight > d.clientHeight + 2 &&
+        if (document.body.classList.contains('fold_on')) {
+          // folded open the list IS the document, so "already at the bottom"
+          // is the document's bottom, not a scrollport's
+          var docMax = document.documentElement.scrollHeight - window.innerHeight;
+          if (docMax > 2 && window.scrollY < docMax - 2) { drag = null; return; }
+        } else if (drag.inList && d.scrollHeight > d.clientHeight + 2 &&
             d.scrollTop + d.clientHeight < d.scrollHeight - 2) {
           drag = null; return;                                       // still list to scroll -> plain scroll
         }
       }
       drag.active = true;
       d.classList.add('dragging');                                   // track finger, no transition
+      if (fold_ok()) {
+        document.body.classList.add('fold_run', 'fold_jump');
+        foldH = fold_measure();
+      }
     }
     var h = (drag.mode === 'open')
       ? Math.max(0, Math.min(max, dy))          // grow from 0 with the pull
       : Math.max(0, Math.min(max, max + dy));   // shrink from full as you swipe up (dy < 0)
-    d.style.maxHeight = h + 'px';
+    // fold_drag — under the finger the fold is the same single number the
+    // animation uses, so a pull and a tap are literally the same motion at
+    // different speeds: rows grow by k, the page shrinks by k.
+    if (fold_ok() && foldH) { fold_apply(h / (max || 1)); }
+    else { d.style.maxHeight = h + 'px'; }
     e.preventDefault();                                              // suppress native rubber-band
   }
 
@@ -796,7 +810,10 @@
     if (drag && drag.active) {
       var d = drawer();
       if (d) {
-        var cur = parseFloat(d.style.maxHeight) || 0;
+        var folding = fold_ok() && foldH;
+        var cur = folding
+          ? (1 - (parseFloat(fold_page().style.height) || 0) / (foldH.page || 1)) * maxOpenPx()
+          : (parseFloat(d.style.maxHeight) || 0);
         var max = maxOpenPx();
         // close_light: closing takes a small push — 36px, or 7.5% of the sheet
         // on a short screen. Opening keeps its own, longer pull (that one has
@@ -805,11 +822,16 @@
           ? cur > Math.min(100, max * 0.3)      // pulled far enough to open?
           : (max - cur) < Math.min(36, max * 0.075);
         d.classList.remove('dragging');                             // re-enable transition
-        d.style.maxHeight = (openIt ? max : 0) + 'px';              // animate to the snap point
-        set_open(openIt);                                           // caret + shadow follow
-        setTimeout(function () {                                    // hand back to CSS (72vh)
-          if (d.classList.contains('open') === openIt) d.style.maxHeight = '';
-        }, 200);
+        if (folding) {
+          document.body.classList.remove('fold_jump');
+          set_open(openIt);                                         // fold_go animates from here
+        } else {
+          d.style.maxHeight = (openIt ? max : 0) + 'px';            // animate to the snap point
+          set_open(openIt);                                         // caret + shadow follow
+          setTimeout(function () {                                  // hand back to CSS (72vh)
+            if (d.classList.contains('open') === openIt) d.style.maxHeight = '';
+          }, 200);
+        }
       }
     }
     drag = null;
@@ -950,7 +972,33 @@
       '@keyframes jam_spin_rot{to{transform:rotate(360deg)}}' +
       '.jam_spin{flex:0 0 auto;width:15px;height:15px;margin:6px 8px 6px 8px;border-radius:50%;' +
         'border:2px solid rgba(215,0,21,0.25);border-top-color:#d70015;' +
-        'display:inline-block;animation:jam_spin_rot 0.8s linear infinite;}';
+        'display:inline-block;animation:jam_spin_rot 0.8s linear infinite;}' +
+      // ---- list_fold ----
+      // #fold_page is a bare wrapper: no padding, no border, so margins collapse
+      // through it and the page lays out exactly as it did unwrapped. It only
+      // ever grows teeth while the fold is running or folded shut.
+      '#fold_page{transition:height 0.3s ease;}' +
+      'body.fold_run #fold_page{overflow:hidden;}' +
+      'body.fold_on #fold_page{height:0;overflow:hidden;}' +
+      // overflow:hidden would make #fold_page a scrollport and kill the sticky
+      // player, so it is only on while the height is actually moving.
+      'body.fold_run .session_drawer{overflow:hidden;transition:max-height 0.3s ease;}' +
+      'body.fold_on .session_drawer{max-height:none;overflow:visible;}' +
+      'body.fold_jump #fold_page,body.fold_jump .session_drawer{transition:none;}' +
+      // nothing is below the list any more, so nothing casts a shadow into it
+      'body.fold_on .session_drawer::after,body.fold_run .session_drawer::after{display:none;}' +
+      '.session_low{z-index:89;}' +
+      '.session_low .jam_menu{margin-top:0;}' +
+      // the two halves are one card: the seam gets the same hairline every other
+      // pair of rows has, and only the outer corners stay round
+      'body.fold_split .session_drawer:not(.session_low) .jam_menu{border-radius:14px 14px 0 0;padding-bottom:0;}' +
+      'body.fold_split .session_low .jam_menu{border-radius:0 0 14px 14px;padding-top:0;}' +
+      'body.fold_split .session_low .jam_menu>.jam_item:first-child{border-top:1px solid var(--panel_3);}' +
+      // land_fold — the landscape split opens its own fixed sheet, so the
+      // wrapper steps out of the way entirely and the body grid sees the page's
+      // own children again, exactly as before it existed.
+      '@media (orientation: landscape) and (pointer: coarse) and (max-height: 520px){' +
+        '#fold_page{display:contents;}.session_low{display:none;}}';
     document.head.appendChild(st);
   })();
 
@@ -1240,6 +1288,7 @@
     }
   }
   function boot() {
+    fold_build();   // before build_menu: the split needs somewhere to put the low rows
     // list_home — index.html renders the list itself when nothing survives to
     // open under it. There is no page beneath, so the list cannot be closed.
     if (window.VAMPJAM_LIST_HOME) pin_list(true);

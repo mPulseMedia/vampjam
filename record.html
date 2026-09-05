@@ -25,6 +25,10 @@
      their own — 560 was chosen when this page did not share a stylesheet */
   .top_bar { width: 100%; position: relative; text-align: center; min-height: 44px; margin-top: 4px; }
   /* nav_cass owns the placement now — see the shared block below */
+  /* fold_out: leaving for the list collapses the page toward the top edge,
+     which is the half of the fold this page can do on its own */
+  body { transition: transform 0.26s ease, opacity 0.26s ease; transform-origin: top center; }
+  body.fold_out { transform: scaleY(0.04); opacity: 0; pointer-events: none; }
   /* admin_same: the wordmark was 58/29 here and 68/34 on every other page —
      it comes from site.css now, and the bar carries .brand so it matches. */
   /* the session title is an h1 with the pencil inside it: 33px tall, margin
@@ -345,8 +349,19 @@
       stop();
       return;
     }
-    window.location.href = 'index.html#sessions';
+    fold_out(function () { window.location.href = 'index.html#sessions'; });
   });
+  // fold_out — this page cannot fold INTO its row the way the others do,
+  // because it does not carry the list (no session list while the tape is
+  // running, deliberately). What it can do is leave the same way: collapse
+  // toward the top edge, then hand over to the list, which comes up with the
+  // New recording row lit. Same motion, split across the navigation.
+  function fold_out(go) {
+    try {
+      document.body.classList.add('fold_out');
+      setTimeout(go, 260);
+    } catch (e) { go(); }
+  }
   pencil.addEventListener('click', function () { nameIn.focus(); nameIn.select(); });
 
   // share_here — the same thing drawer.js does for every other page: copy this
