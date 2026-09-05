@@ -149,13 +149,26 @@ const ROW = (sel) => (selector) => {
   // share still works from inside the group
   await p2.locator(first).first().locator('.tag_more').click();
   await p2.waitForTimeout(100);
-  // a real pointer sequence, not locator.click(): the locator's own click
-  // resolves its target to the row here (its pre-click checks race the row's
-  // re-render), which is a harness quirk — a finger on a phone sends exactly this
-  const sb = await p2.locator(first).first().locator('.tag_share').boundingBox();
-  await p2.mouse.move(sb.x + sb.width / 2, sb.y + sb.height / 2);
-  await p2.mouse.down(); await p2.mouse.up();
+  // this was not a harness quirk: edit_wide's :focus-within rule hid the whole
+  // action group the instant its share button took focus on mousedown, so the
+  // mouseup landed on the title and the click went nowhere. Fixed in site.css;
+  // a plain click has to work.
+  await p2.locator(first).first().locator('.tag_share').click();
   await p2.waitForTimeout(200);
+  const stillThere = await p2.evaluate(() => {
+    const r = document.querySelector('.tag_row');
+    r.querySelector('.tag_share').focus();
+    return getComputedStyle(r.querySelector('.tag_acts')).display !== 'none';
+  });
+  ok('a focused share button does not hide its own group', stillThere, stillThere);
+  const typing = await p2.evaluate(() => {
+    const r = document.querySelector('.tag_row');
+    const l = r.querySelector('.tag_label'); l.readOnly = false; l.focus();
+    const hidden = getComputedStyle(r.querySelector('.tag_acts')).display === 'none'
+                && getComputedStyle(r.querySelector('.tag_more')).display === 'none';
+    l.blur(); return hidden;
+  });
+  ok('but typing a title still clears everything after it', typing, typing);
   const toast = await p2.evaluate(() => (document.getElementById('toast') || {}).textContent || '');
   ok('share still copies from inside the group', /Link copied/.test(toast), toast);
   await p2.close();
