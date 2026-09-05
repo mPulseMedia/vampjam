@@ -101,7 +101,7 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
     return { top: Math.round(o.top), left: Math.round(t.left), text: h.textContent.trim() };
   });
   await p.click('#page_sessions');
-  await p.waitForTimeout(120);
+  await p.waitForTimeout(340);
   const inflight = await grab(p, () => {
     const f = document.querySelector('.fold_fly');
     return f ? { text: f.textContent,
@@ -115,7 +115,7 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
                                          inflight && inflight.h1op);
   ok('nor the row it is heading for',    !!inflight && inflight.nmop === '0', inflight && inflight.nmop);
 
-  await p.waitForTimeout(900);
+  await p.waitForTimeout(1800);
   const shut = await p.evaluate(() => {
     const nm = document.querySelector('.jam_item.current .jam_name');
     const r = nm.getBoundingClientRect();
@@ -177,14 +177,14 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   await p2.goto('https://vampsf.com/2026_08_14_sound_union.html');
   await p2.waitForTimeout(1700);
   await p2.click('#page_sessions');
-  await p2.waitForTimeout(800);
+  await p2.waitForTimeout(1600);
   await p2.evaluate(() => {
     const rows = [...document.querySelectorAll('.jam_item')];
     const t = rows.find(r => /2026-01-17/.test(r.textContent));
     t.scrollIntoView({ block: 'center' });
     t.querySelector('a').click();
   });
-  await p2.waitForTimeout(2600);
+  await p2.waitForTimeout(4000);
   const arr = await grab(p2, () => {
     const h = document.querySelector('#fold_page h1');
     const rg = document.createRange(); rg.selectNodeContents(h.firstChild);

@@ -6,14 +6,14 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>vampsf — 2026-08-07 Sound Union</title>
+<title>vampsf — 2026-05-30 Sound Union</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css?v=15">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
-<script src="drawer.js?v=158"></script>
+<script src="drawer.js?v=157"></script>
 <style>
   /* admin_same: the pre-theme fallback palette is in site.css now. */
   /* kbd_black: literal fallback so the page is never transparent (a
@@ -472,11 +472,11 @@
     <div class="jam_item jam_admin"><a class="jam_link" href="admin.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M12 2.6l1.7 2.2 2.7-.7.4 2.8 2.5 1.2-1 2.6 1 2.6-2.5 1.2-.4 2.8-2.7-.7L12 21.4l-1.7-2.2-2.7.7-.4-2.8-2.5-1.2 1-2.6-1-2.6 2.5-1.2.4-2.8 2.7.7z"/></svg></span><span class="jam_name">Admin</span></span><span class="menu_sub">setup &amp; uploads</span></a></div>
     <div class="jam_item"><a class="jam_link" href="2026_01_17_bazaar_cafe.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Bazaar Cafe</span></span><span class="menu_sub">Jan 17, 2026</span></a><button class="jam_share" data-href="2026_01_17_bazaar_cafe.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
     <div class="jam_item"><a class="jam_link" href="2026_05_23_bazaar_cafe.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Bazaar Cafe</span></span><span class="menu_sub">May 23, 2026</span></a><button class="jam_share" data-href="2026_05_23_bazaar_cafe.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
-    <div class="jam_item"><a class="jam_link" href="2026_05_30_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">May 30, 2026</span></a><button class="jam_share" data-href="2026_05_30_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item current"><a class="jam_link current" href="2026_05_30_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">May 30, 2026</span></a><button class="jam_share" data-href="2026_05_30_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
     <div class="jam_item"><a class="jam_link" href="2026_07_17_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Jul 17, 2026</span></a><button class="jam_share" data-href="2026_07_17_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
     <div class="jam_item"><a class="jam_link" href="2026_07_24_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Jul 24, 2026</span></a><button class="jam_share" data-href="2026_07_24_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
     <div class="jam_item"><a class="jam_link" href="2026_07_31_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Jul 31, 2026</span></a><button class="jam_share" data-href="2026_07_31_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
-    <div class="jam_item current"><a class="jam_link current" href="2026_08_07_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Aug 7, 2026</span></a><button class="jam_share" data-href="2026_08_07_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
+    <div class="jam_item"><a class="jam_link" href="2026_08_07_sound_union.html"><span class="jam_left"><span class="jam_ico"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></span><span class="jam_name">Sound Union</span></span><span class="menu_sub">Aug 7, 2026</span></a><button class="jam_share" data-href="2026_08_07_sound_union.html" aria-label="Copy link to this session"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button></div>
   </div>
 </div>
 
@@ -496,7 +496,7 @@
 
 
 
-<h1 style="display:flex;align-items:center;justify-content:center;gap:6px;">2026-08-07 Sound Union <button class="ghost" id="audio_edit_btn" title="Change audio file" aria-label="Change audio file"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M14.5 6.5l3 3"/></svg></button></h1>
+<h1 style="display:flex;align-items:center;justify-content:center;gap:6px;">2026-05-30 Sound Union <button class="ghost" id="audio_edit_btn" title="Change audio file" aria-label="Change audio file"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M14.5 6.5l3 3"/></svg></button></h1>
 
 <!-- audio edit form (hidden, toggled by pencil) -->
 <div class="audio_card" id="audio_card" style="display:none;">
@@ -559,7 +559,7 @@
 <script>
   // ============ per-page identity ============
   // Each new page only needs to change PAGE_ID. The audio source lives in sources/<PAGE_ID>.json.
-  var PAGE_ID    = 'sound_union_2026_08_07';
+  var PAGE_ID    = 'sound_union_2026_05_30';
   var REPO_OWNER = 'mPulseMedia';
   var REPO_NAME  = 'vampjam';
   var WORKER_URL = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
@@ -1350,9 +1350,10 @@
       var arr = Array.isArray(data.tags) ? data.tags : null;
       // Never clobber a moment being created/named, or edits still settling.
       if (arr && !local_edits_in_progress()) {
-        // Start from the repo (shared source of truth)...
+        // REPLACE local tags with repo — repo is the single source of truth.
+        // No tombstone filtering: if it's in the repo, show it.
         var ovFlipped = false;
-        var merged = arr
+        var mapped = arr
           .filter(function (t) { return t && t.id && typeof t.t === 'number'; })
           .map(function (t, i) {
             var cp = { id: t.id, t: t.t, label: t.label || '', order: i * 10 };
@@ -1365,19 +1366,14 @@
             else delete cp.fav;
             return cp;
           });
-        // ...but never drop a locally-added tag that hasn't reached the repo
-        // yet. A stale CDN read must not wipe a pending tag.
-        var repoIds = {};
-        merged.forEach(function (t) { repoIds[t.id] = true; });
-        var maxOrder = merged.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
-        tags.forEach(function (local) {
-          if (local && local.id && !repoIds[local.id]) {
-            maxOrder += 10;
-            local.order = maxOrder;
-            merged.push(local);
-          }
+        // KEEP locally-added tags not yet in the repo, so a reload never drops
+        // a highlight you just made (localStorage is the safety net).
+        var _rid = {}; mapped.forEach(function (t) { _rid[t.id] = true; });
+        var _mo = mapped.reduce(function (m, x) { return Math.max(m, x.order || 0); }, 0);
+        (tags || []).forEach(function (loc) {
+          if (loc && loc.id && !_rid[loc.id]) { _mo += 10; loc.order = _mo; mapped.push(loc); }
         });
-        tags = merged;
+        tags = mapped;
         // Clear stale tombstones since repo is authoritative
         try { localStorage.removeItem(STORAGE_TOMBS); } catch (e) {}
         save_tags();
@@ -1392,7 +1388,7 @@
           render_tag_markers();
         }
       }
-    }).catch(function () { /* keep current state on a failed/stale fetch */ });
+    }).catch(function () { audio = null; render_audio_label(); });
   }
   // back-compat alias used elsewhere
   function fetch_audio_public() { return fetch_repo_data(); }
@@ -2243,6 +2239,18 @@
   }
 
   // ============ poll for sync ============
+  // Re-fetch repo data every 15s so other devices' changes appear quickly
+  setInterval(function () {
+    fetch_repo_data();
+  }, 15000);
+
+  // ============ boot ============
+  playBtn.innerHTML = ICON_PLAY;
+  render_sort_toggle();
+  render_tags();
+  render_pat_status();
+  render_audio_label();
+  fetch_repo_data();
   // kbd_black — the keyboard used to leave a black slab above it. Two causes,
   // both browser-side: (1) the page could end up scrolled past its own bottom
   // when the layout viewport shrank, so what showed was the browser's canvas,
@@ -2268,21 +2276,6 @@
     vv.addEventListener('scroll', kbd_guard);
   })();
 
-  // Auto-poll disabled for this page: the 15s re-fetch was interrupting
-  // playback and overwriting freshly-added tags with stale CDN reads.
-  // Tags still save to the repo on add; reload manually to pull others' changes.
-  // (Re-enable by uncommenting if multi-device live sync is needed.)
-  // setInterval(function () {
-  //   fetch_repo_data();
-  // }, 15000);
-
-  // ============ boot ============
-  playBtn.innerHTML = ICON_PLAY;
-  render_sort_toggle();
-  render_tags();
-  render_pat_status();
-  render_audio_label();
-  fetch_repo_data();
 </script>
 
 </body>

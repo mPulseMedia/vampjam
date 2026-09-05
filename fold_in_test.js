@@ -80,7 +80,7 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   await p.goto('https://vampsf.com/favorites.html');
   await p.waitForTimeout(1600);
   await p.click('#page_sessions');
-  await p.waitForTimeout(700);
+  await p.waitForTimeout(1500);
 
   // where the row we are about to tap sits on the screen right now
   const before = await p.evaluate(() => {
@@ -105,7 +105,7 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   });
   // it may already have been consumed by the new page — either is correct,
   // what must NOT happen is that it was never written
-  await p.waitForTimeout(2200);
+  await p.waitForTimeout(3200);
   const url = p.url();
   ok('the tap navigates to that row', /2026_01_17/.test(url), url);
 
@@ -137,14 +137,14 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   await p.goto('https://vampsf.com/favorites.html');
   await p.waitForTimeout(1600);
   await p.click('#page_sessions');
-  await p.waitForTimeout(700);
+  await p.waitForTimeout(1500);
   await p.evaluate(() => {
     const rows = [...document.querySelectorAll('.jam_item')];
     const t = rows.find(r => /2026-09-02/.test(r.textContent));
     t.scrollIntoView({ block: 'center' });
     t.querySelector('a').click();
   });
-  await p.waitForTimeout(1500);
+  await p.waitForTimeout(3000);
   const mid = await grab(p, () => ({
     url: location.href,
     onSession: !!document.getElementById('player'),
@@ -158,9 +158,9 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   await p.goto('https://vampsf.com/favorites.html');
   await p.waitForTimeout(1600);
   await p.click('#page_sessions');
-  await p.waitForTimeout(700);
+  await p.waitForTimeout(1500);
   await p.click('.jam_item.current .jam_link');
-  await p.waitForTimeout(700);
+  await p.waitForTimeout(1500);
   const own = await p.evaluate(() => ({
     url: location.pathname,
     fold_on: document.body.classList.contains('fold_on'),
@@ -177,11 +177,11 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   await p2.goto('https://vampsf.com/favorites.html');
   await p2.waitForTimeout(1600);
   await p2.click('#page_sessions');
-  await p2.waitForTimeout(700);
+  await p2.waitForTimeout(1500);
   await p2.evaluate(() => {
     document.querySelector('.jam_item.jam_new a').click();
   });
-  await p2.waitForTimeout(2000);
+  await p2.waitForTimeout(3200);
   const rec = await grab(p2, () => ({
     url: location.pathname,
     cls: document.body.className,

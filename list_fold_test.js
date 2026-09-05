@@ -96,7 +96,7 @@ const SHOT = () => {
   ok('and rows below it',            shut.below >= 3, shut.below);
 
   await p.click('#page_sessions');
-  await p.waitForTimeout(700);
+  await p.waitForTimeout(1500);
   const open = await p.evaluate(SHOT);
   ok('open, the page has folded to nothing', open.pageH === 0, open.pageH);
   ok('and the fold is marked done',          open.fold_on === true, open.fold_on);
@@ -117,7 +117,7 @@ const SHOT = () => {
 
   // ---------- and it opens back up ----------
   await p.click('.jam_item.current .jam_link');
-  await p.waitForTimeout(700);
+  await p.waitForTimeout(1500);
   const back = await p.evaluate(() => ({
     fold_on: document.body.classList.contains('fold_on'),
     pageH: Math.round(document.getElementById('fold_page').getBoundingClientRect().height),
@@ -134,7 +134,7 @@ const SHOT = () => {
   await p.goto('https://vampsf.com/2026_01_17_bazaar_cafe.html');
   await p.waitForTimeout(1800);
   await p.click('#page_sessions');
-  await p.waitForTimeout(700);
+  await p.waitForTimeout(1500);
   const sess = await p.evaluate(SHOT);
   ok('a session page folds the same way', sess.pageH === 0 && sess.fold_on === true, JSON.stringify(sess));
   ok('its own row is on screen',
@@ -156,7 +156,7 @@ const SHOT = () => {
   await p.goto('https://vampsf.com/2026_01_17_bazaar_cafe.html');
   await p.waitForTimeout(1800);
   await p.click('#page_sessions');
-  await p.waitForTimeout(700);
+  await p.waitForTimeout(1500);
   const L = await p.evaluate(() => ({
     fold_on: document.body.classList.contains('fold_on'),
     disp: getComputedStyle(document.getElementById('fold_page')).display,
