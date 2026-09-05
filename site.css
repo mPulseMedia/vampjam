@@ -298,3 +298,15 @@ body :not(.wordmark):not(.wordmark_sf):not(.play_btn):not(.rec_btn):not(.fav_pla
 /* a ghost button anywhere else is a text control, not a row icon, and keeps the
    app size that one_size no longer hands it */
 button.ghost { font-size: 17px; }
+
+/* row_more — a row shows its title and three dots. The dots open into the
+   row's actions with share at the far right; a tap anywhere else closes them.
+   One button width competes with the title instead of three or four. */
+.jam_item .jam_acts, .tag_row .tag_acts { display: none; align-items: center; flex: 0 0 auto; }
+.jam_item.acts_open .jam_acts, .tag_row.acts_open .tag_acts { display: inline-flex; }
+.jam_item.acts_open .jam_more, .tag_row.acts_open .tag_more { display: none; }
+.jam_more { flex: 0 0 auto; background: none; border: none; color: var(--muted); opacity: 0.55;
+            padding: 6px; min-height: 32px; cursor: pointer; line-height: 0; margin-left: auto; }
+.jam_more:hover, .tag_row .tag_more:hover { opacity: 1; color: var(--fg); }
+.tag_row .tag_more { opacity: 0.55; margin-left: auto; }
+.tag_row .tag_acts button.ghost + button.ghost { margin-left: -4px; }   /* icon_snug, inside the group */
