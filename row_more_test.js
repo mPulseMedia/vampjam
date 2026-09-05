@@ -108,7 +108,7 @@ const ROW = (sel) => (selector) => {
   p2.on('pageerror', e => { fail++; console.log('  FAIL pageerror (session): ' + e.message); });
   await p2.goto('https://vampsf.com/2026_01_17_bazaar_cafe.html');
   await p2.waitForTimeout(1800);
-  const first = '.tag_row:first-child';
+  const first = '.tag_row';   // the list's first child is not a row (the playhead line is)
   const hShut = await p2.evaluate(ROW(), first);
   const hc = hShut ? hShut.vis.map(v => v.cls) : [];
   ok('a highlight row shows number, play, title, time and the dots',
@@ -117,7 +117,7 @@ const ROW = (sel) => (selector) => {
   ok('dots at the far right',                   !!hShut && hShut.rowRight - hShut.vis[4].right < 16, hShut && (hShut.rowRight - hShut.vis[4].right));
   const labelShut = hShut && (hShut.vis[2].right - hShut.vis[2].left);
 
-  await p2.click(first + ' .tag_more');
+  await p2.locator(first).first().locator('.tag_more').click();
   await p2.waitForTimeout(150);
   const hOpen = await p2.evaluate(ROW(), first);
   const ho = hOpen ? hOpen.vis.map(v => v.cls) : [];
@@ -128,10 +128,10 @@ const ROW = (sel) => (selector) => {
   ok('the title had more room shut',            labelShut > labelOpen + 40, labelShut + ' vs ' + labelOpen);
 
   // the open state survives the re-render a heart tap causes
-  await p2.click(first + ' .tag_fav');
+  await p2.locator(first).first().locator('.tag_fav').click();
   await p2.waitForTimeout(300);
   const stillOpen = await p2.evaluate(() => {
-    const r = document.querySelector('.tag_row:first-child');
+    const r = document.querySelector('.tag_row');
     return r.classList.contains('acts_open') && getComputedStyle(r.querySelector('.tag_acts')).display !== 'none';
   });
   ok('tapping the heart re-renders and the row stays open', stillOpen, stillOpen);
@@ -141,9 +141,9 @@ const ROW = (sel) => (selector) => {
   const hNone = await p2.evaluate(() => document.querySelectorAll('.tag_row.acts_open').length);
   ok('a tap elsewhere on the page closes it',   hNone === 0, hNone);
   // share still works from inside the group
-  await p2.click(first + ' .tag_more');
+  await p2.locator(first).first().locator('.tag_more').click();
   await p2.waitForTimeout(100);
-  await p2.click(first + ' .tag_share');
+  await p2.locator(first).first().locator('.tag_share').click();
   await p2.waitForTimeout(200);
   const toast = await p2.evaluate(() => (document.getElementById('toast') || {}).textContent || '');
   ok('share still copies from inside the group', /Link copied/.test(toast), toast);
