@@ -138,6 +138,9 @@ const ROW = (sel) => (selector) => {
     return r.classList.contains('acts_open') && getComputedStyle(r.querySelector('.tag_acts')).display !== 'none';
   });
   ok('tapping the heart re-renders and the row stays open', stillOpen, stillOpen);
+  // the heart's save lands ~3s later and re-renders once more; let that pass so
+  // the next taps are not racing it
+  await p2.waitForTimeout(3800);
   // and closes from outside
   await p2.click('h1');
   await p2.waitForTimeout(150);
