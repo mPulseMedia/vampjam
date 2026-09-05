@@ -508,26 +508,36 @@
     var cass  = head.querySelector('.nav_cass');
     var share = head.querySelector('.nav_share');
 
-    // nav_here — a button that would point at the page you are ALREADY on keeps
-    // its slot and loses its ink. Omitting it instead moved the wordmark off the
-    // centre line on exactly the pages that have one fewer control, and the
-    // wordmark visibly jumped as you walked between screens.
+    // here_lit — the icon for the page you are ON is shown and coloured, not
+    // blanked. It was hidden-but-holding-its-slot, which kept the wordmark
+    // centred but wasted the one place that could say where you are. Lit, it
+    // does both. It stops being a link (there is nowhere to go) and says so to
+    // a screen reader with aria-current.
+    function nav_mark(el, here) {
+      if (!here) return el;
+      el.classList.add('nav_on');
+      el.removeAttribute('href');
+      el.setAttribute('aria-current', 'page');
+      el.title = el.getAttribute('aria-label') + ' — you are here';
+      return el;
+    }
     if (cass && !head.querySelector('.nav_fav')) {
       var f = document.createElement('a');
-      f.className = 'nav_cass nav_fav' + (HERE === 'favorites.html' ? ' nav_here' : '');
+      f.className = 'nav_cass nav_fav';
       f.href = 'favorites.html';
       f.setAttribute('aria-label', 'Favorites');
       f.title = 'Favorites';
       f.innerHTML = ICO_FAVLIST;
-      cass.insertAdjacentElement('afterend', f);
+      cass.insertAdjacentElement('afterend', nav_mark(f, HERE === 'favorites.html'));
     }
     if (!head.querySelector('.nav_rec')) {
       var r = document.createElement('a');
-      r.className = 'nav_share nav_rec' + (HERE === 'record.html' ? ' nav_here' : '');
+      r.className = 'nav_share nav_rec';
       r.href = 'record.html';
       r.setAttribute('aria-label', 'New recording');
       r.title = 'New recording';
       r.innerHTML = ICO_REC_H;
+      nav_mark(r, HERE === 'record.html');
       if (share) share.insertAdjacentElement('beforebegin', r);
       else head.appendChild(r);
     }
