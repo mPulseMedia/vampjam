@@ -146,7 +146,12 @@ const ROW = (sel) => (selector) => {
   // share still works from inside the group
   await p2.locator(first).first().locator('.tag_more').click();
   await p2.waitForTimeout(100);
-  await p2.locator(first).first().locator('.tag_share').click();
+  // a real pointer sequence, not locator.click(): the locator's own click
+  // resolves its target to the row here (its pre-click checks race the row's
+  // re-render), which is a harness quirk — a finger on a phone sends exactly this
+  const sb = await p2.locator(first).first().locator('.tag_share').boundingBox();
+  await p2.mouse.move(sb.x + sb.width / 2, sb.y + sb.height / 2);
+  await p2.mouse.down(); await p2.mouse.up();
   await p2.waitForTimeout(200);
   const toast = await p2.evaluate(() => (document.getElementById('toast') || {}).textContent || '');
   ok('share still copies from inside the group', /Link copied/.test(toast), toast);
