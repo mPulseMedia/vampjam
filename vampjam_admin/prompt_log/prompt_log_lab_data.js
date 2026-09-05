@@ -9,8 +9,62 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "322 list_fold",
+        id: "323 fold_in",
         expanded: true,
+        nodes: [
+          { text: "323 fold_in", children: [
+            { text: "prompt_restate", children: [
+              { text: "Now the other direction: tapping a row grows that page out of the gap under it." },
+              { text: "The row you clicked stays; the next row moves down; the space between becomes the page." },
+              { text: "Which is the collapse reversed \u2014 so the two rows touch again when you come back." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, so now for the transition from the list of sessions to each of those pages the name of the session or the page is the row that was just clicked and expanding from beneath it in between whatever that next row was expanding in that space is what becomes the page we see and in this way, we are reversing the collapse that occurs such that you see when returning to the sessions list page, you see that collapsing underneath the row, which was the main screen and the subsequent row coming beneath that and closing as the page collapses ultimately the two Rose touching as part of a list of other items on that same level" }
+            ]},
+            { text: "not_a_second_animation", children: [
+              { text: "this is the SAME motion run backwards, not a matching one written separately" },
+              { text: "so the pair reads as one hinge rather than two effects that happen to resemble each other" }
+            ]},
+            { text: "the_hard_part", children: [
+              { text: "this direction crosses a page load, and you cannot animate across one" },
+              { text: "so it does not animate on the way out at all \u2014 the tap writes a note (which page, what the list\u2019s scroll was) and goes" },
+              { text: "the arriving page reads the note, comes up SHUT at that same scroll, and unfolds" },
+              { text: "both documents show the identical list at the identical offset when the swap happens, so the swap is the invisible part" },
+              { text: "anything that moved on the way out would be motion the swap then has to undo \u2014 which is why the close animation is skipped here, not kept for polish" }
+            ]},
+            { text: "fold_ride", children: [
+              { text: "the rows above the tapped one collapse while the page grows, so the list rides upward" },
+              { text: "left to the browser that is a scroll clamp per frame that stops wherever the document gets short enough" },
+              { text: "tweened over the same 320ms instead, so it lands on the page\u2019s top rather than in the middle of it" }
+            ]},
+            { text: "note_is_fragile_on_purpose", children: [
+              { text: "sessionStorage, five seconds, and it must name THIS page" },
+              { text: "Back, a bookmark, a typed URL and a stale tab each fail one of those and open the ordinary way" },
+              { text: "consumed on read, so it cannot fire twice" }
+            ]},
+            { text: "record_page", children: [
+              { text: "carries no list, so it reads the note itself and plays its own fold_out backwards" },
+              { text: "which is the whole reason fold_out was written as a motion rather than as a fade" }
+            ]},
+            { text: "fold_in_test", children: [
+              { text: "new, 17 assertions" },
+              { text: "the one that earns its keep is fold_watch \u2014 the end state alone would pass even if the page never folded and just appeared" },
+              { text: "so an init script records the body classes every frame from the first, and the suite asserts the shut frames exist, come FIRST, and end" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "seventeen suites, all green \u2014 list_fold 24, nav_state 15, nav_pair 42, list_title 22, del_same 19, play_same 16" },
+              { text: "list_home 16, del_leave 16, rec_calm 22, rec_match 28, fav_match 23, icon_snug 12, grip_only 13, tag_quiet 18, time_flip 32, logo_line 30, audio_grade 18" },
+              { text: "drawer.js v=155" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "322 list_fold",
+        expanded: false,
         nodes: [
           { text: "322 list_fold", children: [
             { text: "prompt_restate", children: [
