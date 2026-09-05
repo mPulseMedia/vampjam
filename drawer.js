@@ -194,13 +194,13 @@
     // state, read it, put it back, read that. Two forced reflows inside one
     // frame, which is cheaper than guessing where the title is going to land.
     fold_apply(on ? 1 : 0);
-    if (on) window.scrollTo(0, 0);
+    window.scrollTo(0, 0);            // both ends finish at the top; measure there
     void d.offsetHeight;
     var endName = on ? box(name_el()) : null;
     var endTtl  = on ? null : box(title_el());
 
     fold_apply(on ? 0 : 1);
-    window.scrollTo(0, on ? y0 : y0);
+    window.scrollTo(0, y0);
     void d.offsetHeight;
     var startTtl  = on ? box(title_el()) : null;
     var startName = on ? null : box(name_el());
@@ -214,11 +214,12 @@
 
     b.classList.remove('fold_jump');
     requestAnimationFrame(function () { fold_apply(on ? 1 : 0); });
+    fold_ride(y0, FOLD_MS);           // and the page rides up to meet it
     foldT = setTimeout(function () {
       b.classList.remove('fold_run');
       b.classList.toggle('fold_on', !!on);
       fold_clear();
-      if (on) window.scrollTo(0, 0);
+      window.scrollTo(0, 0);
       b.classList.remove('fold_fly_on');
       if (b._fly) { try { b._fly.remove(); } catch (e1) {} b._fly = null; }
     }, FOLD_MS);
@@ -1138,10 +1139,14 @@
       // through it and the page lays out exactly as it did unwrapped. It only
       // ever grows teeth while the fold is running or folded shut.
       '#fold_page{transition:height 0.3s ease;}' +
-      'body.fold_run #fold_page{overflow:hidden;}' +
       'body.fold_on #fold_page{height:0;overflow:hidden;}' +
+      'body.fold_on .session_drawer{max-height:none;overflow:visible;}' +
       // overflow:hidden would make #fold_page a scrollport and kill the sticky
-      // player, so it is only on while the height is actually moving.
+      // player, so it is only on while the height is actually moving. These two
+      // come AFTER the fold_on pair on purpose: the arriving page unfolds with
+      // both classes set, and a drawer that is not clipping lets the rows that
+      // have slid up spill straight over the page.
+      'body.fold_run #fold_page{overflow:hidden;}' +
       'body.fold_run .session_drawer{overflow:hidden;}' +
       // fold_ease — one curve, one duration, on everything that moves, or the
       // page and the rows arrive at different times and the fold comes apart
@@ -1153,7 +1158,6 @@
       'body.fold_fly_on #fold_page h1{opacity:0;}' +
       'body.fold_fly_on .jam_item.current .jam_name{opacity:0;}' +
       '#fold_page h1{transition:opacity 140ms ease;}' +
-      'body.fold_on .session_drawer{max-height:none;overflow:visible;}' +
       'body.fold_jump #fold_page,body.fold_jump .session_drawer,' +
         'body.fold_jump .session_drawer .jam_menu{transition:none;}' +
       // nothing is below the list any more, so nothing casts a shadow into it
@@ -1477,7 +1481,6 @@
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
           set_open(false);
-          fold_ride(note.y, FOLD_MS);
         });
       });
       return;
