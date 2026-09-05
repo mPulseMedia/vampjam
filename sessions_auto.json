@@ -33,5 +33,14 @@
     "date": "2026-09-04",
     "dur": 1574,
     "count": 1
+  },
+  {
+    "page": "session.html?p=2026_09_04_redwood_city_10_12_38p",
+    "name": "2026-09-04 7:31p Redwood City",
+    "date": "2026-09-04",
+    "dur": 9676,
+    "count": 3,
+    "pending": true,
+    "ts": 1788585159145
   }
 ]
