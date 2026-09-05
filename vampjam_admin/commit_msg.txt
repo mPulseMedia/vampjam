@@ -1,1 +1,1 @@
-both_ways
+auto_commit

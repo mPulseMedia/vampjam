@@ -268,6 +268,11 @@
   // filled centre. The disc in the list was red because it was the only red
   // thing there; up here it is one of four icons and wears their colour.
   var ICO_REC_H = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.8" fill="currentColor" stroke="none"/></svg>';
+  // ICO_NEW_ROW — the row's version, and it stays the solid red disc. Down here
+  // it is the only red thing in a column of blue cassettes and it is the one row
+  // that starts something rather than opening something; up there it is one of
+  // four grey icons. Same idea, two drawings, on purpose.
+  var ICO_NEW_ROW = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>';
   var ICO_HEART_M = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.2-1.1C6.2 15.1 3.2 12.4 3.2 9.1c0-2.6 2-4.6 4.6-4.6 1.5 0 2.9.7 3.8 1.8.9-1.1 2.3-1.8 3.8-1.8 2.6 0 4.6 2 4.6 4.6 0 3.3-3 6-7.6 10.1L12 20.3z"/></svg>';
   // row_x — the same X the highlight rows use for "remove this", instead of a
   // trash can. Two glyphs for one idea is one glyph too many, and the X is the one
@@ -339,10 +344,26 @@
     // then told not to behave like one: no hover, no press, nothing to tap.
     // list_title — "Recordings", not "Sessions": every row under it is something
     // that was recorded, and the word the app uses for the act is Record.
-    // nav_pair — Favorites and New recording moved OUT of this list and into the
-    // header, where they are always one tap away instead of two. What is left is
-    // what the heading says: recordings, and nothing else.
+    // both_ways — Favorites and New recording are in the header AND here. Taken
+    // back: the header icons are the fast way, the rows are the way you find
+    // them when you do not yet know the icons mean that. The two are not in
+    // competition — a list you opened is a place to look things up.
     var rows = ['<div class="jam_item jam_title"><span class="jam_name">Recordings</span></div>'];
+    rows.push('<div class="jam_item jam_new"><a class="jam_link" href="record.html">'
+      + '<span class="jam_left"><span class="jam_ico">' + ICO_NEW_ROW + '</span><span class="jam_name">New recording</span></span></a></div>');
+    var favSeen = false;
+    try { favSeen = localStorage.getItem('vampjam_fav_seen') === '1'; } catch (eF) {}
+    if (favSeen) {
+      // fav_share — the Favorites row shares like a session row does: same
+      // button, same slot, same handler (wire_links binds every .jam_share in
+      // the menu). The empty menu_sub and del spacer keep its right edge lined
+      // up with the sessions below.
+      var favCur = (PKEY === 'favorites.html') ? ' current' : '';
+      rows.push('<div class="jam_item' + favCur + '"><a class="jam_link' + favCur + '" href="favorites.html">'
+        + '<span class="jam_left"><span class="jam_ico">' + ICO_HEART_M + '</span><span class="jam_name">Favorites</span></span></a>'
+        + '<button class="jam_share" data-href="favorites.html" aria-label="Copy link to Favorites">' + ICO_SHARE + '</button>'
+        + '<span class="menu_sub"></span><span class="jam_del_sp"></span></div>');
+    }
     all.forEach(function (s) {
       var cur = (s.page === PKEY) ? ' current' : '';
       // dur_hide: rows show only the moment count — durations stay in the
