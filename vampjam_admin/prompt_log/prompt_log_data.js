@@ -9,8 +9,70 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "323 fold_in",
+        id: "324 row_fly",
         expanded: true,
+        nodes: [
+          { text: "324 row_fly", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tapping a row three or four down: that row should MOVE to the height its name will sit at on the page I am going to." },
+              { text: "Begin slowly, get quicker \u2014 so it does not jar." },
+              { text: "Rows above it go up; rows below it get pushed down past the bottom edge." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK and here\u2019s something else about the animation is that when I\u2019m going from a list say I click an item that\u2019s the visually the third or fourth down on the list so I\u2019ve got three or so siblings above me and more siblings may be below me and when I fully open this page what\u2019s in this row is going to be at a certain height on the page that I\u2019m going to so I wanna see that row move to that height that matching height where I\u2019m going in a way that begins slowly and moves more quickly overtime so that it is not a jarring transition and yeah, so that moves to the right location and it moves whatever is above it up and as it is exposing what is below it and pushing those rose that are siblings below itself pushed further down beyond the edge of the viewport" }
+            ]},
+            { text: "the_realisation", children: [
+              { text: "the lit row and the page\u2019s title are the SAME NAME in two places" },
+              { text: "so this is not a page appearing near a row \u2014 it is that name moving, and the list and the page rearranging around it" },
+              { text: "put that way the animation writes itself, and both directions are one animation with the ends swapped" }
+            ]},
+            { text: "how_it_flies", children: [
+              { text: "one fixed clone, drawn in the destination\u2019s clothes and scaled to the origin\u2019s type size \u2014 the whole trip is one transform plus a colour" },
+              { text: "both real ends are hidden while it is in the air, or the same words are on screen in three places" },
+              { text: "measuring costs two forced reflows in one frame: put the layout in the END state, read it, put it back, read that. guessing the landing spot would break the first time a page had a different header" }
+            ]},
+            { text: "the_h1_trap", children: [
+              { text: "the title is a centred flex box the width of the screen, so its rect\u2019s left edge is nowhere near the left edge of the WORDS" },
+              { text: "the clone leaves from and lands on text, so the title is measured with a Range over its own text node" },
+              { text: "the row name is a plain span, so it is not \u2014 two different measurements for two different shapes" }
+            ]},
+            { text: "fold_anchor", children: [
+              { text: "clipping a shrinking box takes the BOTTOM off \u2014 which ate the lit row first and left the rows above sitting still" },
+              { text: "the rows above are the ones that should move, so the menu now slides by exactly what the box lost" },
+              { text: "that pins its bottom to the seam: the lit row rides the top of the page the whole way, everything above it leaves upward" }
+            ]},
+            { text: "fold_push", children: [
+              { text: "the rows below are no longer shrunk, they are pushed \u2014 they keep their real height and the growing page shoves them off the bottom" },
+              { text: "shrinking them looked like they were being deleted" }
+            ]},
+            { text: "fold_ease", children: [
+              { text: "one curve, one duration (380ms), on the drawers, the menu, the page and the clone" },
+              { text: "slow off the mark, quicker as it goes \u2014 asked for by name" },
+              { text: "the tail is eased just enough that it settles instead of stopping dead, which is the part that would actually read as jarring" }
+            ]},
+            { text: "ordering_bug_found", children: [
+              { text: "fold_on set overflow:visible on the drawer and sat AFTER the fold_run rule" },
+              { text: "the arriving page unfolds with BOTH classes set, so it was not clipping \u2014 the rows that had slid up would have spilled over the page" },
+              { text: "the fold_run pair comes second now, on purpose, with the reason written beside it" }
+            ]},
+            { text: "row_fly_test", children: [
+              { text: "new, 25 assertions, and it samples the flight frame by frame rather than checking a class was set" },
+              { text: "where it starts (the title TEXT, not the centred box), where it lands, and the easing MEASURED \u2014 under a quarter of the distance in the first third, over 1.3x that in the second" },
+              { text: "two of its own assertions were wrong first: the title fades rather than snapping off, and reading the inline transform reports only where the menu is GOING" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "eighteen suites, all green" },
+              { text: "drawer.js v=157" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "323 fold_in",
+        expanded: false,
         nodes: [
           { text: "323 fold_in", children: [
             { text: "prompt_restate", children: [
