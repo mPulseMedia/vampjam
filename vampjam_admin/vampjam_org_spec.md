@@ -4326,7 +4326,38 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   pieces, stitched in the bucket, session written, three moments intact, the pending mark gone
   from the registry. part_upload works on a real file, not just a fixture.
   Still no new trace.
-- NEXT → add entry 327 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 327 name_edit · b335 · the pencil beside the title renames the title; the two sessions it broke
+  are repaired.
+  Paul wanted to rename a recording, tapped the pencil next to its name, and typed into the first
+  field he saw. That field was the audio FILE URL. Two sessions ended up pointing at files that
+  were never written: redwood_city_10_12_38p → 2026_09_04_sound_union_10_12_38p.m4a, and
+  11_23p_portola_valley → 2026_09_04_11_23p_farm.m4a. Both silent — the page just would not play.
+  This is not a mis-tap. The one control that reads as "change this name" is the one that
+  repointed the page at nothing, and the field that DID hold the name was second.
+  name_undo — both URLs restored from git (the uploader names a file after its page id, so the
+  right name was never in doubt; R2 is still unreachable from here, but the repo is proof enough).
+  And the rename he MEANT applied, in both places a display name lives: the session file's
+  audio.label and the registry row's name. Redwood City → Sound Union, Portola Valley → The Farm.
+  Those came from what he typed into the file field, which is the only record of the intent; "The
+  Farm" is a guess at the article and one word to correct.
+  name_edit — the pencil now turns the title into a field: current name, selected, Enter saves,
+  Escape leaves it alone. Saving writes the session file AND the registry, because the list draws
+  from the registry and a rename that touched one would show the old name in the list for ever.
+  The registry half is a new export from drawer.js (vampjamRegRename), where reg_fresh, reg_union
+  and sync_write already live; on the eight hand-built pages there is no registry row and it says
+  so — "Renamed here — the list keeps its own name" — rather than implying the list changed.
+  The audio-file form is still reachable and now sits one deliberate step further in, from a
+  plainly-worded link inside the rename editor, with a warning above its first field saying what
+  that field is and that the name is the pencil by the title.
+  name_edit_test is new, 25 assertions: the pencil's own label, that it opens a NAME field and not
+  the file form, prefilled and selected; Escape writing nothing; Enter changing the page, the tab
+  title, the session file's label with the audio URL UNTOUCHED and the moments intact, and the
+  registry row's name with its page, date and count kept; exactly two writes carry the rename;
+  the file form still reachable, warning, and prefilled with the real file; and all nine pages.
+  Re-ran all twenty-two other suites. Green.
+  drawer.js v=160.
+  Still no new trace.
+- NEXT → add entry 328 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

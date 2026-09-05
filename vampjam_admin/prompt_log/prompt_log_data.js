@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "334b dump_hide",
+        id: "335 name_edit",
         expanded: true,
+        nodes: [
+          { text: "335 name_edit", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tried to rename a recording, changed the file name instead, and now some recent ones do not work." },
+              { text: "Undo the file-name change, get them working, and make the change I actually meant \u2014 the display name." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I tried to edit the name of one of the maybe it was the file and I should\u2019ve just edited the display name but now I think some of the more recent files don\u2019t work. Can you undo the change to the name that I did? I guess the file name to see if you can get it back and working and maybe make the change that I did to the display on the file." }
+            ]},
+            { text: "what_broke", children: [
+              { text: "two sessions, both silent: they pointed at audio files that were never written" },
+              { text: "7:31p Redwood City \u2192 a sound_union file that does not exist" },
+              { text: "11:23p Portola Valley \u2192 a farm file that does not exist" },
+              { text: "not a mis-tap: the pencil beside the NAME opened a form whose first field was the FILE" }
+            ]},
+            { text: "fixed", children: [
+              { text: "both point at their real files again \u2014 they will play" },
+              { text: "and the rename you meant is applied, in the page and in the list: Sound Union, The Farm" },
+              { text: "The Farm is my guess at the article \u2014 one word to correct if you want plain Farm" }
+            ]},
+            { text: "so_it_cannot_happen_again", children: [
+              { text: "the pencil renames the title now: tap it, the name becomes a field, Enter saves, Escape leaves it" },
+              { text: "it writes both places a name lives, so the list changes too \u2014 a rename that touched one would show the old name for ever" },
+              { text: "the audio-file form is still there, one step further in, behind a link that says what it is, with a warning above the field" }
+            ]},
+            { text: "name_edit_test", children: [
+              { text: "new, 25: the pencil opens a NAME field and not the file form; Escape writes nothing; Enter changes page, tab, file label and list row \u2014 with the audio URL untouched and the moments intact" },
+              { text: "two writes, no storm; the file form still reachable and warning; all nine pages" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "all twenty-two other suites, green. drawer.js v=160" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "334b dump_hide",
+        expanded: false,
         nodes: [
           { text: "334b dump_hide", children: [
             { text: "prompt_restate", children: [
