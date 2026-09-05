@@ -9,8 +9,64 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "321 nav_state",
+        id: "322 list_fold",
         expanded: true,
+        nodes: [
+          { text: "322 list_fold", children: [
+            { text: "prompt_restate", children: [
+              { text: "Going from favorites / a session / the recorder to the session list, collapse the current page UNDER its own row." },
+              { text: "What the collapse reveals is the other rows \u2014 above it and below it." },
+              { text: "You see where you are when it finishes. Returning: later." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When transitioning from the favorites or from the recording or from any of the individual sessions when transitioning to the session list, I want to change what is the current page to collapse underneath the road that contains the word favorites and above it and below that row, what is revealed during that collapse is that there are other rows on par with the screen with each of the sessions with the recording screen, and you see where you are when the full collapse we\u2019ll figure out how to return later" }
+            ]},
+            { text: "why_it_is_right", children: [
+              { text: "the old open pushed the page down and parked it below the rows \u2014 that says your page is under the list SOMEWHERE" },
+              { text: "the list already knows where: one of its rows is this page" },
+              { text: "so the page folds into that row, and the answer to where am I is just the lit row sitting in the middle of the list" }
+            ]},
+            { text: "the_shape", children: [
+              { text: "at boot everything after the drawer is wrapped in #fold_page, and a SECOND drawer, #session_low, goes after it" },
+              { text: "build_menu splits the same rows array at the current row \u2014 above it to the top drawer, below it to the low one" },
+              { text: "so the DOM reads top-of-list, page, rest-of-list, which is literally the picture" }
+            ]},
+            { text: "one_number", children: [
+              { text: "k drives all of it: 0 = the page, 1 = the list. rows grow by k, the page shrinks by the same k" },
+              { text: "the finger drag sets k directly, so a pull and a tap are one motion at two speeds \u2014 not two animations kept looking alike" }
+            ]},
+            { text: "fold_back", children: [
+              { text: "folded open, tapping your own lit row unfolds instead of navigating" },
+              { text: "reloading yourself is the wrong answer to take me back where I was \u2014 so the return path is already in" }
+            ]},
+            { text: "three_traps", children: [
+              { text: "the wrapper is bare \u2014 no padding, no border \u2014 so margins still collapse through it and the page lays out exactly as before" },
+              { text: "overflow:hidden on it would have killed the session page\u2019s sticky player, so it is only on while the height is moving" },
+              { text: "landscape has body{display:grid} with body>*{grid-column:1}; the wrapper would have eaten that, so there it is display:contents and the low half is not drawn" }
+            ]},
+            { text: "record_page", children: [
+              { text: "it cannot fold INTO its row \u2014 it deliberately carries no list, so there is no row to fold into" },
+              { text: "it does the half it can: collapse toward the top edge, then hand over. same motion, split across the navigation" }
+            ]},
+            { text: "list_fold_test", children: [
+              { text: "new, 24 assertions, and geometric rather than class-based" },
+              { text: "the one that matters: the next row\u2019s top lands within 2px of the lit row\u2019s bottom \u2014 that IS the claim, the page collapsed out from between them" },
+              { text: "24 of 24 first run, which is unusual and worth saying" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "sixteen suites, all green \u2014 nav_state 15, nav_pair 42, list_title 22, del_same 19, play_same 16, list_home 16, del_leave 16" },
+              { text: "rec_calm 22, rec_match 28, fav_match 23, icon_snug 12, grip_only 13, tag_quiet 18, time_flip 32, logo_line 30, audio_grade 18" },
+              { text: "drawer.js v=154" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "321 nav_state",
+        expanded: false,
         nodes: [
           { text: "321 nav_state", children: [
             { text: "prompt_restate", children: [
