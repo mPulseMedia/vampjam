@@ -4019,7 +4019,38 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   tag_quiet 18, time_flip 32, logo_line 30, audio_grade 18. Green.
   drawer.js v=154.
   Still no new trace.
-- NEXT → add entry 317 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 317 fold_in · b323 · tapping a row grows that page out of the gap under it — the collapse, backwards.
+  list_fold gave the list one direction. This is the other one, and the point is that it is not a
+  second animation: it is the same one played in reverse, so the pair reads as one hinge rather
+  than as two effects that resemble each other.
+  The hard part is that this direction crosses a page load. The answer is that it does not animate
+  on the way out at all. Tapping a row writes a note — which page, what the list's scroll offset
+  was — and navigates immediately. The arriving page reads the note, comes up folded SHUT at that
+  same offset, and unfolds. Both documents are showing the identical list at the identical scroll
+  when the swap happens, so the swap is the invisible part. What you see is the row you tapped and
+  the page growing out from under it.
+  Anything that moved on the departing page would be motion the swap then has to undo, which is
+  why close_then is skipped here rather than kept "for polish".
+  fold_ride — the rows above the tapped one collapse while the page grows, so the list rides
+  upward and the page has to land on its own top. Left to the browser this is a scroll clamp per
+  frame that stops wherever the document happens to get short enough; it is tweened over the same
+  320ms instead, so it ends on the page rather than in the middle of it.
+  The note is deliberately fragile: sessionStorage, five seconds, and it must name THIS page.
+  Back, a bookmark, a typed URL and a stale tab all fail one of those and open the ordinary way.
+  It is also consumed on read, so it cannot fire twice.
+  record.html carries no list, so it reads the note itself and plays its own fold_out backwards —
+  the same motion in both directions, which is the whole reason fold_out was written that way.
+  fold_in_test is new, 17 assertions. The one that earns its keep is fold_watch: the end state
+  alone would pass even if the page never folded and simply appeared, so an init script records
+  the body's classes every frame from the first one, and the suite asserts the shut frames exist,
+  come first, and end. Plus: the note is consumed not left lying about, your own row still unfolds
+  in place without writing a note, and a typed URL is untouched.
+  Re-ran seventeen suites: list_fold 24, nav_state 15, nav_pair 42, list_title 22, del_same 19,
+  play_same 16, list_home 16, del_leave 16, rec_calm 22, rec_match 28, fav_match 23, icon_snug 12,
+  grip_only 13, tag_quiet 18, time_flip 32, logo_line 30, audio_grade 18. Green.
+  drawer.js v=155.
+  Still no new trace.
+- NEXT → add entry 318 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
