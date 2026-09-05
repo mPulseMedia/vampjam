@@ -543,7 +543,7 @@
   }
 
   var mediaRec = null, chunks = [], startT = 0, timer = null, blob = null, mime = '', ext = 'm4a';
-  var LOC_ID = null, chunkSeq = 0;
+  var LOC_ID = null, chunkSeq = 0, chunkBytes = 0;
   function live_tag_data() {
     return liveTags.map(function (lt) {
       var nm = '';
@@ -556,7 +556,7 @@
     idb_put('recs', {
       id: LOC_ID, label: nameIn.value || DEFT, date: ISO,
       dur: Math.round(elapsed()), tags: live_tag_data(),
-      state: state, ts: Date.now(), mime: mime, ext: ext
+      state: state, ts: Date.now(), mime: mime, ext: ext, bytes: chunkBytes
     }).catch(function () {});
   }
   // the session row's X, the same drawing
@@ -683,7 +683,7 @@
       mime = pickMime(); ext = mime.indexOf('webm') >= 0 ? 'webm' : 'm4a';
       mediaRec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
       chunks = []; liveTags = []; recDur = 0; blob = null;
-      LOC_ID = 'loc_' + Date.now(); chunkSeq = 0;
+      LOC_ID = 'loc_' + Date.now(); chunkSeq = 0; chunkBytes = 0;
       momList.innerHTML = ''; momList.style.display = 'none';
       save_meta('recording');   // the local session row exists from second zero
       recBar.innerHTML = ''; numStrip.innerHTML = '';
@@ -691,6 +691,7 @@
         if (e.data && e.data.size) {
           chunks.push(e.data);
           // persist as we go — a reload mid-recording keeps everything so far
+          chunkBytes += (e.data && e.data.size) || 0;
           idb_put('chunks', { id: LOC_ID, seq: chunkSeq++, blob: e.data }).catch(function () {});
           save_meta('recording');
         }
@@ -844,9 +845,80 @@
       x.onerror = function () { log('fail', 'upload network error at ' + (Date.now() - t0) + 'ms'); rej(new Error('network error while uploading')); };
       x.ontimeout = function () { log('fail', 'upload timed out at ' + (Date.now() - t0) + 'ms'); rej(new Error('upload timed out after 10 minutes')); };
       x.onabort = function () { log('fail', 'upload aborted at ' + (Date.now() - t0) + 'ms'); rej(new Error('upload aborted')); };
-      log('fetch', 'POST ' + url.replace(/^https?:\/\//, '').slice(0, 60) + ' body=' + (body && body.size) + ' xhr');
+      log('fetch', 'POST ' + url.replace(/^https?:\/\//, '').slice(0, 80) + ' body=' + (body && body.size || 0) + ' xhr');
       try { x.send(body); } catch (eS) { log('fail', 'send threw: ' + (eS && eS.message ? eS.message : eS)); rej(eS); }
     });
+  }
+  // part_upload — the file goes up in 8 MB pieces and the worker stitches
+  // them into one object. A 2h41m take is ~150 MB; one request is stopped at
+  // 100 MB at the edge, and the worker used to read the whole body into a
+  // 128 MB box besides. Pieces clear both walls, and each piece is small
+  // enough that a phone never holds the whole file in memory to send it.
+  // An old worker answers ?op=init with "empty body" (it ignores the query and
+  // sees no bytes) — that is the signal to fall back to the one-shot POST.
+  var PART = 8 * 1024 * 1024;
+  function up_json(r) {
+    var j = null;
+    try { j = JSON.parse(r.text); } catch (e) {}
+    return j;
+  }
+  function err_of(r) {
+    var j = up_json(r);
+    if (j && j.error) return 'upload ' + j.error;
+    return 'upload ' + r.status + ': ' + String(r.text || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 90);
+  }
+  async function upload_audio(blob2, name, onProg) {
+    var ctype = blob2.type || 'audio/mp4';
+    var head = { 'Content-Type': ctype, 'X-File-Name': name, 'X-Upload-Secret': '' };
+    var total = blob2.size;
+    // -- pieces --
+    var init = await xhr_post(WORKER_UPLOAD_URL + '?op=init', head, new Blob([]), null);
+    var ij = up_json(init);
+    if (!(ij && ij.ok && ij.uploadId)) {
+      log('stage', 'worker has no piece path (' + (ij && ij.error ? ij.error : init.status) + ') — one shot');
+      if (total > 95 * 1024 * 1024) {
+        throw new Error('this file is ' + fmt_mb(total) + ' and the upload worker needs updating to take it in pieces — see Do this next');
+      }
+      var one = await xhr_post(WORKER_UPLOAD_URL, head, blob2, onProg);
+      var oj = up_json(one);
+      if (!oj) throw new Error(err_of(one));
+      if (!oj.ok) throw new Error('upload ' + (oj.error || one.status));
+      return oj;
+    }
+    var key = ij.key, id = ij.uploadId, parts = [], sent = 0;
+    var count = Math.ceil(total / PART);
+    log('stage', 'pieces: ' + count + ' x ' + fmt_mb(PART) + ' as ' + key);
+    var q = '&key=' + encodeURIComponent(key) + '&id=' + encodeURIComponent(id);
+    for (var n = 1; n <= count; n++) {
+      var piece = blob2.slice((n - 1) * PART, Math.min(n * PART, total), ctype);
+      var got = null, tries = 0, lastErr = null;
+      while (!got && tries < 3) {
+        tries++;
+        try {
+          var pr = await xhr_post(WORKER_UPLOAD_URL + '?op=part' + q + '&n=' + n,
+            { 'Content-Type': ctype, 'X-Upload-Secret': '' }, piece,
+            function (loaded) { if (onProg) onProg(sent + loaded, total); });
+          var pj = up_json(pr);
+          if (pj && pj.ok && pj.etag) got = pj;
+          else lastErr = new Error(err_of(pr) + ' (piece ' + n + ')');
+        } catch (eP) { lastErr = eP; }
+        if (!got && tries < 3) { log('stage', 'piece ' + n + ' failed, trying again (' + (lastErr && lastErr.message) + ')'); await new Promise(function (r) { setTimeout(r, 1200 * tries); }); }
+      }
+      if (!got) {
+        try { await xhr_post(WORKER_UPLOAD_URL + '?op=abort' + q, { 'X-Upload-Secret': '' }, new Blob([]), null); } catch (eA) {}
+        throw lastErr || new Error('piece ' + n + ' failed');
+      }
+      parts.push({ partNumber: got.partNumber, etag: got.etag });
+      sent += piece.size;
+      if (onProg) onProg(sent, total);
+    }
+    log('stage', 'all ' + count + ' pieces up — stitching');
+    var done = await xhr_post(WORKER_UPLOAD_URL + '?op=done' + q,
+      { 'Content-Type': 'application/json', 'X-Upload-Secret': '' },
+      new Blob([JSON.stringify({ parts: parts })], { type: 'application/json' }), null);
+    var dj = up_json(done);
+    if (!(dj && dj.ok && dj.url)) throw new Error(err_of(done) + ' (stitch)');
+    return dj;
   }
   async function upload_core(o) {
     save_busy();
@@ -894,20 +966,9 @@
     } catch (ePre) { log('stage', 'placeholder failed: ' + (ePre && ePre.message ? ePre.message : ePre)); }
     try {
       say('uploading 0 of ' + fmt_mb(blob2.size) + '…');
-      var r = await xhr_post(WORKER_UPLOAD_URL, {
-          'Content-Type': blob2.type || 'audio/mp4',
-          'X-File-Name': id + '.' + (o.ext || 'm4a'),
-          'X-Upload-Secret': ''
-        }, blob2, function (loaded, total) {
-          if (o.trace) status.textContent = 'uploading ' + fmt_mb(loaded) + ' of ' + fmt_mb(total) + '…';
-        });
-      // dump_status — a non-JSON reply (a 413 page, a gateway error) used to
-      // surface as a parse error that hid the status. Read the text first.
-      var txt = r.text;
-      var j = null;
-      try { j = JSON.parse(txt); } catch (eJ) {}
-      if (!j) throw new Error('upload ' + r.status + ': ' + txt.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 90));
-      if (!j.ok) throw new Error('upload ' + (j.error || r.status));
+      var j = await upload_audio(blob2, id + '.' + (o.ext || 'm4a'), function (loaded, total) {
+        if (o.trace) status.textContent = 'uploading ' + fmt_mb(loaded) + ' of ' + fmt_mb(total) + '…';
+      });
       say('server has it — writing the session…');
       // (still just the dots — the step is real but it is not his business)
       var now = Date.now();
@@ -1024,15 +1085,26 @@
     L.push('');
     L.push('-- on this device (IndexedDB) --');
     try {
-      var metas = await idb_all('recs');
+      // dump_light — touching a 150 MB take's chunk blobs to add up their sizes
+      // is what made the dump hang on the phone. Count the keys only, and do
+      // not wait more than four seconds for the database to answer.
+      var metas = await Promise.race([idb_all('recs'),
+        new Promise(function (_, rej) { setTimeout(function () { rej(new Error('idb slow')); }, 4000); })]);
       if (!metas.length) L.push('(no local recordings)');
       for (var i = 0; i < metas.length; i++) {
-        var m = metas[i], parts = [];
-        try { parts = await idb_chunks(m.id); } catch (e2) {}
-        var bytes = parts.reduce(function (a, b) { return a + (b && b.size || 0); }, 0);
+        var m = metas[i], n = '?';
+        try {
+          n = await Promise.race([rec_db().then(function (db) {
+            return new Promise(function (res, rej) {
+              var g = db.transaction('chunks', 'readonly').objectStore('chunks')
+                .count(IDBKeyRange.bound([m.id, 0], [m.id, Infinity]));
+              g.onsuccess = function () { res(g.result); }; g.onerror = function () { rej(g.error); };
+            });
+          }), new Promise(function (_, rej) { setTimeout(function () { rej(new Error('slow')); }, 2000); })]);
+        } catch (e2) { n = 'err'; }
         L.push('  ' + m.id + '  ' + (m.label || '') + '  ' + (m.date || '') + '  ' + (m.dur || 0) + 's'
           + '  state=' + m.state + '  mime=' + (m.mime || '') + '  ext=' + (m.ext || '')
-          + '  chunks=' + parts.length + '  bytes=' + fmtB(bytes)
+          + '  chunks=' + n + (m.bytes ? '  bytes=' + fmtB(m.bytes) : '')
           + '  tags=' + ((m.tags || []).length) + (m.cloudPage ? '  cloud=' + m.cloudPage : ''));
       }
     } catch (e3) { L.push('  idb error: ' + e3); }
