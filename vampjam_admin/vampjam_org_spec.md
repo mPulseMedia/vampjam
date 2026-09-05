@@ -4159,7 +4159,38 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   128 kbps is well over 100 MB, and the upload worker's request body limit on the current plan is
   100 MB. If the dump shows a 413, the fix is chunked upload to the worker, not a bigger button.
   Still no new trace.
-- NEXT → add entry 321 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 321 retry_trace · b327 · "try again" now narrates every stage, the audio goes up over XHR so the
+  byte count is visible, and the dump no longer talks over the status line.
+  Paul tapped try again and got nothing — no dots, no error, nothing in the dump about it. He is
+  right that this is where to look: a retry that says nothing is a retry that cannot be debugged.
+  Two causes, one his and one mine.
+  Mine: rec_dump wrote "Copied — paste it to me" INTO the status line — the same line that holds
+  the try-again link. Tapping copy debug info threw the link away at the exact moment it mattered.
+  The confirmation now goes on the button itself and reverts after 2.6s; the status line belongs
+  to the upload. dump_quiet, and a test that the link survives a dump.
+  His: a first save shows the dots and nothing else (rec_calm — the step commentary was
+  gobbledygook and he was right). But a RETRY is the failure case, and the one thing he asked for
+  is to see where it stops. So upload_core has a trace flag: set on the try-again tap and on the
+  automatic recovery at page load, every stage says its name in the status — "retry: file is
+  141.2 MB audio/mp4, 5400s", "registering placeholder…", "uploading 12.3 of 141.2 MB…", "server
+  has it — writing the session…" — and every stage is logged either way. The first save still
+  shows only the dots.
+  The audio goes up over XMLHttpRequest now, not fetch, for one reason: progress. fetch says
+  nothing between "sent" and "answered", and a 140 MB body that dies at 40 MB looks exactly like
+  one that never started. XHR reports bytes: logged at every 10%, shown live in the status on a
+  traced upload, with a ten-minute timeout and distinct messages for network error, timeout,
+  abort and a send() that throws. The tap itself is logged too.
+  Recovery logs how many chunks it found, their total, and — separately — whether assembling them
+  into one Blob succeeded. On a phone that is a real place for a 140 MB take to die silently.
+  rec_dump_test grew to 34. New: the recovery stage line with chunk count and size, the XHR line
+  with the full body size, the retry producing at least three distinct status texts, the
+  "uploading … of 12.0 MB" text, the error again at the end rather than nothing, the tap and the
+  stages and the second refusal in the log, and the try-again link surviving a dump. Under
+  route interception the browser never puts bytes on a wire, so upload progress events do not
+  fire in the harness — the suite proves the XHR went out with the whole body and stops there.
+  Re-ran rec_calm 22, rec_match 28, tag_quiet 18, fold_in 17. Green.
+  Still no new trace.
+- NEXT → add entry 322 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

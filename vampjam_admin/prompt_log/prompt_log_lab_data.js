@@ -9,8 +9,55 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "326 rec_dump",
+        id: "327 retry_trace",
         expanded: true,
+        nodes: [
+          { text: "327 retry_trace", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tapping try again shows nothing in the debug field. Start the debugging there." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Nothing is presented in the copy for D. bug field when I click the try again and I believe that that\u2019s where we should start the focus of the debut" }
+            ]},
+            { text: "two_causes", children: [
+              { text: "mine: the dump wrote Copied INTO the status line \u2014 the same line that holds the try-again link. tapping copy threw the link away. the confirmation is on the button now" },
+              { text: "his: a retry showed the dots and nothing else, the same as a first save. a retry is the failure case; it now narrates" }
+            ]},
+            { text: "what_try_again_says_now", children: [
+              { text: "retry: file is 141.2 MB audio/mp4, 5400s" },
+              { text: "registering placeholder\u2026" },
+              { text: "uploading 12.3 of 141.2 MB\u2026 \u2014 live, as the bytes go" },
+              { text: "server has it \u2014 writing the session\u2026" },
+              { text: "or the error, with the server\u2019s status and its words" }
+            ]},
+            { text: "xhr_not_fetch", children: [
+              { text: "the audio goes up over XMLHttpRequest now, for one reason: progress" },
+              { text: "fetch says nothing between sent and answered \u2014 a 140 MB body that dies at 40 MB looks exactly like one that never started" },
+              { text: "logged at every 10%, ten-minute timeout, distinct messages for network error, timeout, abort, and a send that throws" }
+            ]},
+            { text: "recovery_logged", children: [
+              { text: "how many chunks it found, their total, and separately whether assembling them into one file succeeded" },
+              { text: "on a phone that is a real place for a 140 MB take to die silently" }
+            ]},
+            { text: "next_step_for_paul", children: [
+              { text: "reload the Record page, tap try again, watch the status line, then tap copy debug info and paste it" },
+              { text: "the line that matters is the last sent \u2026% one \u2014 how far the bytes got before it stopped" }
+            ]},
+            { text: "rec_dump_test", children: [
+              { text: "34 now. the retry produces at least three distinct status texts, the uploading count, the error again at the end; the tap, the stages and the second refusal are in the log; the link survives a dump" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "rec_calm 22, rec_match 28, tag_quiet 18, fold_in 17. green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "326 rec_dump",
+        expanded: false,
         nodes: [
           { text: "326 rec_dump", children: [
             { text: "prompt_restate", children: [
