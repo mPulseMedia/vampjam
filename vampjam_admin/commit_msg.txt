@@ -1,1 +1,1 @@
-retry_trace
+auto_commit
