@@ -1,0 +1,223 @@
+// part_upload_test — a take too big for one request goes up in pieces and
+// comes down as one file. Three things are proven here: the worker's piece
+// path with a fake bucket, the phone's piece sender against that worker, and
+// the fallback when the worker has not been updated yet.
+const { chromium } = require('playwright');
+const fs = require('fs'), path = require('path');
+const DIR = process.env.VJ_DIR || '/tmp/vj';
+
+let pass = 0, fail = 0;
+const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
+                            : (fail++, console.log('  FAIL ' + n + (g !== undefined ? '  got: ' + g : ''))); };
+const MB = 1024 * 1024;
+
+// ---- a bucket that behaves like R2's multipart API, in memory ----
+function fake_bucket() {
+  const objs = {}, mpus = {};
+  return {
+    objs, mpus,
+    async put(k, body, opt) { objs[k] = { size: body.byteLength, ctype: opt.httpMetadata.contentType, parts: 1 }; },
+    async createMultipartUpload(k, opt) {
+      const id = 'mpu_' + Object.keys(mpus).length;
+      mpus[id] = { key: k, ctype: opt.httpMetadata.contentType, parts: {}, aborted: false };
+      return { uploadId: id, key: k };
+    },
+    resumeMultipartUpload(k, id) {
+      const m = mpus[id];
+      return {
+        async uploadPart(n, body) {
+          if (!m || m.key !== k) throw new Error('no such upload');
+          m.parts[n] = body.byteLength;
+          return { partNumber: n, etag: 'et' + n + '_' + body.byteLength };
+        },
+        async complete(parts) {
+          if (!m) throw new Error('no such upload');
+          let size = 0;
+          for (const p of parts) {
+            if (!('et' + p.partNumber + '_' + m.parts[p.partNumber] === p.etag)) throw new Error('bad etag ' + p.etag);
+            size += m.parts[p.partNumber];
+          }
+          objs[k] = { size, ctype: m.ctype, parts: parts.length };
+          return { size };
+        },
+        async abort() { if (m) m.aborted = true; }
+      };
+    }
+  };
+}
+
+(async () => {
+  // ================= 1. the worker, on its own =================
+  const worker = (await import(path.join(DIR, 'cloudflare', 'r2_upload_worker.js'))).default;
+  const env = { BUCKET: fake_bucket(), PUBLIC_BASE: 'https://pub.example/' };
+  const W = 'https://w.example/';
+  const call = async (q, headers, body) => {
+    const r = await worker.fetch(new Request(W + q, { method: 'POST', headers, body }), env);
+    return { status: r.status, j: await r.json() };
+  };
+  const H = { 'Content-Type': 'audio/mp4', 'X-File-Name': 'big_take.m4a' };
+  const init = await call('?op=init', H, null);
+  ok('worker: init opens a piece upload',        init.j.ok && init.j.uploadId && init.j.key === 'big_take.m4a', JSON.stringify(init.j));
+  const q = '&key=' + init.j.key + '&id=' + init.j.uploadId;
+  const w1 = await call('?op=part' + q + '&n=1', { 'Content-Type': 'audio/mp4' }, new Uint8Array(8 * MB));
+  const w2 = await call('?op=part' + q + '&n=2', { 'Content-Type': 'audio/mp4' }, new Uint8Array(3 * MB));
+  ok('worker: pieces are accepted with etags',   w1.j.ok && w1.j.etag && w2.j.ok && w2.j.etag, JSON.stringify([w1.j, w2.j]));
+  const bad = await call('?op=part' + q + '&n=3', { 'Content-Type': 'audio/mp4' }, null);
+  ok('worker: an empty piece is refused',        bad.status === 400 && /empty/.test(bad.j.error), JSON.stringify(bad.j));
+  const done = await call('?op=done' + q, { 'Content-Type': 'application/json' },
+    JSON.stringify({ parts: [{ partNumber: 1, etag: w1.j.etag }, { partNumber: 2, etag: w2.j.etag }] }));
+  ok('worker: done stitches and returns the URL', done.j.ok && done.j.url === 'https://pub.example/big_take.m4a', JSON.stringify(done.j));
+  ok('worker: the object is the whole 11 MB',    env.BUCKET.objs['big_take.m4a'] && env.BUCKET.objs['big_take.m4a'].size === 11 * MB,
+                                                  JSON.stringify(env.BUCKET.objs));
+  const one = await call('', H, new Uint8Array(2 * MB));
+  ok('worker: the plain one-shot POST still works', one.j.ok && one.j.size === 2 * MB && /big_take/.test(one.j.url), JSON.stringify(one.j));
+  const badkey = await call('?op=part&key=../x&id=' + init.j.uploadId + '&n=1', { 'Content-Type': 'audio/mp4' }, new Uint8Array(10));
+  ok('worker: a key with a path in it is refused', badkey.status === 400, badkey.status);
+  const ab = await call('?op=abort' + q, {}, null);
+  ok('worker: abort answers ok',                 ab.j.ok === true, JSON.stringify(ab.j));
+
+  // ================= 2. the phone, against that worker =================
+  const b = await chromium.launch();
+  const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
+  let newWorker = true;                       // flip to pretend the worker was not updated
+  const pieces = [], syncs = [];
+  let inits = 0, dones = 0, oneShots = 0;
+  const bucket = fake_bucket();
+  const env2 = { BUCKET: bucket, PUBLIC_BASE: 'https://pub.example/' };
+  await ctx.route('**/*', async (r) => {
+    const u = r.request().url();
+    if (u.startsWith('https://vampsf.com/')) {
+      const rel = u.replace('https://vampsf.com/', '').split('?')[0] || 'index.html';
+      const p = path.join(DIR, rel);
+      if (fs.existsSync(p)) {
+        const t = rel.endsWith('.css') ? 'text/css' : rel.endsWith('.js') ? 'application/javascript'
+                : rel.endsWith('.json') ? 'application/json' : 'text/html';
+        return r.fulfill({ status: 200, contentType: t, body: fs.readFileSync(p) });
+      }
+      return r.fulfill({ status: 404, body: '' });
+    }
+    if (u.includes('vampjam-upload')) {
+      const req = r.request();
+      const buf = req.postDataBuffer() || Buffer.alloc(0);
+      const op = (new URL(u)).searchParams.get('op');
+      if (op === 'init') inits++;
+      if (op === 'part') pieces.push(buf.length);
+      if (op === 'done') dones++;
+      if (!op) oneShots++;
+      // the real worker code answers, with the query dropped when "old"
+      const target = newWorker ? u : u.split('?')[0];
+      const headers = {}; for (const [k, v] of Object.entries(req.headers())) headers[k] = v;
+      const resp = await worker.fetch(new Request(target, { method: 'POST', headers, body: buf.length ? buf : null }), env2);
+      return r.fulfill({ status: resp.status, contentType: 'application/json', body: await resp.text() });
+    }
+    if (u.includes('vampjam-sync')) {
+      try { syncs.push(JSON.parse(r.request().postData() || '{}')); } catch (e) {}
+      return r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+    }
+    if (u.includes('api.github.com'))
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ content: Buffer.from('[]').toString('base64'), sha: 'x' }) });
+    if (u.includes('sessions_auto'))
+      return r.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+    return r.fulfill({ status: 204, body: '' });
+  });
+
+  const p = await ctx.newPage();
+  p.on('pageerror', e => { fail++; console.log('  FAIL pageerror: ' + e.message); });
+  await p.goto('https://vampsf.com/record.html');
+  await p.waitForTimeout(600);
+  // a stuck 20 MB take in 5 uneven chunks, the way MediaRecorder leaves them
+  await p.evaluate(() => new Promise((res, rej) => {
+    const rq = indexedDB.open('vampjam_rec', 1);
+    rq.onsuccess = () => {
+      const db = rq.result, tx = db.transaction(['recs', 'chunks'], 'readwrite');
+      tx.objectStore('recs').put({ id: 'loc_big', label: 'Redwood City', date: '2026-09-04',
+        dur: 9676, state: 'ready', ts: Date.now(), mime: 'audio/mp4', ext: 'm4a', tags: [{ t: 10, label: 'a' }] });
+      const sizes = [3, 5, 4, 6, 2];
+      sizes.forEach((mb, i) => tx.objectStore('chunks').put({ id: 'loc_big', seq: i,
+        blob: new Blob([new Uint8Array(mb * 1024 * 1024)], { type: 'audio/mp4' }) }));
+      tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+    };
+    rq.onerror = () => rej(rq.error);
+  }));
+  const seen = [];
+  await p.reload();
+  const watch = setInterval(async () => {
+    const t = await p.evaluate(() => document.getElementById('status').textContent.trim()).catch(() => null);
+    if (t && (!seen.length || seen[seen.length - 1] !== t)) seen.push(t);
+  }, 40);
+  await p.waitForTimeout(9000);
+  clearInterval(watch);
+
+  ok('the phone opened a piece upload',         inits === 1, inits);
+  ok('and sent it as 8 MB pieces, the last one short',
+     pieces.length === 3 && pieces[0] === 8 * MB && pieces[1] === 8 * MB && pieces[2] === 4 * MB, pieces.map(x => x / MB).join(','));
+  ok('then asked for it to be stitched',        dones === 1, dones);
+  ok('and never tried the one-shot',            oneShots === 0, oneShots);
+  const obj = bucket.objs[Object.keys(bucket.objs)[0]];
+  ok('the bucket holds one 20 MB file from 3 parts', !!obj && obj.size === 20 * MB && obj.parts === 3, JSON.stringify(obj));
+  ok('the status counted up in MB',             seen.some(t => /uploading 8\.0 of 20\.0 MB/.test(t)) || seen.some(t => /uploading 16\.0 of 20\.0 MB/.test(t)),
+                                                JSON.stringify(seen).slice(0, 300));
+  const sess = syncs.find(x => /^2026_09_04_redwood_city.*\.json$/.test(x.path) && x.path !== 'sessions_auto.json');
+  ok('the session was written pointing at the stitched file',
+     !!sess && /pub\.example\/2026_09_04_redwood_city/.test(sess.content), sess && sess.content.slice(0, 120));
+  ok('and the page went to it',                  /session\.html\?p=2026_09_04_redwood_city/.test(p.url()), p.url());
+  const left = await p.evaluate(() => new Promise((res) => {
+    const rq = indexedDB.open('vampjam_rec', 1);
+    rq.onsuccess = () => { const g = rq.result.transaction('recs').objectStore('recs').getAll(); g.onsuccess = () => res(g.result.length); };
+  })).catch(() => -1);
+  ok('the local safety copy is gone once the cloud has it', left === 0, left);
+  await p.close();
+
+  // ================= 3. the worker was NOT updated yet =================
+  newWorker = false; pieces.length = 0; inits = 0; dones = 0; oneShots = 0; syncs.length = 0;
+  const p2 = await ctx.newPage();
+  p2.on('pageerror', e => { fail++; console.log('  FAIL pageerror (old): ' + e.message); });
+  await p2.goto('https://vampsf.com/record.html');
+  await p2.waitForTimeout(600);
+  await p2.evaluate(() => new Promise((res, rej) => {
+    const rq = indexedDB.open('vampjam_rec', 1);
+    rq.onsuccess = () => {
+      const db = rq.result, tx = db.transaction(['recs', 'chunks'], 'readwrite');
+      tx.objectStore('recs').put({ id: 'loc_small', label: 'Short one', date: '2026-09-05',
+        dur: 60, state: 'ready', ts: Date.now(), mime: 'audio/mp4', ext: 'm4a', tags: [] });
+      tx.objectStore('chunks').put({ id: 'loc_small', seq: 0, blob: new Blob([new Uint8Array(2 * 1024 * 1024)], { type: 'audio/mp4' }) });
+      tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+    };
+  }));
+  await p2.reload();
+  await p2.waitForTimeout(5000);
+  ok('old worker: the piece path was tried once', inits === 1, inits);
+  ok('old worker: and a small file fell back to the one-shot', oneShots === 1 && pieces.length === 0, oneShots + '/' + pieces.length);
+  ok('old worker: which still lands the session', /session\.html\?p=2026_09_05_short_one/.test(p2.url()), p2.url());
+  await p2.close();
+
+  // a big file against the old worker must say what is needed, not try and die
+  const p3 = await ctx.newPage();
+  p3.on('pageerror', e => { fail++; console.log('  FAIL pageerror (old big): ' + e.message); });
+  await p3.goto('https://vampsf.com/record.html');
+  await p3.waitForTimeout(600);
+  oneShots = 0; inits = 0;
+  await p3.evaluate(() => new Promise((res, rej) => {
+    const rq = indexedDB.open('vampjam_rec', 1);
+    rq.onsuccess = () => {
+      const db = rq.result, tx = db.transaction(['recs', 'chunks'], 'readwrite');
+      tx.objectStore('recs').put({ id: 'loc_huge', label: 'Huge', date: '2026-09-05',
+        dur: 9000, state: 'ready', ts: Date.now(), mime: 'audio/mp4', ext: 'm4a', tags: [] });
+      // 100 MB of chunks, cheaply: twenty 5 MB blobs
+      for (let i = 0; i < 20; i++) tx.objectStore('chunks').put({ id: 'loc_huge', seq: i, blob: new Blob([new Uint8Array(5 * 1024 * 1024)], { type: 'audio/mp4' }) });
+      tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+    };
+  }));
+  await p3.reload();
+  await p3.waitForTimeout(6000);
+  const st = await p3.evaluate(() => document.getElementById('status').textContent.trim()).catch(() => '');
+  ok('old worker + big file: it does not even try the one-shot', oneShots === 0, oneShots);
+  ok('old worker + big file: it says the worker needs updating', /needs updating to take it in pieces/.test(st), st.slice(0, 160));
+  ok('old worker + big file: and points at Do this next',        /Do this next/.test(st), '');
+  await p3.close();
+
+  await b.close();
+  console.log('\n' + pass + ' pass, ' + fail + ' fail');
+  process.exit(fail ? 1 : 0);
+})();
