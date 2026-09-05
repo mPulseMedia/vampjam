@@ -56,7 +56,7 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
   const quiet = await p.evaluate(() => {
     const btn = document.getElementById('dump_btn'), box = document.getElementById('dump_box');
     return { btn: !!btn, text: btn && btn.textContent.trim(), op: btn && getComputedStyle(btn).opacity,
-             boxHidden: box && box.hidden };
+             boxHidden: box && box.hidden && getComputedStyle(box).display === 'none' };
   });
   ok('there is a debug button',            quiet.btn, quiet.btn);
   ok('it says what it does',               /send debug info/i.test(quiet.text || ''), quiet.text);

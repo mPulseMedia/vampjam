@@ -267,6 +267,8 @@
               font: 11px/1.4 ui-monospace, Menlo, monospace; color: var(--fg);
               background: var(--panel); border: 1px solid var(--panel_3); border-radius: 10px;
               padding: 8px; box-sizing: border-box; resize: vertical; }
+  /* display:block above beats the browser's own [hidden] rule, so say it again */
+  .dump_box[hidden] { display: none; }
 
   .tag_numbers, .num_strip { height: 20px !important; }
 
