@@ -53,12 +53,15 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
   // ---------- the quiet state: button there, box not ----------
   await p.goto('https://vampsf.com/record.html');
   await p.waitForTimeout(800);
+  // dump_hide — nothing at the bottom of a page that is working
   const quiet = await p.evaluate(() => {
     const btn = document.getElementById('dump_btn'), box = document.getElementById('dump_box');
     return { btn: !!btn, text: btn && btn.textContent.trim(), op: btn && getComputedStyle(btn).opacity,
+             btnDrawn: btn && getComputedStyle(btn).display !== 'none',
              boxHidden: box && box.hidden && getComputedStyle(box).display === 'none' };
   });
-  ok('there is a debug button',            quiet.btn, quiet.btn);
+  ok('the debug button exists in the page',      quiet.btn, quiet.btn);
+  ok('but is NOT drawn while nothing has failed', quiet.btnDrawn === false, quiet.btnDrawn);
   ok('it says what it does',               /send debug info/i.test(quiet.text || ''), quiet.text);
   ok('and it is quiet',                    parseFloat(quiet.op) < 0.7, quiet.op);
   ok('the box is not there until needed',  quiet.boxHidden === true, quiet.boxHidden);
@@ -92,6 +95,8 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
      /upload 413/.test(after.status), after.status);
   ok('and what the server said',                /Too Large/i.test(after.status), after.status);
   ok('with a way to try again',                 after.retry, after.retry);
+  const shown = await p.evaluate(() => getComputedStyle(document.getElementById('dump_btn')).display !== 'none');
+  ok('and a failed upload is what reveals the button', shown === true, shown);
 
   // ---------- the dump ----------
   await p.click('#dump_btn');

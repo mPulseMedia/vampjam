@@ -1,1 +1,1 @@
-dump_hide
+auto_commit

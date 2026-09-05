@@ -259,6 +259,7 @@
   .fix_more a { color: var(--accent); }
   /* rec_dump — a quiet text button below everything, and a box that is
      not there until it is needed */
+  .dump_btn[hidden] { display: none; }
   .dump_btn { display: block; margin: 18px auto 0; background: transparent; border: none;
               color: var(--muted); opacity: 0.55; font-size: 13px; cursor: pointer;
               padding: 8px 12px; min-height: 36px; }
@@ -342,7 +343,7 @@
        One tap gathers everything this page knows about its own state and
        puts it on the clipboard; the box under it is the fallback for a phone
        that refuses the clipboard, and is hidden until it is needed. -->
-  <button class="ghost dump_btn" id="dump_btn" type="button">send debug info to Claude</button>
+  <button class="ghost dump_btn" id="dump_btn" type="button" hidden>send debug info to Claude</button>
   <textarea class="dump_box" id="dump_box" readonly hidden aria-label="Debug info"></textarea>
 </div>
 
@@ -1022,6 +1023,9 @@
       // written HERE, on the page he is looking at, not on another page he
       // has to know to open. Four lines and a copy button.
       if (/needs updating to take it in pieces/.test(err && err.message || '')) show_fix();
+      // dump_hide — an upload that failed is the only reason to want this
+      var db = document.getElementById('dump_btn');
+      if (db) db.hidden = false;
       var rl = document.getElementById('retry_link');
       if (rl) rl.addEventListener('click', function (e) {
         e.preventDefault();
