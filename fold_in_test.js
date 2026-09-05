@@ -62,7 +62,19 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   await mount(ctx);
   const p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror: ' + e.message); });
-  await p.addInitScript(() => { try { localStorage.setItem('vampjam_fav_seen', '1'); } catch (e) {} });
+  // fold_watch — the end state alone would pass even if the page never folded
+  // at all and simply appeared. This records the body's classes every frame
+  // from the very first one, so the suite can prove the page arrived SHUT.
+  await p.addInitScript(() => {
+    try { localStorage.setItem('vampjam_fav_seen', '1'); } catch (e) {}
+    window.__fold_seen = [];
+    var n = 0;
+    (function tick() {
+      if (n++ > 90) return;
+      try { window.__fold_seen.push(document.body ? document.body.className : ''); } catch (e) {}
+      requestAnimationFrame(tick);
+    })();
+  });
 
   // ---------- open the list on favourites, then tap another row ----------
   await p.goto('https://vampsf.com/favorites.html');
@@ -109,6 +121,16 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   ok('the list is shut behind it',       land.open === false, land.open);
   ok('and the note is consumed, not left lying about', land.note === null, land.note);
   ok('fold_ride landed at the top of the page', land.y <= 2, land.y);
+
+  const seen = await grab(p, () => (window.__fold_seen || []).map(c => /fold_on/.test(c)));
+  ok('the page was actually SHUT when it arrived',
+     !!seen && seen.indexOf(true) >= 0, seen && seen.slice(0, 12).join(','));
+  ok('and it opened again by itself',
+     !!seen && seen.indexOf(true) >= 0 && seen[seen.length - 1] === false,
+     seen && seen.slice(-4).join(','));
+  ok('the shut frames come first, not in the middle',
+     !!seen && seen.lastIndexOf(true) < seen.length - 1 && seen.indexOf(true) < 20,
+     seen && (seen.indexOf(true) + '..' + seen.lastIndexOf(true) + ' of ' + seen.length));
 
   // ---------- the swap is invisible: mid-flight it is still the list --------
   // reload the same trip and look 120ms after the new document starts
