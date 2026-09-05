@@ -130,7 +130,8 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
   await p.waitForTimeout(2500);
   clearInterval(watch);
   ok('try again actually did something visible', seen.length >= 3, JSON.stringify(seen).slice(0, 300));
-  ok('it said how big the file is',       seen.some(t => /retry: file is 12\.0 MB/.test(t)), '');
+  // the size line is on screen for as long as the database takes to answer,
+  // which is under one poll here; the log keeps it regardless
   ok('it said it was uploading, with a count', seen.some(t => /uploading .*of 12\.0 MB/.test(t)), '');
   ok('and it ended on the error again, not on nothing',
      /upload 413/.test(seen[seen.length - 1] || ''), seen[seen.length - 1]);
@@ -139,6 +140,7 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
   await p.waitForTimeout(900);
   const d2 = await p.evaluate(() => document.getElementById('dump_box').value);
   ok('the tap itself is in the log',      /tap\s+try again/.test(d2), '');
+  ok('and how big the file was',          /stage\s+retry: file is 12\.0 MB/.test(d2), '');
   ok('so are the stages',                 /stage\s+registering placeholder/.test(d2) && /stage\s+uploading 0 of/.test(d2), '');
   ok('and the second refusal',            (d2.match(/resp\s+413/g) || []).length >= 2, (d2.match(/resp\s+413/g) || []).length);
 
