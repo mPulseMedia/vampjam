@@ -121,7 +121,12 @@ const SESS = { audio: { label: '2026-09-01 Redwood City', url: R2 + 'a1.m4a', ki
   const row = rd && rd.find(x => x.page === 'session.html?p=a1');
   ok('its row carries the new name',       row && row.name === '2026-09-01 Sound Union', row && row.name);
   ok('and keeps its page, date and count', row && row.date === '2026-09-01' && row.count === 1, JSON.stringify(row));
-  ok('the rename is one commit each, not a storm', writes.length === 2, writes.length);
+  // exactly two writes carry the rename — the session file and the registry.
+  // (The drawer's background sweep may add an unrelated "dur refresh"; count
+  // the renames, not the traffic.)
+  const renames = writes.filter(w => /^rename /.test(w.message || ''));
+  ok('the rename is one commit each, not a storm', renames.length === 2,
+     writes.map(w => w.message || w.path).join(' | '));
 
   // ---------- the file form is still reachable, and now warns ----------
   await p.click('#audio_edit_btn');
