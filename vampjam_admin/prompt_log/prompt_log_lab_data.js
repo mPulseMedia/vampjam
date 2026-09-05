@@ -9,8 +9,39 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "334 worker_live",
+        id: "334b dump_hide",
         expanded: true,
+        nodes: [
+          { text: "334b dump_hide", children: [
+            { text: "prompt_restate", children: [
+              { text: "Get rid of the send debug info to Claude line at the bottom of the Record page." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "You can get rid of the sentence that says \u201csend D. bug info to Claude at the bottom of the recording page" }
+            ]},
+            { text: "the_upload_landed", children: [
+              { text: "checked the repo while doing this: the 2h41m Redwood City recording is UP" },
+              { text: "216.7 MB in 28 pieces, stitched, session written, three moments intact, syncing mark gone" },
+              { text: "so the piece-by-piece upload works on a real file, not just a test one" }
+            ]},
+            { text: "what_changed", children: [
+              { text: "the button is gone from the bottom of a page that is almost always working" },
+              { text: "it appears only when an upload has actually failed, next to try again \u2014 same place the fix box appears" },
+              { text: "the log behind it still runs from the first line, so if it ever shows up it is as complete as before" },
+              { text: "say the word and it goes entirely" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "rec_dump 39, part_upload 28, rec_calm 22, rec_match 28, tag_quiet 18. green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "334 worker_live",
+        expanded: false,
         nodes: [
           { text: "334 worker_live", children: [
             { text: "prompt_restate", children: [

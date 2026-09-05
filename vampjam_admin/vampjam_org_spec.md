@@ -4311,7 +4311,22 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Re-ran all twenty-two suites. Green.
   site.css v=19, drawer.js v=159.
   Still no new trace.
-- NEXT → add entry 326 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 326 dump_hide · b334 · the debug button appears only when an upload has failed.
+  It was a permanent sentence at the bottom of a page that is, almost always, working — clutter
+  under everything, offering a thing there is no reason to want. It is hidden at rest now and
+  revealed by the catch that already reveals the try-again link, whatever the reason for the
+  failure. Nothing else changed: the log still runs from the first line of script, so the dump it
+  produces when it does appear is as complete as it ever was.
+  The runbook's step 4 said to look for it "at the bottom"; it now says a button appears under the
+  error.
+  rec_dump_test 39: the button exists in the page but is not drawn while nothing has failed, and a
+  failed upload is what reveals it.
+  Re-ran part_upload 28, rec_calm 22, rec_match 28, tag_quiet 18. Green.
+  And the thing this whole run was for: the 2h41m Redwood City recording is UP. 216.7 MB in 28
+  pieces, stitched in the bucket, session written, three moments intact, the pending mark gone
+  from the registry. part_upload works on a real file, not just a fixture.
+  Still no new trace.
+- NEXT → add entry 327 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
