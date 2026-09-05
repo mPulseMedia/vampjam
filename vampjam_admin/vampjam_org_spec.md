@@ -4050,7 +4050,52 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   grip_only 13, tag_quiet 18, time_flip 32, logo_line 30, audio_grade 18. Green.
   drawer.js v=155.
   Still no new trace.
-- NEXT → add entry 318 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 318 row_fly · b324 · the lit row's name travels to where the page's title lands, slow away and
+  quicker later, with the rows above riding up and the rows below pushed off the bottom.
+  The realisation this build turns on: the lit row and the page's <h1> are the SAME NAME in two
+  places. So the transition is not a page appearing near a row, it is that name moving from where
+  it sits in the list to where it sits on the page, and the list and the page rearranging
+  themselves around it. Once it is put that way, the animation writes itself and the two
+  directions are the same animation with the endpoints swapped.
+  The name flies as one fixed clone, drawn in the destination's clothes and scaled to the origin's
+  type size, so the whole trip is one compositor transform plus a colour. Both real ends are
+  hidden while it is in the air — the h1 and the row's own name — or the same words are on screen
+  in three places at once.
+  Measuring it costs two forced reflows inside one frame: put the layout in the END state, read
+  where the title (or the row) lands, put it back, read where it starts. Guessing that position
+  from offsetTop would have been wrong the first time a page had a different header.
+  The <h1> is a centred flex box the width of the screen, so its rect's left edge is nowhere near
+  the left edge of the WORDS. The clone leaves from and lands on text, so the title is measured
+  with a Range over its own text node. The row name, a plain ellipsised span, is not.
+  fold_anchor — clipping a shrinking box takes the BOTTOM off, which ate the lit row first and
+  left the rows above it sitting still. The rows above are the ones that should move. The menu now
+  slides by exactly what the box lost, which pins its bottom edge to the seam: the lit row rides
+  the top of the page the whole way and everything above it leaves upward.
+  fold_push — the rows below are no longer shrunk, they are pushed. They keep their real height
+  and the growing page shoves them past the bottom edge; folding back, the page lets them come
+  up to meet the lit row. Shrinking them looked like they were being deleted.
+  fold_ease — one curve, one duration (380ms), on the drawers, the menu, the page and the clone.
+  Slow off the mark, quicker as it goes, which is what Paul asked for by name; the tail is eased
+  just enough that it settles rather than stopping dead, which is the part that would actually
+  read as jarring. The scroll ride uses the same shape by hand.
+  Ordering bug found on the way: body.fold_on set overflow:visible on the drawer and sat AFTER the
+  fold_run rule, so the arriving page — which unfolds with both classes set — was not clipping,
+  and the rows that had slid up would have spilled straight over the page. The fold_run pair now
+  comes second on purpose, with the reason written next to it.
+  row_fly_test is new, 25 assertions, and it samples the flight frame by frame rather than
+  checking a class was set: where it starts (the title TEXT, not the centred box), where it lands,
+  that it covers less than a quarter of the distance in its first third and more than 1.3x that in
+  its second, that the menu really travels rather than being clipped, and that the low half holds
+  its height while its top rides up. Both directions, the second one across a page load.
+  Two of its own assertions were wrong first: the h1 fades rather than snapping off, so "not
+  drawn" is a number; and reading the inline transform reports only where the menu is GOING, so it
+  reads the computed matrix instead.
+  Re-ran eighteen suites: list_fold 24, fold_in 17, nav_state 15, nav_pair 42, list_title 22,
+  del_same 19, play_same 16, list_home 16, del_leave 16, rec_calm 22, rec_match 28, fav_match 23,
+  icon_snug 12, grip_only 13, tag_quiet 18, time_flip 32, logo_line 30, audio_grade 18. Green.
+  drawer.js v=157.
+  Still no new trace.
+- NEXT → add entry 319 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
