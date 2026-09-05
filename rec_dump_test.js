@@ -78,7 +78,7 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
     rq.onerror = () => rej(rq.error);
   }));
   await p.reload();
-  await p.waitForTimeout(2500);   // recover_locals tries the upload on its own
+  await p.waitForTimeout(6000);   // recover_locals tries the upload on its own — a 12 MB body through interception is not quick
 
   const after = await p.evaluate(() => ({
     status: document.getElementById('status').textContent.trim(),
@@ -135,7 +135,7 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
     if (t && (!seen.length || seen[seen.length - 1] !== t)) seen.push(t);
   }, 40);
   await p.click('#retry_link');
-  await p.waitForTimeout(2500);
+  await p.waitForTimeout(6000);
   clearInterval(watch);
   ok('try again actually did something visible', seen.length >= 3, JSON.stringify(seen).slice(0, 300));
   // the size line is on screen for as long as the database takes to answer,
