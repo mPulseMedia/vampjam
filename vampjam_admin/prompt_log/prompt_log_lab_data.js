@@ -9,8 +9,59 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "320 here_lit",
+        id: "321 nav_state",
         expanded: true,
+        nodes: [
+          { text: "321 nav_state", children: [
+            { text: "prompt_restate", children: [
+              { text: "Colour the header icons all the way in, not just tint them." },
+              { text: "Heart: fill it blue. Recorder: red. Share: dark rich green just after a tap." },
+              { text: "Cassette: solid while a cassette is playing." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I think we should make the icons along the top when colorized make them fully colorize color in the heart with blue make the recorder button red even when I click share make that like a dark Rich green or something like that to indicate that I have just clicked it and for the cassettes make those make that solid somehow when you\u2019re playing a cassette" }
+            ]},
+            { text: "four_words", children: [
+              { text: "The strip now says four things and each one has its own colour, so nothing has to be read twice." },
+              { text: "blue = you are here \u00b7 red = the recorder \u00b7 green = that just happened \u00b7 filled = a tape is running" }
+            ]},
+            { text: "heart_fill", children: [
+              { text: ".brand .nav_fav.nav_on svg path:first-child { fill: currentColor }" },
+              { text: "first-child on purpose \u2014 filling every path would have blobbed the three list lines into a rectangle" },
+              { text: "so the heart goes solid and the list beside it stays a list" }
+            ]},
+            { text: "rec_red", children: [
+              { text: "#d70015 on the record page, deliberately OFF accent" },
+              { text: "a red circle is what a recorder is; blue there would be the wrong word in a strip where blue already means here" },
+              { text: "this contradicts an assertion here_lit wrote one build ago \u2014 corrected the old line to expect red, with the reason in a comment, rather than leaving it red-on-red" }
+            ]},
+            { text: "share_hit", children: [
+              { text: "the only one that is a moment rather than a state: .nav_hit for 1200ms, then off" },
+              { text: "the hover selector carries .nav_hit too \u2014 the pointer sits on the button after a tap, and var(--fg) would have eaten the green" },
+              { text: "exported as window.vampjamShareHit so record.html\u2019s hand-written share reaches the same code instead of a second copy of it" }
+            ]},
+            { text: "cass_live", children: [
+              { text: "wire_cass_live() swaps ICO_CASS_ON in on play/pause/ended/emptied and paints once at boot" },
+              { text: "reels and window knocked out in var(--bg), so a solid cassette still reads as a cassette and not a lozenge" }
+            ]},
+            { text: "nav_state_test", children: [
+              { text: "new, 15 assertions \u2014 and because it is a colour test, every one reads getComputedStyle rather than checking a class is there" },
+              { text: "one of them cost a fix: the share comes-back-on-its-own read var(--fg), because click leaves the mouse parked on the button" },
+              { text: "the pointer now moves off before both reads, and it also asserts .nav_hit actually came off \u2014 colour alone would not have proven that" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "nav_pair 42, list_title 22, del_same 19, play_same 16, rec_calm 22, list_home 16, del_leave 16. Green." },
+              { text: "site.css v=15, drawer.js v=153" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "320 here_lit",
+        expanded: false,
         nodes: [
           { text: "320 here_lit", children: [
             { text: "prompt_restate", children: [
