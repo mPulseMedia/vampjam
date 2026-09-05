@@ -813,9 +813,49 @@
       dur: recDur, tags: live_tag_data(), ext: ext, locId: LOC_ID
     });
   }
+  // retry_trace — a first save shows the dots and nothing else (rec_calm).
+  // A RETRY is the failure case, and the one thing he asked for is to see
+  // where it stops, so on that path every stage says its name in the status
+  // line and every stage is logged either way.
+  function fmt_mb(n) { return (n / 1048576).toFixed(1) + ' MB'; }
+  // the audio goes up over XHR, not fetch, for one reason: progress. fetch
+  // says nothing between "sent" and "answered", and a 140 MB body that dies
+  // at 40 MB looks exactly like one that never started. XHR reports bytes.
+  function xhr_post(url, headers, body, onProgress) {
+    return new Promise(function (res, rej) {
+      var x = new XMLHttpRequest();
+      x.open('POST', url, true);
+      Object.keys(headers).forEach(function (k) { x.setRequestHeader(k, headers[k]); });
+      x.timeout = 10 * 60 * 1000;
+      var t0 = Date.now(), lastPct = -1;
+      x.upload.onprogress = function (e) {
+        if (!e.lengthComputable) return;
+        var pct = Math.floor(e.loaded * 100 / e.total);
+        if (pct !== lastPct && (pct % 10 === 0 || pct === 100)) {
+          lastPct = pct;
+          log('sent', pct + '% ' + fmt_mb(e.loaded) + ' of ' + fmt_mb(e.total) + ' ' + (Date.now() - t0) + 'ms');
+        }
+        if (onProgress) onProgress(e.loaded, e.total);
+      };
+      x.onload = function () {
+        log('resp', x.status + ' upload ' + (Date.now() - t0) + 'ms');
+        res({ status: x.status, text: x.responseText || '' });
+      };
+      x.onerror = function () { log('fail', 'upload network error at ' + (Date.now() - t0) + 'ms'); rej(new Error('network error while uploading')); };
+      x.ontimeout = function () { log('fail', 'upload timed out at ' + (Date.now() - t0) + 'ms'); rej(new Error('upload timed out after 10 minutes')); };
+      x.onabort = function () { log('fail', 'upload aborted at ' + (Date.now() - t0) + 'ms'); rej(new Error('upload aborted')); };
+      log('fetch', 'POST ' + url.replace(/^https?:\/\//, '').slice(0, 60) + ' body=' + (body && body.size) + ' xhr');
+      try { x.send(body); } catch (eS) { log('fail', 'send threw: ' + (eS && eS.message ? eS.message : eS)); rej(eS); }
+    });
+  }
   async function upload_core(o) {
     save_busy();
     var blob2 = o.blob;
+    var say = function (m) {
+      log('stage', m);
+      if (o.trace) status.textContent = m;
+    };
+    say((o.trace ? 'retry: ' : '') + 'file is ' + fmt_mb(blob2 ? blob2.size : 0) + ' ' + (blob2 && blob2.type || '') + ', ' + (o.dur || 0) + 's');
     var label = o.label || (o.dateIso + ' recording');
     if (label.indexOf(o.dateIso) < 0) label = o.dateIso + ' ' + label;
     var id = rec_id_from(label, o.dateIso, o.ts);
@@ -838,6 +878,7 @@
         });
       } catch (eCp) {}
     }
+    say('registering placeholder…');
     // placeholder first: every device's session list shows a syncing… row.
     // The write starts from the freshest registry (GitHub API, not the
     // lagging CDN) + this device's roster, so it can't clobber earlier rows.
@@ -850,24 +891,24 @@
         localStorage.setItem('vampjam_pending_session',
           JSON.stringify({ page: page, name: label, date: ISO2, dur: recDur2, count: o.tags.length, ts: Date.now() }));
       } catch (e3) {}
-    } catch (ePre) {}
+    } catch (ePre) { log('stage', 'placeholder failed: ' + (ePre && ePre.message ? ePre.message : ePre)); }
     try {
-      var r = await fetch(WORKER_UPLOAD_URL, {
-        method: 'POST',
-        headers: {
+      say('uploading 0 of ' + fmt_mb(blob2.size) + '…');
+      var r = await xhr_post(WORKER_UPLOAD_URL, {
           'Content-Type': blob2.type || 'audio/mp4',
           'X-File-Name': id + '.' + (o.ext || 'm4a'),
           'X-Upload-Secret': ''
-        },
-        body: blob2
-      });
+        }, blob2, function (loaded, total) {
+          if (o.trace) status.textContent = 'uploading ' + fmt_mb(loaded) + ' of ' + fmt_mb(total) + '…';
+        });
       // dump_status — a non-JSON reply (a 413 page, a gateway error) used to
       // surface as a parse error that hid the status. Read the text first.
-      var txt = await r.text();
+      var txt = r.text;
       var j = null;
       try { j = JSON.parse(txt); } catch (eJ) {}
       if (!j) throw new Error('upload ' + r.status + ': ' + txt.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 90));
       if (!j.ok) throw new Error('upload ' + (j.error || r.status));
+      say('server has it — writing the session…');
       // (still just the dots — the step is real but it is not his business)
       var now = Date.now();
       var tags = o.tags.map(function (lt, i) {
@@ -905,7 +946,12 @@
         '<a href="#" id="retry_link">try again</a>' +
         '<br>your recording is safe on this device — it shows in Sessions as local';
       var rl = document.getElementById('retry_link');
-      if (rl) rl.addEventListener('click', function (e) { e.preventDefault(); upload_core(o); });
+      if (rl) rl.addEventListener('click', function (e) {
+        e.preventDefault();
+        log('tap', 'try again');
+        o.trace = true;
+        upload_core(o);
+      });
     }
   }
 
@@ -915,6 +961,7 @@
   (async function recover_locals() {
     try {
       var metas = await idb_all('recs');
+      log('stage', 'recover: ' + metas.length + ' local recording(s)');
       if (!metas.length) return;
       for (var i = 0; i < metas.length; i++) {
         if (metas[i].state === 'recording') {
@@ -929,15 +976,20 @@
         if (mediaRec && mediaRec.state === 'recording') return;   // don't fight a live take
         var m = ready[k];
         var parts = await idb_chunks(m.id);
-        if (!parts.length) { await idb_del_rec(m.id); continue; }
+        if (!parts.length) { log('stage', 'recover ' + m.id + ': no chunks, dropping'); await idb_del_rec(m.id); continue; }
+        var total = parts.reduce(function (a, c) { return a + (c && c.size || 0); }, 0);
+        log('stage', 'recover ' + m.id + ': ' + parts.length + ' chunks, ' + fmt_mb(total) + ', ' + (m.dur || 0) + 's');
         save_busy();
+        var big;
+        try { big = new Blob(parts, { type: m.mime || 'audio/mp4' }); }
+        catch (eB) { log('fail', 'could not assemble the file: ' + (eB && eB.message ? eB.message : eB)); throw eB; }
         await upload_core({
-          blob: new Blob(parts, { type: m.mime || 'audio/mp4' }),
+          blob: big,
           label: m.label, dateIso: m.date, ts: m.ts, dur: m.dur,
-          tags: m.tags || [], ext: m.ext || 'm4a', locId: m.id
+          tags: m.tags || [], ext: m.ext || 'm4a', locId: m.id, trace: true
         });
       }
-    } catch (e) {}
+    } catch (e) { log('fail', 'recover: ' + (e && e.message ? e.message : e)); }
   })();
 
   // ---- rec_dump: everything this page knows, as text he can paste to me ----
