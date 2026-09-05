@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "329 part_upload",
+        id: "330 dump_read",
         expanded: true,
+        nodes: [
+          { text: "330 dump_read", children: [
+            { text: "prompt_restate", children: [
+              { text: "Did the debug info reach you? And is Do this next the thing to look at?" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, so it looks like maybe you got sent something I don\u2019t know to see do this next. [followed by the full rec_dump text of 2026-09-05T05:52:06Z]" }
+            ]},
+            { text: "yes_got_it", children: [
+              { text: "it says exactly what the repo said, with the numbers filled in" }
+            ]},
+            { text: "what_it_says", children: [
+              { text: "the recording: 216.7 MB, 1933 chunks, 2h41m, audio/mp4, state=ready \u2014 whole and safe on the phone" },
+              { text: "the phone tried twice more (page load, then your tap). registering worked both times, 1.2s each" },
+              { text: "then ?op=init came back 400 empty body \u2014 that is the OLD worker answering. the paste has not happened yet" },
+              { text: "and the page did the right thing: did not try the 216 MB one-shot, said the worker needs updating, pointed at Do this next" }
+            ]},
+            { text: "one_step_left", children: [
+              { text: "paste the new worker into Cloudflare, on the Mac. it is the only thing between the phone and the cloud" },
+              { text: "then open the Record page on the phone: 28 pieces of 8 MB, a few minutes on wifi, and it lands on the session by itself" }
+            ]},
+            { text: "small_notes", children: [
+              { text: "you are in Chrome on iPhone, not Safari \u2014 fine, same engine, and the pieces path works there" },
+              { text: "no code changed this prompt" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "329 part_upload",
+        expanded: false,
         nodes: [
           { text: "329 part_upload", children: [
             { text: "prompt_restate", children: [
