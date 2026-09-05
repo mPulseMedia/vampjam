@@ -133,6 +133,50 @@
     }, 320);
   }
 
+  // fold_in — the other direction, and it is the SAME animation run backwards.
+  // Tapping a row does not close the list and then load a page; it hands the
+  // next page a note saying "you were just opened from your own row", and that
+  // page comes up folded shut at the same scroll position and unfolds. Both
+  // screens are showing the identical list at the identical offset when the
+  // swap happens, so the swap itself is the invisible part: what you see is the
+  // row you tapped, and the page growing out of the gap under it.
+  var FOLD_IN = 'vampjam_fold_in';
+  function fold_in_arm(href) {
+    try {
+      sessionStorage.setItem(FOLD_IN, JSON.stringify({
+        page: href, y: window.scrollY || 0, t: Date.now()
+      }));
+    } catch (e) {}
+  }
+  function fold_in_take() {
+    var raw = null;
+    try { raw = sessionStorage.getItem(FOLD_IN); sessionStorage.removeItem(FOLD_IN); } catch (e) {}
+    if (!raw) return null;
+    var n = null;
+    try { n = JSON.parse(raw); } catch (e) { return null; }
+    // a note goes stale the moment it could belong to some other navigation:
+    // Back, a typed URL, a bookmark. Five seconds and the right page, or it is
+    // not ours and the page opens the ordinary way.
+    if (!n || Date.now() - n.t > 5000) return null;
+    if (String(n.page).split('#')[0] !== PKEY) return null;
+    return n;
+  }
+  // the folded state with no animation at all — the arriving page has to be
+  // ALREADY shut on its first paint, or the unfold starts from a flash of page
+  function fold_set_now(on) {
+    var d = drawer(), lo = low(), b = document.body;
+    if (!d) return;
+    b.classList.add('fold_jump');
+    d.classList.toggle('open', on);
+    if (lo) lo.classList.toggle('open', on);
+    var c = caret(); if (c) c.classList.toggle('open', on);
+    try { b.classList.toggle('drawer_open', on); } catch (e) {}
+    b.classList.toggle('fold_on', on);
+    fold_clear();
+    void d.offsetHeight;
+    b.classList.remove('fold_jump');
+  }
+
   function toggle() {
     var d = drawer(); if (!d) return;
     if (listPinned) return;
@@ -539,6 +583,15 @@
         // answer to "take me back to where I was".
         if (a.classList.contains('current') && document.body.classList.contains('fold_on')) {
           set_open(false); return;
+        }
+        // fold_in — from an open list, do NOT play a close animation first.
+        // The next page is going to unfold from this exact row at this exact
+        // scroll, so anything that moves here is motion the swap has to undo.
+        var d0 = drawer();
+        if (d0 && d0.classList.contains('open')) {
+          fold_in_arm(href);
+          window.location.href = href;
+          return;
         }
         close_then(function () { window.location.href = href; });
       });
@@ -1296,6 +1349,18 @@
     // orphan_sweep waits out the first registry paint, then self-publishes
     // anything the cloud has that the list forgot (6h throttle inside)
     setTimeout(orphan_sweep, 4000);
+    // fold_in — arrived by tapping this page's own row: come up shut at the
+    // list's own scroll offset, then run the collapse backwards.
+    var note = fold_in_take();
+    if (note && fold_ok()) {
+      fold_set_now(true);
+      try { window.scrollTo(0, note.y); } catch (eY) {}
+      // one frame shut before it moves, so the eye sees the list, not a jump
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { set_open(false); });
+      });
+      return;
+    }
     // arriving with #sessions (e.g. Back from the record screen) opens the list
     if (location.hash === '#sessions') {
       setTimeout(function () { set_open(true); }, 150);
