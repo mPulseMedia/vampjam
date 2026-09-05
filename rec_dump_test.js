@@ -111,6 +111,32 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
   ok('storage headroom is reported',             /storage:\s+used/.test(d.box), '');
   ok('and the pending marker is in it',          /vampjam_pending_session/.test(d.box), '');
   ok('and it is dated',                          /rec_dump 20\d\d-/.test(d.box), '');
+  ok('the recovery attempt said what it was doing',
+     /stage\s+recover loc_test1: 4 chunks, 12\.0 MB, 5400s/.test(d.box), '');
+  ok('and the bytes actually went up, with progress',
+     /sent\s+100% 12\.0 MB of 12\.0 MB/.test(d.box), (d.box.match(/sent .*/) || [])[0]);
+
+  // ---------- try again: every stage shows its name, and it is all logged ----------
+  const seen = [];
+  const watch = setInterval(async () => {
+    const t = await p.evaluate(() => document.getElementById('status').textContent.trim()).catch(() => null);
+    if (t && (!seen.length || seen[seen.length - 1] !== t)) seen.push(t);
+  }, 40);
+  await p.click('#retry_link');
+  await p.waitForTimeout(2500);
+  clearInterval(watch);
+  ok('try again actually did something visible', seen.length >= 3, JSON.stringify(seen).slice(0, 300));
+  ok('it said how big the file is',       seen.some(t => /retry: file is 12\.0 MB/.test(t)), '');
+  ok('it said it was uploading, with a count', seen.some(t => /uploading .*of 12\.0 MB/.test(t)), '');
+  ok('and it ended on the error again, not on nothing',
+     /upload 413/.test(seen[seen.length - 1] || ''), seen[seen.length - 1]);
+
+  await p.click('#dump_btn');
+  await p.waitForTimeout(900);
+  const d2 = await p.evaluate(() => document.getElementById('dump_box').value);
+  ok('the tap itself is in the log',      /tap\s+try again/.test(d2), '');
+  ok('so are the stages',                 /stage\s+registering placeholder/.test(d2) && /stage\s+uploading 0 of/.test(d2), '');
+  ok('and the second refusal',            (d2.match(/resp\s+413/g) || []).length >= 2, (d2.match(/resp\s+413/g) || []).length);
 
   await b.close();
   console.log('\n' + pass + ' pass, ' + fail + ' fail');
