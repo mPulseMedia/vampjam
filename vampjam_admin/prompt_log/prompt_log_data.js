@@ -9,8 +9,60 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "317 new_dot",
+        id: "318 nav_pair",
         expanded: true,
+        nodes: [
+          { text: "318 nav_pair", children: [
+            { text: "prompt_restate", children: [
+              { text: "Take the Favorites link out of the session list. Put a grey icon beside the cassette instead \u2014 a heart with three lines next to it, meaning a list of favourites." },
+              { text: "Move the red record circle to the top right, left of the share, and give it the other icons\u2019 colour and style." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "All right, move the link to favorites from the Admin NO; from the sessions list. Move it from there and instead make an icon to the right of the cassette in the top left corner that is a Gray matching the same color of the icon of the cassette icon in the top left corner is a heart with three horizontal lines to the right of the heart representing a simple list of the concept of a list next to a heart in that those are a list of favorites and move the red line red circle to the top right to the left of the share button next to it, make the record button in that same color of the style of the other icons let\u2019s see how that looks" }
+            ]},
+            { text: "five_slots", children: [
+              { text: "cassette \u00b7 favourites, wordmark, record \u00b7 share" },
+              { text: "the list is what its heading says now \u2014 recordings, nothing else" },
+              { text: "both destinations went from two taps to one" }
+            ]},
+            { text: "injected_not_copied", children: [
+              { text: "drawer.js adds the pair, rather than fifteen files each carrying them" },
+              { text: "record.html is the exception: it does not load drawer.js at all \u2014 no session list while the tape is running" },
+              { text: "found only because the injection silently did nothing there" }
+            ]},
+            { text: "nav_here", children: [
+              { text: "a button pointing at the page you are ON keeps its slot and loses its ink \u2014 visibility, not display" },
+              { text: "omitting it moved the wordmark 20px off centre on exactly the pages with one fewer control" },
+              { text: "it jumped as you walked between screens. record.html needed TWO placeholders \u2014 it has no share either" }
+            ]},
+            { text: "why_the_record_icon_is_grey", children: [
+              { text: "it was red in the list because it was the only red thing there" },
+              { text: "in the header it is one of four and wears their colour" },
+              { text: "a ring with a filled centre, so it still reads as record without it" }
+            ]},
+            { text: "why_the_heart_has_lines", children: [
+              { text: "this goes to a LIST of favourites" },
+              { text: "a bare heart already means \u201cfavourite this\u201d on every moment row" }
+            ]},
+            { text: "proof", children: [
+              { text: "new suite nav_pair_test.js \u2014 28 assertions across three pages" },
+              { text: "five slots, wordmark on the page centre within 2px on each, every icon the same grey" },
+              { text: "order, hrefs, blanked slots keeping their width, the two rows gone, and both buttons tapped and followed" }
+            ]},
+            { text: "two_tests_settled", children: [
+              { text: "new_dot_test retired to claude_trash \u2014 its subject moved and stopped being red; nav_pair_test covers it" },
+              { text: "list_title_test was measuring record.html and calling it a pass: no drawer there, so its cassette navigated and the suite measured whatever it landed on" },
+              { text: "it tests index.html instead" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "317 new_dot",
+        expanded: false,
         nodes: [
           { text: "317 new_dot", children: [
             { text: "prompt_restate", children: [

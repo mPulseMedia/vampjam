@@ -3879,7 +3879,37 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   compared against the REC button rendered on the record screen rather than against a string.
   site.css v=11, drawer.js v=148.
   Still no new trace.
-- NEXT → add entry 312 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 312 nav_pair · b318 · Favorites and New recording left the session list and became header icons.
+  The header is five slots now: cassette · favourites, wordmark, record · share. The list is what
+  its heading says — recordings, and nothing else — and both destinations went from two taps
+  (open the list, pick a row) to one.
+  The two new buttons are INJECTED by drawer.js rather than written into fifteen files. The
+  cassette and the share were already wired from there; these two live there outright. record.html
+  is the exception and had to be told by hand: it does not load drawer.js at all — deliberately, no
+  session list while the tape is running — which I only found because the injection silently did
+  nothing there.
+  nav_here — a button that would point at the page you are already on keeps its slot and loses its
+  ink (visibility, not display). Omitting it moved the wordmark 20px off the centre line on exactly
+  the pages with one fewer control, and it visibly jumped as you walked between screens. record.html
+  needed TWO placeholders: it has no share button either.
+  The record glyph is grey up here, not the red disc it was in the list. It was red there because it
+  was the only red thing in that list; in the header it is one of four icons and wears their colour.
+  A ring with a filled centre, so it still reads as record without it.
+  The favourites glyph is a heart with three rules beside it. Not a heart alone: this goes to a LIST
+  of favourites, and a bare heart already means "favourite this" on every moment row.
+  The wordmark gives way rather than pushing the row off-screen — 54px under 430px wide, since four
+  40px targets leave about 230px and it is wider than that at 68.
+  New suite nav_pair_test.js, 28 assertions across three pages: five slots, the wordmark on the
+  page's centre line to within 2px on each, every icon the same grey, the order, the hrefs, the
+  blanked slots keeping their width, the two rows gone from the list, and both buttons tapped and
+  followed.
+  new_dot_test.js retired to claude_trash — its subject moved to the header and stopped being red,
+  and nav_pair_test covers it now. list_title_test was measuring record.html and calling it a pass:
+  no drawer there, so its cassette navigated and the suite measured whatever it landed on. It tests
+  index.html instead.
+  site.css v=13, drawer.js v=150.
+  Still no new trace.
+- NEXT → add entry 313 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
