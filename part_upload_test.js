@@ -79,6 +79,7 @@ function fake_bucket() {
   // ================= 2. the phone, against that worker =================
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
+  await ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'https://vampsf.com' }).catch(() => {});
   let newWorker = true;                       // flip to pretend the worker was not updated
   const pieces = [], syncs = [];
   let inits = 0, dones = 0, oneShots = 0;
@@ -215,6 +216,23 @@ function fake_bucket() {
   ok('old worker + big file: it does not even try the one-shot', oneShots === 0, oneShots);
   ok('old worker + big file: it says the worker needs updating', /needs updating to take it in pieces/.test(st), st.slice(0, 160));
   ok('old worker + big file: and points at Do this next',        /Do this next/.test(st), '');
+  // rec_fix_note — the fix is on THIS page
+  const fix = await p3.evaluate(() => {
+    const f = document.getElementById('fix_box');
+    return f ? { steps: f.querySelectorAll('.fix_steps li').length, text: f.textContent,
+                 link: !!f.querySelector('a[href="vampjam_do_this_next.html"]') } : null;
+  });
+  ok('old worker + big file: the fix is written on the page itself', !!fix && fix.steps === 4, fix && fix.steps);
+  ok('and it names the place and the keys',
+     !!fix && /vampjam-upload/.test(fix.text) && /Edit code/.test(fix.text) && /Deploy/.test(fix.text) && /\u2318A/.test(fix.text), fix && fix.text.slice(0, 120));
+  ok('with the long version one tap away', !!fix && fix.link, fix && fix.link);
+  await p3.click('#fix_copy');
+  await p3.waitForTimeout(700);
+  const copied = await p3.evaluate(() => navigator.clipboard.readText()).catch(() => '');
+  const real = fs.readFileSync(path.join(DIR, 'cloudflare', 'r2_upload_worker.js'), 'utf8');
+  ok('and the copy button copies the committed worker, byte for byte', copied === real, copied.length + ' vs ' + real.length);
+  const lbl = await p3.evaluate(() => document.getElementById('fix_copy').textContent);
+  ok('and says so', /copied/.test(lbl), lbl);
   await p3.close();
 
   await b.close();

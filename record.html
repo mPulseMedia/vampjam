@@ -247,6 +247,16 @@
     /* rec_same: they take the site's width now, so there is nothing to widen */
   }
   .status a { color: var(--accent); font-weight: 600; }
+  /* rec_fix_note — the way over the wall, on the page that hit it */
+  .fix_box { max-width: 480px; margin: 12px auto 0; padding: 12px 14px; text-align: left;
+             background: var(--panel); border: 1px solid var(--accent); border-radius: 12px; line-height: 1.5; }
+  .fix_title { font-weight: 600; margin-bottom: 6px; }
+  .fix_steps { margin: 0; padding-left: 22px; }
+  .fix_steps li { margin: 4px 0; }
+  .fix_copy { background: var(--accent); color: var(--on_accent, #fff); border: none; border-radius: 999px;
+              padding: 7px 14px; cursor: pointer; min-height: 36px; }
+  .fix_more { margin-top: 8px; color: var(--muted); }
+  .fix_more a { color: var(--accent); }
   /* rec_dump — a quiet text button below everything, and a box that is
      not there until it is needed */
   .dump_btn { display: block; margin: 18px auto 0; background: transparent; border: none;
@@ -1006,6 +1016,10 @@
       status.innerHTML = 'Something went wrong (' + (err && err.message ? err.message : err) + ') — ' +
         '<a href="#" id="retry_link">try again</a>' +
         '<br>your recording is safe on this device — it shows in Sessions as local';
+      // rec_fix_note — when the wall is the old worker, the way over it is
+      // written HERE, on the page he is looking at, not on another page he
+      // has to know to open. Four lines and a copy button.
+      if (/needs updating to take it in pieces/.test(err && err.message || '')) show_fix();
       var rl = document.getElementById('retry_link');
       if (rl) rl.addEventListener('click', function (e) {
         e.preventDefault();
@@ -1052,6 +1066,41 @@
       }
     } catch (e) { log('fail', 'recover: ' + (e && e.message ? e.message : e)); }
   })();
+
+  // ---- rec_fix_note: the receiver needs replacing, and this is how ----
+  function show_fix() {
+    if (document.getElementById('fix_box')) return;
+    var box = document.createElement('div');
+    box.className = 'fix_box';
+    box.id = 'fix_box';
+    box.innerHTML =
+      '<div class="fix_title">Fix \u2014 three minutes, on the Mac</div>' +
+      '<ol class="fix_steps">' +
+        '<li><button type="button" class="fix_copy" id="fix_copy">copy the receiver code</button></li>' +
+        '<li>dash.cloudflare.com \u2192 <b>Workers &amp; Pages</b> \u2192 <b>vampjam-upload</b> \u2192 <b>Edit code</b></li>' +
+        '<li>click in the code, <b>\u2318A</b>, <b>\u2318V</b>, then <b>Deploy</b></li>' +
+        '<li>reopen this page on the phone \u2014 it sends by itself</li>' +
+      '</ol>' +
+      '<div class="fix_more"><a href="vampjam_do_this_next.html">the long version, with what changed</a></div>';
+    status.parentNode.insertBefore(box, status.nextSibling);
+    var cb = document.getElementById('fix_copy');
+    cb.addEventListener('click', async function () {
+      cb.disabled = true; cb.textContent = 'fetching\u2026';
+      var src = '';
+      // read from the site itself, so what he pastes is what is committed
+      try { var r = await fetch0('cloudflare/r2_upload_worker.js?t=' + Date.now(), { cache: 'no-store' }); if (r.ok) src = await r.text(); } catch (e) {}
+      var done = false;
+      if (src) {
+        try { if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(src); done = true; } } catch (e2) {}
+        if (!done) {
+          try { var ta = document.createElement('textarea'); ta.value = src; document.body.appendChild(ta); ta.select(); done = document.execCommand('copy'); document.body.removeChild(ta); } catch (e3) {}
+        }
+      }
+      cb.textContent = done ? 'copied \u2713 \u2014 ' + Math.round(src.length / 1024) + ' KB' : (src ? 'could not copy' : 'could not fetch the code');
+      cb.disabled = false;
+      log('tap', 'copy receiver code ' + (done ? 'ok' : 'FAILED'));
+    });
+  }
 
   // ---- rec_dump: everything this page knows, as text he can paste to me ----
   async function rec_dump() {
