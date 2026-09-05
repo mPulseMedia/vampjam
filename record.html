@@ -256,8 +256,11 @@
        share (this page has never had one \u2014 there is nothing to share until
        the recording exists). Without both, the wordmark sits 20px right of
        centre here and nowhere else. -->
+  <!-- one kept slot on the right, for the record button: you are on it. -->
   <span class="nav_share nav_here" aria-hidden="true"></span>
-  <span class="nav_share nav_here" aria-hidden="true" style="order:5;"></span>
+  <!-- and a real share. This page carries its own handler because it does not
+       load drawer.js, which is where every other page's share is wired. -->
+  <button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page" style="order:5;"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
   <button class="nav_cass" id="back_btn" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
   <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
 </div>
@@ -344,6 +347,23 @@
     window.location.href = 'index.html#sessions';
   });
   pencil.addEventListener('click', function () { nameIn.focus(); nameIn.select(); });
+
+  // share_here — the same thing drawer.js does for every other page: copy this
+  // page's URL with no query on it. Written here because this page deliberately
+  // does not load drawer.js (no session list while the tape is running).
+  (function () {
+    var sh = document.getElementById('page_share');
+    if (!sh) return;
+    sh.addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation();
+      var url = window.location.origin + window.location.pathname;
+      try { if (navigator.clipboard) navigator.clipboard.writeText(url); } catch (err) {}
+      status.textContent = 'Link copied';
+      setTimeout(function () {
+        if (status.textContent === 'Link copied') status.textContent = '';
+      }, 1600);
+    });
+  })();
 
   // ---- session name: date + local time by default; date + city with location ----
   function pad(n) { return (n < 10 ? '0' : '') + n; }
