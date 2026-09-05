@@ -70,8 +70,13 @@ const SAMPLER = () => {
     if (lo && document.body.classList.contains('fold_run')) {
       const r = lo.getBoundingClientRect();
       window.__low.push([Math.round(r.top), Math.round(r.height)]);
+      // the COMPUTED transform, not the inline one: the inline string is set
+      // once to the end value and CSS moves it, so reading it back would only
+      // ever report where the menu is going, never where it is.
       const tm = document.querySelector('#session_drawer .jam_menu');
-      window.__menu.push(tm ? (tm.style.transform || '') : '');
+      const m = tm ? getComputedStyle(tm).transform : 'none';
+      const mm = /matrix\(([^)]+)\)/.exec(m);
+      window.__menu.push(mm ? Math.round(parseFloat(mm[1].split(',')[5])) : 0);
     }
     requestAnimationFrame(tick);
   })();
@@ -105,7 +110,9 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   });
   ok('a clone is actually in the air',   !!inflight, inflight);
   ok('carrying the session name',        !!inflight && /2026-01-17/.test(inflight.text), inflight && inflight.text);
-  ok('the title it left is not drawn',   !!inflight && inflight.h1op === '0', inflight && inflight.h1op);
+  // it fades rather than snapping off, so "not drawn" is a number, not a flag
+  ok('the title it left is not drawn',   !!inflight && parseFloat(inflight.h1op) < 0.15,
+                                         inflight && inflight.h1op);
   ok('nor the row it is heading for',    !!inflight && inflight.nmop === '0', inflight && inflight.nmop);
 
   await p.waitForTimeout(900);
@@ -144,8 +151,16 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
 
   // fold_anchor — the rows above ride up out of the way rather than the lit
   // row being clipped off the bottom
-  const neg = shut.menu.filter(t => /translateY\(-\d/.test(t)).length;
-  ok('the rows above are slid up, not clipped away', neg > 3, shut.menu.slice(0, 3).join(' | '));
+  // shutting, the rows above slide DOWN into place from above; opening, they go
+  // back up. Either way the menu has to actually travel — a menu pinned at 0 the
+  // whole time means the box is being clipped from the bottom and the lit row is
+  // the first thing to disappear, which is the bug this replaced.
+  const mv = shut.menu;
+  ok('the rows above travel rather than being clipped away',
+     mv.length > 4 && Math.abs(mv[0] - mv[mv.length - 1]) > 100,
+     mv[0] + ' -> ' + mv[mv.length - 1]);
+  ok('and they end level, with the lit row on the seam',
+     Math.abs(mv[mv.length - 1]) < 8, mv[mv.length - 1]);
 
   // fold_push — the low half keeps its real height and is displaced
   const hs = shut.low.map(v => v[1]);
