@@ -1,5 +1,7 @@
-// nav_pair_test — Favorites and New recording left the session list and became
-// header icons: cassette · favourites, wordmark, record · share.
+// nav_pair_test — the header is cassette · favourites, wordmark, record · share,
+// and Favorites / New recording are reachable from BOTH the header and the list.
+// (grew with both_ways, which put the two rows back and gave the record page a
+// real share button.)
 const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path');
 const DIR = process.env.VJ_DIR || '/tmp/vj';
@@ -122,11 +124,17 @@ const REG = JSON.stringify([
     heading: document.querySelector('.jam_title .jam_name').textContent.trim(),
     fav: !!document.querySelector('.jam_item a[href="favorites.html"]'),
     nu:  !!document.querySelector('.jam_item.jam_new'),
+    newRed: (function () { var i = document.querySelector('.jam_item.jam_new .jam_ico');
+                           return i ? getComputedStyle(i).color : null; })(),
     rows: [...document.querySelectorAll('.jam_item')].length
   }));
   ok('the list still says Recordings',        list.heading === 'Recordings', list.heading);
-  ok('the Favorites row is gone from it',     list.fav === false, list.fav);
-  ok('and the New recording row with it',     list.nu === false, list.nu);
+  // both_ways — the header icons are the fast route; the rows are how you find
+  // them before you know the icons. Both, not either.
+  ok('the Favorites row is in the list too',  list.fav === true, list.fav);
+  ok('and so is New recording',               list.nu === true, list.nu);
+  ok('the row keeps its red disc',            list.newRed === 'rgb(215, 0, 21)', list.newRed);
+  ok('while the header icon stays grey',      S.kids[3].color !== 'rgb(215, 0, 21)', S.kids[3].color);
 
   await p.close();
 
@@ -147,6 +155,28 @@ const REG = JSON.stringify([
   await q.waitForTimeout(700);
   ok('and the record icon lands on the record screen',
      /record\.html/.test(q.url()), q.url());
+
+  // share_here — the record page carries its own share, because it does not
+  // load drawer.js, which is where every other page's is wired.
+  await ctx.grantPermissions(['clipboard-read', 'clipboard-write'],
+                             { origin: 'https://vampsf.com' }).catch(() => {});
+  await q.waitForTimeout(400);
+  const sh = await q.evaluate(() => {
+    const b2 = document.getElementById('page_share');
+    return b2 ? { there: true, top: Math.round(b2.getBoundingClientRect().top),
+                  right: Math.round(document.documentElement.clientWidth - b2.getBoundingClientRect().right),
+                  svg: !!b2.querySelector('svg'),
+                  color: getComputedStyle(b2).color } : { there: false };
+  });
+  ok('the record page has a share button',   sh.there === true, JSON.stringify(sh));
+  ok('in the top right corner',              sh.there && sh.right <= 20 && sh.top < 80, JSON.stringify(sh));
+  ok('drawn like the others',                sh.svg === true, JSON.stringify(sh));
+  ok('and in the same grey',                 sh.color === S.kids[0].color, sh.color + ' vs ' + S.kids[0].color);
+  await q.click('#page_share');
+  await q.waitForTimeout(400);
+  const copied = await q.evaluate(() => navigator.clipboard.readText().catch(() => ''));
+  ok('and it copies this page’s address',
+     /record\.html$/.test(copied) && !/\?/.test(copied), copied);
 
   await b.close();
   console.log('\n' + pass + ' pass, ' + fail + ' fail');
