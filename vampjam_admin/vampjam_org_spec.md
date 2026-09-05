@@ -4125,7 +4125,41 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   icon_snug 12, grip_only 13, tag_quiet 18, time_flip 32, logo_line 30, audio_grade 18. Green.
   drawer.js v=158.
   Still no new trace.
-- NEXT → add entry 320 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 320 rec_dump · b326 · a "copy debug info" button on the record page, for the day an upload
+  will not go.
+  Paul recorded a long session and it would not upload. The page's account of that was one
+  sentence, and worse, a non-JSON reply from the worker — a 413 page, a gateway error — surfaced as
+  a JSON parse error, which hid the one number that would have said what happened.
+  rec_log — from the first line of script, the page keeps a ring of eighty entries: every window
+  error and unhandled rejection, and every call to a worker or GitHub with its method, body size,
+  status and round-trip time. It is there before anything can go wrong, which is the only time it
+  can be installed.
+  dump_status — the upload reads the reply as text first and only then tries JSON, so a refusal
+  now reads "upload 413: 413 Request Entity Too Large" instead of "Unexpected token <".
+  rec_dump — one tap gathers: browser and network, storage used and quota, whether storage is
+  persisted, which recorder formats this browser supports, the live take (recorder state, mime,
+  blob size, duration, chunk count, name, moments), every recording still in IndexedDB with its
+  state, duration, chunk count and total bytes, every vampjam_* key in localStorage (truncated),
+  the log, and the worker URLs. Plain text with aligned labels, dated.
+  The box under the button is filled BEFORE the clipboard is tried, so a phone that refuses the
+  clipboard still leaves him something to select; execCommand('copy') is the second try, and the
+  status line says which happened.
+  Reading a chunk's .size does not load the chunk, so the dump is cheap even against a two-hour
+  take.
+  The button is quiet — muted, half opacity, text only, under everything — and the box is hidden
+  until it is needed. Both wear one_size, which is the grammar.
+  rec_dump_test is new, 23 assertions. It plants a stuck 12 MB local recording, makes the upload
+  worker answer 413 with an HTML page the way Cloudflare does over its limit, lets recover_locals
+  try on its own, and reads the dump back: the recording by id, bytes=12.0 MB, state=ready,
+  chunks=4, the POST with body=12582912, resp 413, the error line, the UA, the formats, the
+  storage line, the pending marker, the date. And that the clipboard text equals the box.
+  Re-ran rec_calm 22, rec_match 28, tag_quiet 18, list_fold 24, fold_in 17, nav_pair 42,
+  nav_state 15. Green.
+  The likely cause, said here so it is on record before the dump confirms it: a long take at
+  128 kbps is well over 100 MB, and the upload worker's request body limit on the current plan is
+  100 MB. If the dump shows a 413, the fix is chunked upload to the worker, not a bigger button.
+  Still no new trace.
+- NEXT → add entry 321 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

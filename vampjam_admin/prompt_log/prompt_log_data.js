@@ -9,8 +9,58 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "325 fold_pace",
+        id: "326 rec_dump",
         expanded: true,
+        nodes: [
+          { text: "326 rec_dump", children: [
+            { text: "prompt_restate", children: [
+              { text: "A long recording will not upload. Put a button on the page that dumps everything useful; he will copy it and paste it to me." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I just recorded a long session, but I can\u2019t seem to upload it. Can you dump whatever data is gonna be useful to know give me a button and I\u2019ll copy it and tell you or whatever" }
+            ]},
+            { text: "first_thing_first", children: [
+              { text: "the recording is safe: every take is written to the phone\u2019s own storage as it happens, and stays there until the cloud confirms it" },
+              { text: "do not clear Safari\u2019s website data. that is the one thing that would lose it" }
+            ]},
+            { text: "where_the_button_is", children: [
+              { text: "Record page, under everything, small grey text: copy debug info" },
+              { text: "tap it \u2014 it says Copied. paste that to me. if the phone refuses the clipboard, a box appears with the text already selected" }
+            ]},
+            { text: "what_it_dumps", children: [
+              { text: "browser, network, storage used vs quota, which recorder formats the phone supports" },
+              { text: "every recording still on the device: state, length, chunk count, total bytes" },
+              { text: "the live take, every vampjam_* key, and a log of every worker call with its status code and size" }
+            ]},
+            { text: "rec_log", children: [
+              { text: "installed from the first line of script, before anything can fail \u2014 eighty entries, every error and every worker call" },
+              { text: "an upload failure used to leave one sentence behind; now it leaves the status, the bytes and the time" }
+            ]},
+            { text: "dump_status", children: [
+              { text: "a non-JSON reply from the worker \u2014 a 413 page, a gateway error \u2014 surfaced as Unexpected token <, hiding the only useful number" },
+              { text: "the reply is read as text first now, so it says upload 413: Request Entity Too Large" }
+            ]},
+            { text: "likely_cause", children: [
+              { text: "said now so it is on record before the dump confirms it" },
+              { text: "a long take is well over 100 MB, and the upload worker\u2019s body limit on the current plan is 100 MB" },
+              { text: "if the dump shows a 413, the fix is a chunked upload, not a retry" }
+            ]},
+            { text: "rec_dump_test", children: [
+              { text: "new, 23 assertions: plants a stuck 12 MB recording, makes the worker answer 413 as HTML, lets recovery try on its own, reads the dump back" },
+              { text: "checks the id, bytes=12.0 MB, chunks=4, the POST size, resp 413, the error line, the UA, formats, storage, the pending marker, the date \u2014 and that clipboard equals box" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "rec_calm 22, rec_match 28, tag_quiet 18, list_fold 24, fold_in 17, nav_pair 42, nav_state 15. green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "325 fold_pace",
+        expanded: false,
         nodes: [
           { text: "325 fold_pace", children: [
             { text: "prompt_restate", children: [
