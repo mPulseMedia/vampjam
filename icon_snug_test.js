@@ -82,6 +82,9 @@ const SESSION_JSON = JSON.stringify({
   await s.goto('https://vampsf.com/2026_01_17_bazaar_cafe.html');
   await s.waitForFunction(() => document.querySelectorAll('.tag_row').length > 0, { timeout: 15000 }).catch(() => {});
   await s.waitForTimeout(700);
+  // row_more — the three controls sit behind the dots; open them first
+  await s.evaluate(() => document.querySelector('.tag_row .tag_more').click());
+  await s.waitForTimeout(150);
   const S = await s.evaluate((src) => {
     const gaps = eval(src);
     const row = document.querySelector('.tag_row');

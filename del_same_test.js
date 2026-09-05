@@ -86,7 +86,11 @@ const LOOK = ['fontSize', 'padding', 'borderRadius', 'opacity', 'color',
   await s.goto('https://vampsf.com/2026_01_17_bazaar_cafe.html');
   await s.waitForFunction(() => document.querySelectorAll('.tag_row').length > 0, { timeout: 15000 }).catch(() => {});
   await s.waitForTimeout(700);
+  // row_more — the X sits behind the dots now, one left of share; open them first
+  await s.evaluate(() => document.querySelector('.tag_row .tag_more').click());
+  await s.waitForTimeout(150);
   const S = await s.evaluate(([src, keys]) => eval(src)('.tag_row .tag_del', keys), [PROBE, LOOK]);
+  const SH = await s.evaluate(([src, keys]) => eval(src)('.tag_row .tag_share', keys), [PROBE, LOOK]);
   await s.close();
 
   // ---- the recording row's X ----
@@ -106,12 +110,16 @@ const LOOK = ['fontSize', 'padding', 'borderRadius', 'opacity', 'color',
                                        JSON.stringify([S.box, R.box]));
   const diff = LOOK.filter(k => S[k] !== R[k]).map(k => k + ': ' + S[k] + ' vs ' + R[k]);
   ok('identical, declaration for declaration', diff.length === 0, diff.join(' | '));
-  ok('the same distance from the row edge', S.rightInset === R.rightInset,
-                                       S.rightInset + ' vs ' + R.rightInset);
+  // row_more moved share to the far right, so on the session row the X is
+  // one button in from the edge: share's own inset is what the recording row's
+  // X has, and the X sits immediately left of it.
+  ok('share holds the edge the X used to', SH.rightInset === R.rightInset, SH.rightInset + ' vs ' + R.rightInset);
+  ok('and the X sits one button in',    S.rightInset > R.rightInset && S.rightInset < R.rightInset + SH.box[0] + 2,
+                                       S.rightInset + ' vs ' + R.rightInset + ' + ' + SH.box[0]);
   ok('centred in the row on both',     S.midOff === R.midOff && Math.abs(R.midOff) <= 1,
                                        S.midOff + ' vs ' + R.midOff);
-  ok('and last in the row on both',    S.last === true && R.last === true,
-                                       JSON.stringify([S.last, R.last]));
+  ok('share last on the session row, X last on the recording row', SH.last === true && R.last === true,
+                                       JSON.stringify([SH.last, R.last]));
   await p.close();
 
   // ---- the prompt ----
