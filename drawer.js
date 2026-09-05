@@ -129,15 +129,89 @@
     if (lo) lo.style.maxHeight = '';
     if (fp) fp.style.height = '';
   }
+  // ---- row_fly ------------------------------------------------------------
+  // The lit row and the page's own <h1> are the SAME NAME in two places. So the
+  // transition is not the page appearing near the row, it is that name moving
+  // from where it sits in the list to where it sits on the page, and the list
+  // and the page rearranging themselves around it.
+  // It flies as one fixed clone, scaled from the row's type size up to the
+  // title's, so the whole trip is one compositor transform.
+  var FOLD_MS = 380;
+  // fold_ease — slow off the mark, quicker as it goes. Paul asked for that
+  // shape by name; the tail is eased just enough that it settles instead of
+  // stopping dead, which is the part that would actually read as jarring.
+  var FOLD_EASE = 'cubic-bezier(0.55, 0, 0.35, 1)';
+  function name_el() {
+    var d = drawer();
+    var r = d && d.querySelector('.jam_item.current .jam_name');
+    return r || null;
+  }
+  function title_el() {
+    var fp = fold_page();
+    return fp ? fp.querySelector('h1') : null;
+  }
+  function box(el) {
+    if (!el) return null;
+    var r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return null;
+    var cs = getComputedStyle(el);
+    return { x: r.left, y: r.top, w: r.width, h: r.height,
+             size: parseFloat(cs.fontSize) || 17, weight: cs.fontWeight, color: cs.color };
+  }
+  // a and b are measured in the two end states; the clone is drawn in b's
+  // clothes and starts wearing a's position and scale.
+  function fly(a, b, text) {
+    if (!a || !b) return null;
+    var c = document.createElement('div');
+    c.className = 'fold_fly';
+    c.textContent = text;
+    var k = b.size ? (a.size / b.size) : 1;
+    c.style.cssText = 'position:fixed;left:0;top:0;margin:0;padding:0;z-index:200;'
+      + 'white-space:nowrap;pointer-events:none;transform-origin:left center;'
+      + 'font-size:' + b.size + 'px;font-weight:' + b.weight + ';color:' + b.color + ';'
+      + 'line-height:' + b.h + 'px;height:' + b.h + 'px;'
+      + 'transition:transform ' + FOLD_MS + 'ms ' + FOLD_EASE + ';'
+      + 'transform:translate(' + a.x + 'px,' + (a.y + a.h / 2 - b.h / 2) + 'px) scale(' + k + ')';
+    document.body.appendChild(c);
+    void c.offsetWidth;
+    requestAnimationFrame(function () {
+      c.style.transform = 'translate(' + b.x + 'px,' + b.y + 'px) scale(1)';
+    });
+    return c;
+  }
+
   var foldT = null;
   function fold_go(on) {
     var b = document.body, d = drawer();
     if (!d) return;
     clearTimeout(foldT);
+    if (b._fly) { try { b._fly.remove(); } catch (e0) {} b._fly = null; }
     foldH = fold_measure();
+    var y0 = window.scrollY || 0;
     b.classList.add('fold_run', 'fold_jump');
+
+    // both ends are measured before anything paints: put the layout in the END
+    // state, read it, put it back, read that. Two forced reflows inside one
+    // frame, which is cheaper than guessing where the title is going to land.
+    fold_apply(on ? 1 : 0);
+    if (on) window.scrollTo(0, 0);
+    void d.offsetHeight;
+    var endName = on ? box(name_el()) : null;
+    var endTtl  = on ? null : box(title_el());
+
     fold_apply(on ? 0 : 1);
-    void d.offsetHeight;                       // land the start frame
+    window.scrollTo(0, on ? y0 : y0);
+    void d.offsetHeight;
+    var startTtl  = on ? box(title_el()) : null;
+    var startName = on ? null : box(name_el());
+
+    var ttl = title_el(), nm = name_el();
+    var text = (ttl && ttl.textContent.trim()) || (nm && nm.textContent.trim()) || '';
+    // shutting: the title flies down into its row. opening: the row flies up
+    // into the title. Same clone, same curve, endpoints swapped.
+    b._fly = on ? fly(startTtl, endName, text) : fly(startName, endTtl, text);
+    if (b._fly) b.classList.add('fold_fly_on');
+
     b.classList.remove('fold_jump');
     requestAnimationFrame(function () { fold_apply(on ? 1 : 0); });
     foldT = setTimeout(function () {
@@ -145,7 +219,9 @@
       b.classList.toggle('fold_on', !!on);
       fold_clear();
       if (on) window.scrollTo(0, 0);
-    }, 320);
+      b.classList.remove('fold_fly_on');
+      if (b._fly) { try { b._fly.remove(); } catch (e1) {} b._fly = null; }
+    }, FOLD_MS);
   }
 
   // fold_in — the other direction, and it is the SAME animation run backwards.
@@ -185,7 +261,8 @@
     function step(t) {
       if (t0 === null) t0 = t;
       var k = Math.min(1, (t - t0) / ms);
-      var e = 1 - Math.pow(1 - k, 3);
+      // fold_ease again, by hand: slow away, quicker later
+      var e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
       try { window.scrollTo(0, Math.round(from * (1 - e))); } catch (eS) {}
       if (k < 1) requestAnimationFrame(step);
     }
@@ -1065,9 +1142,20 @@
       'body.fold_on #fold_page{height:0;overflow:hidden;}' +
       // overflow:hidden would make #fold_page a scrollport and kill the sticky
       // player, so it is only on while the height is actually moving.
-      'body.fold_run .session_drawer{overflow:hidden;transition:max-height 0.3s ease;}' +
+      'body.fold_run .session_drawer{overflow:hidden;}' +
+      // fold_ease — one curve, one duration, on everything that moves, or the
+      // page and the rows arrive at different times and the fold comes apart
+      'body.fold_run .session_drawer,body.fold_run .session_drawer .jam_menu,' +
+        'body.fold_run #fold_page{transition:max-height 380ms cubic-bezier(0.55,0,0.35,1),' +
+        'height 380ms cubic-bezier(0.55,0,0.35,1),transform 380ms cubic-bezier(0.55,0,0.35,1);}' +
+      // while the name is in flight neither end of the trip is drawn, or you
+      // see the same words in three places at once
+      'body.fold_fly_on #fold_page h1{opacity:0;}' +
+      'body.fold_fly_on .jam_item.current .jam_name{opacity:0;}' +
+      '#fold_page h1{transition:opacity 140ms ease;}' +
       'body.fold_on .session_drawer{max-height:none;overflow:visible;}' +
-      'body.fold_jump #fold_page,body.fold_jump .session_drawer{transition:none;}' +
+      'body.fold_jump #fold_page,body.fold_jump .session_drawer,' +
+        'body.fold_jump .session_drawer .jam_menu{transition:none;}' +
       // nothing is below the list any more, so nothing casts a shadow into it
       'body.fold_on .session_drawer::after,body.fold_run .session_drawer::after{display:none;}' +
       '.session_low{z-index:89;}' +
@@ -1389,7 +1477,7 @@
       requestAnimationFrame(function () {
         requestAnimationFrame(function () {
           set_open(false);
-          fold_ride(note.y, 320);
+          fold_ride(note.y, FOLD_MS);
         });
       });
       return;
