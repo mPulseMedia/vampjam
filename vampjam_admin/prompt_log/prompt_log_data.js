@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "327 retry_trace",
+        id: "328 dump_send",
         expanded: true,
+        nodes: [
+          { text: "328 dump_send", children: [
+            { text: "prompt_restate", children: [
+              { text: "He tapped the debug button, could not tell what happened, and the paste came through as one line: vampjam rec_dump 2026-09-05T\u2026" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK so I don\u2019t know what this next thing is this vamp Jam wreck dump 2026 etc.. I don\u2019t know exactly what that is that maybe what I\u2019m supposed to paste in here or maybe it was something else but nothing visual came up in the debug window and I just pasted whatever I don\u2019t know if I click something or if it just put it in my what\u2019s it called vampjam rec_dump 2026-09-05T\u2026" }
+            ]},
+            { text: "yes_that_was_it", children: [
+              { text: "that first line IS the debug info \u2014 the button worked, the chat cut the paste to one line" },
+              { text: "copy-then-paste was one step too many on a phone. no more pasting" }
+            ]},
+            { text: "what_the_button_does_now", children: [
+              { text: "it is called send debug info to Claude" },
+              { text: "it writes the dump into the repo through the same path that registers sessions \u2014 the one already proven from his phone" },
+              { text: "the button says gathering\u2026, sending\u2026, then sent \u2713 \u2014 Claude can read it now. it holds that for six seconds and scrolls the box up under the thumb" },
+              { text: "if it cannot send, it says so and falls back to copying" }
+            ]},
+            { text: "next_step_for_paul", children: [
+              { text: "reload the Record page, tap try again, let it finish or fail, then tap send debug info to Claude" },
+              { text: "then just say sent \u2014 I will read it from the repo" }
+            ]},
+            { text: "rec_dump_test", children: [
+              { text: "37 now: the send is captured and checked as valid JSON whose text equals the box, dated, pointing at the page" },
+              { text: "the waits went to six seconds; a 12 MB body through interception is not quick and the suite had been passing on luck" }
+            ]},
+            { text: "harness_note", children: [
+              { text: "staging lands the file a moment after it returns; a cp in the same breath copies the OLD one. read the marker back first" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "rec_calm 22, rec_match 28, tag_quiet 18. green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "327 retry_trace",
+        expanded: false,
         nodes: [
           { text: "327 retry_trace", children: [
             { text: "prompt_restate", children: [

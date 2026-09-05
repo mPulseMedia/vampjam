@@ -4190,7 +4190,26 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   fire in the harness — the suite proves the XHR went out with the whole body and stops there.
   Re-ran rec_calm 22, rec_match 28, tag_quiet 18, fold_in 17. Green.
   Still no new trace.
-- NEXT → add entry 322 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 322 dump_send · b328 · the debug button sends the dump to the repo instead of asking him to paste it.
+  He tapped copy, could not tell whether anything had happened, pasted, and the chat cut it to
+  its first line. Copy-then-paste was one step too many on a phone, and the visual confirmation
+  was a label change he did not notice.
+  The button is now "send debug info to Claude". It writes rec_dump.json to the repo through the
+  same sync worker that registers sessions — the one path already proven to work from his phone,
+  since his placeholder commit landed — as {at, page, text}. The auto-push agent's pull brings it
+  onto the Mac where I read it. The clipboard and the box are the fallback, and the button says
+  which happened: "sent ✓ — Claude can read it now", or "could not send — copied instead".
+  The button narrates while it works (gathering…, sending…), holds its result for six seconds
+  instead of 2.6, and scrolls the box into view so something visibly happens under his thumb.
+  rec_dump_test grew to 37: the sync POST is captured and the suite checks a rec_dump.json went
+  out, that its content is valid JSON whose text equals the box, and that it is dated and points
+  at the page. Its recovery and retry waits went to six seconds — a 12 MB body through route
+  interception is not quick, and the suite had started passing on luck.
+  Harness note for next time: device_stage_files lands the file a moment after it returns, and a
+  cp issued in the same breath copies the OLD file. Read the marker back before trusting it.
+  Re-ran rec_calm 22, rec_match 28, tag_quiet 18. Green.
+  Still no new trace.
+- NEXT → add entry 323 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
