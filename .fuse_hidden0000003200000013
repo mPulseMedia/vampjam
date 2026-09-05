@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>vampjam_org</title>
+<style>
+  :root {
+    --bg: #faf9f5; --bg2: #f0eee6; --bg3: #e8e5da;
+    --tx: #2d2b26; --tx2: #8f8d85; --mut: #8f8d85; --fs: 22px;
+    --acc: #d97757; --ok: #5b8a6e; --warn: #a8874f; --bad: #a86868; --doc: #4a6fa5;
+    --line: #e0ddd2; --code-bg: #f2efe4; --code-tx: #3a382f; --code-line: #ddd8c8;
+    --lbl: #cbc8bc;
+  }
+  html.night {
+    --bg: #181816; --bg2: #222220; --bg3: #2b2b28;
+    --tx: #f0efea; --tx2: #918f89; --mut: #918f89;
+    --acc: #d97757; --ok: #86b298; --warn: #c4a878; --bad: #c08d8d; --doc: #7fa3d1;
+    --line: #302f2c; --code-bg: #21211e; --code-tx: #d9d7cf; --code-line: #35342f;
+    --lbl: #56554f;
+  }
+  @media (max-width: 760px) and (orientation: portrait) {
+    :root { --fs: 31px; }   /* mobile portrait only: ~40% bigger */
+    header { padding: 10px 12px 8px; gap: 8px; }
+    .controls { width: 100%; margin-left: 0; }
+    .controls button { padding: 6px 14px; }
+    #sbox { flex: 1 1 auto; width: auto; min-width: 120px; }
+    #subchip { min-width: 0; }
+    main { padding: 8px 10px 90px; }
+    ul.ol ul { padding-left: 18px; }
+    .codewrap, .tblwrap, figure { margin-left: 8px; }
+  }
+  .row:has(figure) { align-items: flex-start; }  /* label at TOP of images */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--tx);
+    font: var(--fs)/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  header {
+    padding: 14px 18px 10px; border-bottom: 1px solid var(--line);
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  }
+  header h1 { font-size: var(--fs); margin: 0; font-weight: 400; }
+  header .sub { color: var(--mut); font-size: var(--fs); }
+  .controls { margin-left: auto; display: flex; gap: 8px; }
+  .controls button {
+    background: var(--bg3); color: var(--tx2); border: 1px solid var(--line);
+    border-radius: 6px; padding: 4px 12px; font-size: var(--fs); cursor: pointer;
+  }
+  #subchip { min-width: 130px; font-variant-numeric: tabular-nums; }
+  #sbox {
+    background: var(--bg2); color: var(--tx); border: 1px solid var(--line);
+    border-radius: 6px; padding: 4px 12px; font-size: var(--fs); width: 210px;
+  }
+  #sbox:focus { outline: none; border-color: var(--acc); }
+  #recentq {
+    position: fixed; z-index: 60; display: none; overflow: hidden;
+    background: var(--bg2); border: 1px solid var(--line); border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.25);
+  }
+  .rq_item {
+    padding: 10px 16px; cursor: pointer; text-align: left;
+    font-size: var(--fs); color: var(--tx); white-space: nowrap;
+  }
+  .rq_item:hover { background: var(--bg3); }
+  #thm {
+    width: 16px; height: 30px; border-radius: 8px; align-self: center;
+    margin-left: 6px; margin-right: 18px;
+    background: var(--bg3); border: 1px solid var(--line);
+    position: relative; cursor: pointer; flex: 0 0 auto; padding: 0;
+  }
+  #thm::after {
+    content: ''; position: absolute; left: 3px; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--acc); top: 4px;
+    transition: top .15s, background .15s;
+  }
+  html.night #thm::after { top: 16px; background: var(--mut); }
+  .rowcopy {
+    margin-left: auto; background: var(--bg3); color: var(--tx2);
+    border: 1px solid var(--line); border-radius: 5px; padding: 1px 12px;
+    font-size: calc(var(--fs) * 0.78); cursor: pointer; flex: 0 0 auto;
+  }
+  .rowcopy:active { background: var(--line); }
+  .report {
+    margin-left: auto; background: transparent; color: var(--tx2);
+    border: 1px solid var(--line); border-radius: 5px; padding: 1px 12px;
+    font-size: calc(var(--fs) * 0.78); cursor: pointer; flex: 0 0 auto;
+  }
+  .report:active { background: var(--bg3); }
+  .st {
+    margin-left: 12px; color: var(--tx); font-variant-numeric: tabular-nums;
+  }
+  .sd::before { content: '\25CF\00a0\00a0'; color: var(--mut); }
+  .sd.st_wait::before { color: var(--warn); }
+  .sd.st_ok::before { color: var(--ok); }
+  .sd.st_bad::before { color: var(--bad); }
+  .st_inline { margin-left: 14px; }
+  #crumbs {
+    display: none; gap: 8px; align-items: baseline; flex-wrap: wrap;
+    padding: 8px 18px; border-bottom: 1px solid var(--line);
+    font-size: calc(var(--fs) * 0.86);
+  }
+  .crumb { color: var(--tx); cursor: pointer; }
+  .crumb .clbl { color: var(--mut); margin-right: 8px; }
+  .youare {
+    color: var(--acc); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
+  .donem {
+    color: var(--ok); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
+  #rn_tbl td.cc { cursor: pointer; }
+  #rn_tbl td.cc:hover { background: var(--bg3); }
+  #rn_tbl td.ccdone { outline: 2px solid var(--ok); outline-offset: -2px; }
+  .nextm {
+    color: var(--warn); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
+  .decidem {
+    color: var(--acc); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
+  .dom {
+    color: var(--doc); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
+  .readym {
+    color: var(--doc); margin-left: 10px;
+    font-size: calc(var(--fs) * 0.82);
+  }
+  li.has_here > .row > .txt::after { content: ' \25B8'; color: var(--acc); }
+  .crumb:hover { text-decoration: underline; }
+  .crumb.cur { color: var(--tx); cursor: default; }
+  .csep { color: var(--mut); }
+  li.zhide { display: none !important; }
+  li.zanc > .row { display: none; }
+  li.zanc > ul { padding-left: 0; display: block !important; }
+  .st + .report { margin-left: 0; }
+  body.filtering li.sc.closed > .codewrap { display: none; }
+  body.filtering li.n.hid { display: none; }
+  body.filtering li.closed > ul { display: block; }
+  body.filtering li.closed > .tblwrap, body.filtering li.closed > figure,
+  body.filtering li.closed > .codewrap { display: block; }
+  body.filtering li.srev li.n.hid { display: list-item; }
+  body.filtering li.sclose > ul, body.filtering li.sclose > .tblwrap,
+  body.filtering li.sclose > figure,
+  body.filtering li.sclose > .codewrap { display: none !important; }
+  #dropbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    background: var(--bg2); border-bottom: 1px solid var(--line);
+    padding: 14px 18px; text-align: center; cursor: pointer;
+    font-variant-numeric: tabular-nums;
+    transform: perspective(700px) rotateX(-95deg); transform-origin: top;
+    transition: transform .45s ease;
+  }
+  #dropbar.show { transform: perspective(700px) rotateX(0deg); }
+  main { max-width: 980px; margin: 0 auto; padding: 10px 16px 90px; }
+
+  ul.ol { list-style: none; margin: 0; padding: 0; }
+  ul.ol ul { list-style: none; margin: 0; padding: 0 0 0 30px; }
+  li.n { position: relative; margin: 1px 0; }
+  .row {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 3px 6px 3px 2px; border-radius: 6px;
+  }
+  .row:hover { background: var(--bg2); }
+  .tri {
+    flex: 0 0 18px; width: 18px; text-align: center; cursor: pointer;
+    color: var(--mut); font-size: 14px; user-select: none;
+    transition: transform .12s; transform: rotate(90deg);
+  }
+  li.closed > .row .tri { transform: rotate(0deg); }
+  li.leaf > .row .tri { visibility: hidden; }
+  .lbl {
+    flex: 0 0 30px; text-align: right; color: var(--lbl);
+    font-size: var(--fs); font-variant-numeric: tabular-nums;
+  }
+  .txt { flex: 1; min-width: 0; }
+  .txt b { font-weight: 650; }
+  .txt code {
+    font-size: calc(var(--fs) * 0.92); font-family: ui-monospace, Menlo, monospace;
+    background: var(--bg2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 0 9px; color: #e08d79;
+  }
+  li.closed > ul { display: none; }
+  li.closed > .tblwrap, li.closed > figure, li.closed > .codewrap { display: none; }
+
+  li.sec { margin-top: 18px; }
+  li.sec > .row { padding: 6px 6px 6px 2px; }
+  li.sec > .row .txt { font-size: var(--fs); }
+  
+
+  .tag { margin-left: 8px; color: var(--tx2); }
+  .tag::before { content: "— "; }
+
+  .hl-ok, .hl-warn, .hl-bad { color: inherit; }
+
+  .codewrap { position: relative; margin: 6px 0 6px 56px; max-width: 860px; }
+  pre {
+    background: var(--code-bg); color: var(--code-tx); border-radius: 8px;
+    border: 1px solid var(--code-line); font-weight: 300;
+    padding: 11px 13px; overflow-x: auto;
+    font-size: calc(var(--fs) * 0.7); line-height: 1.5;
+    font-family: ui-monospace, Menlo, monospace; margin: 0; white-space: pre;
+  }
+  .codewrap pre {
+    max-height: calc(1.5em * 3 + 24px); overflow-y: hidden; cursor: pointer;
+  }
+  .codewrap { position: relative; }
+  .codewrap:not(.xfull)::after {
+    content: ""; position: absolute; left: 1px; right: 1px; bottom: 1px;
+    height: 1.8em; border-radius: 0 0 8px 8px; pointer-events: none;
+    background: linear-gradient(to bottom, transparent, var(--code-bg));
+  }
+  .codewrap.xfull pre { max-height: none; }
+  .copybtn {
+    position: absolute; top: 8px; right: 8px; font-size: var(--fs);
+    background: var(--bg2); color: var(--tx2); border: 1px solid var(--line);
+    border-radius: 5px; padding: 3px 10px; cursor: pointer;
+  }
+  .copybtn:active { background: #ffffff44; }
+
+  figure { margin: 4px 0 8px 56px; max-width: 880px; }
+  figure svg { width: 100%; height: auto; display: block; }
+  figcaption { font-size: var(--fs); color: var(--mut); margin-top: 3px; }
+  svg text { font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+  .tblwrap { margin: 6px 0 8px 56px; overflow-x: auto; }
+  table { border-collapse: collapse; font-size: calc(var(--fs) * 0.86); }
+  th, td { text-align: left; padding: 5px 14px 5px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--tx2); font-weight: 400; }
+  td a { color: var(--acc); text-decoration: none; }
+  .txt a { color: var(--acc); text-decoration: none; }
+  .txt a:hover { text-decoration: underline; }
+  td a:hover { text-decoration: underline; }
+
+</style>
+<script>
+(function(){var o=null;try{o=localStorage.getItem('vampjam_org_theme')}catch(e){}
+var n=o?o==='night':window.matchMedia('(prefers-color-scheme: dark)').matches;
+if(n)document.documentElement.classList.add('night');})();
+</script>
+</head>
+<body>
+<header>
+  <h1>vampjam_org</h1>
+  <span class="sub" id="subchip"></span>
+  <div class="controls">
+    <button onclick="setAll(false)">open</button>
+    <button onclick="setAll(true)">close</button>
+    <input id="sbox" type="search" placeholder="search" autocomplete="off">
+    <div id="thm"></div>
+  </div>
+</header>
+<main>
+<ul class="ol" id="root">
+
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">domain_vsf</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">status <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">NetSol DNS points at GitHub Pages</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">repo CNAME file added (vampsf.com)</span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">sync worker deployed and verified</span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">$0 spent so far</span></div></li>
+<li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">full detail lives in the spec</span></div></li>
+</ul></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">ns_cloudflare <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">NetSol emailed: nameservers are now drake + simone (cloudflare)</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">I checked from outside: vampsf.com already answers with all four GitHub addresses</span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">Cloudflare is verifying (typically 1&#8211;2 h); their &#8220;vampsf.com is active&#8221; email = fully done</span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">your Mac may show the old &#8220;under construction&#8221; page up to ~2 more hours (its DNS memory) &#8212; that&#8217;s normal, not broken</span></div></li>
+</ul></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">https_check <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">the certificate is already working (see 1D) &#8212; no more waiting</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">open <a href="https://github.com/mPulseMedia/vampjam/settings/pages" target="_blank">repo Settings &#8594; Pages</a>: Custom domain should read <code>vampsf.com</code></span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">tick <b>Enforce HTTPS</b> when the cert appears</span></div></li>
+</ul></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">you verified, and so did I: vampsf.com opens the 08-07 session, wordmark vampsf, highlights listed</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">bonus: it already serves over httpS &#8212; the certificate exists</span></div></li>
+</ul></li>
+</ul></li>
+
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">record_live</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">deploy_worker <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">your 1-2-3 built it; I finished the settings in your Chrome (storage hookup + public address)</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">checked the live worker: it answers exactly as our code should</span></div></li>
+</ul></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">wire_admin <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">Admin now knows the worker&#8217;s address; recording can upload</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">no password gate for now: anyone who learns the worker address could upload a file. Low risk; say &#8220;add the secret&#8221; later and we bolt it on</span></div></li>
+</ul></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">test_record <span class="nextm">#next</span> <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">wait ~2 minutes (the site is republishing), then on your iPhone open <a href="https://mpulsemedia.github.io/vampjam/admin.html" target="_blank">the Admin page</a></span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">Record a jam &#8594; record a few seconds &#8594; stop &#8594; <b>Upload to R2</b></span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">expect: a link appears under the button; tell me what it says</span></div></li>
+</ul></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">session_autocreate <span class="readym">#ready</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">say go: after an upload I build the session page + json automatically</span></div></li>
+</ul></li>
+</ul></li>
+
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">audio_home</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">dups_decide <span class="decidem">#decide</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">say &#8220;trash dups&#8221; and I move the raw <code>Sound Union 29.qta</code> + 3 spare 08-07 exports (~1.2 GB) to claude_trash/</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">the live file (<code>Sound.Union.2026-08-07.v2.m4a</code>) stays</span></div></li>
+</ul></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">move_to_r2 <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">5 sessions still play from GitHub releases (flaky on iPhone)</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">drag <code>~/claude_cowork/vampjam/2026-05-23_bazaar_cafe.m4a</code> into the <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/r2/default/buckets/vampjam-audio" target="_blank">vampjam-audio bucket</a></span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">download each, then drag into the same bucket, names unchanged</span></div><ul>
+<li class="n" data-l="a"><div class="row"><span class="tri">▶</span><span class="lbl">a</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/soundunion_2026-05-30_2/Sound.Union.23.m4a">05-30 &#8212; Sound.Union.23.m4a</a></span></div></li>
+<li class="n" data-l="b"><div class="row"><span class="tri">▶</span><span class="lbl">b</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/2026-07-17_vampjam_su_m4a/Sound.Union.24.v2.m4a">07-17 &#8212; Sound.Union.24.v2.m4a</a></span></div></li>
+<li class="n" data-l="c"><div class="row"><span class="tri">▶</span><span class="lbl">c</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/2026-07-24_vampjam_su/Sound.Union.2026-07-24.m4a">07-24 &#8212; Sound.Union.2026-07-24.m4a</a></span></div></li>
+<li class="n" data-l="d"><div class="row"><span class="tri">▶</span><span class="lbl">d</span><span class="txt"><a href="https://github.com/mPulseMedia/vampjam/releases/download/2026-07-31_vampjam_su/Sound.Union.2026-07-31.m4a">07-31 &#8212; Sound.Union.2026-07-31.m4a</a></span></div></li>
+</ul></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">say &#8220;bucket has all 5&#8221; &#8212; I repoint the jsons <span class="readym">#ready</span></span></div></li>
+</ul></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">other_place <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">if older jams live outside this folder (QuickTime saves, Voice Memos, the iPhone), Add-folder it and I audit</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">I can&#8217;t see past the two connected folders</span></div></li>
+</ul></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">verify_ios <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">after the moves: play each session on the iPhone</span></div></li>
+</ul></li>
+</ul></li>
+
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">rebrand</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">wordmark_name <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">wordmark: <b>vamp</b> in the script font + <b>SF</b> capital in the page font, larger; browser titles stay vampsf</span></div></li>
+</ul></li>
+</ul></li>
+
+<li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">self_admin</span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">spec_file</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt"><code>vampjam_admin/vampjam_org_spec.md</code> (build_history + the notes moved off this page)</span></div></li>
+</ul></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">handoff</span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt"><code>vampjam_handoff.md</code></span></div></li>
+</ul></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">kickoff <button class="rowcopy">copy prompt kickoff</button></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">paste into a fresh Cowork thread on model-switch day</span></div></li>
+<li class="n sc" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">first message</span></div><div class="codewrap"><pre>vampjam pickup — read vampjam_handoff.md, then vampjam_admin/vampjam_org_spec.md, top to bottom. Open vampjam_org.html and act on #next. Before editing, claim the next number in both the prompt_log thread and the spec build_history. Write the batch codename to vampjam_admin/commit_msg.txt first, then write files — the login robot commits and pushes; do NOT commit from the sandbox.</pre></div></li>
+</ul></li>
+</ul></li>
+
+</ul>
+</main>
+<script>
+  const BUILD='b24';
+  const KEY='vampjam_org_page_state';
+
+  function label_path(li) {
+    const parts = [];
+    let node = li;
+    while (node) {
+      if (node.dataset && node.dataset.l) parts.unshift(node.dataset.l);
+      node = node.parentElement ? node.parentElement.closest('li.n') : null;
+    }
+    return parts.join('');
+  }
+
+  const items = [...document.querySelectorAll('li.n')];
+  items.forEach(li => {
+    const kids = li.querySelector(':scope > ul');
+    const extra = li.querySelector(':scope > figure, :scope > .codewrap, :scope > .tblwrap, :scope > .row + figure');
+    if (!kids && !extra) li.classList.add('leaf');
+    li.dataset.path = label_path(li);
+  });
+
+  function saveState() {
+    try {
+      const closed = items.filter(li => li.classList.contains('closed'))
+                          .map(li => li.dataset.path);
+      const scOpen = items.filter(li => li.classList.contains('sc') &&
+                          !li.classList.contains('closed'))
+                          .map(li => li.dataset.path);
+      const q = (document.getElementById('sbox') || {}).value || '';
+      localStorage.setItem(KEY, JSON.stringify({ b: BUILD, closed, scOpen, scroll: window.scrollY, q, zoom: zoomPath }));
+    } catch (e) { /* sandboxed preview — no storage, still interactive */ }
+  }
+
+  function restoreState() {
+    let st = null;
+    try { st = JSON.parse(localStorage.getItem(KEY)); } catch(e) {}
+    if (st && Array.isArray(st.closed)) {
+      const set = new Set(st.closed);
+      items.forEach(li => li.classList.toggle('closed',
+        set.has(li.dataset.path) && !li.classList.contains('leaf')));
+      if (typeof st.scroll === 'number')
+        requestAnimationFrame(() => window.scrollTo(0, st.scroll));
+    } else {
+      document.querySelectorAll('#root > li.sec').forEach(li => {
+        if (!['1'].includes(li.dataset.l)) li.classList.add('closed');
+      });
+    }
+    // per-build tidying: nodes finished in this build close themselves
+    // (once — after that your own toggles win)
+    const CLOSE_ON_BUILD = ['1A','1B','1D','2A','2B','4A'];
+    const OPEN_ON_BUILD = [];
+    if (!st || st.b !== BUILD) {
+      items.forEach(li => {
+        if (CLOSE_ON_BUILD.includes(li.dataset.path) &&
+            !li.classList.contains('leaf')) li.classList.add('closed');
+      });
+    }
+    // script nodes: hidden unless explicitly opened before
+    const scOpen = new Set((st && st.scOpen) || []);
+    items.forEach(li => {
+      if (li.classList.contains('sc'))
+        li.classList.toggle('closed', !scOpen.has(li.dataset.path));
+    });
+  }
+
+  items.forEach(li => {
+    const row = li.querySelector(':scope > .row');
+    row.addEventListener('click', e => {
+      if (e.target.closest('a, button, pre')) return;
+      if (li.classList.contains('leaf')) return;
+      if (document.body.classList.contains('filtering') &&
+          !li.classList.contains('sc')) {
+        // search_reveal + search_close (74/94): open shows REAL children,
+        // click again closes; closed nodes reopen fully.
+        if (li.classList.contains('sclose')) {
+          li.classList.remove('sclose');
+          li.classList.add('srev');
+        } else {
+          const anyKid = [...li.querySelectorAll(':scope > ul > li.n')]
+            .some(c => c.offsetParent !== null);
+          if (anyKid) { li.classList.add('sclose'); li.classList.remove('srev'); }
+          else li.classList.toggle('srev');
+        }
+        return;
+      }
+      if (e.detail === 1) {
+        li._t = setTimeout(() => { li.classList.toggle('closed'); saveState(); }, 220);
+      }
+    });
+    row.addEventListener('dblclick', e => {
+      if (e.target.closest('a, button, pre')) return;
+      if (li.classList.contains('leaf')) return;
+      clearTimeout(li._t);
+      const wasClosed = li.classList.contains('closed');
+      const desc = li.querySelectorAll('li.n:not(.leaf)');
+      if (wasClosed) {
+        li.classList.remove('closed');
+        desc.forEach(d => d.classList.remove('closed'));
+      } else {
+        desc.forEach(d => d.classList.add('closed'));
+        li.classList.add('closed');
+      }
+      saveState();
+    });
+  });
+
+  function setAll(closed) {
+    // search_open_all (121): during a search, open unfolds every visible
+    // result to its REAL full subtree; close snaps back to the minimal
+    // search view (matches + necessary ancestors only).
+    if (document.body.classList.contains('filtering')) {
+      if (closed) {
+        items.forEach(li => li.classList.remove('srev', 'sclose'));
+      } else {
+        items.forEach(li => {
+          if (!li.classList.contains('hid') && !li.classList.contains('leaf') &&
+              !li.classList.contains('sc')) {
+            li.classList.add('srev');
+            li.classList.remove('sclose');
+          }
+        });
+      }
+      return;
+    }
+    items.forEach(li => { if (!li.classList.contains('leaf'))
+      li.classList.toggle('closed', closed); });
+    saveState();
+  }
+
+  // ---- morph_reload: the new build first paints looking like the old
+  // page, then animates (~1s) into its new state.
+  const MKEY = KEY + '_morph';
+  function saveMorph() {
+    try {
+      const m = { b: BUILD, t: Date.now(), rows: {} };
+      items.forEach(li => {
+        const row = li.querySelector(':scope > .row');
+        if (!row) return;
+        m.rows[li.dataset.path] = {
+          c: li.classList.contains('closed') ? 1 : 0,
+          y: Math.round(row.getBoundingClientRect().top)
+        };
+      });
+      localStorage.setItem(MKEY, JSON.stringify(m));
+    } catch (e) {}
+  }
+  function morphIn() {
+    let m = null;
+    try {
+      m = JSON.parse(localStorage.getItem(MKEY));
+      localStorage.removeItem(MKEY);
+    } catch (e) {}
+    if (!m || m.b === BUILD || (Date.now() - m.t) > 60000) return;
+    // phase 1 — dress the page as the OLD page: old open/closed on shared
+    // nodes, brand-new rows hidden
+    const fin = items.map(li => [li, li.classList.contains('closed')]);
+    items.forEach(li => {
+      const o = m.rows[li.dataset.path];
+      if (o && !li.classList.contains('leaf'))
+        li.classList.toggle('closed', !!o.c);
+      if (!o) { const r = li.querySelector(':scope > .row'); if (r) r.style.opacity = '0'; }
+    });
+    // phase 2 — after a beat, jump to the new state and FLIP-animate rows
+    setTimeout(() => {
+      const first = {};
+      items.forEach(li => {
+        const row = li.querySelector(':scope > .row');
+        if (row) first[li.dataset.path] =
+          row.offsetParent ? row.getBoundingClientRect().top : null;
+      });
+      fin.forEach(([li, c]) => li.classList.toggle('closed', c));
+      items.forEach(li => {
+        const row = li.querySelector(':scope > .row');
+        if (!row) return;
+        const path = li.dataset.path;
+        const r = row.getBoundingClientRect();
+        const isNew = !(path in m.rows) || first[path] == null;
+        const d = isNew ? 0 : (first[path] - r.top);
+        if (isNew) { if (!row.offsetParent) return; row.style.opacity = '0'; }
+        else if (Math.abs(d) > 1 && Math.abs(d) < innerHeight * 2)
+          row.style.transform = 'translateY(' + d + 'px)';
+        else { row.style.opacity = ''; return; }
+        row.style.transition = 'none';
+        requestAnimationFrame(() => {
+          row.style.transition =
+            'transform 1s cubic-bezier(.4,0,.2,1), opacity 1s ease';
+          row.style.transform = '';
+          row.style.opacity = '';
+          setTimeout(() => { row.style.transition = ''; }, 1100);
+        });
+      });
+    }, 450);
+  }
+
+  let scrollTimer = null;
+  window.addEventListener('scroll', () => {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(saveState, 300);
+  }, { passive: true });
+
+  restoreState();
+
+  // "your turn" markers: ancestors of any li.here get a small salmon arrow
+  document.querySelectorAll('li.here').forEach(li => {
+    let n = li.parentElement ? li.parentElement.closest('li.n') : null;
+    while (n) { n.classList.add('has_here'); n = n.parentElement ? n.parentElement.closest('li.n') : null; }
+  });
+
+  // search filter — matches node text, code, tables, captions;
+  // ancestors of a match stay visible, everything opens while filtering
+  const sbox = document.getElementById('sbox');
+  function own_text(li) {
+    let t = '';
+    const tx = li.querySelector(':scope > .row .txt');
+    if (tx) t += tx.textContent;
+    const pre = li.querySelector(':scope > .codewrap pre');
+    if (pre) t += ' ' + pre.textContent;
+    const tb = li.querySelector(':scope > .tblwrap');
+    if (tb) t += ' ' + tb.textContent;
+    const fg = li.querySelector(':scope > figure figcaption');
+    if (fg) t += ' ' + fg.textContent;
+    return t.toLowerCase();
+  }
+  function applyFilter() {
+    const q = sbox.value.trim().toLowerCase();
+    items.forEach(li => li.classList.remove('srev', 'sclose'));
+    document.body.classList.toggle('filtering', !!q);
+    if (!q) { items.forEach(li => li.classList.remove('hid')); saveState(); return; }
+    // and/or logic (79): space-separated words all must hit (AND);
+    // an interior standalone "or" flips to any-word-hits (OR).
+    const words = q.split(/\s+/).filter(Boolean);
+    const orMode = words.length >= 3 &&
+      words.slice(1, -1).some(w => w === 'or');
+    const terms = orMode ? words.filter(w => w !== 'or') : words;
+    const hit = t => orMode ? terms.some(w => t.includes(w))
+                            : terms.every(w => t.includes(w));
+    const m = new Map(items.map(li => [li, hit(own_text(li))]));
+    items.forEach(li => {
+      const keep = m.get(li) ||
+        [...li.querySelectorAll(':scope li.n')].some(d => m.get(d));
+      li.classList.toggle('hid', !keep);
+    });
+    saveState();
+  }
+  sbox.addEventListener('input', applyFilter);
+
+  // search_recent (105): last five unique searches, click to reuse
+  const RQ_KEY = 'vampjam_org_recent_q';
+  const rq = document.createElement('div');
+  rq.id = 'recentq';
+  document.body.appendChild(rq);
+  function rqLoad() { try { return JSON.parse(localStorage.getItem(RQ_KEY)) || []; } catch(e) { return []; } }
+  function rqSave(q) {
+    q = q.trim();
+    if (q.length < 2) return;
+    let r = rqLoad().filter(x => x !== q);
+    r.unshift(q); r = r.slice(0, 5);
+    try { localStorage.setItem(RQ_KEY, JSON.stringify(r)); } catch(e) {}
+  }
+  function rqHide() { rq.style.display = 'none'; }
+  function rqShow() {
+    const r = rqLoad();
+    if (!r.length) return;
+    rq.innerHTML = '';
+    r.forEach(q => {
+      const d = document.createElement('div');
+      d.className = 'rq_item';
+      d.textContent = q;
+      d.addEventListener('mousedown', e => {
+        e.preventDefault();
+        sbox.value = q; applyFilter(); rqSave(q); sbox.focus(); rqShow();
+      });
+      rq.appendChild(d);
+    });
+    const b = sbox.getBoundingClientRect();
+    rq.style.left = b.left + 'px';
+    rq.style.top = (b.bottom + 4) + 'px';
+    rq.style.minWidth = b.width + 'px';
+    rq.style.display = 'block';
+  }
+  sbox.addEventListener('focus', rqShow);
+  sbox.addEventListener('blur', () => setTimeout(rqHide, 150));
+  let rqT = null;
+  sbox.addEventListener('input', () => {
+    rqShow();
+    clearTimeout(rqT);
+    rqT = setTimeout(() => { rqSave(sbox.value); rqShow(); }, 2000);
+  });
+  try {
+    const st = JSON.parse(localStorage.getItem(KEY));
+    if (st && st.q) { sbox.value = st.q; applyFilter(); }
+  } catch(e) {}
+
+  document.querySelectorAll('.rowcopy').forEach(btn => {
+    const stop = e => e.stopPropagation();
+    btn.addEventListener('dblclick', stop);
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const pre = btn.closest('li.n').querySelector(':scope .codewrap pre');
+      const orig = btn.dataset.orig || (btn.dataset.orig = btn.textContent);
+      const done = () => { btn.textContent = 'copied ✓';
+                           setTimeout(() => btn.textContent = orig, 1500); };
+      const fallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = pre.textContent; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); ta.remove(); done();
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText)
+        navigator.clipboard.writeText(pre.textContent).then(done, fallback);
+      else fallback();
+    });
+  });
+
+  document.querySelectorAll('#rn_tbl td.cc').forEach(td => {
+    td.addEventListener('click', () => {
+      const txt = td.textContent.trim();
+      const done = () => { td.classList.add('ccdone');
+                           setTimeout(() => td.classList.remove('ccdone'), 900); };
+      const fb = () => { const ta = document.createElement('textarea');
+        ta.value = txt; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); ta.remove(); done(); };
+      if (navigator.clipboard && navigator.clipboard.writeText)
+        navigator.clipboard.writeText(txt).then(done, fb);
+      else fb();
+    });
+  });
+
+  document.querySelectorAll('.report').forEach(btn => {
+    const stop = e => e.stopPropagation();
+    btn.addEventListener('dblclick', stop);
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const li = btn.closest('li.n');
+      const code = li.querySelector(':scope > .row .txt').textContent.trim().split(/\s/)[0];
+      const line = 'purge_walk ' + li.dataset.path + ' ' + code + ': ';
+      const done = () => { btn.textContent = 'paste in chat';
+                           setTimeout(() => btn.textContent = 'report', 2500); };
+      const fb = () => { const ta = document.createElement('textarea');
+        ta.value = line; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); ta.remove(); done(); };
+      if (navigator.clipboard && navigator.clipboard.writeText)
+        navigator.clipboard.writeText(line).then(done, fb);
+      else fb();
+    });
+  });
+
+  document.querySelectorAll('.codewrap').forEach(w => {
+    w.addEventListener('click', e => {
+      if (e.target.closest('button')) return;
+      if (window.getSelection && String(window.getSelection())) return;
+      w.classList.toggle('xfull');
+    });
+  });
+
+  document.querySelectorAll('.copybtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(btn.parentElement.querySelector('pre').textContent)
+        .then(() => { btn.textContent = 'copied ✓';
+                      setTimeout(() => btn.textContent = 'copy', 1500); });
+    });
+  });
+
+  // zoom — click any label to focus that node; crumbs navigate back up
+  const crumbs = document.createElement('div');
+  crumbs.id = 'crumbs';
+  document.querySelector('header').after(crumbs);
+  var zoomPath = null;
+  function crumbName(li) {
+    const t = li.querySelector(':scope > .row .txt');
+    let s = '';
+    if (t) {
+      const c = t.cloneNode(true);
+      c.querySelectorAll('.tag, button').forEach(x => x.remove());
+      s = c.textContent.trim();
+    }
+    s = s.split('\u2014')[0].trim();
+    const w = s.split(/\s+/);
+    s = w.slice(0, w[0] && w[0].includes('_') ? 1 : 3).join(' ');
+    return s;
+  }
+  function applyZoom() {
+    items.forEach(li => li.classList.remove('zhide', 'zanc', 'zfocus'));
+    crumbs.innerHTML = '';
+    const target = zoomPath ? items.find(li => li.dataset.path === zoomPath) : null;
+    if (!target) { zoomPath = null; crumbs.style.display = 'none'; return; }
+    const chain = [];
+    let n = target.parentElement ? target.parentElement.closest('li.n') : null;
+    while (n) { chain.unshift(n); n = n.parentElement ? n.parentElement.closest('li.n') : null; }
+    if (!chain.length) { crumbs.style.display = 'none'; }
+    else {
+      crumbs.style.display = 'flex';
+      chain.forEach(a => {
+        const c = document.createElement('span');
+        c.className = 'crumb';
+        const lb = document.createElement('span');
+        lb.className = 'clbl';
+        lb.textContent = a.dataset.l;
+        c.appendChild(lb);
+        c.appendChild(document.createTextNode(crumbName(a)));
+        c.onclick = () => zoomTo(a.dataset.path);
+        crumbs.appendChild(c);
+        const sep = document.createElement('span');
+        sep.className = 'csep';
+        sep.textContent = '\u203a';
+        crumbs.appendChild(sep);
+      });
+    }
+    const anc = new Set(chain);
+    items.forEach(li => {
+      if (li === target || target.contains(li)) return;
+      if (anc.has(li)) { li.classList.add('zanc'); return; }
+      li.classList.add('zhide');
+    });
+    target.classList.add('zfocus');
+    target.classList.remove('closed');
+    window.scrollTo(0, 0);
+  }
+  const FOCUS_CLEARS_SEARCH = true; // focus_clear trial — set false to revert
+  function zoomTo(path) {
+    zoomPath = path;
+    if (FOCUS_CLEARS_SEARCH && sbox.value) { sbox.value = ''; applyFilter(); }
+    history.replaceState(null, '', '#' + path);
+    applyZoom();
+    saveState();
+  }
+  document.querySelectorAll('.lbl').forEach(l => {
+    l.style.cursor = 'pointer';
+    l.addEventListener('click', e => {
+      const li = e.target.closest('li.n');
+      if (!li) return;
+      e.stopPropagation();
+      zoomTo(li.dataset.path);
+    });
+  });
+  {
+    const hp = decodeURIComponent(location.hash.slice(1));
+    let st0 = null;
+    try { st0 = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+    zoomPath = hp || (st0 && st0.zoom) || null;
+    applyZoom();
+  }
+  window.addEventListener('hashchange', () => {
+    zoomPath = decodeURIComponent(location.hash.slice(1)) || null;
+    applyZoom();
+    saveState();
+  });
+
+  // reload ONLY when the source updates. the page polls its sidecar
+  // theo_build.js via a plain <script> tag (works from file:// where fetch
+  // can't). when the sidecar's build id differs, a 5s countdown runs, then
+  // reload. state + scroll survive.
+  const RELOAD_WAIT = 3;
+  const chip = document.getElementById('subchip');
+  chip.title = 'click to reload now';
+  chip.style.cursor = 'pointer';
+  chip.textContent = 'as of 8/14 4:28:00p';
+  chip.addEventListener('click', () => { saveState(); saveMorph(); location.reload(); });
+  const h1 = document.querySelector('header h1');
+  h1.style.cursor = 'pointer';
+  h1.title = 'back to top level';
+  h1.addEventListener('click', () => {
+    zoomPath = null;
+    if (FOCUS_CLEARS_SEARCH && sbox.value) { sbox.value = ''; applyFilter(); }
+    history.replaceState(null, '', location.pathname);
+    applyZoom();
+    saveState();
+  });
+
+  // fold-down countdown bar: appears from the top edge when an update lands;
+  // clicking it cancels the reload (until the NEXT update).
+  const bar = document.createElement('div');
+  bar.id = 'dropbar';
+  document.body.appendChild(bar);
+
+  let pending = false, dismissed = null, timer = null;
+  function startCountdown(nb) {
+    pending = true;
+    let n = RELOAD_WAIT;
+    const draw = () => bar.textContent =
+      'updated — reloading in ' + n + 's — click to cancel';
+    draw();
+    requestAnimationFrame(() => bar.classList.add('show'));
+    timer = setInterval(() => {
+      n--;
+      if (n <= 0) { clearInterval(timer); saveState(); saveMorph(); location.reload(); }
+      else draw();
+    }, 1000);
+    bar.onclick = () => {
+      clearInterval(timer);
+      pending = false;
+      dismissed = nb;               // don't re-offer this same build
+      bar.classList.remove('show');
+    };
+  }
+  function poll() {
+    if (pending) return;
+    const sc = document.createElement('script');
+    sc.src = 'vampjam_org_build.js?' + Date.now();
+    sc.onload = () => {
+      sc.remove();
+      const nb = window.PAGE_BUILD;
+      if (!pending && nb && nb !== BUILD && nb !== dismissed) startCountdown(nb);
+    };
+    sc.onerror = () => sc.remove();
+    document.head.appendChild(sc);
+  }
+  setInterval(poll, 2000);
+  poll();
+
+  // live step-status chips — fed by purge_verify.sh writing
+  // vampjam_org_status.js next to this page
+  const ST_LABEL = {
+    ok:   ['st_ok',   'backed up \u2713'],
+    new:  ['st_wait', 'uploaded \u00b7 new edits since'],
+    part: ['st_wait', 'saved here \u00b7 upload failed'],
+    wait: ['st_wait', 'watching\u2026'],
+    bad:  ['st_bad',  'problem \u2014 tell me']
+  };
+  let wLastT = null, wLastSeen = 0;
+  function renderStatus(s) {
+    if (s && s.t && s.t !== wLastT) { wLastT = s.t; wLastSeen = Date.now(); }
+    const alive = s && s.t && (Date.now() - wLastSeen < 12000);
+    const set = (el, cls, txt) => {
+      el.className = 'st' + (cls ? ' ' + cls : '');
+      el.textContent = txt;
+      const d = document.querySelector('[data-for="' + el.id + '"]');
+      if (d) d.className = 'sd' + (cls ? ' ' + cls : '');
+    };
+    document.querySelectorAll('.st').forEach(el => {
+      const k = el.id.slice(3);
+      if (k === 'w') {
+        if (alive) set(el, 'st_ok', 'watcher running \u2713 ' + (s.t || ''));
+        else if (s && s.t) set(el, 'st_wait', 'watcher stopped \u2014 repaste');
+        else set(el, '', 'not running');
+        return;
+      }
+      if (k === 'six') {
+        const v6 = s ? s.six : undefined;
+        if (v6 === 'ok') set(el, 'st_ok', 'all six uploaded \u2713');
+        else if (v6 !== undefined) set(el, 'st_wait', 'backup in progress \u2014 see 7A');
+        else set(el, '', 'watcher off');
+        return;
+      }
+      if (k === 'ag') {
+        const av = s ? parseInt(s.ag || '0', 10) : null;
+        if (av === null) set(el, '', 'watcher off');
+        else if (av >= 4) set(el, 'st_ok', 'on for all four \u2713');
+        else set(el, 'st_wait', 'on for ' + av + ' of 4');
+        return;
+      }
+      if (k === 'cm') {
+        const v = s ? s.cm : undefined;
+        const nm = s ? (s.cmn || '') : '';
+        if (v === undefined) set(el, '', 'watcher off');
+        else if (v === 'ok') set(el, 'st_ok', 'committed as "' + nm + '" \u2713');
+        else set(el, 'st_wait', '"' + nm + '" not in git yet');
+        return;
+      }
+      if (k === 'pv') {
+        const v = s ? s.pv : undefined;
+        if (v === undefined) set(el, '', 'watcher off');
+        else if (v === 'ok') set(el, 'st_ok', 'saved + uploaded \u2713 ' + (s.t || ''));
+        else if (v === 'new') set(el, 'st_wait', 'new work here \u00b7 not yet saved up');
+        else if (v === 'part') set(el, 'st_wait', 'committed \u00b7 push still needed');
+        else set(el, 'st_wait', 'checking\u2026');
+        return;
+      }
+      if (k === 'ran' || k === 'ran2' || k === 'ran3') {
+        const rv = s ? s[k] : '';
+        if (rv) set(el, 'st_ok', 'script ran ' + rv);
+        else set(el, '', s ? 'not run yet' : 'watcher off');
+        return;
+      }
+      const v = s ? s[k] : undefined;
+      if (v === undefined) { set(el, '', 'watcher off'); return; }
+      const m = ST_LABEL[v] || ['st_wait', v];
+      set(el, m[0], m[1] + (v === 'ok' && s.t ? ' ' + s.t : ''));
+    });
+  }
+  function pollStatus() {
+    const sc = document.createElement('script');
+    sc.src = 'vampjam_org_status.js?' + Date.now();
+    sc.onload = () => { sc.remove(); renderStatus(window.PAGE_STATUS); };
+    sc.onerror = () => { sc.remove(); renderStatus(null); };
+    document.head.appendChild(sc);
+  }
+  const thmMq = window.matchMedia('(prefers-color-scheme: dark)');
+  function applyTheme() {
+    let o = null;
+    try { o = localStorage.getItem('vampjam_org_theme'); } catch(e) {}
+    const n = o ? o === 'night' : thmMq.matches;
+    document.documentElement.classList.toggle('night', n);
+  }
+  if (thmMq.addEventListener) thmMq.addEventListener('change', applyTheme);
+  document.getElementById('thm').addEventListener('click', () => {
+    const n = document.documentElement.classList.contains('night');
+    try { localStorage.setItem('vampjam_org_theme', n ? 'day' : 'night'); } catch(e) {}
+    applyTheme();
+  });
+  setInterval(pollStatus, 2000);
+  pollStatus();
+
+  // steer_rule (117): each build may set the focus, the search, and
+  // open nodes ONCE; his manual navigation wins afterward.
+  const STEER = { focus: '4B', search: null };
+  try {
+    if (localStorage.getItem('vampjam_org_steer') !== BUILD) {
+      localStorage.setItem('vampjam_org_steer', BUILD);
+      OPEN_ON_BUILD.forEach(pth => {
+        const li = items.find(x => x.dataset.path === pth);
+        if (li) li.classList.remove('closed');
+      });
+      if (STEER.search !== null && typeof STEER.search === 'string') {
+        sbox.value = STEER.search; applyFilter();
+      }
+      if (STEER.focus) zoomTo(STEER.focus);
+      saveState();
+    }
+  } catch(e) {}
+
+  morphIn();
+</script>
+</body>
+</html>
