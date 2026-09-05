@@ -69,8 +69,11 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
     rq.onsuccess = () => {
       const db = rq.result;
       const tx = db.transaction(['recs', 'chunks'], 'readwrite');
+      // bytes is what the recorder now writes as it goes; the dump reads it
+      // rather than touching the chunks, which is what hung the phone
       tx.objectStore('recs').put({ id: 'loc_test1', label: 'Long one', date: '2026-09-05',
-        dur: 5400, state: 'ready', ts: Date.now(), mime: 'audio/mp4', ext: 'm4a', tags: [{ t: 10, label: 'a' }] });
+        dur: 5400, state: 'ready', ts: Date.now(), mime: 'audio/mp4', ext: 'm4a', tags: [{ t: 10, label: 'a' }],
+        bytes: 12 * 1024 * 1024 });
       const big = new Blob([new Uint8Array(3 * 1024 * 1024)], { type: 'audio/mp4' });
       for (let i = 0; i < 4; i++) tx.objectStore('chunks').put({ id: 'loc_test1', seq: i, blob: big });
       tx.oncomplete = res; tx.onerror = () => rej(tx.error);
@@ -112,7 +115,7 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
   ok('and the status line was left alone',       /upload 413/.test(d.status), d.status);
   ok('so the try-again link survived the dump',  d.retry === true, d.retry);
   ok('the dump names the stuck recording',       /loc_test1/.test(d.box), '');
-  ok('with its size',                            /bytes=12\.0 MB/.test(d.box), (d.box.match(/bytes=[^\s]+ ?\w+/) || [])[0]);
+  ok('with its size, from the meta not the chunks', /bytes=12\.0 MB/.test(d.box), (d.box.match(/bytes=[^\s]+ ?\w+/) || [])[0]);
   ok('its state and length',                     /state=ready/.test(d.box) && /5400s/.test(d.box), '');
   ok('and how many chunks it is in',             /chunks=4/.test(d.box), '');
   ok('the dump has the failed upload, with its status', /resp\s+413/.test(d.box), '');
