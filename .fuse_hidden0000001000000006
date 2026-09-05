@@ -156,7 +156,7 @@ function fake_bucket() {
   ok('and never tried the one-shot',            oneShots === 0, oneShots);
   const obj = bucket.objs[Object.keys(bucket.objs)[0]];
   ok('the bucket holds one 20 MB file from 3 parts', !!obj && obj.size === 20 * MB && obj.parts === 3, JSON.stringify(obj));
-  ok('the status counted up in MB',             seen.some(t => /uploading 8\.0 MB of 20\.0 MB/.test(t)) || seen.some(t => /uploading 16\.0 MB of 20\.0 MB/.test(t)),
+  ok('the status counted up in MB',             seen.some(t => /uploading 8\.0 of 20\.0 MB/.test(t)) || seen.some(t => /uploading 16\.0 of 20\.0 MB/.test(t)),
                                                 JSON.stringify(seen).slice(0, 300));
   const sess = syncs.find(x => /^2026_09_04_redwood_city.*\.json$/.test(x.path) && x.path !== 'sessions_auto.json');
   ok('the session was written pointing at the stitched file',
