@@ -64,8 +64,11 @@ const SAMPLER = () => {
   const t0 = performance.now();
   (function tick() {
     const f = document.querySelector('.fold_fly');
+    const row = document.querySelector('.jam_item.current');
     if (f) { const r = f.getBoundingClientRect();
-      window.__fly.push([Math.round(performance.now() - t0), Math.round(r.top), Math.round(r.left)]); }
+      const c = row ? row.getBoundingClientRect() : null;
+      window.__fly.push([Math.round(performance.now() - t0), Math.round(r.top),
+                         Math.round(r.left), c ? Math.round(c.top) : null]); }
     const lo = document.getElementById('session_low');
     if (lo && document.body.classList.contains('fold_run')) {
       const r = lo.getBoundingClientRect();
@@ -148,6 +151,35 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
      leg2 > leg1 * 1.3, 'first ' + leg1 + ' then ' + leg2 + ' of ' + total);
   ok('and it barely moves at all to begin with',
      leg1 < total * 0.25, leg1 + ' of ' + total);
+
+  // fold_pace — eased at BOTH ends now, so the last third has to be slow too.
+  // An ease-in alone would pass the two checks above and still slam at the end.
+  const lastThird = Math.abs(last[1] - twoThird[1]);
+  ok('and it settles rather than stopping dead',
+     lastThird < leg2 * 0.8, 'middle ' + leg2 + ' then ' + lastThird);
+  ok('the whole thing takes about a second, not a blink',
+     last[0] > 900 && last[0] < 1500, last[0] + 'ms');
+
+  // the pace claim: the name travels at the ROW's speed, not its own. Sample
+  // both per frame and compare how far each moved between the same two frames.
+  const pace = [];
+  for (let i = 4; i < path0.length; i += 4) {
+    const a = path0[i - 4], z = path0[i];
+    if (a[3] === null || z[3] === null) continue;
+    const dn = Math.abs(z[1] - a[1]), dr = Math.abs(z[3] - a[3]);
+    if (dr > 6) pace.push([dn, dr]);
+  }
+  const moving = pace.filter(v => v[0] > 3);          // while the name is still going
+  const matched = moving.filter(v => Math.abs(v[0] - v[1]) <= Math.max(3, v[1] * 0.12));
+  ok('the name moves at the row\u2019s speed, not its own',
+     moving.length > 2 && matched.length >= moving.length - 1,
+     matched.length + ' of ' + moving.length + ' frames matched');
+  // and because its journey is shorter, it must finish first and hold still
+  const tail = path0.slice(-4);
+  const stopped = tail.every(v => Math.abs(v[1] - last[1]) <= 2);
+  const rowStillGoing = Math.abs(tail[tail.length - 1][3] - tail[0][3]) > 4;
+  ok('it comes to rest early and lets the list finish past it',
+     stopped && rowStillGoing, 'name still ' + stopped + ', row moving ' + rowStillGoing);
 
   // fold_anchor — the rows above ride up out of the way rather than the lit
   // row being clipped off the bottom
