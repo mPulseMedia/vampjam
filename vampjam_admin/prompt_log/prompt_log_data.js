@@ -9,8 +9,31 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "332 row_more",
+        id: "333 worker_go",
         expanded: true,
+        nodes: [
+          { text: "333 worker_go", children: [
+            { text: "prompt_restate", children: [
+              { text: "Back on the Mac, ready to do the paste. Where do I go?" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I\u2019m back on my computer and ready to do the thing I have to do that. Lets me upload the Big files. Can you remind me or give me the link to where I need to go to" }
+            ]},
+            { text: "the_steps", children: [
+              { text: "1 vampsf.com/vampjam_do_this_next.html \u2192 tap Copy worker code" },
+              { text: "2 dash.cloudflare.com \u2192 Workers & Pages \u2192 vampjam-upload (not sync) \u2192 Edit code" },
+              { text: "3 click in the code, \u2318A, \u2318V, Deploy" },
+              { text: "4 open the Record page on the phone \u2014 it sends the 216 MB by itself, 28 pieces" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 nothing changed this prompt." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "332 row_more",
+        expanded: false,
         nodes: [
           { text: "332 row_more", children: [
             { text: "prompt_restate", children: [
