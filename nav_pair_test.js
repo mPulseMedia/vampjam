@@ -1,7 +1,8 @@
 // nav_pair_test — the header is cassette · favourites, wordmark, record · share,
 // and Favorites / New recording are reachable from BOTH the header and the list.
 // (grew with both_ways, which put the two rows back and gave the record page a
-// real share button.)
+// real share button; and with here_lit, which shows the current page's icon in
+// the accent instead of blanking it.)
 const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path');
 const DIR = process.env.VJ_DIR || '/tmp/vj';
@@ -58,6 +59,7 @@ const REG = JSON.stringify([
         color: getComputedStyle(x.e).color,
         vis: getComputedStyle(x.e).visibility,
         href: x.e.getAttribute('href') || null,
+        cur: x.e.getAttribute('aria-current') || null,
         svg: !!x.e.querySelector('svg')
       }));
     const w = h.querySelector('.wordmark').getBoundingClientRect();
@@ -85,8 +87,9 @@ const REG = JSON.stringify([
     ok(f + ' — the wordmark is on the page centre line',
        Math.abs(m.wordMid - m.pageMid) <= 2, m.wordMid + ' vs ' + m.pageMid);
     ok(f + ' — nothing overflows',       m.scrollW <= m.vw, m.scrollW + ' > ' + m.vw);
-    const inks = m.kids.filter(k => k.svg).map(k => k.color);
-    ok(f + ' — every icon is the same grey',
+    // here_lit: every icon shares one grey EXCEPT the lit one, if this page has one
+    const inks = m.kids.filter(k => k.svg && !/nav_on/.test(k.cls)).map(k => k.color);
+    ok(f + ' — every unlit icon is the same grey',
        inks.length > 0 && new Set(inks).size === 1, JSON.stringify([...new Set(inks)]));
     await p.close();
   }
@@ -105,17 +108,32 @@ const REG = JSON.stringify([
   ok('and so does the record icon — no red up here',
      S.kids[3].color === S.kids[0].color && !/215, 0, 21/.test(S.kids[3].color), S.kids[3].color);
 
-  // nav_here — a page does not link to itself, but it keeps the slot
+  // here_lit — a page does not link to itself; its icon is SHOWN and lit instead
   const F = look['favorites.html'], R = look['record.html'];
-  ok('on favourites, the favourites slot is blanked',
-     /nav_here/.test(F.kids[1].cls) && F.kids[1].vis === 'hidden', F.kids[1].cls + ' ' + F.kids[1].vis);
-  ok('but its width is still there',   F.kids[1].width === 40, F.kids[1].width);
-  // one blank slot on record now, not two: the share became real with both_ways
-  ok('on record, the record slot is blanked',
-     R.kids.filter(k => k.vis === 'hidden').length === 1,
-     JSON.stringify(R.kids.map(k => k.vis)));
-  ok('and it is the fourth slot — the record one',
-     R.kids[3].vis === 'hidden', JSON.stringify(R.kids.map(k => k.vis)));
+  const ACCENT = 'rgb(0, 113, 227)';
+  ok('on favourites, the favourites icon is lit',
+     /nav_on/.test(F.kids[1].cls) && F.kids[1].color === ACCENT,
+     F.kids[1].cls + ' ' + F.kids[1].color);
+  ok('and visible, not blanked',       F.kids[1].vis === 'visible', F.kids[1].vis);
+  ok('still holding its slot',         F.kids[1].width === 40, F.kids[1].width);
+  ok('and no longer a link',           F.kids[1].href === null, F.kids[1].href);
+  ok('on record, the record icon is lit',
+     /nav_on/.test(R.kids[3].cls) && R.kids[3].color === ACCENT,
+     R.kids[3].cls + ' ' + R.kids[3].color);
+  ok('and it is drawn, not an empty box', R.kids[3].svg === true, R.kids[3].svg);
+  ok('nothing is hidden in either header any more',
+     F.kids.every(k => k.vis === 'visible') && R.kids.every(k => k.vis === 'visible'),
+     JSON.stringify([F.kids.map(k => k.vis), R.kids.map(k => k.vis)]));
+  // exactly one lit icon per page, and none on a page that is neither
+  ok('a session page lights nothing',
+     S.kids.every(k => k.color !== ACCENT || /wordmark/.test(k.cls)),
+     JSON.stringify(S.kids.map(k => k.color)));
+  ok('favourites lights exactly one',
+     F.kids.filter(k => /nav_on/.test(k.cls)).length === 1,
+     JSON.stringify(F.kids.map(k => k.cls)));
+  ok('record lights exactly one',
+     R.kids.filter(k => /nav_on/.test(k.cls)).length === 1,
+     JSON.stringify(R.kids.map(k => k.cls)));
 
   // ---- the list is only recordings now ----
   const p = await ctx.newPage();
