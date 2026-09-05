@@ -9,8 +9,60 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "324 row_fly",
+        id: "325 fold_pace",
         expanded: true,
+        nodes: [
+          { text: "325 fold_pace", children: [
+            { text: "prompt_restate", children: [
+              { text: "Sliding the top half up: slow, then quick, then settle slowly again \u2014 a curve of speed." },
+              { text: "Triple the time. It is too fast and too jarring." },
+              { text: "And move the selected row\u2019s title up at the same SPEED the page moves." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "When you slide the top half up, do it at first slowly, then quickly then let it settle slow slowly again so kind of an curve of speed or acceleration for something one of those things and slow it down by tripling what it\u2019s taking now it\u2019s too fast now and too jarring\nMove the title of the secret row up at the same speed the page moves." }
+            ]},
+            { text: "the_curve", children: [
+              { text: "1140ms, eased at BOTH ends \u2014 the old one only eased the front and then stopped" },
+              { text: "measured per 150ms on the way out: 1, 18, 55, 135, 219, then 127, 52, 12" },
+              { text: "the numbers live in two constants and get interpolated into the stylesheet, so they cannot drift apart" }
+            ]},
+            { text: "same_speed_is_the_real_ask", children: [
+              { text: "the name and the list were sharing a DURATION, not a speed" },
+              { text: "the name has a shorter way to go, so it dawdled while the rows raced past \u2014 which is exactly why they never looked attached" },
+              { text: "it is no longer a CSS transition: the clone is driven per frame, advancing by the same pixels the LIT ROW advances" },
+              { text: "measured 1/1, 18/18, 55/56, 135/134, 219/219 \u2014 then the name is home at ~900ms and holds while the list carries on past it" },
+              { text: "which is what a thing that has arrived looks like" }
+            ]},
+            { text: "one_curve", children: [
+              { text: "the shape is now evaluated in JS as well as declared in CSS, so bez() is the single definition" },
+              { text: "the scroll ride uses it too, instead of a hand-rolled curve that merely resembled it" }
+            ]},
+            { text: "record_page", children: [
+              { text: "same curve at 520ms \u2014 shorter on purpose, because that one holds up a navigation and nothing is being read while it runs" }
+            ]},
+            { text: "row_fly_test", children: [
+              { text: "29 now. four new, all measured rather than declared" },
+              { text: "the last third is slower than the middle \u2014 an ease-in alone would have passed the checks already there and still slammed at the end" },
+              { text: "the name and the row move the same distance between the same two frames, to within 12%" },
+              { text: "and the name settles several frames BEFORE the row does" },
+              { text: "two of them needed fixing first: the sampler\u2019s clock starts at page load, and \u201cstill moving at the end\u201d is better asked as \u201cwhich settled first\u201d" }
+            ]},
+            { text: "housekeeping", children: [
+              { text: "the three fold suites had their waits tripled \u2014 they were timed against 380ms" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "eighteen suites, all green" },
+              { text: "drawer.js v=158" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "324 row_fly",
+        expanded: false,
         nodes: [
           { text: "324 row_fly", children: [
             { text: "prompt_restate", children: [
