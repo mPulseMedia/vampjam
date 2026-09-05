@@ -1368,6 +1368,22 @@
       body: JSON.stringify({ path: path, content: content, message: message })
     }).then(function (r) { if (!r.ok) throw new Error('sync ' + r.status); return r.json(); });
   }
+  // name_edit — a session's display name lives in two places: the session file's
+  // own label and the registry row the list draws from. A rename that touches
+  // only one of them shows the old name in the list for ever, so the page hands
+  // the registry half here, where reg_fresh and sync_write already are.
+  function reg_rename(page, name) {
+    return reg_fresh().then(function (list) {
+      var out = reg_union(list.filter(function (e) { return e && !deleted_has(e.page); }));
+      var hit = false;
+      out.forEach(function (e) { if (e.page === page) { e.name = name; hit = true; } });
+      if (!hit) return null;                       // not a registered recording — nothing to write
+      return sync_write('sessions_auto.json', JSON.stringify(dur_overlay(out), null, 2),
+        'rename ' + page.split('p=').pop());
+    });
+  }
+  window.vampjamRegRename = reg_rename;
+
   function delete_session(page, name, dur) {
     // same themed pop-up as the highlight delete, not the native confirm
     var code = del_code_for(dur);
