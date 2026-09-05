@@ -1,1 +1,1 @@
-fold_pace
+auto_commit
