@@ -311,7 +311,10 @@ button.ghost { font-size: 17px; }
 /* row_more — a row shows its title and three dots. The dots open into the
    row's actions with share at the far right; a tap anywhere else closes them.
    One button width competes with the title instead of three or four. */
-.jam_item .jam_acts, .tag_row .tag_acts { display: none; align-items: center; flex: 0 0 auto; }
+/* gap: inherit — the group is a flex box inside a flex row; without its
+   parent's gap the controls inside it sat 5px tighter than they did as
+   direct children, and icon_snug's ratio was measured against the row's */
+.jam_item .jam_acts, .tag_row .tag_acts { display: none; align-items: center; flex: 0 0 auto; gap: inherit; }
 .jam_item.acts_open .jam_acts, .tag_row.acts_open .tag_acts { display: inline-flex; }
 .jam_item.acts_open .jam_more, .tag_row.acts_open .tag_more { display: none; }
 .jam_more { flex: 0 0 auto; background: none; border: none; color: var(--muted); opacity: 0.55;
