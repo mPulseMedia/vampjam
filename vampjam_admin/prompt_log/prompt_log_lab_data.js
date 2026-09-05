@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "330 dump_read",
+        id: "331 rec_fix_note",
         expanded: true,
+        nodes: [
+          { text: "331 rec_fix_note", children: [
+            { text: "prompt_restate", children: [
+              { text: "Put the fix instructions on the Record page itself." },
+              { text: "And: could 8 MB pieces also limit what a session page downloads when it first renders?" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Please put in the vampsf rec page instructions of what I should do to fix this. \n\nDoes a megabyte pieces might be useful as a way to limit the size of the file that is downloaded when the page is first rendered at that moment. So this good this limitation could help solve a different problem." }
+            ]},
+            { text: "on_the_page_now", children: [
+              { text: "when the upload stops on the old receiver, a bordered box appears under the error: Fix \u2014 three minutes, on the Mac" },
+              { text: "1 copy the receiver code (a button) \u00b7 2 dash.cloudflare.com \u2192 Workers & Pages \u2192 vampjam-upload \u2192 Edit code \u00b7 3 click in the code, \u2318A, \u2318V, Deploy \u00b7 4 reopen this page on the phone" },
+              { text: "the button reads the code from the site at tap time, so what you paste is exactly what is committed" }
+            ]},
+            { text: "your_pieces_idea", children: [
+              { text: "good instinct, and it is already handled at the other end: every session\u2019s player is preload=metadata, and the bucket answers range requests" },
+              { text: "so on first render the browser fetches only the file\u2019s header, and then only the seconds it plays \u2014 whether the file went up in one piece or thirty" },
+              { text: "the lever that does exist there is the light 64k file, already live on three sessions" }
+            ]},
+            { text: "found_and_fixed", children: [
+              { text: "the empty debug box had been showing on every load since rec_dump \u2014 a display rule was beating the browser\u2019s hidden. the test had checked the attribute, not what was drawn; it checks both now" }
+            ]},
+            { text: "part_upload_test", children: [
+              { text: "28 now: the box, its four steps, the names and keys, the link, and the copy button putting the committed code on the clipboard byte for byte" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "rec_dump 37, rec_calm 22, rec_match 28, tag_quiet 18. green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "330 dump_read",
+        expanded: false,
         nodes: [
           { text: "330 dump_read", children: [
             { text: "prompt_restate", children: [

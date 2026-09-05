@@ -4248,7 +4248,28 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   What I could not do: deploy the worker. Cloudflare is his login. Three minutes on the Mac, and
   the page then finishes the job by itself.
   Still no new trace.
-- NEXT → add entry 324 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 324 rec_fix_note · b331 · the fix is written on the Record page itself, where the wall is hit.
+  Sending him to Do this next was one page too many. When the upload stops on the old worker with
+  a file too big for one shot, a bordered box appears under the error on the Record page: a title
+  ("Fix — three minutes, on the Mac"), four lines, and a copy button. The button fetches
+  cloudflare/r2_upload_worker.js from the site itself at tap time, so what he pastes is
+  byte-for-byte what is committed — no embedded second copy to drift. The long version stays one
+  tap away.
+  Found on the screenshot and fixed: .dump_box { display:block } was beating the browser's own
+  [hidden] rule, so the empty debug box had been showing on every load since rec_dump. The test
+  had checked the attribute, not the computed display; it checks both now.
+  On his idea — that pieces could also limit what a session page downloads when it first renders:
+  the player already does that at the other end. Every session's <audio> is preload="metadata"
+  and R2 answers Range requests, so the browser fetches the header at load and then only the
+  seconds it plays. The file being in one piece in the bucket does not change that. The lever
+  that does exist there is the 64k rendition, already live on three sessions. Logged as an idea
+  answered, not a build.
+  part_upload_test grew to 28: the box appears with four steps, names vampjam-upload, Edit code,
+  ⌘A and Deploy, links to the long version, and the copy button puts the committed worker on the
+  clipboard byte for byte and says so.
+  Re-ran rec_dump 37, rec_calm 22, rec_match 28, tag_quiet 18. Green.
+  Still no new trace.
+- NEXT → add entry 325 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
