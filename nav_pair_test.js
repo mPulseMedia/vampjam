@@ -110,9 +110,12 @@ const REG = JSON.stringify([
   ok('on favourites, the favourites slot is blanked',
      /nav_here/.test(F.kids[1].cls) && F.kids[1].vis === 'hidden', F.kids[1].cls + ' ' + F.kids[1].vis);
   ok('but its width is still there',   F.kids[1].width === 40, F.kids[1].width);
+  // one blank slot on record now, not two: the share became real with both_ways
   ok('on record, the record slot is blanked',
-     R.kids.filter(k => k.vis === 'hidden').length === 2,
+     R.kids.filter(k => k.vis === 'hidden').length === 1,
      JSON.stringify(R.kids.map(k => k.vis)));
+  ok('and it is the fourth slot — the record one',
+     R.kids[3].vis === 'hidden', JSON.stringify(R.kids.map(k => k.vis)));
 
   // ---- the list is only recordings now ----
   const p = await ctx.newPage();
