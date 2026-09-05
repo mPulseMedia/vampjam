@@ -93,6 +93,10 @@ const REG = JSON.stringify([
   ok('and nothing else up there is',          rec.others.every(c => c !== RED), JSON.stringify(rec.others));
 
   // ---------- green: the share, just tapped ----------
+  // park the pointer off the button first: .nav_share:hover is var(--fg), and a
+  // click leaves the mouse sitting there, so a naive read after the green fades
+  // returns the hover colour and looks like the class never came off.
+  await p.mouse.move(5, 400);
   const before = await p.evaluate(() => getComputedStyle(document.getElementById('page_share')).color);
   ok('the share starts grey',                 before === GREY, before);
   await p.click('#page_share');
@@ -103,8 +107,13 @@ const REG = JSON.stringify([
   }));
   ok('it goes dark green when tapped',        hit.color === GREEN, hit.color + ' ' + hit.cls);
   await p.waitForTimeout(1400);
-  const after = await p.evaluate(() => getComputedStyle(document.getElementById('page_share')).color);
-  ok('and comes back on its own',             after === GREY, after);
+  await p.mouse.move(5, 400);
+  const after = await p.evaluate(() => ({
+    color: getComputedStyle(document.getElementById('page_share')).color,
+    cls: document.getElementById('page_share').className
+  }));
+  ok('and comes back on its own',             after.color === GREY && !/nav_hit/.test(after.cls),
+                                              after.color + ' ' + after.cls);
   await p.close();
 
   // ---------- the same green on a page whose share drawer.js wires ----------
