@@ -29,6 +29,9 @@
      which is the half of the fold this page can do on its own */
   body { transition: transform 0.26s ease, opacity 0.26s ease; transform-origin: top center; }
   body.fold_out { transform: scaleY(0.04); opacity: 0; pointer-events: none; }
+  /* fold_in: opened from the New recording row, this page grows the same way
+     it leaves — the departure played backwards */
+  body.fold_in { transform: scaleY(0.04); opacity: 0; }
   /* admin_same: the wordmark was 58/29 here and 68/34 on every other page —
      it comes from site.css now, and the bar carries .brand so it matches. */
   /* the session title is an h1 with the pencil inside it: 33px tall, margin
@@ -341,6 +344,23 @@
 
   // Back always returns to the session list. Mid-recording it behaves like
   // stop: finish, upload, build the session, THEN leave.
+  // fold_in — arriving from the New recording row. drawer.js left a note; this
+  // page does not load drawer.js, so it reads the note itself and plays its own
+  // departure backwards. Same motion in both directions, which is the point.
+  (function () {
+    var raw = null;
+    try { raw = sessionStorage.getItem('vampjam_fold_in'); sessionStorage.removeItem('vampjam_fold_in'); } catch (e) { return; }
+    if (!raw) return;
+    var n = null;
+    try { n = JSON.parse(raw); } catch (e) { return; }
+    if (!n || Date.now() - n.t > 5000) return;
+    if (String(n.page).split('#')[0].indexOf('record.html') !== 0) return;
+    document.body.classList.add('fold_in');
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { document.body.classList.remove('fold_in'); });
+    });
+  })();
+
   var pendingBack = false;
   backBtn.addEventListener('click', function () {
     if (mediaRec && mediaRec.state === 'recording') {

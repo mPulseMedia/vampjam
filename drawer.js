@@ -161,6 +161,21 @@
     if (String(n.page).split('#')[0] !== PKEY) return null;
     return n;
   }
+  // fold_ride — the rows above the tapped one collapse while the page grows,
+  // so the whole list rides upward and the page has to arrive at its own top.
+  // Left to the browser this is a clamp per frame that stops wherever the
+  // document happens to get short enough; tweened, it lands on the page.
+  function fold_ride(from, ms) {
+    var t0 = null;
+    function step(t) {
+      if (t0 === null) t0 = t;
+      var k = Math.min(1, (t - t0) / ms);
+      var e = 1 - Math.pow(1 - k, 3);
+      try { window.scrollTo(0, Math.round(from * (1 - e))); } catch (eS) {}
+      if (k < 1) requestAnimationFrame(step);
+    }
+    if (from > 0) requestAnimationFrame(step);
+  }
   // the folded state with no animation at all — the arriving page has to be
   // ALREADY shut on its first paint, or the unfold starts from a flash of page
   function fold_set_now(on) {
@@ -1357,7 +1372,10 @@
       try { window.scrollTo(0, note.y); } catch (eY) {}
       // one frame shut before it moves, so the eye sees the list, not a jump
       requestAnimationFrame(function () {
-        requestAnimationFrame(function () { set_open(false); });
+        requestAnimationFrame(function () {
+          set_open(false);
+          fold_ride(note.y, 320);
+        });
       });
       return;
     }
