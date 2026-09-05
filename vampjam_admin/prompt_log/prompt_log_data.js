@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "328 dump_send",
+        id: "329 part_upload",
         expanded: true,
+        nodes: [
+          { text: "329 part_upload", children: [
+            { text: "prompt_restate", children: [
+              { text: "The debug text never comes up. Stop that approach. Figure out what is blocking the huge local file and unblock it \u2014 do what you need to do." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, well I keep getting no text coming up but I\u2019d like you to try a different technique that it\u2019s different than what we\u2019re trying cause it\u2019s not really working but I mean I\u2019m talking about the debug text. It\u2019s not coming up so I think it\u2019s time to try a different approach you tell me what\u2019s gonna help you figure out how to stop blocking to unblock this huge local file that I have which is for some reason being blocked I\u2019d like you to figure out how to unblock it and I figured I would just say do what you need to do." }
+            ]},
+            { text: "the_repo_already_knew", children: [
+              { text: "sessions_auto.json: 2026_09_04_redwood_city_10_12_38p, 9676s \u2014 two hours forty-one \u2014 pending, with two placeholder commits (the page\u2019s own try and yours)" },
+              { text: "both got through registering and died at the audio upload. no dump needed" },
+              { text: "the dump hung because it added up 150 MB of chunk sizes on the phone \u2014 fixed too, but beside the point now" }
+            ]},
+            { text: "the_wall", children: [
+              { text: "a 2h41m take is ~150 MB. one request is stopped at 100 MB, and the worker read the whole file into memory in a 128 MB box" },
+              { text: "two walls in the same place; every try hit them" }
+            ]},
+            { text: "the_fix", children: [
+              { text: "the Record page sends the file in 8 MB pieces; the worker stitches them into one file" },
+              { text: "a phone never holds the whole file to send it; each piece gets three tries; a piece that cannot go cleans up after itself" },
+              { text: "progress counts up by piece: uploading 16.0 MB of 150.2 MB\u2026" },
+              { text: "an old worker is detected and short files still go the old way; a big file against the old worker does not try and die \u2014 it says what is needed and points at Do this next" }
+            ]},
+            { text: "the_one_thing_for_paul", children: [
+              { text: "paste the new worker into Cloudflare. three minutes on the Mac \u2014 it is your login, not mine" },
+              { text: "vampsf.com/vampjam_do_this_next.html has a Copy worker code button and the clicks, written for someone standing in front of that screen" },
+              { text: "then open the Record page on the phone. it finds the recording and sends it up by itself" }
+            ]},
+            { text: "part_upload_test", children: [
+              { text: "new, 23: the worker run in Node against a fake bucket; the phone against that worker through interception \u2014 a 20 MB take in five uneven chunks goes up as 8+8+4, gets stitched, lands the session, drops its local copy; and the not-updated worker case both ways" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "rec_dump 37, rec_calm 22, rec_match 28, tag_quiet 18, fold_in 17. green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "328 dump_send",
+        expanded: false,
         nodes: [
           { text: "328 dump_send", children: [
             { text: "prompt_restate", children: [

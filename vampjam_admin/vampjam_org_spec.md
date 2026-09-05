@@ -4209,7 +4209,46 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   cp issued in the same breath copies the OLD file. Read the marker back before trusting it.
   Re-ran rec_calm 22, rec_match 28, tag_quiet 18. Green.
   Still no new trace.
-- NEXT → add entry 323 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 323 part_upload · b329 · the recording goes up in 8 MB pieces and the worker stitches them; the
+  one thing waiting on Paul is pasting the new worker into Cloudflare.
+  He said stop diagnosing and unblock it, do what you need to do. The repo already said what was
+  wrong: sessions_auto.json carries 2026_09_04_redwood_city_10_12_38p at dur 9676 — 2h41m — with
+  pending: true and TWO placeholder commits, one from the page's own recovery and one from his
+  try again. Both got through the registry write and died at the audio POST. A 2h41m take is
+  ~150 MB; Cloudflare stops a request body at 100 MB, and the worker read the whole body into
+  memory in a 128 MB box. Two walls, same place. No dump needed.
+  The worker (cloudflare/r2_upload_worker.js) grows a piece path on R2 multipart: ?op=init opens
+  it, ?op=part&key&id&n takes one piece, ?op=done stitches, ?op=abort cleans up. Keys are checked
+  against [A-Za-z0-9._-] so a query cannot name a path. The plain POST is untouched, so nothing
+  that has not been updated breaks.
+  The client (upload_audio) tries init first. An OLD worker ignores the query, sees no bytes and
+  answers "empty body" — that is the fallback signal: a small file goes up the one-shot way as
+  before, a file over 95 MB does NOT try and die, it says the worker needs updating and points
+  at Do this next. A new worker answers with an uploadId, and the file goes up as blob.slice()
+  pieces of 8 MB — a Blob built from IndexedDB chunks is a handle, not a copy, so the phone never
+  holds the whole file to send it. Each piece gets three tries with a backoff; a piece that
+  cannot go aborts the upload so R2 is not left holding orphans. Progress is by piece plus the
+  piece in flight, shown as "uploading 16.0 MB of 150.2 MB…".
+  The recorder now writes bytes into the meta as chunks land, and the dump reads that instead of
+  touching the chunks — summing 150 MB of blob sizes is what hung the phone, and it is why no
+  rec_dump.json ever arrived. The database reads in the dump are raced against four seconds.
+  vampjam_do_this_next.html now leads with the paste: a Copy worker code button whose text is
+  read from the page itself so what he pastes is byte-for-byte what is committed, then dashboard
+  → Workers & Pages → vampjam-upload (not sync) → Edit code → ⌘A ⌘V → Deploy, written for
+  someone standing in front of Cloudflare's screen rather than someone who knows it. The listens
+  moved down; they are still worth a minute but they are not what is blocking anything.
+  part_upload_test is new, 23 assertions in three parts: the worker's fetch handler run in Node
+  against a fake R2 bucket (init, two pieces, an empty piece refused, done stitching to 11 MB, the
+  one-shot still working, a key with a path refused, abort); the phone against that same worker
+  code through route interception — a 20 MB take in five uneven chunks goes up as 8+8+4, gets
+  stitched, writes the session, navigates to it, and drops its local copy; and the not-updated
+  case — a small file falls back to the one-shot and still lands, a 100 MB file does not try and
+  says what is needed.
+  Re-ran rec_dump 37, rec_calm 22, rec_match 28, tag_quiet 18, fold_in 17. Green.
+  What I could not do: deploy the worker. Cloudflare is his login. Three minutes on the Mac, and
+  the page then finishes the job by itself.
+  Still no new trace.
+- NEXT → add entry 324 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
