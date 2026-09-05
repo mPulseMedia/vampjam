@@ -1,1 +1,1 @@
-dump_send
+auto_commit

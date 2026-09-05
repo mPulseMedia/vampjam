@@ -330,7 +330,7 @@
        One tap gathers everything this page knows about its own state and
        puts it on the clipboard; the box under it is the fallback for a phone
        that refuses the clipboard, and is hidden until it is needed. -->
-  <button class="ghost dump_btn" id="dump_btn" type="button">copy debug info</button>
+  <button class="ghost dump_btn" id="dump_btn" type="button">send debug info to Claude</button>
   <textarea class="dump_box" id="dump_box" readonly hidden aria-label="Debug info"></textarea>
 </div>
 
@@ -1056,23 +1056,41 @@
   (function () {
     var btn = document.getElementById('dump_btn'), box = document.getElementById('dump_box');
     if (!btn) return;
+    // dump_send — copying to the clipboard and pasting into a chat was one
+    // step too many on a phone: he could not tell whether anything had
+    // happened, and the chat cut the paste short. The dump now goes straight
+    // into the repo as rec_dump.json through the same worker that registers
+    // sessions, where I can read it; the clipboard and the box are the
+    // fallback, not the plan.
+    var LABEL = 'send debug info to Claude';
     btn.addEventListener('click', async function () {
       btn.disabled = true;
+      btn.textContent = 'gathering…';
       var text = '';
       try { text = await rec_dump(); } catch (e) { text = 'rec_dump failed: ' + e; }
-      // the box is filled BEFORE the clipboard is tried, so a refusal still
-      // leaves him something to select and copy by hand
       box.value = text; box.hidden = false;
+      var sent = false, why = '';
+      try {
+        btn.textContent = 'sending…';
+        await sync_write('rec_dump.json', JSON.stringify({
+          at: new Date().toISOString(), page: location.href, text: text
+        }, null, 1), 'rec_dump');
+        sent = true;
+      } catch (eS) { why = eS && eS.message ? eS.message : String(eS); log('fail', 'dump send: ' + why); }
       var copied = false;
       try { if (nav_clip()) { await navigator.clipboard.writeText(text); copied = true; } } catch (e5) {}
       if (!copied) { try { box.focus(); box.select(); copied = document.execCommand('copy'); } catch (e6) {} }
       // the confirmation goes on the BUTTON, not the status line — the status
       // line is the upload's own story and holds the try-again link; writing
       // over it would have thrown the link away at the exact moment it matters
-      btn.textContent = copied ? 'copied — paste it to me' : 'select the box below and copy';
+      btn.textContent = sent
+        ? 'sent ✓ — Claude can read it now' + (copied ? ' (also copied)' : '')
+        : (copied ? 'could not send — copied instead, paste it to me' : 'could not send — select the box and copy');
       btn.disabled = false;
+      // and something has to visibly happen: bring the box up under the thumb
+      try { box.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e7) {}
       clearTimeout(btn._t);
-      btn._t = setTimeout(function () { btn.textContent = 'copy debug info'; }, 2600);
+      btn._t = setTimeout(function () { btn.textContent = LABEL; }, 6000);
     });
     function nav_clip() { return !!(navigator.clipboard && navigator.clipboard.writeText); }
   })();

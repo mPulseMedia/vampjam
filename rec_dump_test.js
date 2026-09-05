@@ -15,6 +15,7 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
   await ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'https://vampsf.com' }).catch(() => {});
   let uploads = 0;
+  const syncs = [];
   await ctx.route('**/*', async (r) => {
     const u = r.request().url();
     if (u.startsWith('https://vampsf.com/')) {
@@ -34,8 +35,10 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
       return r.fulfill({ status: 413, contentType: 'text/html',
         body: '<html><body><h1>413 Request Entity Too Large</h1></body></html>' });
     }
-    if (u.includes('vampjam-sync'))
+    if (u.includes('vampjam-sync')) {
+      try { syncs.push(JSON.parse(r.request().postData() || '{}')); } catch (e) {}
       return r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+    }
     if (u.includes('api.github.com'))
       return r.fulfill({ status: 200, contentType: 'application/json',
         body: JSON.stringify({ content: Buffer.from('[]').toString('base64'), sha: 'x' }) });
@@ -56,7 +59,7 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
              boxHidden: box && box.hidden };
   });
   ok('there is a debug button',            quiet.btn, quiet.btn);
-  ok('it says what it does',               /copy debug/i.test(quiet.text || ''), quiet.text);
+  ok('it says what it does',               /send debug info/i.test(quiet.text || ''), quiet.text);
   ok('and it is quiet',                    parseFloat(quiet.op) < 0.7, quiet.op);
   ok('the box is not there until needed',  quiet.boxHidden === true, quiet.boxHidden);
 
@@ -100,7 +103,12 @@ const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
   const clip = await p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
   ok('the box appears, filled',                  d.hidden === false && d.box.length > 400, d.box.length);
   ok('and the clipboard has the same text',      clip === d.box, (clip || '').length + ' vs ' + d.box.length);
-  ok('the BUTTON says it is copied',             /copied/i.test(d.btn), d.btn);
+  ok('the BUTTON says it was SENT',              /sent .*Claude can read it/i.test(d.btn), d.btn);
+  const dumpWrite = syncs.filter(x => x.path === 'rec_dump.json').pop();
+  ok('and a rec_dump.json really went to the repo', !!dumpWrite, syncs.map(x => x.path).join(','));
+  let dumpDoc = null; try { dumpDoc = JSON.parse(dumpWrite.content); } catch (e) {}
+  ok('as valid JSON with the dump inside',       !!dumpDoc && dumpDoc.text === d.box, dumpDoc && Object.keys(dumpDoc).join(','));
+  ok('dated and pointing at the page',           !!dumpDoc && /^20\d\d-/.test(dumpDoc.at) && /record\.html/.test(dumpDoc.page), '');
   ok('and the status line was left alone',       /upload 413/.test(d.status), d.status);
   ok('so the try-again link survived the dump',  d.retry === true, d.retry);
   ok('the dump names the stuck recording',       /loc_test1/.test(d.box), '');
