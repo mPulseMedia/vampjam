@@ -3932,7 +3932,27 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   (12) and tag_quiet (18): green.
   drawer.js v=151.
   Still no new trace.
-- NEXT → add entry 314 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 314 here_lit · b320 · the header icon for the page you are on is shown and lit rather than blanked.
+  nav_here held its slot with visibility:hidden — which kept the wordmark on the centre line but
+  wasted the one element on the screen that could say where you are. It is nav_on now: same slot,
+  same size, drawn, in the accent. It also stops being a link, because there is nowhere to go, and
+  says so to a screen reader with aria-current="page" and a "— you are here" title.
+  The accent, not the red: blue is already what this app means by "this one is on" — the lit heart
+  on a favourited moment, the lit hi-fi pill, the current row in the list. A red record icon on the
+  record page would have read as "recording", which it is not until you press the big one.
+  record.html needed a real icon where its blank span was; it carries its own, since it does not
+  load drawer.js.
+  A session page lights nothing, and that is right: the cassette opens the list, it does not mean
+  "sessions page", and a session is not one of the four places the header names.
+  nav_pair_test grew to 42 — again the same assertions this build changes, so again one file. It
+  checks the lit icon is visible, keeps its 40px, is no longer a link, is actually drawn on the
+  record page, that nothing is hidden in either header any more, and that exactly one icon is lit
+  per page and none on a session.
+  Re-ran nine suites: list_title 22, rec_match 28, fav_match 23, icon_snug 12, del_same 19,
+  play_same 16, list_home 16, del_leave 16, rec_calm 22. Green.
+  site.css v=14, drawer.js v=152.
+  Still no new trace.
+- NEXT → add entry 315 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,44 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "319 both_ways",
+        id: "320 here_lit",
         expanded: true,
+        nodes: [
+          { text: "320 here_lit", children: [
+            { text: "prompt_restate", children: [
+              { text: "Show the current page\u2019s icon rather than hiding it, and colour it to say you are on that page." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Show the icon of the current page, but make it colorized to indicate that you\u2019re on that page" }
+            ]},
+            { text: "what_was_wasted", children: [
+              { text: "nav_here held its slot with visibility:hidden \u2014 the wordmark stayed centred but the one element that could say where you are said nothing" },
+              { text: "nav_on now: same slot, same size, drawn, in the accent" },
+              { text: "it stops being a link \u2014 nowhere to go \u2014 and says so with aria-current and a \u201cyou are here\u201d title" }
+            ]},
+            { text: "why_accent_not_red", children: [
+              { text: "blue is already what this app means by \u201cthis one is on\u201d: the lit heart, the lit hi-fi pill, the current row" },
+              { text: "a red record icon on the record page would read as RECORDING, which it is not until you press the big one" }
+            ]},
+            { text: "a_session_lights_nothing", children: [
+              { text: "the cassette opens the list; it does not mean \u201csessions page\u201d" },
+              { text: "and a session is not one of the four places the header names" }
+            ]},
+            { text: "proof", children: [
+              { text: "nav_pair_test grew to 42 \u2014 again the same assertions this build changes, so again one file" },
+              { text: "lit icon visible, keeps its 40px, no longer a link, actually drawn on the record page" },
+              { text: "nothing hidden in either header, exactly one lit per page, none on a session" },
+              { text: "re-ran nine suites: 22, 28, 23, 12, 19, 16, 16, 16, 22 \u2014 green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "319 both_ways",
+        expanded: false,
         nodes: [
           { text: "319 both_ways", children: [
             { text: "prompt_restate", children: [
