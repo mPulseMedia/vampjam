@@ -136,11 +136,24 @@
   // and the page rearranging themselves around it.
   // It flies as one fixed clone, scaled from the row's type size up to the
   // title's, so the whole trip is one compositor transform.
-  var FOLD_MS = 380;
-  // fold_ease — slow off the mark, quicker as it goes. Paul asked for that
-  // shape by name; the tail is eased just enough that it settles instead of
-  // stopping dead, which is the part that would actually read as jarring.
-  var FOLD_EASE = 'cubic-bezier(0.55, 0, 0.35, 1)';
+  // fold_pace — 380ms read as fast and jarring, and the old curve only eased
+  // one end. Tripled, and eased at BOTH ends: away slowly, quick through the
+  // middle, settling slowly again. The numbers are the whole animation, so they
+  // live here and get interpolated into the stylesheet rather than typed twice.
+  var FOLD_MS = 1140;
+  var FOLD_BEZ = [0.65, 0, 0.35, 1];
+  var FOLD_EASE = 'cubic-bezier(' + FOLD_BEZ.join(',') + ')';
+  // the same curve, evaluated in JS, for the two things CSS cannot drive: the
+  // scroll ride and the clone that has to match the page's SPEED rather than
+  // just its timing.
+  function bez(t) {
+    var x1 = FOLD_BEZ[0], y1 = FOLD_BEZ[1], x2 = FOLD_BEZ[2], y2 = FOLD_BEZ[3];
+    function cx(u) { return 3 * u * (1 - u) * (1 - u) * x1 + 3 * u * u * (1 - u) * x2 + u * u * u; }
+    function cy(u) { return 3 * u * (1 - u) * (1 - u) * y1 + 3 * u * u * (1 - u) * y2 + u * u * u; }
+    var lo = 0, hi = 1, u = t, i;
+    for (i = 0; i < 24; i++) { u = (lo + hi) / 2; if (cx(u) < t) lo = u; else hi = u; }
+    return cy(u);
+  }
   function name_el() {
     var d = drawer();
     var r = d && d.querySelector('.jam_item.current .jam_name');
@@ -181,25 +194,45 @@
   }
   // a and b are measured in the two end states; the clone is drawn in b's
   // clothes and starts wearing a's position and scale.
-  function fly(a, b, text) {
+  // fly(a, b, text, ride) — a to b on the fold's own curve, but at the PAGE's
+  // speed, not its own. The name has a shorter way to go than the list behind
+  // it does; sharing only the duration made it dawdle while the rows raced.
+  // ride is how far the row itself travels, so the clone advances by the same
+  // pixels per frame and simply comes to rest when it is home — the list keeps
+  // going up past it, which is what it looks like when a thing has arrived.
+  function fly(a, b, text, ride) {
     if (!a || !b) return null;
     var c = document.createElement('div');
     c.className = 'fold_fly';
     c.textContent = text;
-    var k = b.size ? (a.size / b.size) : 1;
+    var k0 = b.size ? (a.size / b.size) : 1;
+    var ay = a.y + a.h / 2 - b.h / 2;
     c.style.cssText = 'position:fixed;left:0;top:0;margin:0;padding:0;z-index:200;'
       + 'white-space:nowrap;pointer-events:none;transform-origin:left center;'
       + 'font-size:' + b.size + 'px;font-weight:' + b.weight + ';color:' + a.color + ';'
       + 'line-height:' + b.h + 'px;height:' + b.h + 'px;'
-      + 'transition:transform ' + FOLD_MS + 'ms ' + FOLD_EASE + ','
-      +            'color ' + FOLD_MS + 'ms ' + FOLD_EASE + ';'
-      + 'transform:translate(' + a.x + 'px,' + (a.y + a.h / 2 - b.h / 2) + 'px) scale(' + k + ')';
+      + 'transition:color ' + FOLD_MS + 'ms ' + FOLD_EASE + ';'
+      + 'transform:translate(' + a.x + 'px,' + ay + 'px) scale(' + k0 + ')';
     document.body.appendChild(c);
     void c.offsetWidth;
-    requestAnimationFrame(function () {
-      c.style.transform = 'translate(' + b.x + 'px,' + b.y + 'px) scale(1)';
-      c.style.color = b.color;
-    });
+    requestAnimationFrame(function () { c.style.color = b.color; });
+
+    var mine = Math.abs(b.y - ay);
+    // how much of the fold it takes to cover the clone's shorter distance at
+    // the list's rate. Never above 1: the name may finish early, never later,
+    // and never faster than the thing it is travelling with.
+    var span = (ride && ride > 8 && mine > 1) ? Math.min(1, mine / ride) : 1;
+    var t0 = null;
+    function step(t) {
+      if (!c.parentNode) return;
+      if (t0 === null) t0 = t;
+      var raw = Math.min(1, (t - t0) / FOLD_MS);
+      var p = Math.min(1, bez(raw) / span);
+      c.style.transform = 'translate(' + (a.x + (b.x - a.x) * p) + 'px,'
+        + (ay + (b.y - ay) * p) + 'px) scale(' + (k0 + (1 - k0) * p) + ')';
+      if (raw < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
     return c;
   }
 
@@ -219,20 +252,23 @@
     fold_apply(on ? 1 : 0);
     window.scrollTo(0, 0);            // both ends finish at the top; measure there
     void d.offsetHeight;
-    var endName = on ? box(name_el(), false) : null;
-    var endTtl  = on ? null : box(title_el(), true);
+    var endName = box(name_el(), false);
+    var endTtl  = box(title_el(), true);
 
     fold_apply(on ? 0 : 1);
     window.scrollTo(0, y0);
     void d.offsetHeight;
-    var startTtl  = on ? box(title_el(), true) : null;
-    var startName = on ? null : box(name_el(), false);
+    var startTtl  = box(title_el(), true);
+    var startName = box(name_el(), false);
 
     var ttl = title_el(), nm = name_el();
     var text = (ttl && ttl.textContent.trim()) || (nm && nm.textContent.trim()) || '';
     // shutting: the title flies down into its row. opening: the row flies up
     // into the title. Same clone, same curve, endpoints swapped.
-    b._fly = on ? fly(startTtl, endName, text) : fly(startName, endTtl, text);
+    // how far the lit row itself moves is the page's speed, and it is what the
+    // name has to keep pace with
+    var ride = (startName && endName) ? Math.abs(endName.y - startName.y) : 0;
+    b._fly = on ? fly(startTtl, endName, text, ride) : fly(startName, endTtl, text, ride);
     if (b._fly) b.classList.add('fold_fly_on');
 
     b.classList.remove('fold_jump');
@@ -285,8 +321,7 @@
     function step(t) {
       if (t0 === null) t0 = t;
       var k = Math.min(1, (t - t0) / ms);
-      // fold_ease again, by hand: slow away, quicker later
-      var e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      var e = bez(k);          // the one curve, not a second one that resembles it
       try { window.scrollTo(0, Math.round(from * (1 - e))); } catch (eS) {}
       if (k < 1) requestAnimationFrame(step);
     }
@@ -1174,8 +1209,10 @@
       // fold_ease — one curve, one duration, on everything that moves, or the
       // page and the rows arrive at different times and the fold comes apart
       'body.fold_run .session_drawer,body.fold_run .session_drawer .jam_menu,' +
-        'body.fold_run #fold_page{transition:max-height 380ms cubic-bezier(0.55,0,0.35,1),' +
-        'height 380ms cubic-bezier(0.55,0,0.35,1),transform 380ms cubic-bezier(0.55,0,0.35,1);}' +
+        'body.fold_run #fold_page{transition:' +
+        ['max-height', 'height', 'transform'].map(function (q) {
+          return q + ' ' + FOLD_MS + 'ms ' + FOLD_EASE;
+        }).join(',') + ';}' +
       // while the name is in flight neither end of the trip is drawn, or you
       // see the same words in three places at once
       'body.fold_fly_on #fold_page h1{opacity:0;}' +
