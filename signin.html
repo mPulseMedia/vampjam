@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>vampsf — sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css?v=20">
+<script src="theme.js?v=2"></script>
+<script src="sessions.js?v=129"></script>
+<script src="drawer.js?v=161"></script>
+<style>
+  h1 { text-align: center; font-size: 22px; margin: 6px 0 4px; }
+  .lede { text-align: center; color: var(--muted); margin: 0 auto 18px; max-width: 420px; line-height: 1.5; }
+  .box { max-width: 420px; margin: 0 auto; }
+  .box input[type=tel] {
+    width: 100%; box-sizing: border-box; font-size: 17px; padding: 13px 14px;
+    border-radius: 12px; border: 1px solid var(--panel_3); background: var(--panel);
+    color: var(--fg); text-align: center;
+  }
+  .box input[type=tel]:focus { border-color: var(--accent); outline: none; }
+  .go {
+    display: block; width: 100%; margin: 10px 0 0; border: none; border-radius: 999px;
+    background: var(--accent); color: var(--on_accent, #fff); font-weight: 700;
+    padding: 14px 18px; font-size: 17px; cursor: pointer;
+  }
+  .go:disabled { opacity: 0.5; cursor: default; }
+  .say { text-align: center; margin: 14px auto 0; max-width: 420px; line-height: 1.55; min-height: 24px; }
+  .say.bad { color: var(--danger, #c75450); }
+  .say.good { color: var(--fg); }
+  .who { text-align: center; margin: 18px auto 0; max-width: 420px; line-height: 1.6; }
+  .who b { color: var(--fg); }
+  .out { background: none; border: none; color: var(--muted); text-decoration: underline;
+         cursor: pointer; padding: 8px; }
+  .list { max-width: 420px; margin: 10px auto 0; }
+  .list a { display: flex; justify-content: space-between; gap: 10px; text-decoration: none;
+            color: var(--fg); padding: 12px 2px; border-top: 1px solid var(--panel_3); }
+  .fine { text-align: center; color: var(--muted); font-size: 12.5px; margin: 26px auto 0;
+          max-width: 420px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div class="session_drawer" id="session_drawer"><div class="jam_menu"></div></div>
+
+<header class="brand" style="position:relative;">
+<button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
+<button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
+  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
+</header>
+
+<h1 id="head">Sign in</h1>
+<div class="lede" id="lede">Your phone number, and I'll text you a link. No password.</div>
+
+<div class="box" id="ask">
+  <input type="tel" id="phone" inputmode="tel" autocomplete="tel"
+         placeholder="(415) 555 1212" aria-label="Your phone number">
+  <button class="go" id="go">Text me a link</button>
+</div>
+
+<div class="say" id="say" role="status"></div>
+
+<div class="who" id="who" hidden></div>
+<div class="list" id="list"></div>
+
+<div class="fine">
+  Only numbers on the list can sign in. If yours isn't, ask Paul to add it.
+</div>
+
+<script>
+(function () {
+  var A = window.vampjamAuth;
+  var phone = document.getElementById('phone'), go = document.getElementById('go');
+  var say = document.getElementById('say'), ask = document.getElementById('ask');
+  var who = document.getElementById('who'), list = document.getElementById('list');
+  var head = document.getElementById('head'), lede = document.getElementById('lede');
+
+  function tell(msg, bad) {
+    say.textContent = msg;
+    say.className = 'say' + (msg ? (bad ? ' bad' : ' good') : '');
+  }
+  // signin_back — you almost always arrive here because a recording asked you
+  // to. Remember which one, and go back to it the moment you are in.
+  var back = null;
+  try {
+    back = new URLSearchParams(location.search).get('back') || sessionStorage.getItem('vampjam_signin_back');
+    if (back) sessionStorage.setItem('vampjam_signin_back', back);
+  } catch (e) {}
+
+  function show_signed_in(j) {
+    ask.hidden = true;
+    head.textContent = 'Signed in';
+    lede.textContent = '';
+    who.hidden = false;
+    var n = (j.allow === '*') ? 'every recording' :
+            (j.allow.length === 1 ? 'one recording' : j.allow.length + ' recordings');
+    who.innerHTML = 'You are <b>' + esc(j.label || 'signed in') + '</b>'
+      + (j.admin ? ' — admin' : '') + '.<br>You can open ' + n + '.'
+      + '<br><button class="out" id="out">Sign out on this phone</button>';
+    document.getElementById('out').addEventListener('click', function () {
+      A.out(); location.reload();
+    });
+    if (j.allow !== '*' && j.allow.length) {
+      var reg = (window.VAMPJAM_SESSIONS_AUTO || []).concat(window.VAMPJAM_SESSIONS || []);
+      list.innerHTML = j.allow.map(function (pg) {
+        var hit = reg.filter(function (s) { return s.page === pg; })[0];
+        return '<a href="' + esc(pg) + '"><span>' + esc(hit ? hit.name : pg) + '</span><span>&rsaquo;</span></a>';
+      }).join('');
+    }
+    if (back) {
+      setTimeout(function () {
+        try { sessionStorage.removeItem('vampjam_signin_back'); } catch (e) {}
+        location.replace(back);
+      }, 900);
+      tell('Taking you back…');
+    }
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  // ---- arriving from the text ----
+  var t = null;
+  try { t = new URLSearchParams(location.search).get('t'); } catch (e) {}
+  if (t) {
+    head.textContent = 'Signing you in…';
+    lede.textContent = '';
+    ask.hidden = true;
+    fetch(A.url + '?op=check&t=' + encodeURIComponent(t), { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j.ok) throw new Error(j.error === 'not_listed'
+          ? 'That number is not on the list — ask Paul to add it.' : (j.error || 'sign-in failed'));
+        A.set(j.session);
+        try { history.replaceState(null, '', 'signin.html'); } catch (e) {}
+        show_signed_in(j);
+      })
+      .catch(function (err) {
+        head.textContent = 'Sign in';
+        lede.textContent = "Your phone number, and I'll text you a link. No password.";
+        ask.hidden = false;
+        tell(err.message, true);
+      });
+  } else {
+    // ---- already signed in? ----
+    A.me().then(function (j) { if (j.signed_in) show_signed_in(j); });
+  }
+
+  // ---- asking for the link ----
+  function send() {
+    var v = (phone.value || '').trim();
+    if (!v) { phone.focus(); return; }
+    go.disabled = true;
+    tell('Sending…');
+    fetch(A.url + '?op=start', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: v })
+    }).then(function (r) { return r.json(); })
+      .then(function (j) {
+        go.disabled = false;
+        if (j.ok) { tell('Texted to ' + j.sent_to + '. Tap the link — it is good for ten minutes.'); return; }
+        tell(j.error === 'not_listed'
+          ? 'That number is not on the list — ask Paul to add it.'
+          : (j.error || 'Could not send'), true);
+      })
+      .catch(function (err) { go.disabled = false; tell('Could not reach the server: ' + err.message, true); });
+  }
+  go.addEventListener('click', send);
+  phone.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
+})();
+</script>
+</body>
+</html>
