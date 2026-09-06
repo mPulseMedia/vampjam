@@ -9,8 +9,36 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "338 dur_show",
+        id: "339 dur_zero",
         expanded: true,
+        nodes: [
+          { text: "339 dur_zero", children: [
+            { text: "prompt_restate", children: [
+              { text: "In the session list duration, if there are zero hours do not print the zero \u2014 start at the colon." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "This is a small thing, but in the session duration on the session list row if there are zero hours, then don\u2019t print zero just start with the second marker" }
+            ]},
+            { text: "done", children: [
+              { text: ":05, not 0:05. 2:41 unchanged" },
+              { text: "the colon stays \u2014 without it the minutes would read as a number of hours" }
+            ]},
+            { text: "the_thing_it_could_have_broken", children: [
+              { text: "the minutes still line up under the minutes: :05 sits under the 41 of 2:41, not under the 2" },
+              { text: "the suite now checks that directly \u2014 every duration ends on the same right edge, to the pixel" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "twenty-five suites, green. drawer.js v=163" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "338 dur_show",
+        expanded: false,
         nodes: [
           { text: "338 dur_show", children: [
             { text: "prompt_restate", children: [

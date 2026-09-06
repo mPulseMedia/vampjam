@@ -4465,7 +4465,18 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   sessions.js v=130, drawer.js v=162.
   Left alone: the favourites rows, which have their own shape and no duration to show.
   Still no new trace.
-- NEXT → add entry 331 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 331 dur_zero · b339 · under an hour the hour figure is not written: :05, not 0:05.
+  The colon stays. Dropping it too would have made the minutes read as a number of hours, and
+  would have cost the column the one shape dur_show gave it a build ago.
+  The minutes still line up under the minutes — the durations are tabular and right-aligned, so
+  :05 sits under the 41 of 2:41 rather than under the 2. The suite now asserts that directly:
+  every duration in the list ends on the same right edge, to within a pixel. That is the thing
+  the tabular figures were for, and it is the thing this change could have quietly broken.
+  dur_show_test 22.
+  Re-ran twenty-five suites. Green.
+  drawer.js v=163.
+  Still no new trace.
+- NEXT → add entry 332 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
