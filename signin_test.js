@@ -127,9 +127,11 @@ const ENV = {
   ok('taking someone off the list takes effect at once', (gone.allow || []).length === 0, JSON.stringify(gone.allow));
   ACCESS = fresh_access(ids);
 
-  global.fetch = realFetch;
-
   // ================= the gate, in a browser =================
+  // note: global.fetch stays overridden. The worker runs in Node even while the
+  // pages run in Chromium, and its access() must keep reading the test list —
+  // let it fall through to the real raw.githubusercontent and it reads the
+  // committed empty file and refuses everyone.
   const b = await chromium.launch();
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
   const REG = [{ page: PAGE_A, name: '2026-09-01 Private one', date: '2026-09-01', dur: 200, count: 1 },
@@ -176,8 +178,10 @@ const ENV = {
   })).catch(() => null);
 
   // signed out, private page
+  const signed_out = () => { try { localStorage.removeItem('vampjam_signin'); } catch (e) {} };
   let p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (out): ' + e.message); });
+  await p.addInitScript(signed_out);
   await p.goto('https://vampsf.com/session.html?p=a1');
   await p.waitForTimeout(2000);
   const outA = await look(p);
@@ -191,6 +195,7 @@ const ENV = {
   // signed out, open page — untouched
   p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (open): ' + e.message); });
+  await p.addInitScript(signed_out);
   await p.goto('https://vampsf.com/session.html?p=b2');
   await p.waitForTimeout(2000);
   const outB = await look(p);
@@ -237,6 +242,7 @@ const ENV = {
   authDown = true;
   p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (down): ' + e.message); });
+  await p.addInitScript(signed_out);
   await p.goto('https://vampsf.com/session.html?p=a1');
   await p.waitForTimeout(2500);
   const down = await look(p);
@@ -247,6 +253,7 @@ const ENV = {
   // ---------- signin.html itself ----------
   p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (signin): ' + e.message); });
+  await p.addInitScript(signed_out);
   await p.goto('https://vampsf.com/signin.html');
   await p.waitForTimeout(1200);
   await p.fill('#phone', STRANGER);
@@ -264,6 +271,7 @@ const ENV = {
 
   p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (land): ' + e.message); });
+  await p.addInitScript(signed_out);
   const linkTok = texts[0].body.match(/t=([^\s]+)/)[1];
   await p.goto('https://vampsf.com/signin.html?t=' + linkTok);
   await p.waitForTimeout(1600);
@@ -285,6 +293,7 @@ const ENV = {
   ok('and the worker has no secret baked in',    !/AC[0-9a-f]{30,}/.test(src) && !/AUTH_SECRET\s*=\s*['"]/.test(src), '');
 
   await b.close();
+  global.fetch = realFetch;
   console.log('\n' + pass + ' pass, ' + fail + ' fail');
   process.exit(fail ? 1 : 0);
 })();
