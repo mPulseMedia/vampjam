@@ -606,7 +606,12 @@
   function fmt_hmm(s) {
     s = Math.round(s || 0);
     if (!s) return '';
-    return Math.floor(s / 3600) + ':' + pad(Math.floor((s % 3600) / 60));
+    // to the NEAREST minute, not down to it: 4m58s is 0:05, and truncating
+    // told you 0:04, which is a minute of music the row denied having.
+    // And never 0:00 — anything with audio in it is at least a minute's worth
+    // of deciding whether to open it.
+    var m = Math.max(1, Math.round(s / 60));
+    return Math.floor(m / 60) + ':' + pad(m % 60);
   }
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 

@@ -113,11 +113,13 @@ const REG = [
   await p.waitForTimeout(400);
 
   // ---------- the count stays behind the dots ----------
+  // the count's own display is inline-flex; it is its WRAPPER that is hidden,
+  // so the honest question is whether it is drawn at all
   const before = await p.evaluate(() => {
     const el = document.querySelector('.jam_item:has(a[href="session.html?p=long"])');
-    return getComputedStyle(el.querySelector('.menu_sub')).display;
+    return el.querySelector('.menu_sub').getBoundingClientRect().width;
   });
-  ok('the moment count is still behind the dots', before === 'none', before);
+  ok('the moment count is still behind the dots', before === 0, before);
   await p.click('.jam_item:has(a[href="session.html?p=long"]) .jam_more');
   await p.waitForTimeout(200);
   const opened = await p.evaluate(() => {
