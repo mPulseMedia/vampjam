@@ -134,6 +134,14 @@ const REG = [
   ok('and the duration stays put alongside', opened.durStill === true, opened.durStill);
   ok('share is still the rightmost thing',  /jam_share/.test(opened.vis[opened.vis.length - 1] || ''), opened.vis.join(' | '));
 
+  // dur_show found this rather than the code: the static manifest carried a
+  // zero for a recording whose length the registry has always known. The auto
+  // rows correct their own durations as they are played; the static list never
+  // does, so a wrong number there stays wrong until someone looks.
+  const man = fs.readFileSync(path.join(DIR, 'sessions.js'), 'utf8');
+  const zeros = (man.match(/dur:\s*0\b/g) || []).length;
+  ok('no recording in the manifest claims to be zero long', zeros === 0, zeros + ' still at 0');
+
   await b.close();
   console.log('\n' + pass + ' pass, ' + fail + ' fail');
   process.exit(fail ? 1 : 0);
