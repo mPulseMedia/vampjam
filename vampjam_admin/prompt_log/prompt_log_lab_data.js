@@ -9,8 +9,60 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "335 name_edit",
+        id: "336 signin",
         expanded: true,
+        nodes: [
+          { text: "336 signin", children: [
+            { text: "prompt_restate", children: [
+              { text: "A sign-in: enter a phone number or email, get a link back." },
+              { text: "Note which recording each person is given access to." },
+              { text: "Make the latest recording require a phone number on a whitelist, administered in the app." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Make a sign in to the site in Wich you enter your email or phone number and and receive a link back to sign in. And then take note of Wich recording your given access to let\u2019s start this latest recording to require phone numbers that I put on a white list as administered through the app." }
+            ]},
+            { text: "you_chose", children: [
+              { text: "SMS through Twilio, not email" },
+              { text: "the page gate now; the real lock (audio behind the worker) as its own build later" }
+            ]},
+            { text: "how_it_works", children: [
+              { text: "type your number \u2192 text with a link \u2192 tap it \u2192 signed in on that phone for about two months" },
+              { text: "Admin page: who can sign in, and which recordings are private and who may open each" },
+              { text: "a recording nobody made private is open exactly as before \u2014 nothing changes until you say so" }
+            ]},
+            { text: "no_numbers_in_the_repo", children: [
+              { text: "the site\u2019s files are public, so a list of guests\u2019 phone numbers in them would have been the worst thing in this build" },
+              { text: "the worker scrambles a number into an id using its own secret; the list holds that id, the name you type, and the last four digits" },
+              { text: "scrambling in the page instead would be theatre \u2014 ten digits is a seconds-long guess against anything public" }
+            ]},
+            { text: "it_fails_open_on_purpose", children: [
+              { text: "if the sign-in server is down, nobody is locked out of anything" },
+              { text: "signed in but not shared with says so and tells you to ask Paul \u2014 these are people you invited by name" }
+            ]},
+            { text: "what_it_is_not", children: [
+              { text: "the audio files still sit at a public address. someone who already has that exact address can still play it" },
+              { text: "a closed door, not a locked one. say the word and I do the lock" }
+            ]},
+            { text: "waiting_on_you", children: [
+              { text: "deploy the sign-in worker and give it your Twilio keys \u2014 about ten minutes on the Mac" },
+              { text: "steps, with the copy button, on Do this next" }
+            ]},
+            { text: "signin_test", children: [
+              { text: "new, 42 \u2014 the worker run for real against a fake Twilio, then the gate run in a browser against that same worker" },
+              { text: "an unlisted number gets no text at all; forged tokens refused; removing someone takes effect on their next tap; the committed list contains nothing that looks like a phone number" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "twenty-three suites, green. site.css v=20, drawer.js v=161" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "335 name_edit",
+        expanded: false,
         nodes: [
           { text: "335 name_edit", children: [
             { text: "prompt_restate", children: [

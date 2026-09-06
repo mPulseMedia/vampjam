@@ -4357,7 +4357,51 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Re-ran all twenty-two other suites. Green.
   drawer.js v=160.
   Still no new trace.
-- NEXT → add entry 328 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 328 signin · b336 · a phone number gets a text with a link; the link says which recordings you
+  may open; the list is administered in the app.
+  Two choices Paul made rather than me: SMS through Twilio (not email), and the page gate now with
+  the real lock as a separate build later. Both said plainly on the runbook, because the second
+  one is the difference between a closed door and a locked one and it must not be sold as a lock.
+  vampjam_auth_worker.js is new and stateless — no KV, no database. A token is its payload plus an
+  HMAC of it under AUTH_SECRET, so the worker verifies its own tokens without storing any. Two
+  consequences written into the file rather than hidden: a sign-in link works until it expires
+  (10 min) rather than exactly once, and signing everyone out means changing the secret. Sessions
+  last ~2 months. Ops: start (text a link), check (link → session), me (who + what), grant_id
+  (admin: number → id), claim_admin (the first admin, only while the list is empty).
+  The part that mattered most: NO PHONE NUMBER GOES IN THE REPO. This repo is public — a
+  whitelist of guests' numbers in it would have been the worst thing in this build. access.json
+  holds an opaque id (an HMAC of the number under the worker's secret), a name Paul types, and
+  the last four digits. Hashing in the page instead would have been theatre: ten digits is a
+  seconds-long brute force against any public salt, so the id is minted by the worker, where the
+  secret is. And the worker never needs the stored number back — it texts the number the person
+  just typed, which it has verified is the one on the list.
+  The gate is opt-in and fails open, in this order: a recording nobody restricted is open exactly
+  as before; an auth worker that cannot be reached locks NOBODY out; otherwise restricted and not
+  on the list shows the panel instead of the player and the moments. Signed in but not shared
+  with says so — "ask Paul to add you" — rather than pretending the page does not exist, because
+  every one of these people was invited by name.
+  signin.html asks for a number, lands the link, remembers which recording sent you and takes you
+  back to it, and lists what you can open. admin.html grows two lists: who can sign in (add by
+  name + number, remove, the first number added becomes the admin) and which recordings are
+  private (make private / make open, then tick who). Both write access.json through the same sync
+  worker every registry write already uses.
+  signin_test is new, 42 assertions, and the worker is run for real — its fetch handler in Node
+  against a fake Twilio and a fake access.json — then the gate is run in a browser against that
+  same worker. It checks the id is not the number; that a stranger cannot mint ids; that an
+  unlisted number gets no text AT ALL (not a text and a refusal); that a forged signature, a
+  session used as a link and a link used as a session are all refused; that removing someone
+  takes effect on their next request; the four gate states including the worker being down; and
+  that the committed access.json contains nothing matching a phone number.
+  Two of its own failures were real: the worker runs in Node while the pages run in Chromium, so
+  restoring the real fetch mid-suite made it read the committed empty list and refuse everyone;
+  and localStorage is per-origin, so a page signed in earlier in the context left the next one
+  signed in.
+  Re-ran twenty-three suites. Green.
+  site.css v=20, drawer.js v=161.
+  Waiting on Paul: deploy the worker and give it the Twilio keys — ten minutes, and until then
+  nothing changes for anyone.
+  Still no new trace.
+- NEXT → add entry 329 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
