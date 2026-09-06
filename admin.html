@@ -7,10 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=19">
+<link rel="stylesheet" href="site.css?v=20">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=129"></script>
-<script src="drawer.js?v=160"></script>
+<script src="drawer.js?v=161"></script>
 <style>
   /* admin_same: this page used to carry its own copy of the palette, the
      reset, the page box and the wordmark — and the copy had drifted. The
@@ -39,6 +39,34 @@
      is record.html now and nothing on this page uses any of them. */
 
   /* the header pair, nav_room and the session drawer are in site.css */
+
+  /* signin_list — who may open what. Two lists, one shape: a row is a name and
+     the dots, per row_more, and the dots open what you can do to it. */
+  h2 { font-size: 15px; margin: 26px 0 6px; }
+  .acc_note { color: var(--muted); line-height: 1.55; margin: 0 0 10px; }
+  .acc_row { display: flex; align-items: center; gap: 8px; min-height: 46px;
+             border-top: 1px solid var(--panel_3); padding: 4px 2px; }
+  .acc_row .acc_name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+                       white-space: nowrap; }
+  .acc_row .acc_sub { color: var(--muted); flex: 0 0 auto; }
+  .acc_row button { background: none; border: none; color: var(--muted); cursor: pointer;
+                    padding: 8px; min-height: 36px; }
+  .acc_row button:hover { color: var(--fg); }
+  .acc_add { display: flex; gap: 8px; margin: 10px 0 0; }
+  .acc_add input { flex: 1 1 auto; min-width: 0; font-size: 16px; padding: 11px 12px;
+                   border-radius: 10px; border: 1px solid var(--panel_3);
+                   background: var(--panel); color: var(--fg); }
+  .acc_add input:focus { border-color: var(--accent); outline: none; }
+  .acc_add button { flex: 0 0 auto; border: none; border-radius: 999px; padding: 11px 18px;
+                    background: var(--accent); color: var(--on_accent, #fff); font-weight: 600;
+                    cursor: pointer; }
+  .acc_pick { display: flex; align-items: center; gap: 10px; padding: 8px 2px;
+              border-top: 1px solid var(--panel_3); }
+  .acc_pick input { flex: 0 0 auto; width: 20px; height: 20px; }
+  .acc_pick span { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+                   white-space: nowrap; }
+  .acc_state { color: var(--muted); min-height: 22px; margin: 10px 0 0; line-height: 1.5; }
+  .acc_state.bad { color: var(--danger, #c75450); }
 </style>
 </head>
 <body>
@@ -73,6 +101,176 @@
   Do this next
   <span class="cta_sub">the one page for things waiting on you</span>
 </a>
+
+<!-- signin_list — the whitelist, administered here. No phone number is stored:
+     the worker turns a number into an opaque id under its own secret, and that
+     id plus a label and the last four digits is all access.json ever holds. -->
+<h2>Who can sign in</h2>
+<div class="acc_note" id="acc_note">Loading…</div>
+<div id="acc_people"></div>
+<div class="acc_add">
+  <input type="text" id="acc_label" placeholder="Name" aria-label="Name">
+  <input type="tel" id="acc_phone" placeholder="Phone" aria-label="Phone number">
+  <button id="acc_add_btn">Add</button>
+</div>
+
+<h2>Private recordings</h2>
+<div class="acc_note">A recording not listed here is open to anyone with the link. Tap one to
+  make it private, then tick who may open it.</div>
+<div id="acc_sessions"></div>
+
+<div class="acc_state" id="acc_state"></div>
+
+<script>
+(function () {
+  var A = window.vampjamAuth;
+  var SYNC = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
+  var acc = null, me = null;
+  var note = document.getElementById('acc_note');
+  var peopleEl = document.getElementById('acc_people');
+  var sessEl = document.getElementById('acc_sessions');
+  var state = document.getElementById('acc_state');
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  function tell(m, bad) { state.textContent = m || ''; state.className = 'acc_state' + (bad ? ' bad' : ''); }
+
+  function load() {
+    return fetch('access.json?v=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        acc = j && typeof j === 'object' ? j : { admins: [], people: [], sessions: {} };
+        acc.admins = acc.admins || []; acc.people = acc.people || []; acc.sessions = acc.sessions || {};
+      });
+  }
+  // one write, the same worker every other registry write goes through
+  function save(msg) {
+    tell('Saving…');
+    return fetch(SYNC, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: 'access.json', content: JSON.stringify(acc, null, 2), message: msg })
+    }).then(function (r) { if (!r.ok) throw new Error('sync ' + r.status); return r.json(); })
+      .then(function () { tell('Saved.'); render(); })
+      .catch(function (e) { tell('Save failed: ' + e.message, true); });
+  }
+
+  function sessions_all() {
+    var reg = (window.VAMPJAM_SESSIONS_AUTO || []).concat(window.VAMPJAM_SESSIONS || []);
+    var seen = {}, out = [];
+    reg.forEach(function (s) {
+      if (!s || !s.page || seen[s.page]) return;
+      seen[s.page] = 1; out.push({ page: s.page, name: s.name || s.page, date: s.date || '' });
+    });
+    return out.sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; });
+  }
+
+  function render() {
+    if (!acc) return;
+    var admin = me && me.admin;
+    // the first admin: while nobody owns the list, whoever is standing here
+    // can claim it. After that this never shows again.
+    if (!acc.admins.length) {
+      note.innerHTML = 'Nobody administers this list yet. Add your own number first — '
+        + 'that number becomes the admin.';
+    } else if (!admin) {
+      note.innerHTML = 'You are not signed in as an admin, so this is read-only. '
+        + '<a href="signin.html">Sign in</a>.';
+    } else {
+      note.textContent = acc.people.length
+        ? acc.people.length + ' on the list.'
+        : 'Nobody on the list yet.';
+    }
+
+    peopleEl.innerHTML = acc.people.map(function (p) {
+      return '<div class="acc_row" data-id="' + esc(p.id) + '">'
+        + '<span class="acc_name">' + esc(p.label || 'unnamed') + '</span>'
+        + '<span class="acc_sub">••' + esc(p.last4 || '') + '</span>'
+        + (acc.admins.indexOf(p.id) >= 0 ? '<span class="acc_sub">admin</span>' : '')
+        + (admin ? '<button class="acc_del" title="Remove">&times;</button>' : '')
+        + '</div>';
+    }).join('') || '';
+
+    sessEl.innerHTML = sessions_all().map(function (s) {
+      var rule = acc.sessions[s.page];
+      var priv = rule && rule.mode === 'list';
+      var body = '<div class="acc_row"><span class="acc_name">' + esc(s.name) + '</span>'
+        + '<span class="acc_sub">' + (priv ? 'private' : 'open') + '</span>'
+        + (admin ? '<button class="acc_priv" data-page="' + esc(s.page) + '">'
+            + (priv ? 'make open' : 'make private') + '</button>' : '')
+        + '</div>';
+      if (priv && admin) {
+        body += acc.people.map(function (p) {
+          var on = (rule.allow || []).indexOf(p.id) >= 0;
+          return '<label class="acc_pick"><input type="checkbox" data-page="' + esc(s.page)
+            + '" data-id="' + esc(p.id) + '"' + (on ? ' checked' : '') + '>'
+            + '<span>' + esc(p.label || 'unnamed') + '</span></label>';
+        }).join('');
+      }
+      return body;
+    }).join('');
+  }
+
+  // ---- add someone: the worker turns the number into an id we can store ----
+  document.getElementById('acc_add_btn').addEventListener('click', function () {
+    var label = (document.getElementById('acc_label').value || '').trim();
+    var phone = (document.getElementById('acc_phone').value || '').trim();
+    if (!phone) { document.getElementById('acc_phone').focus(); return; }
+    var first = !acc.admins.length;
+    tell('Adding…');
+    fetch(A.url + '?op=' + (first ? 'claim_admin' : 'grant_id'), {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: phone, t: A.token() })
+    }).then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j.ok) throw new Error(j.error || 'could not add');
+        if (acc.people.some(function (p) { return p.id === j.id; })) { tell('Already on the list.'); return; }
+        acc.people.push({ id: j.id, label: label || ('••' + j.last4), last4: j.last4 });
+        if (first) acc.admins.push(j.id);
+        document.getElementById('acc_label').value = '';
+        document.getElementById('acc_phone').value = '';
+        return save('access: add ' + (label || j.last4));
+      })
+      .catch(function (e) { tell(e.message, true); });
+  });
+
+  // ---- remove, restrict, tick ----
+  document.addEventListener('click', function (e) {
+    var d = e.target.closest && e.target.closest('.acc_del');
+    if (d) {
+      var id = d.closest('.acc_row').getAttribute('data-id');
+      acc.people = acc.people.filter(function (p) { return p.id !== id; });
+      acc.admins = acc.admins.filter(function (x) { return x !== id; });
+      Object.keys(acc.sessions).forEach(function (k) {
+        var r = acc.sessions[k]; if (r && r.allow) r.allow = r.allow.filter(function (x) { return x !== id; });
+      });
+      save('access: remove'); return;
+    }
+    var pv = e.target.closest && e.target.closest('.acc_priv');
+    if (pv) {
+      var page = pv.getAttribute('data-page');
+      var r2 = acc.sessions[page];
+      if (r2 && r2.mode === 'list') delete acc.sessions[page];
+      else acc.sessions[page] = { mode: 'list', allow: [] };
+      save('access: ' + (acc.sessions[page] ? 'restrict ' : 'open ') + page.split('p=').pop());
+    }
+  });
+  document.addEventListener('change', function (e) {
+    var cb = e.target;
+    if (!cb.matches || !cb.matches('.acc_pick input')) return;
+    var page = cb.getAttribute('data-page'), id = cb.getAttribute('data-id');
+    var r = acc.sessions[page]; if (!r) return;
+    r.allow = r.allow || [];
+    if (cb.checked) { if (r.allow.indexOf(id) < 0) r.allow.push(id); }
+    else r.allow = r.allow.filter(function (x) { return x !== id; });
+    save('access: share ' + page.split('p=').pop());
+  });
+
+  load().then(function () { return A.me(); }).then(function (j) { me = j; render(); });
+})();
+</script>
 
 
 
