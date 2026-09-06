@@ -1010,9 +1010,24 @@
                                .catch(function () { save_done(false); });
     }
   });
+  // save_guard — a page that has not READ the session file must never WRITE it.
+  // On 2026-09-05 a 1h35m recording uploaded cleanly, its file was written with
+  // the audio and one moment, and then a tap on Tag the Moment a few seconds
+  // later — before the page had finished loading that file — wrote the whole
+  // thing back out as { audio: null, tags: [one tag at 0:00] }. The upload was
+  // fine. The page destroyed it afterwards, silently, in one commit.
+  // Nothing here is worth writing before the read lands: the page's idea of
+  // audio is null and its idea of tags is empty, so every write in that window
+  // is a deletion wearing a save's clothes.
+  var repoRead = false;
+  window.__vampjamRepoRead = function () { return repoRead; };
   function save_data_to_repo(message) {
     if (LOCAL_ID) return local_save_tags();
     if (!WORKER_URL) return Promise.reject(new Error('worker not configured'));
+    if (!repoRead) return Promise.reject(new Error('not loaded yet — nothing was saved'));
+    // and a second belt: a write that would blank the audio on a session that
+    // has one is never what anyone meant.
+    if (!audio && !LOCAL_ID) return Promise.reject(new Error('no audio loaded — refusing to blank it'));
     var payload = {
       audio: audio ? audio_out(audio) : null,
       tags: tags.slice().sort(function (a, b) { return a.t - b.t; }).map(function (t) {
@@ -1460,6 +1475,7 @@
       if (!r.ok) return null;
       return r.json().catch(function () { return null; });
     }).then(function (data) {
+      if (data) repoRead = true;          // save_guard: only now may this page write
       if (data && data.deleted) {
         audio = null; render_audio_label();
         if (audioLabelEl) audioLabelEl.textContent = 'This recording was deleted.';
@@ -2473,7 +2489,9 @@
     if (e && e.cancelable) e.preventDefault();
     add_tag();
   });
+  // save_guard — the one control that writes without being asked twice
   tagBtn.addEventListener('click', function () {
+    if (!repoRead) { toast('Still loading this recording — one moment'); return; }
     if (tagBtnTouched) { tagBtnTouched = false; return; }
     add_tag();
   });
