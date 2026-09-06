@@ -4401,7 +4401,40 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Waiting on Paul: deploy the worker and give it the Twilio keys — ten minutes, and until then
   nothing changes for anyone.
   Still no new trace.
-- NEXT → add entry 329 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 329 save_guard · b337 · a session page that has not READ its file may no longer WRITE it; the
+  recording that rule would have saved is restored.
+  Paul said he was on his phone and to find work that did not need him. Looking for it turned up
+  something much worse than housekeeping: 2026_09_05_san_francisco_5_44_14p, 1h35m, uploaded
+  cleanly at 18:32 — commit "auto session" wrote the file with its audio URL and one moment at
+  2214.1s. Eighteen seconds later commit "add tag at 0:00" replaced the whole file with
+  { audio: null, tags: [one tag at 0:00] }. The upload was fine. The page destroyed it
+  afterwards, silently, in one commit, and the row sat in the list looking normal.
+  The cause: save_data_to_repo builds its payload from the LIVE page state, and a page that has
+  not finished fetching its session file has audio = null and tags = []. Every write in that
+  window is a deletion wearing a save's clothes. Tag the Moment is one tap and saves immediately,
+  so the window is exactly as wide as the fetch — on a phone, seconds.
+  Two guards, on all nine session pages: repoRead, set only when a real file comes back, and no
+  write at all before it; and a second belt refusing any write that would leave a session with no
+  audio, which is never what anyone meant. Tag the Moment checks first and says "still loading
+  this recording — one moment" rather than appearing to work.
+  save_undo — the file is restored from the good commit: audio and the 2214.1s moment. The 0:00
+  empty tag the bad write left is the accident, not a moment, so it is gone.
+  save_guard_test is new, 12 assertions, and it reproduces the bug before fixing it: hold the
+  session file for twenty seconds, tap Tag the Moment twice, and assert that NOTHING is written
+  and that the page says why; then let the file land and assert the same tap now writes, with the
+  audio and the pre-existing moment both surviving. Plus all nine pages carrying the guard, and
+  the restored file having its audio and its real moment.
+  Housekeeping, also his-Mac-not-his-attention: audio/ was 2.1 GB. Three ~207 MB renders of the
+  08-07 Sound Union proved byte-identical by decoded MD5 — not guessed from their names — so two
+  went to audio/_to_delete/, 415 MB, reversible. The faststart copy is kept (moov at the front
+  streams properly), and the v2 the site actually uses, and the 648 MB QuickTime master, all
+  untouched. audio/ is gitignored, so none of this was ever at risk of being committed.
+  vampjam_do_this_next re-aimed at a phone: the first thing on it now says nothing is waiting on
+  you while you are on the phone, offers the three recordings newly worth opening, and moves the
+  sign-in worker paste under "when you are back at the Mac".
+  Re-ran twenty-four suites. Green.
+  Still no new trace.
+- NEXT → add entry 330 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

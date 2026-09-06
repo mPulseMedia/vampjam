@@ -9,8 +9,55 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "336 signin",
+        id: "337 save_guard",
         expanded: true,
+        nodes: [
+          { text: "337 save_guard", children: [
+            { text: "prompt_restate", children: [
+              { text: "On the phone only \u2014 do things that do not need me back at the laptop." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I\u2019m on my mobile phone only right now, so try to do things that don\u2019t require me to have to be back at my laptop" }
+            ]},
+            { text: "found_something_bad", children: [
+              { text: "yesterday\u2019s 1h35m San Francisco recording had quietly lost its audio" },
+              { text: "it uploaded perfectly at 18:32. eighteen seconds later a tap on Tag the Moment \u2014 while the page was still loading \u2014 saved an empty page over the top of it" },
+              { text: "the upload was fine. the page destroyed it afterwards, in silence, and the row looked normal in the list" }
+            ]},
+            { text: "why", children: [
+              { text: "a save writes what the page currently holds. a page that has not finished loading holds nothing" },
+              { text: "so every save in that window was a deletion wearing a save\u2019s clothes \u2014 and Tag the Moment is one tap that saves at once" }
+            ]},
+            { text: "fixed", children: [
+              { text: "it is back: audio and the real moment. the empty 0:00 tag the bad save left is gone \u2014 that was the accident, not a moment" },
+              { text: "and the page cannot do it again: no saving until it has finished reading, and it refuses outright to write a recording with no audio" },
+              { text: "tap too early now and it says still loading, and waits" }
+            ]},
+            { text: "415_MB_back", children: [
+              { text: "two copies of the 08-07 Sound Union were byte-for-byte identical to a third \u2014 proven by decoding them, not guessed from the names" },
+              { text: "they are in audio/_to_delete/ for you to bin whenever. the original, the one the site uses, and the QuickTime master are untouched" }
+            ]},
+            { text: "the_page_now_suits_a_phone", children: [
+              { text: "Do this next says nothing is waiting on you while you are on the phone" },
+              { text: "and offers the three recordings newly worth opening \u2014 including The Farm, to check I guessed the name right" },
+              { text: "the sign-in worker paste moved under when you are back at the Mac" }
+            ]},
+            { text: "save_guard_test", children: [
+              { text: "new, 12 \u2014 it reproduces the bug before fixing it: hold the file, tap twice, assert nothing is written and the page says why" },
+              { text: "then let it land and assert the same tap writes, with the audio and the earlier moment both surviving" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "twenty-four suites, green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "336 signin",
+        expanded: false,
         nodes: [
           { text: "336 signin", children: [
             { text: "prompt_restate", children: [
