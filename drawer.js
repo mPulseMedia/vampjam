@@ -1368,6 +1368,34 @@
       body: JSON.stringify({ path: path, content: content, message: message })
     }).then(function (r) { if (!r.ok) throw new Error('sync ' + r.status); return r.json(); });
   }
+  // ---- signin: who is looking, and what they may open ---------------------
+  // Every page but the recorder loads this file, so the answer to "am I signed
+  // in" lives here once. The session token is a signed string from the auth
+  // worker; this file never inspects it, only carries it.
+  var AUTH_URL = 'https://vampjam-auth.crimson-dust-a18d.workers.dev/';
+  var AUTH_KEY = 'vampjam_signin';
+  var authCache = null;
+  function auth_token() {
+    try { return localStorage.getItem(AUTH_KEY) || ''; } catch (e) { return ''; }
+  }
+  function auth_set(tok) {
+    try { tok ? localStorage.setItem(AUTH_KEY, tok) : localStorage.removeItem(AUTH_KEY); } catch (e) {}
+    authCache = null;
+  }
+  // me() answers once per page load and never rejects: a worker that is down
+  // must not lock anybody out of a recording that was never restricted.
+  function auth_me() {
+    if (authCache) return authCache;
+    var tok = auth_token();
+    authCache = fetch(AUTH_URL + '?op=me&t=' + encodeURIComponent(tok), { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { return (j && j.ok) ? j : { signed_in: false, allow: [] }; })
+      .catch(function () { return { signed_in: false, allow: [], offline: true }; });
+    return authCache;
+  }
+  function auth_out() { auth_set(''); }
+  window.vampjamAuth = { url: AUTH_URL, token: auth_token, set: auth_set, me: auth_me, out: auth_out };
+
   // name_edit — a session's display name lives in two places: the session file's
   // own label and the registry row the list draws from. A rename that touches
   // only one of them shows the old name in the list for ever, so the page hands
