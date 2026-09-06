@@ -600,6 +600,14 @@
 
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function fmt_dur(s) { s = Math.round(s || 0); if (!s) return ''; var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60); return h > 0 ? h + ':' + pad(m) : m + 'm'; }
+  // dur_show — h:mm on every row, including the short ones (0:05, not 5m). Two
+  // shapes in one column means reading the units before reading the number;
+  // one shape means the column can be scanned.
+  function fmt_hmm(s) {
+    s = Math.round(s || 0);
+    if (!s) return '';
+    return Math.floor(s / 3600) + ':' + pad(Math.floor((s % 3600) / 60));
+  }
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
   function build_menu() {
@@ -671,9 +679,12 @@
     }
     all.forEach(function (s) {
       var cur = (s.page === PKEY) ? ' current' : '';
-      // dur_hide: rows show only the moment count — durations stay in the
-      // registry data but are no longer displayed
+      // dur_show — the duration comes back out from behind the dots and sits at
+      // the right of the row in the page's own text colour, because how long a
+      // recording is decides whether you open it now. The moment count stays
+      // behind the dots: it is what you find AFTER choosing.
       var right = '<span class="jam_count">' + (s.count || '') + '</span>';
+      var durTxt = fmt_hmm(s.dur);
       if ((s._pending || s.pending) && s.page !== pendDone) right = '<span class="jam_sync">syncing…</span>';
       // naming convention: date first, then the time (default recordings) or the
       // venue name — and the row shows exactly the session's title
@@ -695,7 +706,8 @@
       if (cur) curIdx = rows.length;
       rows.push('<div class="jam_item' + cur + (isDel ? ' jam_deleting' : '') + '"><a class="jam_link' + cur + '" href="' + s.page + '">'
         + '<span class="jam_left"><span class="jam_ico">' + ICO_CASS + '</span>'
-        + '<span class="jam_name">' + esc(disp) + '</span></span></a>'
+        + '<span class="jam_name">' + esc(disp) + '</span></span>'
+        + '<span class="jam_dur">' + durTxt + '</span></a>'
         // row_more — a row shows three dots and its title, nothing else. The
         // dots open into the row's actions, share at the far right; the title
         // gets the width back the rest of the time.
@@ -720,7 +732,20 @@
       if (lowMenu) lowMenu.innerHTML = '';
     }
     try { document.body.classList.toggle('fold_split', !!split); } catch (eS) {}
+    mark_fades();
   }
+  // dur_fade — a name too long for its room dissolves under the duration
+  // instead of stopping at an ellipsis. The mask can only go on a name that is
+  // ACTUALLY overflowing: applied to one that fits, it would fade the last
+  // letters of a short title for no reason. So it is measured, not assumed,
+  // and measured again when the width changes.
+  function mark_fades() {
+    var names = document.querySelectorAll('.jam_item .jam_name');
+    Array.prototype.forEach.call(names, function (n) {
+      n.classList.toggle('fade', n.scrollWidth > n.clientWidth + 1);
+    });
+  }
+  window.addEventListener('resize', mark_fades);
 
   // remember this session for the index; cache its duration going forward
   if (!deleted_has(PKEY)) { try { localStorage.setItem('vampjam_last_session', PKEY); } catch (e) {} }
@@ -1170,6 +1195,15 @@
       '.jam_item .menu_sub{display:inline-flex;justify-content:center;text-align:center;' +
         'min-width:30px;font-variant-numeric:tabular-nums;flex:0 0 auto;color:var(--muted);white-space:nowrap;}' +
       '.jam_item .menu_sub .jam_count{display:inline-block;min-width:26px;text-align:center;margin:0;}' +
+      // dur_show — full strength, tabular so the column lines up, and it never
+      // gives up room: the name yields to it, not the other way round
+      '.jam_item .jam_dur{flex:0 0 auto;color:var(--fg);font-variant-numeric:tabular-nums;' +
+        'white-space:nowrap;margin-left:8px;}' +
+      '.jam_item .jam_link.current .jam_dur{color:inherit;}' +
+      // dur_fade — the fade is the ellipsis, so the ellipsis goes
+      '.jam_item .jam_name.fade{text-overflow:clip;' +
+        '-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 34px),transparent);' +
+        'mask-image:linear-gradient(to right,#000 calc(100% - 34px),transparent);}' +
       // col_hold — the empty slot a row without a remove control reserves has to be
       // exactly as wide as the control it stands in for, or the share buttons above
       // and below it stop lining up. It was 30px against a 30px trash can; the X is
