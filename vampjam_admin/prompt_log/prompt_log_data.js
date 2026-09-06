@@ -9,8 +9,54 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "337 save_guard",
+        id: "338 dur_show",
         expanded: true,
+        nodes: [
+          { text: "338 dur_show", children: [
+            { text: "prompt_restate", children: [
+              { text: "On the session list, show the duration in h:mm, in black, with the title fading behind it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "on session list , do show the duration in h:mm in black where title fade behind it" }
+            ]},
+            { text: "what_a_row_shows_now", children: [
+              { text: "icon \u00b7 name \u00b7 how long it is \u00b7 the dots" },
+              { text: "the length is in the page\u2019s own text colour, not the grey, and lines up down the column" },
+              { text: "the moment count stays behind the dots \u2014 that is what you want AFTER choosing, not while choosing" }
+            ]},
+            { text: "one_shape", children: [
+              { text: "h:mm on every row, short ones too: 0:05, not 5m" },
+              { text: "two shapes in one column means reading the units before reading the number" },
+              { text: "rounded to the nearest minute, not down \u2014 4m58s was reading 0:04, a minute the row denied having" }
+            ]},
+            { text: "the_fade", children: [
+              { text: "a name too long dissolves under the length instead of stopping at an ellipsis" },
+              { text: "only when it actually overflows \u2014 applied to a name that fits it would fade the last letters for no reason, so it is measured after every render and on resize" },
+              { text: "the length never gives up its room; the name is what yields. checked at 320px too" }
+            ]},
+            { text: "found_on_the_way", children: [
+              { text: "2026-08-14 Sound Union showed no length at all \u2014 the manifest had it at zero" },
+              { text: "the registry has known 10552 since the day it was recorded; the static list never gets the automatic correction the others do" },
+              { text: "fixed, and the suite now refuses to let any recording claim to be zero long" }
+            ]},
+            { text: "dur_show_test", children: [
+              { text: "new, 20 \u2014 2:41, 0:05, 1:00, blank for unknown; the colour; tabular; the fade on and off; the width held at 320px; the count still behind the dots" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "twenty-five suites, green. sessions.js v=130, drawer.js v=162" }
+            ]},
+            { text: "left_alone", children: [
+              { text: "the favourites rows \u2014 own shape, no duration to show. say the word" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "337 save_guard",
+        expanded: false,
         nodes: [
           { text: "337 save_guard", children: [
             { text: "prompt_restate", children: [

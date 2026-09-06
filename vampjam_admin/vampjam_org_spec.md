@@ -4434,7 +4434,38 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   sign-in worker paste under "when you are back at the Mac".
   Re-ran twenty-four suites. Green.
   Still no new trace.
-- NEXT → add entry 330 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 330 dur_show · b338 · session rows show how long the recording is, in h:mm at full strength,
+  with the name dissolving under it instead of ending in an ellipsis.
+  dur_hide took durations off the rows a while back on the grounds that the moment count was the
+  useful number. It is not, for the first decision: how long a thing is decides whether you open
+  it now. The count is what you find AFTER choosing, so it stays behind the dots and the duration
+  comes out to the always-visible level, in var(--fg) rather than the muted grey, tabular so the
+  column can be scanned down.
+  One shape for every row, including the short ones: 0:05, not 5m. Two shapes in one column means
+  reading the units before reading the number.
+  Rounded to the NEAREST minute, not down to it — 4m58s truncated to 0:04, which is a minute of
+  music the row denied having — and never 0:00: anything with audio is at least a minute's worth
+  of deciding.
+  dur_fade — the name is masked out under the duration rather than ellipsised. The mask can only
+  go on a name that is ACTUALLY overflowing; applied to one that fits it would fade the last
+  letters of a short title for no reason. So it is measured after every render and on resize, not
+  assumed, and the ellipsis is turned off only where the fade takes over. The duration never
+  yields: it is flex:0 0 auto, and the name is what shrinks — checked at 320px as well as 390.
+  Found by the change rather than by the code: 2026_08_14_sound_union showed no length at all,
+  because sessions.js carried dur: 0 for it. The registry has known 10552 since the day it was
+  recorded. The auto rows correct their own durations as they are played (dur_overlay); the
+  static manifest never does, so a wrong number there stays wrong until somebody looks. Set by
+  hand, and the suite now asserts no row in the manifest claims to be zero long.
+  dur_show_test is new, 20 assertions: 2:41, 0:05, 1:00 and blank for unknown; the colour is the
+  page's own and not the muted grey; tabular; right of the name and inside the row; a long name
+  clipped AND masked with the ellipsis off, a short one neither; the duration holding its width
+  at 320px while the name yields; the count still behind the dots and revealed by them; share
+  still rightmost.
+  Re-ran twenty-five suites. Green.
+  sessions.js v=130, drawer.js v=162.
+  Left alone: the favourites rows, which have their own shape and no duration to show.
+  Still no new trace.
+- NEXT → add entry 331 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
