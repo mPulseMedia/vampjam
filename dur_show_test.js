@@ -73,7 +73,9 @@ const REG = [
   // ---------- h:mm, one shape ----------
   const L = await row('long'), S = await row('short'), H = await row('hour'), Z = await row('zero');
   ok('2h41m reads 2:41',                  L && L.dur === '2:41', L && L.dur);
-  ok('and five minutes reads 0:05, not 5m', S && S.dur === '0:05', S && S.dur);
+  // dur_zero — under an hour the hour figure is not written at all
+  ok('and five minutes reads :05 — no hour figure, no 5m', S && S.dur === ':05', S && S.dur);
+  ok('but the colon stays, so the column keeps one shape', S && S.dur[0] === ':', S && S.dur);
   ok('an exact hour reads 1:00',          H && H.dur === '1:00', H && H.dur);
   ok('a length nobody knows shows nothing', Z && Z.dur === '', JSON.stringify(Z && Z.dur));
 
@@ -109,6 +111,15 @@ const REG = [
   });
   ok('on a narrower phone the duration keeps its width', Math.abs(wide2 - wide) <= 1, wide + ' -> ' + wide2);
   ok('and the name is still what yields',  narrow.dur === '2:41' && narrow.fades === true, narrow.dur + ' ' + narrow.fades);
+
+  // the minutes have to line up under the minutes, or dropping the hour has
+  // cost the column the thing the tabular figures were for
+  const cols = await p.evaluate(() => {
+    const pick = (k) => document.querySelector('.jam_item:has(a[href="session.html?p=' + k + '"]) .jam_dur');
+    return ['long', 'short', 'hour'].map(k => Math.round(pick(k).getBoundingClientRect().right));
+  });
+  ok('every duration ends on the same right edge',
+     Math.max(...cols) - Math.min(...cols) <= 1, cols.join(', '));
   await p.setViewportSize({ width: 390, height: 844 });
   await p.waitForTimeout(400);
 

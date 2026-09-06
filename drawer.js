@@ -611,7 +611,11 @@
     // And never 0:00 — anything with audio in it is at least a minute's worth
     // of deciding whether to open it.
     var m = Math.max(1, Math.round(s / 60));
-    return Math.floor(m / 60) + ':' + pad(m % 60);
+    var h = Math.floor(m / 60);
+    // dur_zero — under an hour the hour figure is not written: :05, not 0:05.
+    // The colon stays, so the column still reads as one shape and the minutes
+    // still line up under the minutes above them.
+    return (h ? h : '') + ':' + pad(m % 60);
   }
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
