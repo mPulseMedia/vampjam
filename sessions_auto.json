@@ -19,5 +19,14 @@
     "date": "2026-09-04",
     "dur": 9676,
     "count": 3
+  },
+  {
+    "page": "session.html?p=2026_09_05_san_francisco_5_44_14p",
+    "name": "2026-09-05 4:09p San Francisco",
+    "date": "2026-09-05",
+    "dur": 5690,
+    "count": 1,
+    "pending": true,
+    "ts": 1788655473940
   }
 ]
