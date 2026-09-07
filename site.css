@@ -186,6 +186,9 @@ body.drawer_open .nav_cass, body.drawer_open .nav_share { opacity: 0; pointer-ev
 .jam_item:hover { background: var(--row_active); }
 .jam_item.current { background: var(--row_active); }
 .jam_item.jam_admin { border-top: 1px solid var(--panel_3); }
+/* signin_show — sits with Admin at the foot of the list */
+.jam_item.jam_signin { border-top: 1px solid var(--panel_3); }
+.jam_item.jam_signin .jam_ico { color: var(--muted); }
 .jam_link { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px;
             color: var(--fg); text-decoration: none; font-size: 17px; font-weight: 400; padding: 6px 0; }
 .jam_link.current { color: var(--accent); font-weight: 600; }
