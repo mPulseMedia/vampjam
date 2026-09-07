@@ -40,7 +40,7 @@ ol.steps li.done svg.mini{display:none}
 ol.steps li.done::before{color:var(--go)}
 ol.steps li.done::after{content:" ✓";color:var(--go);font-weight:800}
 ol.steps b{background:#fff3d6;padding:0 5px;border-radius:4px}
-ol.steps li svg.mini{display:block;width:100%;max-width:360px;margin:6px 0 4px;border-radius:8px}
+ol.steps li svg.mini{display:block;width:calc(100% + 2.4em + 34px);max-width:360px;margin:6px 0 4px -2.4em;border-radius:8px}
 .said{display:block;margin-top:5px;font-size:14.5px;color:#5d6e7b;font-style:italic}
 .said b{color:#101820;font-style:normal;background:none;padding:0}
 .odd{display:block;margin-top:6px;font-size:14.5px;color:#5d6e7b;border-left:3px solid var(--signal);padding-left:10px}
@@ -381,10 +381,14 @@ footer a{color:var(--signal)}
   // ---- a secret worth using: from the browser's own randomness ----
   var ms = document.getElementById('make_secret');
   ms.addEventListener('click', function () {
-    var a = new Uint8Array(36), i;
-    if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(a);
-    else for (i = 0; i < a.length; i++) a[i] = Math.floor(Math.random() * 256);
-    var out = btoa(String.fromCharCode.apply(null, a)).replace(/[+/=]/g, '').slice(0, 48);
+    var out = '', i;
+    while (out.length < 48) {                      // stripping +/= shortens it, so keep drawing
+      var a = new Uint8Array(36);
+      if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(a);
+      else for (i = 0; i < a.length; i++) a[i] = Math.floor(Math.random() * 256);
+      out += btoa(String.fromCharCode.apply(null, a)).replace(/[+/=]/g, '');
+    }
+    out = out.slice(0, 48);
     var s = ms.querySelector('small');
     ms.childNodes[1].nodeValue = out;
     var go = (navigator.clipboard && navigator.clipboard.writeText)
