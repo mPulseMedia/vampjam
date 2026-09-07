@@ -286,6 +286,90 @@ const ENV = {
   ok('the token is taken out of the address bar', !/t=/.test(landed.url), landed.url);
   await p.close();
 
+  // ---------- signin_show: it is reachable, and it says how far along it is ----------
+  ACCESS = fresh_access(ids);
+  p = await ctx.newPage();
+  p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (row): ' + e.message); });
+  await p.addInitScript(signed_out);
+  await p.goto('https://vampsf.com/session.html?p=b2');
+  await p.waitForTimeout(1800);
+  await p.click('#page_sessions');
+  await p.waitForTimeout(1800);
+  const rowOut = await p.evaluate(() => {
+    const el = document.querySelector('.jam_item.jam_signin');
+    return el ? { href: el.querySelector('a').getAttribute('href'),
+                  name: el.querySelector('.jam_name').textContent.trim(),
+                  sub: (el.querySelector('.menu_sub') || {}).textContent.trim(),
+                  aboveAdmin: !!(el.nextElementSibling && el.nextElementSibling.classList.contains('jam_admin')) } : null;
+  });
+  ok('the session list has a way IN to the sign-in', !!rowOut && rowOut.href === 'signin.html', JSON.stringify(rowOut));
+  ok('signed out it says Sign in',       rowOut && rowOut.name === 'Sign in', rowOut && rowOut.name);
+  ok('and sits with Admin at the foot',  rowOut && rowOut.aboveAdmin, rowOut && rowOut.aboveAdmin);
+  await p.close();
+
+  p = await ctx.newPage();
+  p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (row in): ' + e.message); });
+  await p.addInitScript(t => { try { localStorage.setItem('vampjam_signin', t); } catch (e) {} }, mattSess);
+  await p.goto('https://vampsf.com/session.html?p=b2');
+  await p.waitForTimeout(1800);
+  await p.click('#page_sessions');
+  await p.waitForTimeout(2000);
+  const rowIn = await p.evaluate(() => {
+    const el = document.querySelector('.jam_item.jam_signin');
+    return { name: el.querySelector('.jam_name').textContent.trim(),
+             sub: el.querySelector('.menu_sub').textContent.trim() };
+  });
+  ok('signed in, the row says who you are', rowIn.name === 'Matt', rowIn.name);
+  ok('and that you are signed in',          /signed in/.test(rowIn.sub), rowIn.sub);
+  await p.close();
+
+  // the worker not being there must read as "not set up", not as a tap that fails
+  authDown = true;
+  p = await ctx.newPage();
+  p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (row down): ' + e.message); });
+  await p.addInitScript(signed_out);
+  await p.goto('https://vampsf.com/session.html?p=b2');
+  await p.waitForTimeout(1800);
+  await p.click('#page_sessions');
+  await p.waitForTimeout(2200);
+  const rowDown = await p.evaluate(() => {
+    const el = document.querySelector('.jam_item.jam_signin');
+    return { name: el.querySelector('.jam_name').textContent.trim(),
+             sub: el.querySelector('.menu_sub').textContent.trim() };
+  });
+  ok('with no server yet the row says so', /not set up/.test(rowDown.sub), rowDown.name + ' / ' + rowDown.sub);
+  authDown = false;
+  await p.close();
+
+  // ---------- the readout on Admin ----------
+  p = await ctx.newPage();
+  p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (setup): ' + e.message); });
+  await p.addInitScript(signed_out);
+  await p.goto('https://vampsf.com/admin.html');
+  await p.waitForTimeout(2000);
+  const setup = await p.evaluate(() => {
+    const el = document.getElementById('setup');
+    return { text: el.textContent.replace(/\s+/g, ' ').trim(),
+             on: el.querySelectorAll('.dot.on').length,
+             off: el.querySelectorAll('.dot.off').length };
+  });
+  ok('Admin shows a live setup readout',    setup.on + setup.off >= 5, JSON.stringify(setup));
+  ok('it says the server is up',            /server is up/.test(setup.text), setup.text.slice(0, 70));
+  ok('that Twilio can send',                /Twilio can send/.test(setup.text), '');
+  ok('and how many people are on the list', /3 people on the list/.test(setup.text), setup.text.slice(0, 160));
+  ok('and how much is actually gated',      /1 recording is private/.test(setup.text), setup.text.slice(0, 200));
+  const stat = await (await worker.fetch(new Request('https://auth.example/?op=status'), ENV)).json();
+  ok('the readout never carries a secret',
+     !JSON.stringify(stat).includes(ENV.AUTH_SECRET) && !JSON.stringify(stat).includes(ENV.TWILIO_TOKEN),
+     JSON.stringify(stat));
+  ok('and masks the sending number',        stat.from === '•••0006', stat.from);
+
+  // a worker with nothing configured still answers, and says nothing is
+  const bare = await (await worker.fetch(new Request('https://auth.example/?op=status'), { })).json();
+  ok('an unconfigured worker still reports', bare.ok === true && bare.secret === false && bare.twilio === false,
+                                             JSON.stringify(bare));
+  await p.close();
+
   // ---------- no phone number anywhere in what gets committed ----------
   const acc = fs.readFileSync(path.join(DIR, 'access.json'), 'utf8');
   ok('the committed access.json holds no numbers', !/\+?1?\d{10}/.test(acc), acc.slice(0, 80));
