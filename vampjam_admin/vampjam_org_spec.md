@@ -4561,7 +4561,52 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   at itself, and both other pages linking in; and that it still admits the audio is not locked.
   Re-ran twenty-six suites. Green.
   Still no new trace.
-- NEXT → add entry 335 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 335 signin_look · b343 · signin_steps.html rebuilt in the visual language of share_howto — he
+  pointed at page_agent/share_howto.html and said make the instructions look like this.
+  So: dark navy sheet, cream panels, a 74px coloured number column down the left of every part,
+  Archivo 800 headings over an Archivo Narrow uppercase kicker, amber step counters, the words
+  that matter highlighted on cream, and the dark tap-to-copy bars carrying a small uppercase
+  label above the thing they copy. The substance did not move — same twenty steps, same seven
+  parts, same live ?op=status readout — only the clothes.
+  The one thing share_howto does that this page did not: it draws the screen. Six inline SVG
+  mockups now, one per step where a screen is genuinely hard to describe, each with a red ring
+  around the single thing to click. Each carries a mini_cap saying "drawn from twilio's own
+  screen, not yours", because a drawing that pretends to be a screenshot is a lie that costs you
+  the next ten minutes when the real screen looks different.
+  The number column now reports: a part whose every step is ticked wears the green done collar,
+  and the first unfinished part wears the amber next one. Open the page mid-job and the amber
+  block is where you are. That is the same information the readout gives, said in a way you can
+  see from arm's length.
+  one_size: retired on this page and only this page, deliberately. The old suite required exactly
+  one computed font-size across the whole page and that rule is right for a vampjam app screen; a
+  runbook built out of Archivo at several sizes is the design he asked for. The suite says so in
+  a comment so the next thread does not "fix" it back.
+  Two real bugs the rewrite surfaced, both found by the new suite and not by looking:
+  the AUTH_SECRET generator drew 36 bytes, base64'd them, stripped +/= and then sliced to 48 —
+  but the stripping happens BEFORE the slice, so it handed back 44 to 48 characters depending on
+  luck. It now keeps drawing until it has 48 to take. Ten draws in a row are asserted at exactly
+  48, alphanumeric, and all different.
+  And the drawn screens were boxed inside the step's text indent — 2.4em of counter on the left,
+  34px of tick on the right — which on a 390px phone left them 172px wide, too small to read the
+  thing the red ring points at. They break out of both indents now: 244px, the full width of the
+  step column.
+  signin_steps_test rewritten, 50 assertions, because the old 25 asserted the old markup and would
+  have failed wholesale rather than usefully. It now asserts both halves. The look: navy sheet,
+  cream panels, the 74px column, Archivo 800 and Narrow uppercase, amber counters, highlighted
+  keywords, dark copy bars — measured off getComputedStyle, so "it looks like share_howto" is a
+  fact and not a claim. The drawings: six, each inside its step, each carrying a #d7263d ring,
+  each admitting it is not his screen, each rendering wider than 230px. The work: ticking,
+  un-ticking, surviving a reload, clearing and staying cleared; the done and next collars
+  appearing and moving when a step is undone; the readout in three real states plus the singular
+  case, because "1 people on the list" is how a page loses trust; the copy button handing over
+  the committed worker byte for byte and returning to its resting label; and the page still
+  admitting the audio is not locked and still never linking at itself.
+  Re-ran twenty-seven suites, 672 assertions. Green.
+  Nothing else on the site touched — no shared asset moved, so no ?v= bump.
+  Still waiting on him, unchanged: deploy the worker, add the five settings. The page he does it
+  from is now the page he asked for.
+  Still no new trace.
+- NEXT → add entry 336 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
