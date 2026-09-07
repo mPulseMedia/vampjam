@@ -4500,7 +4500,38 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   vertical leg is downward. The sequencing is what changed; the direction is what the geometry
   is. If he meant the list should come to meet it instead, that is a different build.
   Still no new trace.
-- NEXT → add entry 333 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 333 signin_show · b341 · the sign-in is reachable from the site, and the site says out loud how
+  far along it is.
+  Paul: "I don't see anything happening on the vampjam page itself". He was right, and it was my
+  miss. b336 built the whole mechanism — worker, sign-in page, gate, whitelist editor — and linked
+  to NONE of it. signin.html existed at a URL nobody could reach; the whitelist section sat below
+  the fold of a page nothing pointed at; no recording was marked private, so no gate ever drew.
+  A mechanism you cannot get to is a mechanism that does not exist, and shipping one and calling
+  it done is the error here, not the missing Twilio keys.
+  A Sign in row now sits with Admin at the foot of the session list — the one place every page can
+  reach. It says "Sign in" signed out, your name and "signed in" once you are in, and "not set up
+  yet" when the worker is not deployed, rather than inviting a tap that can only fail.
+  ?op=status on the worker, and a live readout at the top of Admin built from it: server up,
+  secret set, Twilio able to send (and from which masked number), whether anyone administers the
+  list, how many people are on it, how many recordings are actually private. Six lit-or-unlit
+  dots. It answers even when nothing is configured, because "nothing is configured" is exactly
+  what the site needs to be able to say. Booleans and a masked number only — the suite asserts
+  the reply carries neither the auth secret nor the Twilio token.
+  Today it reads: server not there yet, and a link to the steps. That is the honest picture and it
+  is what he asked to see.
+  signin_test 56: the row exists, points at signin.html, sits above Admin, says Sign in signed
+  out, the person's name signed in, "not set up yet" with no worker; the readout has six lines,
+  names the counts, hides the secrets, masks the number, and an unconfigured worker still reports.
+  Two suites broke and both were the test, not the code: save_guard and name_edit count "did
+  anything get saved" by watching workers.dev, and paint_who now asks the AUTH worker — also on
+  workers.dev — who is looking. A lookup is not a save. They watch the sync worker specifically
+  now, which is what the assertion always meant.
+  Re-ran twenty-five suites. Green.
+  site.css v=21, drawer.js v=165.
+  Still waiting on him, unchanged: deploy the worker, add the Twilio keys. The difference is that
+  the site now shows that, instead of showing nothing.
+  Still no new trace.
+- NEXT → add entry 334 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,50 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "340 fly_corner",
+        id: "341 signin_show",
         expanded: true,
+        nodes: [
+          { text: "341 signin_show", children: [
+            { text: "prompt_restate", children: [
+              { text: "Twilio is coming, but nothing is visible on the vampjam page. Show me something that says we are getting closer." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, so in the creation of this mechanism that requires that I enter a phone number in order to gain access I am gonna need Tulio, but I don\u2019t see anything happening on the vamp Jam page itself and I am expecting to see something. Maybe not something gating yet if it\u2019s not working, but show me something that you know we\u2019re getting closer" }
+            ]},
+            { text: "my_miss", children: [
+              { text: "I built the whole thing last time and linked to none of it" },
+              { text: "the sign-in page existed at an address nobody could reach; the whitelist sat on a page nothing pointed at; no recording was marked private so no gate ever drew" },
+              { text: "a mechanism you cannot get to is a mechanism that does not exist" }
+            ]},
+            { text: "what_you_will_see_now", children: [
+              { text: "open the session list \u2014 there is a Sign in row at the foot, next to Admin" },
+              { text: "today it reads Sign in \u00b7 not set up yet. once the server is up it says your name" },
+              { text: "and on Admin, a Sign-in setup readout: six lines, lit or unlit, asked of the server itself" }
+            ]},
+            { text: "the_readout_is_real", children: [
+              { text: "server up \u00b7 secret set \u00b7 Twilio able to send, and from which number \u00b7 who administers \u00b7 how many people \u00b7 how many recordings are actually private" },
+              { text: "it answers even when nothing is set up, because that is exactly what needs saying" },
+              { text: "no secret ever comes back in it \u2014 the suite checks that, and the number is masked" }
+            ]},
+            { text: "two_suites_broke_and_both_were_wrong", children: [
+              { text: "they counted did-anything-get-saved by watching all traffic to the workers \u2014 and every page now asks the sign-in server who is looking" },
+              { text: "a lookup is not a save. they watch the file-writing server specifically now, which is what they always meant" }
+            ]},
+            { text: "still_yours", children: [
+              { text: "deploy the worker, add the Twilio keys. unchanged \u2014 but the site now shows that instead of showing nothing" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "twenty-five suites, green. site.css v=21, drawer.js v=165" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "340 fly_corner",
+        expanded: false,
         nodes: [
           { text: "340 fly_corner", children: [
             { text: "prompt_restate", children: [
