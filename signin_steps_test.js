@@ -248,6 +248,11 @@ let STATUS = null;           // null = the worker is not there at all
      say.warn && /public address/.test(say.text) && /lock/.test(say.text), say.warn);
   ok('the token is called a password and kept out of chat',
      /password/i.test(say.text) && /(not paste|do not.*chat|never.*chat)/i.test(say.text));
+  ok('it describes the console twilio actually shows him',
+     /1console\.twilio\.com/.test(say.text) && /Let's get building/.test(say.text)
+     && /API keys and Auth tokens/.test(say.text) && !/Account Info/.test(say.text), 0);
+  ok('and says the token is not on the first page',
+     /not on that page/i.test(say.text) && /Live credentials/.test(say.text), 0);
   ok('it links out to both companies',
      say.out.some(h => /console\.twilio/.test(h)) && say.out.some(h => /dash\.cloudflare/.test(h)));
   ok('and never at itself',                 say.self === 0, say.self);
