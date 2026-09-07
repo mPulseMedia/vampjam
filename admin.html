@@ -304,13 +304,13 @@
           + row(j.people > 0, j.people + (j.people === 1 ? ' person on the list' : ' people on the list'))
           + row(j.private > 0, j.private + (j.private === 1 ? ' recording is private' : ' recordings are private'),
                 j.private > 0 ? '' : 'nothing is gated yet — everything is open');
-        if (!j.secret || !j.twilio) html += '<a class="setup_go" href="vampjam_do_this_next.html">the steps →</a>';
+        if (!j.secret || !j.twilio) html += '<a class="setup_go" href="signin_steps.html">the steps, one by one →</a>';
         el.innerHTML = html;
       })
       .catch(function () {
         el.innerHTML = row(false, 'The sign-in server is not there yet',
           'it has not been deployed — nothing below will work until it is')
-          + '<a class="setup_go" href="vampjam_do_this_next.html">the steps →</a>';
+          + '<a class="setup_go" href="signin_steps.html">the steps, one by one →</a>';
       });
   })();
 

@@ -109,72 +109,21 @@ Everything else I do myself — you don't need to act on anything I send into th
 </div>
 
 <div class="section-label">When you are back at the Mac — the sign-in worker</div>
-
-<ol class="steps">
-  <li>
-    <div class="step_title">Get three things from Twilio</div>
-    <ul class="sub">
-      <li><b>console.twilio.com</b> → the front page shows <b>Account SID</b> and <b>Auth Token</b>
-          (click to reveal). Copy both somewhere for a minute.</li>
-      <li>Left menu → <b>Phone Numbers</b> → <b>Manage</b> → <b>Active numbers</b>. Copy the number,
-          in the form <code>+14155551212</code>. If you have none, buy one — about $1 a month.</li>
-    </ul>
-  </li>
-
-  <li>
-    <div class="step_title">Make the worker</div>
-    <ul class="sub">
-      <li>Tap the button, then go to <b>dash.cloudflare.com</b> → <b>Workers &amp; Pages</b> →
-          <b>Create</b> → <b>Start with Hello World</b> → name it <b>vampjam-auth</b> → Deploy.</li>
-      <li class="copy_row"><button class="copy_btn" data-copy-auth>Copy sign-in worker code</button>
-          <span class="note">cloudflare/vampjam_auth_worker.js in the repo</span></li>
-      <li>Then <b>Edit code</b> on that new worker, click in it, <b>⌘A</b>, <b>⌘V</b>, <b>Deploy</b>.</li>
-    </ul>
-  </li>
-
-  <li>
-    <div class="step_title">Give it five settings</div>
-    <ul class="sub">
-      <li>On the worker: <b>Settings</b> → <b>Variables and Secrets</b> → <b>Add</b>, five times.
-          Choose <b>Secret</b> for the first three, <b>Text</b> for the last two:</li>
-      <li><code>AUTH_SECRET</code> — a long random string you invent. Nothing depends on what it is;
-          changing it later signs everybody out.</li>
-      <li><code>TWILIO_SID</code> — the Account SID (starts <code>AC</code>)</li>
-      <li><code>TWILIO_TOKEN</code> — the Auth Token</li>
-      <li><code>TWILIO_FROM</code> — your Twilio number, <code>+1…</code></li>
-      <li><code>SITE</code> — <code>https://vampsf.com</code></li>
-      <li>Then <b>Deploy</b> again so the settings take.</li>
-    </ul>
-  </li>
-
-  <li>
-    <div class="step_title">Tell me the worker's address</div>
-    <ul class="sub">
-      <li>Top of the worker page there is a URL ending <b>.workers.dev</b>. If it is not
-          <code>vampjam-auth.crimson-dust-a18d.workers.dev</code>, paste it to me — one line for me
-          to change.</li>
-    </ul>
-  </li>
-
-  <li>
-    <div class="step_title">Then add yourself, on the phone</div>
-    <ul class="sub">
-      <li>Open <b>Admin</b> → <b>Who can sign in</b> → type your name and your own number → <b>Add</b>.
-          The first number added becomes the administrator — yours.</li>
-      <li>Add the others the same way. Then under <b>Private recordings</b>, tap
-          <b>make private</b> on the one you want closed, and tick who may open it.</li>
-      <li>Sign in yourself once from <a href="signin.html">signin</a> to check the text arrives.</li>
-    </ul>
-  </li>
-</ol>
-
-<div class="section-label">Earlier — still worth a listen when you have a minute</div>
+<div class="one_thing">
+  <div class="one_num">2</div>
+  <div>
+    <div class="one_title">Turn the sign-in on</div>
+    <div class="one_why">About twenty minutes: three things from Twilio, a worker pasted into
+    Cloudflare, five settings, then add yourself. Every click is written out on its own page,
+    with ticks that stay put if you stop halfway.</div>
+  </div>
+</div>
 
 <div class="why">
-  <b>Three sessions play the light file now</b> — 2026-01-17 Bazaar Cafe, 2026-05-23 Bazaar Cafe,
-  2026-08-07 Sound Union — with a <b>hi-fi</b> word at the right of the clock to switch. Ten
-  seconds of each is the check that I got the filenames right. If one does not play, tell me
-  which.
+  <a href="signin_steps.html"><b>Sign-in, step by step →</b></a>
+  <br><br>
+  Until it is done nothing changes: every recording stays open exactly as it is. The
+  <a href="admin.html">Admin</a> page shows how far along it is at any moment.
 </div>
 
 <div class="section-label">Optional — only if you want the second listen to be free</div>
