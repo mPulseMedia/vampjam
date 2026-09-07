@@ -207,8 +207,13 @@
   // The vertical is still what matches the page (fold_pace), so the corner is
   // free: it happens in the time the name was already spending standing still
   // at its destination while the list finished going up past it.
-  var CORNER_AT = 0.75;   // the vertical is finished by here at the latest,
-                          // so the slide always has a tail to happen in
+  // The tail the slide happens in is one the name already had: it covers its
+  // shorter distance at the row's rate (fold_pace) and then waits while the
+  // list finishes going up past it. So this cap is a backstop, not a schedule —
+  // set it low and it makes the drop OUTRUN the row, which is the one thing
+  // fold_pace exists to prevent. It only bites when the name's drop is nearly
+  // as long as the row's whole travel.
+  var CORNER_AT = 0.92;
   function fly(a, b, text, ride, corner) {
     if (!a || !b) return null;
     var c = document.createElement('div');
