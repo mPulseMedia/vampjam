@@ -9,8 +9,46 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "339 dur_zero",
+        id: "340 fly_corner",
         expanded: true,
+        nodes: [
+          { text: "340 fly_corner", children: [
+            { text: "prompt_restate", children: [
+              { text: "Returning from a session to the list, move the title vertically first and only then across." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "when returning from viewing a session to the session list, first move the title up and then over." }
+            ]},
+            { text: "done", children: [
+              { text: "a clean L: the sideways position holds while it travels the whole vertical, then it slides across" },
+              { text: "measured \u2014 x sits at 83 the whole drop, then y sits at 587 the whole slide" }
+            ]},
+            { text: "the_corner_is_free", children: [
+              { text: "the name already finished its drop early and stood still while the list carried on up past it" },
+              { text: "the slide happens in that wait, so nothing got slower and nothing had to give up time" }
+            ]},
+            { text: "what_i_got_wrong_first", children: [
+              { text: "I reserved a tail by capping the drop at 75% \u2014 which made the drop outrun the row" },
+              { text: "that is the one thing the same-speed rule exists to prevent, and the suite caught it: 8 of 10 frames instead of 10" },
+              { text: "the cap is a backstop now, not a schedule. back to 10 of 10 across three runs" }
+            ]},
+            { text: "one_word_back_if_wanted", children: [
+              { text: "you said up; on this screen the title sits above its row, so the vertical leg goes down" },
+              { text: "the sequencing is what changed. if you meant the list should rise to meet it instead, that is a different build" },
+              { text: "and the way IN is still diagonal \u2014 you asked for one direction. say the word for both" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "twenty-five suites, green. drawer.js v=164" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "339 dur_zero",
+        expanded: false,
         nodes: [
           { text: "339 dur_zero", children: [
             { text: "prompt_restate", children: [

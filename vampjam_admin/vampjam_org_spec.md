@@ -4476,7 +4476,31 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Re-ran twenty-five suites. Green.
   drawer.js v=163.
   Still no new trace.
-- NEXT → add entry 332 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 332 fly_corner · b340 · going back to the list, the name travels the whole vertical first and
+  only then slides across. Two moves you can name instead of one diagonal that reads as drift.
+  Measured on the way out: x holds at 83 while y goes 89 → 587, then y holds at 587 while x
+  slides 83 → 69. A clean L.
+  The corner is free rather than borrowed. fold_pace already had the name covering its shorter
+  distance at the ROW's rate and then standing still while the list finished going up past it —
+  so there was a tail there already, and the slide happens in it.
+  That is exactly what the first attempt got wrong. Capping the drop at 75% of the animation to
+  guarantee a tail made the drop OUTRUN the row, which is the one thing fold_pace exists to
+  prevent; row_fly_test's "the name moves at the row's speed" went from 10 of 10 frames matching
+  to 8 of 10. The cap is a backstop now, not a schedule — 0.92, so it only bites when the name's
+  drop is nearly as long as the row's whole travel, and the pace match is back at 10 of 10 across
+  three runs.
+  Only the return leg turns the corner. The way IN is left diagonal — he asked for one direction,
+  and squaring both without being asked would be two changes wearing one name.
+  row_fly_test 32: the drop settles before the slide does; when the drop lands the slide is under
+  a quarter of the way across; both legs still end on the row. Measured as two legs, not asserted
+  from a flag.
+  Re-ran twenty-five suites. Green.
+  drawer.js v=164.
+  One word back if wanted: he said "up", and on this screen the title is above its row, so the
+  vertical leg is downward. The sequencing is what changed; the direction is what the geometry
+  is. If he meant the list should come to meet it instead, that is a different build.
+  Still no new trace.
+- NEXT → add entry 333 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
