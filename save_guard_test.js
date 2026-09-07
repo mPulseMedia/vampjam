@@ -39,6 +39,12 @@ const REAL = {
       if (holdData) { await new Promise(res => setTimeout(res, 20000)); }
       return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(REAL) });
     }
+    // signin_show made every page ask the auth worker who is looking, and that
+    // also lives on workers.dev. A lookup is not a save — count only the sync
+    // worker, which is the one that writes files.
+    if (u.includes('vampjam-auth'))
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: '{"ok":true,"signed_in":false,"allow":[]}' });
     if (u.includes('workers.dev')) {
       try { writes.push(JSON.parse(r.request().postData() || '{}')); } catch (e) {}
       return r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
