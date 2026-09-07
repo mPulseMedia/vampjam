@@ -4606,7 +4606,32 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Still waiting on him, unchanged: deploy the worker, add the five settings. The page he does it
   from is now the page he asked for.
   Still no new trace.
-- NEXT → add entry 336 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 336 signin_console · b344 · part A of signin_steps redrawn for the console Twilio actually shows
+  him. He sent a screenshot of where he was standing, which is the only way this kind of error
+  ever surfaces: the runbook described console.twilio.com and a page headed "Account Info", and
+  the real screen is 1console.twilio.com headed "Let's get building". Every drawing in part A was
+  a picture of a console that no longer exists.
+  What actually changed on their side: the Account SID now sits inline in the prose on the first
+  page with a small copy icon beside it, and the Auth Token is NOT on that page at all — it lives
+  behind an "API keys and Auth tokens" link, under a "Live credentials" tab. A1 said land on
+  Account Info; A3 said "just below it, click Show". Following that, he would have hunted the
+  first page for a token that is not there.
+  So A1 now names 1console by name and says landing there is not a wrong turn; A2 says the SID is
+  in the text under the heading, not in a labelled box; A3 says outright that the token is not on
+  that page and sends him through the link; A4 says the left rail is icons now and the way through
+  is the All products link. Three drawings replaced.
+  Trial note moved: A1 used to assume a trial. His account reads Active with a balance, so the
+  note now keys off what the header says rather than assuming which one he has.
+  His Account SID is deliberately not in the repo. The A2 drawing shows a truncated fake.
+  signin_steps_test 52, up two: the page must name 1console, "Let's get building" and "API keys
+  and Auth tokens", and must NOT say "Account Info" — so the next time Twilio moves the furniture
+  the suite fails instead of him. Plus: the token is not on the first page, and Live credentials
+  is named.
+  Re-ran twenty-seven suites, 674 assertions. Green.
+  Nothing else touched. No version bump.
+  He is standing on step A2 right now. Nothing is blocked.
+  Still no new trace.
+- NEXT → add entry 337 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

@@ -9,8 +9,52 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "343 signin_look",
+        id: "344 signin_console",
         expanded: true,
+        nodes: [
+          { text: "344 signin_console", children: [
+            { text: "prompt_restate", children: [
+              { text: "A screenshot of where he is standing in Twilio." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "[screenshot: 1console.twilio.com account home \u2014 StoryCall, Active, Let's get building]" }
+            ]},
+            { text: "what_the_screenshot_told_me", children: [
+              { text: "the runbook described console.twilio.com and a page headed Account Info" },
+              { text: "his real screen is 1console.twilio.com headed Let's get building" },
+              { text: "every drawing in part A was a picture of a console that no longer exists" }
+            ]},
+            { text: "the_one_that_would_have_cost_him_time", children: [
+              { text: "the Auth Token is not on that first page at all" },
+              { text: "it is behind an API keys and Auth tokens link, under a Live credentials tab" },
+              { text: "A3 said \"just below it, click Show\" \u2014 he would have hunted the first page for a token that is not there" }
+            ]},
+            { text: "so_part_a_redrawn", children: [
+              { text: "A1 names 1console and says landing there is not a wrong turn" },
+              { text: "A2 the SID sits in the text under the heading, with a small copy icon \u2014 not in a labelled box" },
+              { text: "A3 says outright the token is not on that page, and sends him through the link" },
+              { text: "A4 the left rail is icons now; the way through is the All products link" },
+              { text: "three drawings replaced" }
+            ]},
+            { text: "trial_note_rekeyed", children: [
+              { text: "it used to assume a trial. his account reads Active with a balance" },
+              { text: "now it keys off what the header says instead of assuming which one he has" }
+            ]},
+            { text: "his Account SID is deliberately not in the repo \u2014 the drawing shows a truncated fake" },
+            { text: "signin_steps_test", children: [
+              { text: "52 now, up two" },
+              { text: "the page must name 1console, Let's get building, and API keys and Auth tokens \u2014 and must NOT say Account Info" },
+              { text: "next time Twilio moves the furniture the suite fails instead of him" }
+            ]},
+            { text: "twenty-seven suites, 674 assertions. green." },
+            { text: "he is standing on step A2. nothing is blocked." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "343 signin_look",
+        expanded: false,
         nodes: [
           { text: "343 signin_look", children: [
             { text: "prompt_restate", children: [
