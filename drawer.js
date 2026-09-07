@@ -601,6 +601,8 @@
   // he already reaches for. (The action is unchanged: it still deletes the
   // session, still behind the same confirmation.)
   var ICO_X = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  // signin_show — a person, outlined like every other row icon
+  var ICO_WHO = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 19.4c0-3.4 3.2-5.6 7.2-5.6s7.2 2.2 7.2 5.6"/></svg>';
   // row_more — three plain dots, no ring: "there is more here", not a menu
   var ICO_MORE = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
   var HERE = (location.pathname.split('/').pop() || '');
@@ -746,6 +748,14 @@
         + '<span class="jam_acts">' + del + '<span class="menu_sub">' + right + '</span>'
         + '<button class="jam_share" data-href="' + s.page + '" aria-label="Copy link to this session">' + ICO_SHARE + '</button></span></div>');
     });
+    // signin_show — the sign-in was built and then reachable from nowhere: no
+    // link, no row, nothing on any page. A mechanism you cannot get to is a
+    // mechanism that does not exist. It sits with Admin at the foot of the
+    // list, and says who you are once you are in.
+    rows.push('<div class="jam_item jam_signin"><a class="jam_link" href="signin.html">'
+      + '<span class="jam_left"><span class="jam_ico">' + ICO_WHO + '</span>'
+      + '<span class="jam_name" id="jam_who">Sign in</span></span>'
+      + '<span class="menu_sub" id="jam_who_sub"></span></a></div>');
     rows.push('<div class="jam_item jam_admin"><a class="jam_link" href="admin.html">'
       + '<span class="jam_left"><span class="jam_ico">' + ICO_GEAR + '</span><span class="jam_name">Admin</span></span>'
       + '<span class="menu_sub">setup</span></a></div>');
@@ -764,6 +774,24 @@
     }
     try { document.body.classList.toggle('fold_split', !!split); } catch (eS) {}
     mark_fades();
+    paint_who();
+  }
+  // signin_show — the row says what it can as soon as it can, and never claims
+  // anything while it is waiting: it reads "Sign in" until an answer comes back.
+  function paint_who() {
+    if (!document.getElementById('jam_who') || !window.vampjamAuth) return;
+    window.vampjamAuth.me().then(function (me) {
+      var el = document.getElementById('jam_who'), sub = document.getElementById('jam_who_sub');
+      if (!el) return;
+      if (me && me.signed_in) {
+        el.textContent = me.label || 'Signed in';
+        if (sub) sub.textContent = me.admin ? 'admin' : 'signed in';
+      } else if (me && me.offline) {
+        // the worker is not deployed yet. Say that, rather than inviting a tap
+        // that can only fail.
+        if (sub) sub.textContent = 'not set up yet';
+      }
+    });
   }
   // dur_fade — a name too long for its room dissolves under the duration
   // instead of stopping at an ellipsis. The mask can only go on a name that is

@@ -7,10 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=20">
+<link rel="stylesheet" href="site.css?v=21">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=130"></script>
-<script src="drawer.js?v=164"></script>
+<script src="drawer.js?v=165"></script>
 <style>
   /* admin_same: this page used to carry its own copy of the palette, the
      reset, the page box and the wordmark — and the copy had drifted. The
@@ -67,6 +67,15 @@
                    white-space: nowrap; }
   .acc_state { color: var(--muted); min-height: 22px; margin: 10px 0 0; line-height: 1.5; }
   .acc_state.bad { color: var(--danger, #c75450); }
+  .setup { margin: 0 0 6px; }
+  .setup_row { display: flex; align-items: flex-start; gap: 10px; padding: 7px 2px; line-height: 1.5; }
+  .setup_row + .setup_row { border-top: 1px solid var(--panel_3); }
+  .dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; }
+  .dot.on   { background: var(--accent); }
+  .dot.off  { background: var(--panel_3); border: 1px solid var(--muted); box-sizing: border-box; }
+  .dot.wait { background: var(--muted); opacity: 0.4; }
+  .setup_row .why { color: var(--muted); }
+  .setup_go { display: inline-block; margin-top: 8px; color: var(--accent); }
 </style>
 </head>
 <body>
@@ -105,6 +114,13 @@
 <!-- signin_list — the whitelist, administered here. No phone number is stored:
      the worker turns a number into an opaque id under its own secret, and that
      id plus a label and the last four digits is all access.json ever holds. -->
+<!-- signin_show — a live readout of how far along the sign-in is, asked of the
+     worker itself rather than described here. Booleans and a masked number
+     come back; no secret ever does. -->
+<h2>Sign-in setup</h2>
+<div class="setup" id="setup"><div class="setup_row"><span class="dot wait"></span>
+  <span>checking…</span></div></div>
+
 <h2>Who can sign in</h2>
 <div class="acc_note" id="acc_note">Loading…</div>
 <div id="acc_people"></div>
@@ -267,6 +283,36 @@
     else r.allow = r.allow.filter(function (x) { return x !== id; });
     save('access: share ' + page.split('p=').pop());
   });
+
+  // ---- the readout ----
+  (function () {
+    var el = document.getElementById('setup');
+    function row(on, label, why) {
+      return '<div class="setup_row"><span class="dot ' + (on ? 'on' : 'off') + '"></span>'
+        + '<span>' + label + (why ? ' <span class="why">— ' + why + '</span>' : '') + '</span></div>';
+    }
+    fetch(A.url + '?op=status', { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j || !j.ok) throw new Error(j && j.error ? j.error : 'no answer');
+        var html = row(true, 'The sign-in server is up')
+          + row(j.secret, 'Its secret is set', j.secret ? '' : 'add AUTH_SECRET')
+          + row(j.twilio, 'Twilio can send texts',
+                j.twilio ? 'from ' + j.from : 'add TWILIO_SID, TWILIO_TOKEN and TWILIO_FROM')
+          + row(j.admins > 0, j.admins > 0 ? 'You are the administrator' : 'Nobody administers the list yet',
+                j.admins > 0 ? '' : 'add your own number below — the first one added becomes admin')
+          + row(j.people > 0, j.people + (j.people === 1 ? ' person on the list' : ' people on the list'))
+          + row(j.private > 0, j.private + (j.private === 1 ? ' recording is private' : ' recordings are private'),
+                j.private > 0 ? '' : 'nothing is gated yet — everything is open');
+        if (!j.secret || !j.twilio) html += '<a class="setup_go" href="vampjam_do_this_next.html">the steps →</a>';
+        el.innerHTML = html;
+      })
+      .catch(function () {
+        el.innerHTML = row(false, 'The sign-in server is not there yet',
+          'it has not been deployed — nothing below will work until it is')
+          + '<a class="setup_go" href="vampjam_do_this_next.html">the steps →</a>';
+      });
+  })();
 
   load().then(function () { return A.me(); }).then(function (j) { me = j; render(); });
 })();
