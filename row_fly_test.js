@@ -201,6 +201,28 @@ const grab = (p, fn) => p.evaluate(fn).catch(() => null);
   // whole time means the box is being clipped from the bottom and the lit row is
   // the first thing to disappear, which is the bug this replaced.
   const mv = shut.menu;
+  // fly_corner — going back to the list the name drops the whole way first and
+  // only then slides across. Measured as two legs, not asserted from a flag:
+  // by the time the vertical is done, almost none of the horizontal has
+  // happened; the horizontal finishes after it.
+  const vTot = Math.abs(last[1] - first[1]), hTot = Math.abs(last[2] - first[2]);
+  const settleAt = (idx, end) => {
+    for (let i = 0; i < path0.length; i++) if (Math.abs(path0[i][idx] - end) <= 2) return i;
+    return path0.length;
+  };
+  const iV = settleAt(1, last[1]), iH = settleAt(2, last[2]);
+  ok('the drop finishes before the slide does', iV < iH,
+     'drop settled at frame ' + iV + ', slide at ' + iH + ' of ' + path0.length);
+  if (hTot > 6) {
+    const atDrop = path0[Math.min(iV, path0.length - 1)];
+    const hDone = Math.abs(atDrop[2] - first[2]) / hTot;
+    ok('and when the drop lands, the slide has barely started', hDone < 0.25,
+       Math.round(hDone * 100) + '% of the way across');
+  } else {
+    ok('and when the drop lands, the slide has barely started', true, 'nothing to slide (' + hTot + 'px)');
+  }
+  ok('both legs still end where the row is', vTot > 40, vTot + 'px down, ' + hTot + 'px across');
+
   ok('the rows above travel rather than being clipped away',
      mv.length > 4 && Math.abs(mv[0] - mv[mv.length - 1]) > 100,
      mv[0] + ' -> ' + mv[mv.length - 1]);

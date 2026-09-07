@@ -200,7 +200,16 @@
   // ride is how far the row itself travels, so the clone advances by the same
   // pixels per frame and simply comes to rest when it is home — the list keeps
   // going up past it, which is what it looks like when a thing has arrived.
-  function fly(a, b, text, ride) {
+  // fly_corner — on the way BACK to the list the name does not cut the corner.
+  // It travels the whole vertical first, at the row's own speed, and only then
+  // slides across into the row's left edge. Two moves you can name, instead of
+  // one diagonal that reads as drift.
+  // The vertical is still what matches the page (fold_pace), so the corner is
+  // free: it happens in the time the name was already spending standing still
+  // at its destination while the list finished going up past it.
+  var CORNER_AT = 0.75;   // the vertical is finished by here at the latest,
+                          // so the slide always has a tail to happen in
+  function fly(a, b, text, ride, corner) {
     if (!a || !b) return null;
     var c = document.createElement('div');
     c.className = 'fold_fly';
@@ -222,13 +231,18 @@
     // the list's rate. Never above 1: the name may finish early, never later,
     // and never faster than the thing it is travelling with.
     var span = (ride && ride > 8 && mine > 1) ? Math.min(1, mine / ride) : 1;
+    if (corner) span = Math.min(span, CORNER_AT);
     var t0 = null;
     function step(t) {
       if (!c.parentNode) return;
       if (t0 === null) t0 = t;
       var raw = Math.min(1, (t - t0) / FOLD_MS);
-      var p = Math.min(1, bez(raw) / span);
-      c.style.transform = 'translate(' + (a.x + (b.x - a.x) * p) + 'px,'
+      var e = bez(raw);
+      var p = Math.min(1, e / span);                    // the vertical, and the size with it
+      // the slide starts only once the drop has landed. bez is already easing
+      // out by then, so mapping what is left of it gives a settle, not a lurch.
+      var q = corner ? (span >= 1 ? p : Math.max(0, Math.min(1, (e - span) / (1 - span)))) : p;
+      c.style.transform = 'translate(' + (a.x + (b.x - a.x) * q) + 'px,'
         + (ay + (b.y - ay) * p) + 'px) scale(' + (k0 + (1 - k0) * p) + ')';
       if (raw < 1) requestAnimationFrame(step);
     }
@@ -268,7 +282,10 @@
     // how far the lit row itself moves is the page's speed, and it is what the
     // name has to keep pace with
     var ride = (startName && endName) ? Math.abs(endName.y - startName.y) : 0;
-    b._fly = on ? fly(startTtl, endName, text, ride) : fly(startName, endTtl, text, ride);
+    // `on` is the fold SHUT — the page going back to the list. That is the one
+    // Paul asked to square off; the way in is left as it was.
+    b._fly = on ? fly(startTtl, endName, text, ride, true)
+                : fly(startName, endTtl, text, ride, false);
     if (b._fly) b.classList.add('fold_fly_on');
 
     b.classList.remove('fold_jump');
