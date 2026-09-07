@@ -2,444 +2,369 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>vampsf — sign-in, step by step</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Turn on the sign-in</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=21">
-<script src="theme.js?v=2"></script>
-<script src="sessions.js?v=130"></script>
-<script src="drawer.js?v=165"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Archivo+Narrow:wght@600&display=swap">
 <style>
-  /* one_size — this is a page he READS from, so everything is 17px and the
-     hierarchy comes from weight, colour and space, never from type size. */
-  h1, h2, .step_t, .part_t, p, li, .note, .said, .fine { font-size: 17px; }
-  h1 { text-align: center; margin: 6px 0 2px; font-weight: 700; }
-  .lede { text-align: center; color: var(--muted); margin: 0 auto 16px; max-width: 460px; line-height: 1.5; }
-
-  /* where you actually are, asked of the server itself */
-  .now { max-width: 520px; margin: 0 auto 22px; background: var(--panel);
-         border: 1px solid var(--panel_3); border-radius: 14px; padding: 12px 14px; }
-  .now_t { font-weight: 600; margin-bottom: 6px; }
-  .now_row { display: flex; gap: 10px; align-items: flex-start; padding: 5px 0; line-height: 1.5; }
-  .dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; }
-  .dot.on { background: var(--accent); }
-  .dot.off { background: transparent; border: 1px solid var(--muted); box-sizing: border-box; }
-  .dot.wait { background: var(--muted); opacity: 0.35; }
-  .now .why { color: var(--muted); }
-
-  .part { max-width: 520px; margin: 26px auto 0; }
-  .part_t { font-weight: 700; border-bottom: 1px solid var(--panel_3); padding-bottom: 6px; }
-  .part_sub { color: var(--muted); line-height: 1.5; margin: 6px 0 0; }
-
-  .step { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0;
-          border-bottom: 1px solid var(--panel_3); }
-  .tick { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; margin-top: 1px;
-          border: 1.5px solid var(--panel_3); background: transparent; cursor: pointer;
-          display: flex; align-items: center; justify-content: center; color: transparent;
-          font-weight: 700; line-height: 1; padding: 0; }
-  .tick.done { background: var(--accent); border-color: var(--accent); color: var(--on_accent, #fff); }
-  .body { flex: 1 1 auto; min-width: 0; }
-  .step.done .body { opacity: 0.45; }
-  .step_t { font-weight: 600; line-height: 1.45; }
-  .step ul { margin: 6px 0 0; padding-left: 20px; }
-  .step li { margin: 5px 0; line-height: 1.5; color: var(--muted); }
-  .step li b, .step li code { color: var(--fg); }
-  code { font-family: ui-monospace, Menlo, monospace; background: var(--panel_2);
-         border: 1px solid var(--panel_3); border-radius: 6px; padding: 1px 6px;
-         word-break: break-all; }
-  .said { color: var(--muted); font-style: italic; margin-top: 6px; line-height: 1.5; }
-  .said b { color: var(--fg); font-style: normal; }
-  .odd { margin-top: 6px; color: var(--muted); line-height: 1.5;
-         border-left: 2px solid var(--panel_3); padding-left: 10px; }
-  .odd b { color: var(--fg); }
-
-  .btn { display: inline-block; border: none; border-radius: 999px; padding: 11px 18px;
-         background: var(--accent); color: var(--on_accent, #fff); font-weight: 600;
-         cursor: pointer; text-decoration: none; margin: 8px 6px 0 0; }
-  .btn.quiet { background: transparent; color: var(--accent); border: 1px solid var(--panel_3); }
-  .btn:disabled { opacity: 0.5; }
-  .fine { text-align: center; color: var(--muted); max-width: 520px; margin: 30px auto 0;
-          line-height: 1.55; }
-  .reset { background: none; border: none; color: var(--muted); text-decoration: underline;
-           cursor: pointer; padding: 8px; }
+:root{--sky:#0e2a3f;--card:#f7f5f0;--ink:#101820;--grey:#b9c2c9;--steel:#5d6e7b;--signal:#f2a20c;--stop:#d7263d;--go:#2f8f5b;--blue:#7fd0ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sky);color:var(--card);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.sheet{max-width:960px;margin:0 auto;padding:30px 18px 70px}
+header{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.kicker{font:600 13px/1 "Archivo Narrow",Arial Narrow,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--signal)}
+h1{margin:0;font:800 36px/1.05 Archivo,Helvetica,Arial,sans-serif;letter-spacing:-.02em}
+.panels{display:flex;flex-direction:column;gap:16px}
+.panel{background:var(--card);color:var(--ink);border-radius:16px;overflow:hidden;display:grid;grid-template-columns:74px minmax(0,1fr)}
+.body{min-width:0;display:flex;flex-direction:column}
+ol.steps a,.cap a,ol.steps b{overflow-wrap:anywhere}
+.n{background:var(--ink);color:var(--card);display:flex;align-items:flex-start;justify-content:center;padding-top:18px;font:800 28px/1 Archivo,Helvetica,Arial,sans-serif}
+.panel.see .n{background:var(--signal);color:var(--ink)}
+.panel.go .n{background:var(--go)}
+.panel.warn .n{background:var(--stop)}
+.panel.done .n{background:var(--go);color:#fff;flex-direction:column;justify-content:flex-start;align-items:center;gap:6px}
+.panel.done .n::after{content:"done";font:600 11px/1 "Archivo Narrow",Arial Narrow,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.panel.done h2::after{content:" ✓";color:var(--go)}
+.panel.next .n{background:var(--signal);color:var(--ink);flex-direction:column;justify-content:flex-start;align-items:center;gap:6px}
+.panel.next .n::after{content:"next";font:600 11px/1 "Archivo Narrow",Arial Narrow,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.cap{padding:12px 18px 16px;display:flex;flex-direction:column;align-items:stretch;gap:8px}
+h2{margin:0;font:800 21px/1.15 Archivo,Helvetica,Arial,sans-serif;letter-spacing:-.01em}
+.cap p{margin:0;font-size:15px;color:#3a4550}
+.cap .note{font-size:13.5px;color:#5d6e7b}
+ol.steps{margin:0;padding:0 18px 16px;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:16px;color:#101820;counter-reset:step}
+ol.steps li{display:block;position:relative;padding-left:2.4em;line-height:1.45}
+ol.steps li::before{content:counter(step) ".";counter-increment:step;position:absolute;left:0;top:0;width:1.9em;font:800 15px/1.55 Archivo,Helvetica,Arial,sans-serif;color:#a35a00;text-align:right}
+ol.steps li.done{opacity:.42}
+ol.steps li.done svg.mini{display:none}
+ol.steps li.done::before{color:var(--go)}
+ol.steps li.done::after{content:" ✓";color:var(--go);font-weight:800}
+ol.steps b{background:#fff3d6;padding:0 5px;border-radius:4px}
+ol.steps li svg.mini{display:block;width:100%;max-width:360px;margin:6px 0 4px;border-radius:8px}
+.said{display:block;margin-top:5px;font-size:14.5px;color:#5d6e7b;font-style:italic}
+.said b{color:#101820;font-style:normal;background:none;padding:0}
+.odd{display:block;margin-top:6px;font-size:14.5px;color:#5d6e7b;border-left:3px solid var(--signal);padding-left:10px}
+.odd b{color:#101820;background:none;padding:0}
+.tick{position:absolute;right:0;top:-2px;border:1.5px solid #c9c3b6;background:transparent;color:transparent;
+  width:26px;height:26px;border-radius:50%;cursor:pointer;font:800 14px/1 Archivo,Helvetica,Arial,sans-serif;padding:0}
+ol.steps li{padding-right:34px}
+.tick.on{background:var(--go);border-color:var(--go);color:#fff}
+.line{display:block;margin:0 18px 16px;font:600 13.5px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#101820;color:#ffd7a8;border-radius:10px;padding:12px 14px;white-space:pre-wrap;word-break:break-all;cursor:pointer;border:0;text-align:left;width:calc(100% - 36px)}
+.line small{display:block;font:600 12px/1.3 "Archivo Narrow",Arial Narrow,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#b9c2c9;margin-bottom:6px}
+.addr{display:inline-block;font:600 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#e6e2d9;border-radius:7px;padding:3px 8px;word-break:break-all}
+a{color:#a35a00;text-decoration-thickness:2px;text-underline-offset:2px}
+.state{display:flex;flex-direction:column;gap:0;padding:0 18px 14px}
+.state div{display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:15px;line-height:1.45}
+.state div + div{border-top:1px solid #e6e2d9}
+.dot{flex:0 0 auto;width:11px;height:11px;border-radius:50%;margin-top:5px}
+.dot.on{background:var(--go)}
+.dot.off{background:transparent;border:1.5px solid #b9b3a6;box-sizing:border-box}
+.dot.wait{background:#b9b3a6;opacity:.5}
+.state .why{color:#5d6e7b}
+.mini_cap{display:block;font:600 11px/1.3 "Archivo Narrow",Arial Narrow,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#8f8b83;margin:-2px 0 4px}
+footer{margin-top:26px;color:var(--grey);font-size:15px}
+footer a{color:var(--signal)}
+.reset{background:none;border:0;color:var(--grey);text-decoration:underline;cursor:pointer;font-size:14px;padding:6px 0}
 </style>
 </head>
 <body>
+<div class="sheet">
 
-<div class="session_drawer" id="session_drawer"><div class="jam_menu"></div></div>
-
-<header class="brand" style="position:relative;">
-<button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
-<button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
-  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
+<header>
+  <div class="kicker">vampsf · a phone number opens a recording · turn it on</div>
+  <h1>Turn on the sign-in</h1>
 </header>
 
-<h1>Sign-in, step by step</h1>
-<div class="lede">Every click, in order. About twenty minutes, on the Mac.
-Tick each one as you go — the ticks stay put if you close this.</div>
+<div class="panels">
 
-<div class="now" id="now">
-  <div class="now_t">Where you are right now</div>
-  <div class="now_row"><span class="dot wait"></span><span>checking…</span></div>
+<!-- ================= NOW ================= -->
+<div class="panel go" id="now_panel"><div class="n">now</div><div class="body">
+  <div class="cap">
+    <h2>Where you are right now</h2>
+    <p>this is asked of the sign-in program itself, every time you open this page — so it cannot
+    drift from the truth. about twenty minutes end to end, on the Mac. every step below has a
+    picture of the screen you will be looking at; the red ring is the one thing to click. tick
+    them off as you go — the ticks stay put if you close this and come back.</p>
+  </div>
+  <div class="state" id="state"><div><span class="dot wait"></span><span>checking…</span></div></div>
+  <div class="cap" style="padding-top:0"><button class="reset" id="recheck">check again</button></div>
+</div></div>
+
+<!-- ================= A ================= -->
+<div class="panel see" data-part="a"><div class="n">A</div><div class="body">
+  <div class="cap">
+    <h2>Three things from Twilio</h2>
+    <p>twilio is the company that actually sends the text message. you need three things off their
+    site: an account SID, an auth token, and a phone number to send from. nothing here touches
+    vampsf yet.</p>
+  </div>
+  <ol class="steps">
+    <li data-k="a1"><button class="tick" aria-label="Done">✓</button>
+      Go to <a href="https://console.twilio.com" target="_blank" rel="noopener">console.twilio.com</a>
+      and sign in. If you have never used it, sign up and take the free trial.
+      <span class="said">You should land on a page headed <b>Account Info</b>.</span>
+      <span class="odd">A trial can only text numbers you have <b>verified</b>. Fine for testing on
+      your own phone; you will need a card on file before it can text anyone else.</span>
+    </li>
+
+    <li data-k="a2"><button class="tick" aria-label="Done">✓</button>
+      On that page find <b>Account SID</b> — a long string starting <b>AC</b>. Copy it and paste it
+      into Notes for a minute.
+      <span class="mini_cap">drawn from twilio's own screen, not yours</span>
+      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">console.twilio.com</text><text x="36" y="62" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#101820">Account Info</text><text x="36" y="88" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#5d6e7b">Account SID</text><rect x="36" y="94" width="210" height="24" rx="5" fill="#f2f4f6" stroke="#d5dbe0"/><text x="44" y="110" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#101820">ACa1b2c3d4e5f6…</text><rect x="252" y="94" width="54" height="24" rx="5" fill="#101820"/><text x="279" y="110" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="600" fill="#fff" text-anchor="middle">Copy</text><text x="36" y="140" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#5d6e7b">Auth Token</text><rect x="36" y="146" width="210" height="24" rx="5" fill="#f2f4f6" stroke="#d5dbe0"/><text x="44" y="162" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#8f959b">••••••••••••••••</text><rect x="252" y="146" width="54" height="24" rx="5" fill="#f2f4f6" stroke="#d5dbe0"/><text x="279" y="162" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="600" fill="#101820" text-anchor="middle">Show</text><rect x="30" y="88" width="282" height="36" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+    </li>
+
+    <li data-k="a3"><button class="tick" aria-label="Done">✓</button>
+      Just below it, <b>Auth Token</b> — click <b>Show</b> to reveal, then copy.
+      <span class="odd">This one is a <b>password</b>. It goes into one box on Cloudflare in step
+      D3 and nowhere else. Do not paste it into a chat, including to me.</span>
+      <span class="mini_cap">drawn from twilio's own screen, not yours</span>
+      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">console.twilio.com</text><text x="36" y="62" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="14" font-weight="700" fill="#101820">Account Info</text><text x="36" y="88" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#5d6e7b">Account SID</text><rect x="36" y="94" width="210" height="24" rx="5" fill="#f2f4f6" stroke="#d5dbe0"/><text x="44" y="110" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#101820">ACa1b2c3d4e5f6…</text><text x="36" y="140" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#5d6e7b">Auth Token</text><rect x="36" y="146" width="210" height="24" rx="5" fill="#f2f4f6" stroke="#d5dbe0"/><text x="44" y="162" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#8f959b">••••••••••••••••</text><rect x="252" y="146" width="54" height="24" rx="5" fill="#f2f4f6" stroke="#d5dbe0"/><text x="279" y="162" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="600" fill="#101820" text-anchor="middle">Show</text><rect x="246" y="140" width="66" height="36" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+    </li>
+
+    <li data-k="a4"><button class="tick" aria-label="Done">✓</button>
+      Left menu: <b>Phone Numbers</b> → <b>Manage</b> → <b>Active numbers</b>. Copy the number, in
+      the form <b>+14155551212</b> — keep the <b>+1</b>.
+      <span class="odd">If the list is empty: <b>Buy a number</b>, tick <b>SMS</b> in the
+      capabilities filter, search, buy. About $1.15 a month plus roughly a cent per text.</span>
+      <span class="mini_cap">drawn from twilio's own screen, not yours</span>
+      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">console.twilio.com — active numbers</text><rect x="20" y="38" width="92" height="148" fill="#f5f6f8"/><text x="30" y="60" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Develop</text><text x="30" y="80" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" font-weight="700" fill="#101820">Phone Numbers</text><text x="38" y="98" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Manage</text><text x="46" y="116" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" font-weight="700" fill="#101820">Active numbers</text><text x="126" y="62" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#101820">Active numbers</text><rect x="126" y="76" width="196" height="1" fill="#e6e2d9"/><text x="126" y="96" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#8f8b83">NUMBER            CAPABILITIES</text><text x="126" y="120" font-family="ui-monospace,Menlo,monospace" font-size="11" fill="#101820">+1 415 555 1212</text><text x="250" y="120" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#2f8f5b">SMS · Voice</text><rect x="120" y="106" width="140" height="22" rx="6" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+    </li>
+  </ol>
+</div></div>
+
+<!-- ================= B ================= -->
+<div class="panel" data-part="b"><div class="n">B</div><div class="body">
+  <div class="cap">
+    <h2>Make the worker</h2>
+    <p>a "worker" is a small program of yours that lives on cloudflare — the same place your audio
+    and your session list already live. this one checks who is on your list and asks twilio to send
+    the text. you already have two workers there; this is a third.</p>
+  </div>
+  <ol class="steps">
+    <li data-k="b1"><button class="tick" aria-label="Done">✓</button>
+      <a href="https://dash.cloudflare.com" target="_blank" rel="noopener">dash.cloudflare.com</a>,
+      sign in. Left menu: <b>Compute (Workers)</b>, or <b>Workers &amp; Pages</b> on the older
+      layout.
+      <span class="said">You should see <b>vampjam-upload</b> and <b>vampjam-sync</b> already
+      listed. Those are yours.</span>
+    </li>
+    <li data-k="b2"><button class="tick" aria-label="Done">✓</button>
+      <b>Create</b> → <b>Workers</b> → <b>Create Worker</b> (or the <b>Hello World</b> starter).
+      Name it <b>vampjam-auth</b> — exactly that, the site looks for that name. Then <b>Deploy</b>.
+      <span class="said">It deploys a do-nothing program. That is expected; the real one goes in
+      next.</span>
+      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
+      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">dash.cloudflare.com — workers</text><text x="36" y="62" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#101820">Workers &amp; Pages</text><rect x="256" y="48" width="66" height="24" rx="6" fill="#f6821f"/><text x="289" y="64" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">Create</text><rect x="36" y="86" width="286" height="1" fill="#e6e2d9"/><text x="36" y="108" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" fill="#101820">vampjam-upload</text><text x="36" y="134" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" fill="#101820">vampjam-sync</text><text x="36" y="160" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="#8f8b83">vampjam-auth  ← the one you are making</text><rect x="250" y="42" width="78" height="36" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+    </li>
+  </ol>
+</div></div>
+
+<!-- ================= C ================= -->
+<div class="panel" data-part="c"><div class="n">C</div><div class="body">
+  <div class="cap">
+    <h2>Paste the real program in</h2>
+    <p>the button below hands you the exact program that is committed to your repo — it is fetched
+    off the site when you tap it, so there is no second copy anywhere to drift out of date.
+    nothing in it needs editing.</p>
+  </div>
+  <ol class="steps">
+    <li data-k="c1"><button class="tick" aria-label="Done">✓</button>
+      Tap the dark line below — it copies itself. About 200 lines.
+    </li>
+    <li data-k="c2"><button class="tick" aria-label="Done">✓</button>
+      On <b>vampjam-auth</b>: <b>Edit code</b>, top right (sometimes behind a <b>&lt;/&gt;</b>
+      icon). Click inside the code, <b>⌘A</b> to select all, <b>⌘V</b> to paste over it. Then
+      <b>Deploy</b>.
+      <span class="said">Done when the button settles and there is no red anywhere.</span>
+      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
+      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">dash.cloudflare.com — vampjam-auth</text><text x="36" y="58" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#101820">vampjam-auth</text><rect x="238" y="44" width="84" height="24" rx="6" fill="#f5f6f8" stroke="#c8ccd0"/><text x="280" y="60" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="600" fill="#101820" text-anchor="middle">Edit code</text><rect x="36" y="80" width="286" height="96" rx="6" fill="#1b1b1b"/><text x="46" y="100" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#8fd8a0">export default {</text><text x="46" y="116" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#ffd7a8">  async fetch(request, env) {</text><text x="46" y="132" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#ffd7a8">    return new Response("Hello World!");</text><text x="46" y="148" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#ffd7a8">  }</text><text x="46" y="164" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#8fd8a0">}</text><rect x="232" y="38" width="96" height="36" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+    </li>
+    <li data-k="c3"><button class="tick" aria-label="Done">✓</button>
+      Near the top of the worker page is an address ending <b>.workers.dev</b>. The site expects
+      <span class="addr">vampjam-auth.crimson-dust-a18d.workers.dev</span>
+      <span class="odd">If yours is different, <b>paste it to me</b> — one line for me to change.
+      Do not rename anything.</span>
+    </li>
+  </ol>
+  <button class="line" id="copy_code" type="button"><small>tap to copy the program</small>the sign-in worker · cloudflare/vampjam_auth_worker.js</button>
+</div></div>
+
+<!-- ================= D ================= -->
+<div class="panel" data-part="d"><div class="n">D</div><div class="body">
+  <div class="cap">
+    <h2>Five settings</h2>
+    <p>same worker: <b>Settings</b> → <b>Variables and Secrets</b> → <b>Add</b>, five times. the
+    type matters — the first three are <b>Secret</b>, the last two are <b>Text</b>.</p>
+  </div>
+  <ol class="steps">
+    <li data-k="d1"><button class="tick" aria-label="Done">✓</button>
+      <b>AUTH_SECRET</b> · type <b>Secret</b> · a long random string you invent. nothing depends on
+      what it is; changing it later signs everybody out, which is your emergency lever.
+      <span class="said">Tap the dark line below and it invents one and copies it. A different one
+      every tap.</span>
+      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
+      <svg class="mini" viewBox="0 0 360 220"><rect width="360" height="220" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="190" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">vampjam-auth — settings — variables and secrets</text><text x="36" y="60" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#101820">Add variable</text><text x="36" y="84" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Type</text><rect x="36" y="90" width="130" height="24" rx="5" fill="#f2f4f6" stroke="#d5dbe0"/><text x="46" y="106" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#101820">Secret  ▾</text><text x="180" y="106" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#8f8b83">(Text is the other option)</text><text x="36" y="134" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Variable name</text><rect x="36" y="140" width="286" height="24" rx="5" fill="#f2f4f6" stroke="#d5dbe0"/><text x="46" y="156" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#101820">AUTH_SECRET</text><text x="36" y="182" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Value</text><rect x="36" y="188" width="286" height="12" rx="4" fill="#f2f4f6" stroke="#d5dbe0"/><rect x="30" y="84" width="150" height="36" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+    </li>
+    <li data-k="d2"><button class="tick" aria-label="Done">✓</button>
+      <b>TWILIO_SID</b> · type <b>Secret</b> · the Account SID from A2, starting <b>AC</b>.
+    </li>
+    <li data-k="d3"><button class="tick" aria-label="Done">✓</button>
+      <b>TWILIO_TOKEN</b> · type <b>Secret</b> · the Auth Token from A3.
+    </li>
+    <li data-k="d4"><button class="tick" aria-label="Done">✓</button>
+      <b>TWILIO_FROM</b> · type <b>Text</b> · your Twilio number from A4, with the plus:
+      <b>+14155551212</b>.
+    </li>
+    <li data-k="d5"><button class="tick" aria-label="Done">✓</button>
+      <b>SITE</b> · type <b>Text</b> · <b>https://vampsf.com</b> — then <b>Deploy</b> once more.
+      <span class="odd">Settings only take effect on a <b>deploy</b>. Skipping this is the most
+      common reason it still looks broken afterwards.</span>
+    </li>
+  </ol>
+  <button class="line" id="make_secret" type="button"><small>tap to invent one and copy it</small>AUTH_SECRET — 48 random characters</button>
+</div></div>
+
+<!-- ================= E ================= -->
+<div class="panel" data-part="e"><div class="n">E</div><div class="body">
+  <div class="cap">
+    <h2>Check it took</h2>
+    <p>come back here and press <b>check again</b> at the top. the first three lights should fill.
+    the last three are about people and recordings — those are F and G.</p>
+  </div>
+  <ol class="steps">
+    <li data-k="e1"><button class="tick" aria-label="Done">✓</button>
+      Scroll to the top of this page and press <b>check again</b>.
+      <span class="odd">If it still says the worker is not there: the name is probably not exactly
+      <b>vampjam-auth</b>, or the address in C3 is different. Send me the address.</span>
+    </li>
+  </ol>
+</div></div>
+
+<!-- ================= F ================= -->
+<div class="panel" data-part="f"><div class="n">F</div><div class="body">
+  <div class="cap">
+    <h2>Put people on the list</h2>
+    <p>phone or Mac, either is fine. no phone number is ever stored on the site: the worker
+    scrambles each one with its own secret, and the list keeps the scrambled version, the name you
+    type, and the last four digits.</p>
+  </div>
+  <ol class="steps">
+    <li data-k="f1"><button class="tick" aria-label="Done">✓</button>
+      Open <a href="admin.html">Admin</a> → <b>Who can sign in</b>. Type your name and your own
+      mobile number → <b>Add</b>.
+      <span class="said">The <b>first</b> number added becomes the administrator. It has to be
+      yours.</span>
+    </li>
+    <li data-k="f2"><button class="tick" aria-label="Done">✓</button>
+      Prove it on yourself: <a href="signin.html">Sign in</a> → your number → <b>Text me a
+      link</b> → tap the link in the text.
+      <span class="said">You land back signed in, and the <b>Sign in</b> row at the foot of the
+      session list now shows your name.</span>
+      <span class="odd">If no text arrives, the page prints what Twilio said. A trial account
+      refuses any number you have not verified — verify yours under <b>Verified Caller IDs</b>, or
+      add a card.</span>
+    </li>
+    <li data-k="f3"><button class="tick" aria-label="Done">✓</button>
+      Add the others, one at a time. Nobody gets a text now — only when they ask to sign in.
+    </li>
+  </ol>
+</div></div>
+
+<!-- ================= G ================= -->
+<div class="panel" data-part="g"><div class="n">G</div><div class="body">
+  <div class="cap">
+    <h2>Close a recording</h2>
+    <p>anything you do not touch stays open to anyone with the link, exactly as it is today.</p>
+  </div>
+  <ol class="steps">
+    <li data-k="g1"><button class="tick" aria-label="Done">✓</button>
+      <a href="admin.html">Admin</a> → <b>Private recordings</b> → find the one → <b>make
+      private</b> → tick who may open it.
+      <span class="said">Unticking takes it away on their next tap. No waiting.</span>
+    </li>
+    <li data-k="g2"><button class="tick" aria-label="Done">✓</button>
+      Open that recording in a private browser window. You should get the sign-in panel instead of
+      the player and the moments.
+    </li>
+  </ol>
+</div></div>
+
+<!-- ================= the honest bit ================= -->
+<div class="panel warn"><div class="n">!</div><div class="body">
+  <div class="cap">
+    <h2>What this is not</h2>
+    <p>the audio files still sit at a public address. someone who already has that exact address
+    can still play the file directly. this closes the door on the site — it is not a locked door.
+    <br><br>
+    the lock is a separate job: the audio moves behind the worker and the public address is
+    switched off. say the word and I will do it. it changes how all nine existing recordings load,
+    so it wants its own build rather than being smuggled into this one.</p>
+  </div>
+</div></div>
+
 </div>
 
-<!-- ============ A ============ -->
-<div class="part">
-  <div class="part_t">A · Get three things from Twilio</div>
-  <div class="part_sub">Twilio is the service that actually sends the text message. You need an
-    account SID, an auth token, and a phone number to send from.</div>
-
-  <div class="step" data-k="a1">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Sign in to Twilio</div>
-      <ul>
-        <li>Go to <a href="https://console.twilio.com" target="_blank" rel="noopener">console.twilio.com</a>.</li>
-        <li>If you have never used it: sign up, and take the free trial. A trial can only text
-          numbers you have verified — fine for testing with your own phone, but you will need to
-          add a card before it can text anyone else.</li>
-      </ul>
-      <div class="said">You should land on a page headed <b>Account Info</b> or
-        <b>Account Dashboard</b>.</div>
-    </div>
-  </div>
-
-  <div class="step" data-k="a2">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Copy the Account SID</div>
-      <ul>
-        <li>On that same page, find <b>Account SID</b>. It starts with <code>AC</code> and is a
-          long string of letters and numbers.</li>
-        <li>Copy it. Paste it somewhere for a minute — Notes, or a scratch message to yourself.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="step" data-k="a3">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Copy the Auth Token</div>
-      <ul>
-        <li>Just below the SID: <b>Auth Token</b>, hidden behind a <b>Show</b> or an eye icon.
-          Click it to reveal, then copy.</li>
-        <li>This one is a password. Do not paste it into a chat, including to me — it only ever
-          goes into the Cloudflare box in step D3.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="step" data-k="a4">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Get a phone number to send from</div>
-      <ul>
-        <li>Left menu: <b>Phone Numbers</b> → <b>Manage</b> → <b>Active numbers</b>.</li>
-        <li>If a number is listed, copy it. It looks like <code>+14155551212</code> — keep the
-          <code>+1</code>.</li>
-        <li>If the list is empty: <b>Buy a number</b>, tick <b>SMS</b> in the capabilities filter,
-          search, and buy one. About $1.15 a month, plus roughly a cent per text.</li>
-      </ul>
-      <div class="odd"><b>If it asks about a campaign or A2P 10DLC:</b> that is US business
-        registration for bulk texting. For a handful of texts to people you know you can usually
-        skip it and come back if Twilio complains. If it blocks you outright, tell me and we will
-        switch this to email instead — the rest of the setup is identical.</div>
-    </div>
-  </div>
-</div>
-
-<!-- ============ B ============ -->
-<div class="part">
-  <div class="part_t">B · Make the worker</div>
-  <div class="part_sub">A "worker" is a small program that runs on Cloudflare. This one checks who
-    is on your list and asks Twilio to send the text.</div>
-
-  <div class="step" data-k="b1">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Open Cloudflare</div>
-      <ul>
-        <li><a href="https://dash.cloudflare.com" target="_blank" rel="noopener">dash.cloudflare.com</a>,
-          sign in.</li>
-        <li>Left menu: <b>Compute (Workers)</b>, or <b>Workers &amp; Pages</b> on the older
-          layout.</li>
-      </ul>
-      <div class="said">You should see a list with <b>vampjam-upload</b> and
-        <b>vampjam-sync</b> already in it. Those are the two you have. You are about to make a
-        third.</div>
-    </div>
-  </div>
-
-  <div class="step" data-k="b2">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Create it, and name it exactly</div>
-      <ul>
-        <li><b>Create</b> → <b>Workers</b> → <b>Create Worker</b>, or the <b>Hello World</b>
-          starter if it offers one.</li>
-        <li>Name it <code>vampjam-auth</code>. Exactly that — the site is looking for that
-          name.</li>
-        <li><b>Deploy</b>. It will deploy a do-nothing program; that is expected.</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- ============ C ============ -->
-<div class="part">
-  <div class="part_t">C · Paste the real code in</div>
-
-  <div class="step" data-k="c1">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Copy the code</div>
-      <ul>
-        <li>Tap the button. It copies the whole program, about 200 lines. Nothing in it needs
-          editing.</li>
-      </ul>
-      <button class="btn" id="copy_auth">Copy the sign-in code</button>
-    </div>
-  </div>
-
-  <div class="step" data-k="c2">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Replace what is there</div>
-      <ul>
-        <li>On the <b>vampjam-auth</b> worker: <b>Edit code</b> — top right, sometimes behind a
-          <b>&lt;/&gt;</b> icon.</li>
-        <li>Click anywhere inside the code, then <b>⌘A</b> to select all, then <b>⌘V</b> to
-          paste over it.</li>
-        <li><b>Deploy</b>, top right.</li>
-      </ul>
-      <div class="said">You are done when the button settles and there is no red anywhere.</div>
-    </div>
-  </div>
-
-  <div class="step" data-k="c3">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Check the address matches</div>
-      <ul>
-        <li>Near the top of the worker page there is a URL ending <code>.workers.dev</code>.</li>
-        <li>The site expects
-          <code>vampjam-auth.crimson-dust-a18d.workers.dev</code>.</li>
-        <li>If yours is different, paste it to me. One line for me to change — do not try to
-          rename anything.</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- ============ D ============ -->
-<div class="part">
-  <div class="part_t">D · Give it five settings</div>
-  <div class="part_sub">Same worker: <b>Settings</b> → <b>Variables and Secrets</b> → <b>Add</b>,
-    five times. Type matters: the first three are <b>Secret</b>, the last two are <b>Text</b>.</div>
-
-  <div class="step" data-k="d1">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">AUTH_SECRET — type Secret</div>
-      <ul>
-        <li>Name: <code>AUTH_SECRET</code></li>
-        <li>Value: a long random string you invent. Nothing depends on what it is; 40-odd
-          characters of nonsense is right. Changing it later signs everybody out, which is the
-          emergency lever.</li>
-      </ul>
-      <button class="btn quiet" id="make_secret">Make one for me</button>
-      <button class="btn quiet" id="copy_secret" hidden>Copy it</button>
-      <div class="said" id="secret_out" hidden></div>
-    </div>
-  </div>
-
-  <div class="step" data-k="d2">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">TWILIO_SID — type Secret</div>
-      <ul>
-        <li>Name: <code>TWILIO_SID</code></li>
-        <li>Value: the Account SID from step A2. Starts <code>AC</code>.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="step" data-k="d3">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">TWILIO_TOKEN — type Secret</div>
-      <ul>
-        <li>Name: <code>TWILIO_TOKEN</code></li>
-        <li>Value: the Auth Token from step A3.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="step" data-k="d4">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">TWILIO_FROM — type Text</div>
-      <ul>
-        <li>Name: <code>TWILIO_FROM</code></li>
-        <li>Value: your Twilio number from A4, with the plus and country code:
-          <code>+14155551212</code>.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="step" data-k="d5">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">SITE — type Text, then deploy again</div>
-      <ul>
-        <li>Name: <code>SITE</code></li>
-        <li>Value: <code>https://vampsf.com</code></li>
-        <li>Then <b>Deploy</b> once more. Settings only take effect on a deploy.</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- ============ E ============ -->
-<div class="part">
-  <div class="part_t">E · Check it took</div>
-
-  <div class="step" data-k="e1">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Reload this page</div>
-      <ul>
-        <li>The box at the top asks the worker itself. All the dots should fill except the last
-          two, which are about people and recordings — those come next.</li>
-      </ul>
-      <button class="btn quiet" id="recheck">Check again</button>
-      <div class="odd"><b>If it still says the server is not there:</b> the name is probably not
-        exactly <code>vampjam-auth</code>, or the address in C3 is different. Send me the address
-        and I will point the site at it.</div>
-    </div>
-  </div>
-</div>
-
-<!-- ============ F ============ -->
-<div class="part">
-  <div class="part_t">F · Put people on the list</div>
-  <div class="part_sub">On the phone or the Mac, either is fine.</div>
-
-  <div class="step" data-k="f1">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Add yourself first</div>
-      <ul>
-        <li>Open <a href="admin.html">Admin</a> → <b>Who can sign in</b>.</li>
-        <li>Type your name and your own mobile number → <b>Add</b>.</li>
-        <li>The first number added becomes the administrator. That has to be yours.</li>
-      </ul>
-      <div class="said">Your number is never stored. The worker scrambles it with its own secret;
-        the list keeps the scrambled version, your name, and the last four digits.</div>
-    </div>
-  </div>
-
-  <div class="step" data-k="f2">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Prove it works, on yourself</div>
-      <ul>
-        <li>Open <a href="signin.html">Sign in</a>, type your number, <b>Text me a link</b>.</li>
-        <li>The text should arrive in a few seconds. Tap the link.</li>
-        <li>You should land back here signed in, and the <b>Sign in</b> row at the foot of the
-          session list should now show your name.</li>
-      </ul>
-      <div class="odd"><b>If no text arrives:</b> the page will say what Twilio said. A trial
-        account will refuse any number you have not verified — verify yours in the Twilio console
-        under <b>Verified Caller IDs</b>, or add a card.</div>
-    </div>
-  </div>
-
-  <div class="step" data-k="f3">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Add the others</div>
-      <ul>
-        <li>Same box, one at a time: name and mobile number.</li>
-        <li>Nobody gets a text now. They only get one when they ask to sign in.</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- ============ G ============ -->
-<div class="part">
-  <div class="part_t">G · Close a recording</div>
-
-  <div class="step" data-k="g1">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">Make one private, and choose who</div>
-      <ul>
-        <li><a href="admin.html">Admin</a> → <b>Private recordings</b>.</li>
-        <li>Find the one you want and tap <b>make private</b>.</li>
-        <li>Tick each person who may open it. Untick to take it away — it takes effect on their
-          next tap, no waiting.</li>
-      </ul>
-      <div class="said">Anything you do not touch stays open to anyone with the link, exactly as
-        it is today.</div>
-    </div>
-  </div>
-
-  <div class="step" data-k="g2">
-    <button class="tick" aria-label="Done">✓</button>
-    <div class="body">
-      <div class="step_t">See the gate</div>
-      <ul>
-        <li>Open that recording in a private browser window, where you are not signed in.</li>
-        <li>You should get the sign-in panel instead of the player and the moments.</li>
-      </ul>
-      <div class="odd"><b>Worth knowing, again:</b> the audio file still sits at a public address.
-        Anyone who already has that exact address can still play it. This closes the door on the
-        site; it does not lock the file. Say the word and I will do the lock — the audio moves
-        behind the worker and the public address is switched off.</div>
-    </div>
-  </div>
-</div>
-
-<div class="fine">
-  Stuck on any step? Tell me the step letter and number and what you see —
-  that is enough for me to fix it.<br>
-  <button class="reset" id="reset">Clear all the ticks</button>
+<footer>
+  <a href="admin.html">admin</a> &middot;
+  <a href="signin.html">sign in</a> &middot;
+  <a href="vampjam_do_this_next.html">do this next</a> &middot;
+  <a href="index.html">recordings</a>
+  <br><br>
+  stuck? tell me the step — <b>D4</b>, say — and what you see. that is enough.
+  <br>
+  <button class="reset" id="reset">clear all the ticks</button>
+</footer>
 </div>
 
 <script>
 (function () {
   var KEY = 'vampjam_signin_steps';
-  var A = window.vampjamAuth;
+  var AUTH = 'https://vampjam-auth.crimson-dust-a18d.workers.dev/';
 
-  // ticks persist, because this is a job you will do across two sittings
-  function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
-  function save(m) { try { localStorage.setItem(KEY, JSON.stringify(m)); } catch (e) {} }
-  var done = load();
-  Array.prototype.forEach.call(document.querySelectorAll('.step'), function (st) {
-    var k = st.getAttribute('data-k'), b = st.querySelector('.tick');
+  // ---- ticks: this is a two-sitting job, so they persist ----
+  function read() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function write(m) { try { localStorage.setItem(KEY, JSON.stringify(m)); } catch (e) {} }
+  var done = read();
+  Array.prototype.forEach.call(document.querySelectorAll('li[data-k]'), function (li) {
+    var k = li.getAttribute('data-k'), b = li.querySelector('.tick');
     function paint() {
-      st.classList.toggle('done', !!done[k]);
-      b.classList.toggle('done', !!done[k]);
+      li.classList.toggle('done', !!done[k]);
+      b.classList.toggle('on', !!done[k]);
       b.setAttribute('aria-pressed', done[k] ? 'true' : 'false');
     }
-    b.addEventListener('click', function () { done[k] = !done[k]; save(done); paint(); });
+    b.addEventListener('click', function (e) { e.preventDefault(); done[k] = !done[k]; write(done); paint(); mark_parts(); });
     paint();
   });
-  document.getElementById('reset').addEventListener('click', function () {
-    done = {}; save(done);
-    Array.prototype.forEach.call(document.querySelectorAll('.step'), function (st) {
-      st.classList.remove('done'); st.querySelector('.tick').classList.remove('done');
+  // a part whose every step is ticked wears the green "done" collar
+  function mark_parts() {
+    Array.prototype.forEach.call(document.querySelectorAll('.panel[data-part]'), function (pn) {
+      var ks = pn.querySelectorAll('li[data-k]');
+      var all = ks.length > 0;
+      Array.prototype.forEach.call(ks, function (li) { if (!done[li.getAttribute('data-k')]) all = false; });
+      pn.classList.toggle('done', all);
     });
+    var next = null;
+    Array.prototype.forEach.call(document.querySelectorAll('.panel[data-part]'), function (pn) {
+      pn.classList.remove('next');
+      if (!next && !pn.classList.contains('done')) next = pn;
+    });
+    if (next) next.classList.add('next');
+  }
+  mark_parts();
+  document.getElementById('reset').addEventListener('click', function () {
+    done = {}; write(done);
+    Array.prototype.forEach.call(document.querySelectorAll('li[data-k]'), function (li) {
+      li.classList.remove('done'); li.querySelector('.tick').classList.remove('on');
+    });
+    mark_parts();
   });
 
-  // the code, read off the site so what he pastes is what is committed
-  var ca = document.getElementById('copy_auth');
-  ca.addEventListener('click', function () {
-    ca.disabled = true; ca.textContent = 'fetching…';
+  // ---- the program, fetched off the site so it cannot drift ----
+  var cc = document.getElementById('copy_code');
+  cc.addEventListener('click', function () {
+    var s = cc.querySelector('small');
+    s.textContent = 'fetching…';
     fetch('cloudflare/vampjam_auth_worker.js?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
       .then(function (src) {
@@ -448,59 +373,53 @@ Tick each one as you go — the ticks stay put if you close this.</div>
         var ta = document.createElement('textarea'); ta.value = src; document.body.appendChild(ta);
         ta.select(); document.execCommand('copy'); document.body.removeChild(ta); return src;
       })
-      .then(function (src) { ca.textContent = 'copied ✓ — ' + Math.round(src.length / 1024) + ' KB'; })
-      .catch(function () { ca.textContent = 'could not copy'; })
-      .then(function () { ca.disabled = false; setTimeout(function () { ca.textContent = 'Copy the sign-in code'; }, 5000); });
+      .then(function (src) { s.textContent = 'copied — ' + Math.round(src.length / 1024) + ' KB · now Edit code, ⌘A, ⌘V'; })
+      .catch(function () { s.textContent = 'could not copy — tell me'; })
+      .then(function () { setTimeout(function () { s.textContent = 'tap to copy the program'; }, 6000); });
   });
 
-  // a secret worth using: 48 characters from the browser's own randomness,
-  // not from anything this page could have guessed in advance
-  var made = '';
-  document.getElementById('make_secret').addEventListener('click', function () {
-    var a = new Uint8Array(36);
-    (window.crypto || {}).getRandomValues ? crypto.getRandomValues(a)
-      : a.forEach(function (_, i) { a[i] = Math.floor(Math.random() * 256); });
-    made = btoa(String.fromCharCode.apply(null, a)).replace(/[+/=]/g, '').slice(0, 48);
-    var out = document.getElementById('secret_out');
-    out.hidden = false; out.innerHTML = '<b>' + made + '</b>';
-    document.getElementById('copy_secret').hidden = false;
-  });
-  document.getElementById('copy_secret').addEventListener('click', function () {
-    var b = this;
-    var go = navigator.clipboard && navigator.clipboard.writeText
-      ? navigator.clipboard.writeText(made) : Promise.reject();
-    go.then(function () { b.textContent = 'copied ✓'; },
-            function () { b.textContent = 'select it above and copy'; });
-    setTimeout(function () { b.textContent = 'Copy it'; }, 4000);
+  // ---- a secret worth using: from the browser's own randomness ----
+  var ms = document.getElementById('make_secret');
+  ms.addEventListener('click', function () {
+    var a = new Uint8Array(36), i;
+    if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(a);
+    else for (i = 0; i < a.length; i++) a[i] = Math.floor(Math.random() * 256);
+    var out = btoa(String.fromCharCode.apply(null, a)).replace(/[+/=]/g, '').slice(0, 48);
+    var s = ms.querySelector('small');
+    ms.childNodes[1].nodeValue = out;
+    var go = (navigator.clipboard && navigator.clipboard.writeText)
+      ? navigator.clipboard.writeText(out) : Promise.reject();
+    go.then(function () { s.textContent = 'copied — paste it as the value'; },
+            function () { s.textContent = 'select it and copy'; });
   });
 
-  // ---- where you are, asked of the worker ----
-  function row(state, label, why) {
-    return '<div class="now_row"><span class="dot ' + state + '"></span><span>' + label
+  // ---- where you are, asked of the worker itself ----
+  function line(on, label, why) {
+    return '<div><span class="dot ' + (on ? 'on' : 'off') + '"></span><span>' + label
       + (why ? ' <span class="why">— ' + why + '</span>' : '') + '</span></div>';
   }
   function look() {
-    var el = document.getElementById('now');
-    fetch(A.url + '?op=status&t=' + Date.now(), { cache: 'no-store' })
+    var el = document.getElementById('state'), pn = document.getElementById('now_panel');
+    el.innerHTML = '<div><span class="dot wait"></span><span>checking…</span></div>';
+    fetch(AUTH + '?op=status&t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (j) {
         if (!j || !j.ok) throw new Error('no');
-        el.innerHTML = '<div class="now_t">Where you are right now</div>'
-          + row('on', 'The worker is up', 'steps B and C are done')
-          + row(j.secret ? 'on' : 'off', 'AUTH_SECRET is set', j.secret ? '' : 'step D1')
-          + row(j.twilio ? 'on' : 'off', 'Twilio can send',
-                j.twilio ? 'from ' + j.from : 'steps D2, D3, D4')
-          + row(j.admins ? 'on' : 'off', j.admins ? 'You are the administrator' : 'No administrator yet',
-                j.admins ? '' : 'step F1')
-          + row(j.people ? 'on' : 'off', j.people + (j.people === 1 ? ' person on the list' : ' people on the list'),
-                j.people ? '' : 'steps F1 and F3')
-          + row(j.private ? 'on' : 'off',
-                j.private ? j.private + (j.private === 1 ? ' recording is private' : ' recordings are private')
-                          : 'Nothing is private yet', j.private ? '' : 'step G1');
+        el.innerHTML = line(true, 'the worker is up', 'B and C are done')
+          + line(j.secret, 'AUTH_SECRET is set', j.secret ? '' : 'step D1')
+          + line(j.twilio, 'twilio can send', j.twilio ? 'from ' + j.from : 'steps D2, D3, D4')
+          + line(j.admins > 0, j.admins > 0 ? 'you are the administrator' : 'no administrator yet',
+                 j.admins > 0 ? '' : 'step F1')
+          + line(j.people > 0, j.people + (j.people === 1 ? ' person on the list' : ' people on the list'),
+                 j.people > 0 ? '' : 'steps F1 and F3')
+          + line(j.private > 0, j.private > 0
+                 ? j.private + (j.private === 1 ? ' recording is private' : ' recordings are private')
+                 : 'nothing is private yet', j.private > 0 ? '' : 'step G1');
+        pn.className = (j.secret && j.twilio && j.admins && j.private) ? 'panel done' : 'panel go';
       })
       .catch(function () {
-        el.innerHTML = '<div class="now_t">Where you are right now</div>'
-          + row('off', 'The worker is not there yet', 'start at A');
+        el.innerHTML = line(false, 'the worker is not there yet', 'start at A');
+        pn.className = 'panel go';
       });
   }
   look();
