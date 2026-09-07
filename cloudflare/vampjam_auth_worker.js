@@ -42,6 +42,27 @@ export default {
     const q = (k) => (body[k] !== undefined ? body[k] : url.searchParams.get(k)) || '';
 
     try {
+      // ---- how far along is this? ----
+      // Answers even when nothing is configured, because "nothing is configured"
+      // is exactly what the site needs to be able to say out loud. Booleans and
+      // a masked number only — never a secret, never a token.
+      if (op === 'status') {
+        var acc0 = { admins: [], people: [], sessions: {} };
+        try { acc0 = await access(); } catch (e0) {}
+        var priv = Object.keys(acc0.sessions || {})
+          .filter(function (k) { return (acc0.sessions[k] || {}).mode === 'list'; }).length;
+        return json({
+          ok: true, worker: true,
+          secret: !!env.AUTH_SECRET,
+          twilio: !!(env.TWILIO_SID && env.TWILIO_TOKEN && env.TWILIO_FROM),
+          from: env.TWILIO_FROM ? '•••' + String(env.TWILIO_FROM).slice(-4) : null,
+          site: env.SITE || null,
+          admins: (acc0.admins || []).length,
+          people: (acc0.people || []).length,
+          private: priv
+        }, 200, cors);
+      }
+
       if (!env.AUTH_SECRET) return json({ error: 'worker not configured' }, 500, cors);
 
       // ---- who is this? ----
