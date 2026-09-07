@@ -9,8 +9,54 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "341 signin_show",
+        id: "342 signin_steps",
         expanded: true,
+        nodes: [
+          { text: "342 signin_steps", children: [
+            { text: "prompt_restate", children: [
+              { text: "A page with the steps, chopped fine \u2014 detailed." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make a page that tells me the steps to do in a porkchop (detailed) manner" }
+            ]},
+            { text: "the_page", children: [
+              { text: "vampsf.com/signin_steps.html \u2014 twenty steps in seven parts, A through G" },
+              { text: "A three things from Twilio \u00b7 B make the worker \u00b7 C paste the code \u00b7 D five settings \u00b7 E check it took \u00b7 F add people \u00b7 G close a recording" },
+              { text: "every step is a tick, and the ticks stay put \u2014 this is a two-sitting job" }
+            ]},
+            { text: "it_knows_where_you_are", children: [
+              { text: "the box at the top asks the server itself, and names the step numbers still outstanding" },
+              { text: "Twilio can send \u2014 steps D2, D3, D4. not a description of a state, a pointer at the next click" }
+            ]},
+            { text: "written_for_someone_standing_there", children: [
+              { text: "each step says what you should SEE when it worked \u2014 otherwise you cannot tell" },
+              { text: "the ones that go wrong carry the fix beside them, not in a troubleshooting section at the end" },
+              { text: "the campaign prompt, a trial refusing an unverified number, a worker address that is not the one expected" }
+            ]},
+            { text: "two_things_it_does_for_you", children: [
+              { text: "the code button fetches the program off the site, so what you paste is exactly what is committed" },
+              { text: "and it will invent the random secret for you \u2014 48 characters, different every tap. inventing one by hand is a step people do badly" }
+            ]},
+            { text: "and_what_it_refuses_to_pretend", children: [
+              { text: "the Twilio token is a password: it says twice not to paste it into a chat, including to me" },
+              { text: "and it repeats at the end that this closes the door on the site, it does not lock the file" }
+            ]},
+            { text: "signin_steps_test", children: [
+              { text: "new, 25 \u2014 the ticking and its persistence, the readout in three real states, the copy matching byte for byte, the secret being random and fresh" },
+              { text: "and one type size on the whole page, collected from what the browser actually computed rather than from what I meant" }
+            ]},
+            { text: "re_ran", children: [
+              { text: "twenty-six suites, green" }
+            ]},
+            { text: "traces", children: [
+              { text: "NO \u2014 still nothing new." }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "341 signin_show",
+        expanded: false,
         nodes: [
           { text: "341 signin_show", children: [
             { text: "prompt_restate", children: [

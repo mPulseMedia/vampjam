@@ -4531,7 +4531,37 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Still waiting on him, unchanged: deploy the worker, add the Twilio keys. The difference is that
   the site now shows that, instead of showing nothing.
   Still no new trace.
-- NEXT → add entry 334 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 334 signin_steps · b342 · signin_steps.html — the sign-in setup written out click by click.
+  Twenty steps in seven parts: A get three things from Twilio, B make the worker, C paste the
+  code, D five settings, E check it took, F put people on the list, G close a recording.
+  Every step is a tick, and the ticks persist — this is a job done across two sittings, and a
+  runbook that forgets where you were is a runbook you start again.
+  The readout at the top is the same ?op=status the Admin page uses, and it names the step
+  numbers rather than describing a state: "Twilio can send — steps D2, D3, D4". So the page knows
+  where he is without him telling it, and points at the specific thing still missing.
+  Each step says what he should SEE when it worked, because a runbook that only says what to
+  click leaves you unable to tell whether it did. And the ones that commonly go wrong carry an
+  "if it looks different" note beside them rather than in a troubleshooting section at the end:
+  the A2P/campaign prompt, a trial account refusing an unverified number, a worker whose address
+  is not the one the site expects.
+  Two things it does for him rather than asking him to: the code button fetches the worker off
+  the site at tap time (so what he pastes is byte-for-byte what is committed), and AUTH_SECRET
+  has a "make one for me" button — 48 characters from crypto.getRandomValues, a different one
+  every tap. "Invent a long random string" is a step people do badly.
+  It says twice that the token is a password and must not be pasted into a chat, including to me.
+  And it repeats, at the end, that this closes the door on the site and does not lock the file.
+  one_size: 17px on everything, hierarchy from weight and space. Asserted, not intended — the
+  suite collects every computed font-size on the page and requires exactly one value.
+  vampjam_do_this_next and Admin both point at it now; Admin's two "the steps" links were going
+  to the summary page, which is the wrong destination for someone mid-task.
+  signin_steps_test is new, 25 assertions: A–G present and unique; ticking, un-ticking, surviving
+  a reload, clearing; the readout in three real states (no worker, half done naming the steps
+  left, finished with the counts); the copy button matching the committed file byte for byte; the
+  secret being 40+ chars, alphanumeric, and different each time; the page linking out but never
+  at itself, and both other pages linking in; and that it still admits the audio is not locked.
+  Re-ran twenty-six suites. Green.
+  Still no new trace.
+- NEXT → add entry 335 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
