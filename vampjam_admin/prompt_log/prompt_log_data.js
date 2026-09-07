@@ -9,8 +9,59 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "342 signin_steps",
+        id: "343 signin_look",
         expanded: true,
+        nodes: [
+          { text: "343 signin_look", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the instructions look like share_howto.html." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "make the instructions look lik this: file:///Users/pauldsmith/claude_cowork/private/page_agent/share_howto.html" }
+            ]},
+            { text: "the_clothes", children: [
+              { text: "dark navy sheet, cream panels, a 74px coloured number column down the left of every part" },
+              { text: "Archivo 800 headings over an Archivo Narrow uppercase kicker; amber step counters; the words that matter highlighted on cream" },
+              { text: "dark tap-to-copy bars with a small uppercase label above what they copy" },
+              { text: "same twenty steps, same seven parts, same live readout \u2014 only the clothes changed" }
+            ]},
+            { text: "it_draws_the_screen_now", children: [
+              { text: "six inline drawings, one per step where a screen is hard to describe" },
+              { text: "a red ring around the single thing to click" },
+              { text: "each says \"drawn from twilio's own screen, not yours\" \u2014 a drawing pretending to be a screenshot costs you ten minutes when the real one differs" }
+            ]},
+            { text: "the_number_column_reports", children: [
+              { text: "a part with every step ticked wears the green done collar" },
+              { text: "the first unfinished part wears the amber next one" },
+              { text: "open it mid-job and the amber block is where you are, visible from arm's length" }
+            ]},
+            { text: "two_real_bugs_the_rewrite_surfaced", children: [
+              { text: "the secret generator stripped +/= AFTER base64 but BEFORE the slice \u2014 so it handed back 44 to 48 characters depending on luck. now it keeps drawing until it has 48" },
+              { text: "the drawings were boxed inside the step's indents \u2014 172px on a 390 phone, too small to read what the ring points at. they break out now: 244px" },
+              { text: "neither was visible by looking. the suite found both" }
+            ]},
+            { text: "one_size_retired_here_only", children: [
+              { text: "the old suite required exactly one font-size on the page. right for an app screen, wrong for a runbook built out of Archivo at several sizes" },
+              { text: "the suite says so in a comment so the next thread does not fix it back" }
+            ]},
+            { text: "signin_steps_test", children: [
+              { text: "rewritten, 50 assertions \u2014 the old 25 asserted the old markup and would have failed wholesale rather than usefully" },
+              { text: "the look measured off getComputedStyle, so \"it looks like share_howto\" is a fact and not a claim" },
+              { text: "the drawings: six, each in its step, each ringed, each honest, each wider than 230px" },
+              { text: "the work: ticks persisting and clearing, the collars moving when a step is undone, the readout in three states plus the singular case" },
+              { text: "1 person on the list, not 1 people \u2014 that is how a page loses trust" },
+              { text: "the copy button still hands over the committed worker byte for byte" }
+            ]},
+            { text: "twenty-seven suites, 672 assertions. green." },
+            { text: "no shared asset moved, so no version bump" },
+            { text: "unchanged and still his: deploy the worker, add the five settings. the page he does it from is now the page he asked for." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "342 signin_steps",
+        expanded: false,
         nodes: [
           { text: "342 signin_steps", children: [
             { text: "prompt_restate", children: [
