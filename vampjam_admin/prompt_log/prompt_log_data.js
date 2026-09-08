@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "364 admin_clear",
+        id: "366 add_adds",
         expanded: true,
+        nodes: [
+          { text: "366 add_adds", children: [
+            { text: "prompt_restate", children: [
+              { text: "I added myself as Admin, then could not sign in." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "WHAT IS UP???" },
+              { text: "I added myself on the Admin page so that I would be the Admin" },
+              { text: "i did that first, and then went to sign in, and could not." }
+            ]},
+            { text: "what_the_list_actually_held", children: [
+              { text: "one person: Eileen, \u2022\u20229506, and SHE was the administrator" },
+              { text: "not you. plus a stray ok:true field in the file" }
+            ]},
+            { text: "the_serious_one_is_mine", children: [
+              { text: "I made Add them REPLACE the whole list whenever the list counted as \"not really started\"" },
+              { text: "that was meant to rescue the mistyped first number" },
+              { text: "what it does is delete you the moment you add your SECOND person \u2014 because at that moment the list still has one person in it" },
+              { text: "you added yourself; a number went in for Eileen; that add wiped you" },
+              { text: "the code did exactly what I wrote, and what I wrote was wrong" }
+            ]},
+            { text: "the_flaw_is_the_shape_not_the_threshold", children: [
+              { text: "a destructive action must never be a side effect of a constructive one" },
+              { text: "Add adds, always, and removes nobody" },
+              { text: "\"Start the list over\" is its own button, needs a number typed first, and asks before it does it, naming who goes" }
+            ]},
+            { text: "the ok field: load() now comes from the worker, whose reply carries ok:true, and save() wrote acc back whole. a response envelope is not the thing it wraps" },
+            { text: "before it, admin_one: the admin page read the list from a cached file while its readout read the worker \u2014 which is why it said \"nobody administers the list\" above a row saying \"Paul \u2014 admin\"" },
+            { text: "who_add_test 103, admin_one_test 9. thirty suites, 830 assertions. green." },
+            { text: "to land it: type your number, press Start the list over, confirm. then Add them is safe for everyone, Eileen included" },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "364 admin_clear",
+        expanded: false,
         nodes: [
           { text: "364 admin_clear", children: [
             { text: "prompt_restate", children: [
