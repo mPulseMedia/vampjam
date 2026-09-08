@@ -4943,7 +4943,30 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   who_add_test 80, up eight.
   Twenty-eight suites, 767 assertions. Green.
   Still no new trace.
-- NEXT → add entry 347 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 347 who_arrive · b355 · the box mounts when he arrives by tapping a row, and a real cache bump.
+  "I have to hard reload each page after I've navigated to the session." I had that filed as a
+  caching miss — three builds changed drawer.js without moving ?v=, which is real and is fixed
+  (v=170, site.css v=23, every page). But it was not the cause, and assuming it was would have
+  shipped a version bump and left the bug in.
+  The cause: boot() has an early RETURN in the fold_in branch — arrived by tapping this page's own
+  row, come up shut, run the collapse backwards, return. who_mount() sat after it. So typing the
+  address mounted the box and tapping a row did not, and reloading worked because a reload is not
+  a fold arrival. Moved the call above the branch.
+  The suite deserved this one. It loaded session pages by address, which is the path a test writer
+  finds convenient and not the path he uses. It now goes to a recording, out to the list, and taps
+  a row — and it caught the bug on the first run, having been green through three builds that
+  shipped it.
+  Also moved the box inside #fold_page rather than <body>: that is the element the unfold animates
+  and clips, and a box outside it is outside the page as far as the transition is concerned.
+  His "could not sign in" is the expected answer, not a new fault: he typed his real number and
+  the list holds the mistyped one. 346 is what answers it, once he is on this build.
+  who_add_test 83, up three.
+  Twenty-eight suites, 770 assertions. Green.
+  Rule worth restating, since I broke it three times running: a change to drawer.js or site.css is
+  not shipped until ?v= moves on every page. And a test that reaches a page by a route he never
+  takes is not testing his page.
+  Still no new trace.
+- NEXT → add entry 348 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
