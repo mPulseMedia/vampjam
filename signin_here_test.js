@@ -61,7 +61,6 @@ let SET = null;
              ph: el.querySelector('.hello_in').getAttribute('placeholder'),
              type: el.querySelector('.hello_in').getAttribute('type'),
              btn: el.querySelector('.hello_go').textContent,
-             fine: el.querySelector('.hello_f').textContent,
              words: words,
              fields: el.querySelectorAll('input').length,
              gated: document.body.classList.contains('gated'),
@@ -81,7 +80,7 @@ let SET = null;
   ok('the example shows how to write it',       /415/.test(h.ph), h.ph);
   ok('spaces only in it — no brackets, no dashes', /^[0-9 ]+$/.test(h.ph || ''), h.ph);
   ok('the button says what it does',            h.btn === 'Sign in', h.btn);
-  ok('and it forgives any way of writing it',   /However you write it/.test(h.fine), h.fine);
+  ok('and nothing else is on it',               h.words < 40 && h.fields === 1, h.words);
   ok('few words — the whole box under forty',   h.words < 40, h.words);
   ok('the player and the moments are put away', h.gated === true, h.gated);
   ok('and the audio is not playing behind it',  h.playing === false, h.playing);

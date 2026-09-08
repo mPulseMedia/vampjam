@@ -5439,7 +5439,34 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Thirty-five suites, 965 assertions. Green.
   Left for him: hard reload, then open a public recording signed out and tag two moments.
   Still no new trace.
-- NEXT → add entry 365 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 365 share_mine · b373 · sharing is his tool, so nobody else is shown it.
+  His screenshot had both boxes stacked with a paragraph of red between them. Four changes, and
+  three of them are deletions.
+  The share box is the administrator's now — asked first, built second. Anyone else gets no box
+  at all rather than a box explaining why they cannot use it.
+  That reverses what 369 did here, and it is worth saying why it is right now and was wrong then.
+  369 stopped this box vanishing after it appeared, because vanishing reads as "nothing happens".
+  What made the explanation necessary was that there was nothing else on the page. There is now:
+  the sign-in offer speaks, so this box has nothing left to say, and telling a stranger about a
+  control they will never have is noise. The rule 369 wrote still stands where it was written —
+  once this box is up it never hides. It is now also never built for anybody it is not for, so it
+  cannot flash.
+  The red paragraph is gone with it. So is the sentence that told a guest only the administrator
+  adds numbers.
+  His words on the box below, verbatim: "Sign in (optional)" and "This recording is open to
+  everyone. Sign in to see private recordings Paul has shared with you." And "However you write it
+  is fine" is gone from both boxes — the placeholder already shows the shape, and he was right
+  that it was a line spending space on reassurance nobody asked for.
+  who_add_test's dead-worker case had to move rather than go: a stranger should not see worker
+  diagnostics, so the test now signs in as the administrator and kills op=status instead of the
+  whole worker. The scenario it protects — say WHICH call failed, not "Failed to fetch" — is
+  intact and is still the reason that test exists.
+  Five suites rewritten: who_name, gate_all, who_add, signin_here, signin_ask.
+  drawer.js v=187.
+  Thirty-five suites. Green.
+  Left for him: hard reload, then look at a recording signed out and signed in.
+  Still no new trace.
+- NEXT → add entry 366 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

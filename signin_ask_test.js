@@ -82,11 +82,13 @@ const SHUT = '2026_08_14_sound_union.html';   // somebody on it
   ok('the offer is on the page',              v.box === true, JSON.stringify(v).slice(0, 120));
   ok('and nothing is in front of the recording', v.hello === false && v.playerGone === false, JSON.stringify(v).slice(0, 120));
   ok('it is at the bottom, after the moments', v.below !== 0 && v.below !== null, v.below);
-  ok('it says signing in is optional',        /optional/i.test(v.head), v.head);
-  ok('and says this one is open to anyone',
-     /open to anyone with the link/.test(v.why), v.why);
+  ok('it says signing in is optional',        v.head === 'Sign in (optional)', v.head);
+  ok('and says this one is open to everyone',
+     /This recording is open to everyone/.test(v.why), v.why);
   ok('and what signing in would get you',
-     /shared with you/.test(v.why), v.why);
+     /private recordings Paul has shared with you/.test(v.why), v.why);
+  ok('and no reassurance line under the button',
+     !/However you write/.test(v.why + ' ' + JSON.stringify(v)), JSON.stringify(v).slice(0, 90));
   ok('one field and one button',              v.field === 1 && v.btn === 'Sign in', v.field + '/' + v.btn);
   // he asked for the sample number to carry no punctuation at all - spaces only
   const phs = await L.p.evaluate(() => [...document.querySelectorAll('input[type=tel]')]
@@ -105,7 +107,8 @@ const SHUT = '2026_08_14_sound_union.html';   // somebody on it
   await L.p.click('#tag_btn');
   await L.p.waitForTimeout(500);
   v = await look(L.p);
-  ok('one moment tagged and it stays quiet',  /optional/i.test(v.head) && v.lit === false, v.head);
+  ok('one moment tagged and it stays quiet',
+     v.head === 'Sign in (optional)' && v.lit === false, v.head);
   const n1 = await L.p.evaluate(() => localStorage.getItem('vampjam_marks'));
   ok('but the tap was counted',               n1 === '1', n1);
 

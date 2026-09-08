@@ -81,20 +81,21 @@ let ENTER = { ok: false, why: 'nothing set up in this test' };
   });
 
   // ---------- signed out on this browser ----------
-  // He signs in on the phone, then looks at the Mac. Before this build the box
-  // appeared and vanished, with no sentence anywhere saying why.
+  // 369 made this box explain itself instead of vanishing, because vanishing
+  // read as "nothing happens". 374 took the box away from everyone but the
+  // administrator, which sounds like the same mistake and is not: there is a
+  // sign-in offer on the page now, so this box has nothing left to say, and
+  // telling a stranger about a control they will never have is noise. The rule
+  // 369 wrote still stands where it was written - once this box is UP it never
+  // hides - and it is now also never built for anybody it is not for.
   {
     const L = await look({ ok: true, signed_in: false });
     await L.p.goto('https://vampsf.com/' + PAGE);
-    await L.p.waitForTimeout(1600);
+    await L.p.waitForTimeout(1800);
     const r = await read(L.p);
-    ok('signed out, the box stays on the page',      r.box === true && r.hidden === false, JSON.stringify(r).slice(0, 140));
-    ok('and says you are not signed in here',        /not signed in on this browser/.test(r.note), r.note);
-    ok('and offers the sign-in, not the setup steps', r.link && /^signin\.html\?back=/.test(r.link), r.link);
-    ok('and the way back is this recording',          r.link && r.link.indexOf(encodeURIComponent(PAGE)) > 0, r.link);
-    ok('the paste box is put away, not left dead',    r.canType === false, r.canType);
-    ok('and it does not blame the worker, which answered',
-       r.worker === false, r.note);
+    ok('signed out, there is no share box at all',   r.box === false, JSON.stringify(r).slice(0, 140));
+    ok('and the sign-in offer is what speaks instead',
+       await L.p.evaluate(() => !!document.getElementById('ask_box')), 0);
     await L.ctx.close();
   }
 
@@ -103,13 +104,11 @@ let ENTER = { ok: false, why: 'nothing set up in this test' };
     const L = await look({ ok: true, signed_in: true, id: 'ID_DAVE', label: 'Dave',
                            admin: false, allow: [PAGE] });
     await L.p.goto('https://vampsf.com/' + PAGE);
-    await L.p.waitForTimeout(1600);
+    await L.p.waitForTimeout(1800);
     const r = await read(L.p);
-    ok('signed in as someone else, the box still shows', r.box === true && r.hidden === false, JSON.stringify(r).slice(0, 140));
-    ok('and says only the administrator adds numbers',  /Only the administrator adds numbers/.test(r.note), r.note);
-    ok('and says who it thinks you are',                /you are signed in as Dave/.test(r.note), r.note);
-    ok('and points at the recordings you can open',     r.link === 'index.html#sessions', r.link);
-    ok('no paste box for a guest',                      r.canType === false, r.canType);
+    ok('a guest gets no share box either',           r.box === false, JSON.stringify(r).slice(0, 140));
+    ok('and is told nothing about a control they will never have',
+       await L.p.evaluate(() => !/administrator/i.test(document.body.textContent)), 0);
     await L.ctx.close();
   }
 

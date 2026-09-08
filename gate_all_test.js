@@ -174,22 +174,18 @@ async function worker(op, body) {
      seen.some(h => /2026_08_14_sound_union/.test(h)), JSON.stringify(seen).slice(0, 90));
   ok('but not the private one he is NOT on',
      !seen.some(h => /2026_07_17_sound_union/.test(h)), JSON.stringify(seen).slice(0, 90));
-  // The box no longer hides itself from a guest — hiding is how "nothing
-  // happens" looked, and it looked the same to the owner. It is there, and it
-  // says whose job this is.
-  const gbox = await p.evaluate(() => {
-    const el = document.getElementById('who_box');
-    if (!el) return { box: false };
-    const inp = document.getElementById('who_in');
-    return { box: true, hidden: el.hidden, canType: !!inp && !inp.hidden,
-             note: document.getElementById('who_note').textContent };
-  });
-  ok('the box is still on the page for a guest',
-     gbox.box === true && gbox.hidden === false, JSON.stringify(gbox).slice(0, 120));
-  ok('but there is nothing to add anyone with',
-     gbox.canType === false, gbox.canType);
-  ok('and it says whose job that is',
-     /Only the administrator adds numbers/.test(gbox.note), gbox.note);
+  // 369 made this box explain itself to a guest rather than vanish. 374 took it
+  // away from everyone but the administrator - which is the opposite move for a
+  // different reason: there is a sign-in offer on the page now, so this box has
+  // nothing left to say, and a guest does not need telling about a control they
+  // will never have.
+  const gbox = await p.evaluate(() => ({
+    box: !!document.getElementById('who_box'),
+    ask: !!document.getElementById('ask_box'),
+    said: /administrator/i.test(document.body.textContent)
+  }));
+  ok('a guest gets no share box',              gbox.box === false, JSON.stringify(gbox));
+  ok('and is told nothing about administering', gbox.said === false, JSON.stringify(gbox));
   await p.close();
 
   // signed in as the administrator: everything, and the box

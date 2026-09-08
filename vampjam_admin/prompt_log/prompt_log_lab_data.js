@@ -9,8 +9,56 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "372 signin_ask",
+        id: "373 share_mine",
         expanded: true,
+        nodes: [
+          { text: "373 share_mine", children: [
+            { text: "prompt_restate", children: [
+              { text: "[screenshot: both boxes stacked, red paragraph between them]" },
+              { text: "make Share this recording only apply to me, the Admin" },
+              { text: "get rid of the red \"you are not signed in on this browser\" text" },
+              { text: "the box below should say Sign in (optional)" },
+              { text: "and: this recording is open to everyone, sign in to see private recordings Paul has shared with you" },
+              { text: "get rid of \"however you write it is fine\"" }
+            ]},
+            { text: "three_of_the_four_are_deletions", children: [
+              { text: "the share box is the administrator's now \u2014 asked first, built second" },
+              { text: "anyone else gets no box at all, not a box explaining itself" },
+              { text: "the red paragraph is gone with it" },
+              { text: "so is the line telling a guest only the administrator adds numbers" },
+              { text: "and the reassurance line, from both boxes" }
+            ]},
+            { text: "this_reverses_369_and_here_is_why_that_is_ok", children: [
+              { text: "369 stopped this box vanishing after it appeared \u2014 vanishing reads as \"nothing happens\"" },
+              { text: "what made the explanation necessary was that nothing else was on the page" },
+              { text: "there is now: the sign-in offer speaks, so this box has nothing left to say" },
+              { text: "telling a stranger about a control they will never have is noise" },
+              { text: "the 369 rule still stands where it was written \u2014 once it is UP it never hides" },
+              { text: "it is now also never built for anybody it is not for, so it cannot flash" }
+            ]},
+            { text: "one_test_had_to_move_rather_than_go", children: [
+              { text: "who_add_test killed the whole worker to prove the box names which call failed" },
+              { text: "but a stranger should not see worker diagnostics at all now" },
+              { text: "so it signs in as the administrator and kills op=status instead" },
+              { text: "the thing it protects is intact and is still why that test exists" }
+            ]},
+            { text: "tests", children: [
+              { text: "five suites rewritten: who_name, gate_all, who_add, signin_here, signin_ask" },
+              { text: "thirty-five suites, green" }
+            ]},
+            { text: "codename_list", children: [
+              { text: "share_mine \u00b7 mount \u00b7 ask_h \u00b7 ask_w" }
+            ]},
+            { text: "left_for_you", children: [
+              { text: "hard reload for drawer.js v=187" },
+              { text: "look at a recording signed out, and signed in" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "372 signin_ask",
+        expanded: false,
         nodes: [
           { text: "372 signin_ask", children: [
             { text: "prompt_restate", children: [

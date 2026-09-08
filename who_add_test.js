@@ -250,6 +250,11 @@ async function worker(op, params, body) {
     const u = r.request().url();
     if (u.indexOf('access.json') >= 0) return r.fulfill({ status: 200,
       contentType: 'application/json', body: '{"admins":[],"people":[],"sessions":{}}' });
+    // who is asking is answered first now, and only the administrator is shown
+    // any of this - so it is op=status that has to be the one that dies, not
+    // every call to the worker.
+    if (u.indexOf('op=me') >= 0) return r.fulfill({ status: 200, contentType: 'application/json',
+      body: '{"ok":true,"signed_in":true,"id":"A","label":"Paul","admin":true,"allow":"*"}' });
     if (u.indexOf('vampjam-auth') >= 0) return r.abort('failed');
     if (u.startsWith('https://vampsf.com/')) {
       const rel = u.replace('https://vampsf.com/', '').split('?')[0] || 'index.html';
