@@ -1,1 +1,1 @@
-signin_promote
+auto_commit
