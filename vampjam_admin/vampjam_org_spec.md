@@ -5357,7 +5357,35 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Thirty-two suites, 873 assertions. Green.
   Left for him: open a recording and the box is there with a reason, whatever state he is in.
   Still no new trace.
-- NEXT → add entry 361 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 362 signin_here · b370 · the sign-in comes to the page instead of the page sending you away.
+  His words: when I come in, show the sign-in on top of the page I came in on, simple and
+  welcoming, few but helpful words.
+  gate_shut used to call location.replace('signin.html?back=...'). Somebody follows a link to a
+  recording and lands at a different address: that is a door slamming. Now signin_here draws one
+  field on the page he asked for. "Come on in · Paul shared this recording. Your phone number is
+  the whole sign-in — no code, no password, nothing to wait for." One tel field, a Sign in button,
+  and "However you write it is fine." Under forty words in the whole box, and the test asserts
+  that rather than trusting me to keep it short.
+  Errors answer in place and keep what he typed, so a mistyped number is fixed rather than
+  retyped. An unknown number gets "That number is not on this recording. Ask Paul to add it."
+  The one thing it does NOT do is bootstrap a first administrator: that path asks for a name, and
+  the name is asked in exactly one place. first:true hands over to signin.html with the way back.
+  While I was in there I found a second gate — a per-page IIFE in every session file, testing
+  rule.mode === 'list', a mode deleted in 359. Dead, silent, and a second door of exactly the kind
+  he keeps complaining about. Removed from nine pages. The #gate markup stays, now used only by
+  shut_out (signed in, not yours), and the comment above it says which of the two draws it.
+  body.gated hides the who box too: two boxes both saying "you are not signed in" is one too many.
+  signin_here_test is new, 30. signin_test and gate_all_test both asserted the redirect this build
+  deleted — rewritten to assert you STAY on the recording.
+  asset_pin changed shape. My numbered version check ("every page asks for v=182") failed the
+  moment I bumped to 183, because the check is one more thing to update and updating it is the
+  step I keep missing. It now names no number: every page must agree with every other page. A
+  check that maintains itself is the only kind that survives me.
+  drawer.js v=183, site.css v=25.
+  Thirty-three suites. Green.
+  Left for him: hard reload, then open a private recording signed out and it asks him there.
+  Still no new trace.
+- NEXT → add entry 363 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

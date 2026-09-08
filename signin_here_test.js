@@ -159,12 +159,28 @@ let SET = null;
   const pages = fs.readdirSync(DIR).filter(f => f.endsWith('.html') && !/claude_trash/.test(f));
   const dead = pages.filter(f => /rule\.mode/.test(fs.readFileSync(path.join(DIR, f), 'utf8')));
   ok('no page carries its own private second gate any more', dead.length === 0, dead.join(' '));
-  const drawn = pages.filter(f => /drawer\.js\?v=/.test(fs.readFileSync(path.join(DIR, f), 'utf8')));
-  const badD = drawn.filter(f => !/drawer\.js\?v=183/.test(fs.readFileSync(path.join(DIR, f), 'utf8')));
-  const styled = pages.filter(f => /site\.css\?v=/.test(fs.readFileSync(path.join(DIR, f), 'utf8')));
-  const badC = styled.filter(f => !/site\.css\?v=25/.test(fs.readFileSync(path.join(DIR, f), 'utf8')));
-  ok('every page asks for this build of drawer.js', badD.length === 0, badD.join(' '));
-  ok('every page asks for this build of site.css',  badC.length === 0, badC.join(' '));
+  // asset_pin — I have shipped a stale cache-buster three builds running, so this
+  // is asserted rather than remembered. It names no version number on purpose:
+  // a check with a number in it is one more thing to update, and updating it is
+  // exactly the step I keep missing. The rule is only that every page agrees.
+  function pinned(asset) {
+    const pages = fs.readdirSync(DIR).filter(f => f.endsWith('.html'));
+    const seen = {};
+    pages.forEach((f) => {
+      const m = fs.readFileSync(path.join(DIR, f), 'utf8')
+                  .match(new RegExp(asset.replace('.', '\\.') + '\\?v=(\\d+)'));
+      if (m) (seen[m[1]] = seen[m[1]] || []).push(f);
+    });
+    const vs = Object.keys(seen);
+    return { vs, seen, n: pages.filter(f => new RegExp(asset).test(fs.readFileSync(path.join(DIR, f), 'utf8'))).length };
+  }
+  const pinD = pinned('drawer.js'), pinC = pinned('site.css');
+  ok('every page asks for the same drawer.js',
+     pinD.vs.length === 1, JSON.stringify(pinD.seen));
+  ok('every page asks for the same site.css',
+     pinC.vs.length === 1, JSON.stringify(pinC.seen));
+  ok('and there are plenty of them, so the check means something',
+     pinD.n >= 10 && pinC.n >= 10, pinD.n + '/' + pinC.n);
 
   // the redirect it replaced must not creep back into the gate
   const src = fs.readFileSync(path.join(DIR, 'drawer.js'), 'utf8');

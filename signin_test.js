@@ -162,17 +162,25 @@ const ENV = {
     listShown: getComputedStyle(document.getElementById('tag_list')).display !== 'none'
   })).catch(() => null);
 
-  // Signed out, a recording is not gated in place any more — you are turned
-  // around at the door, before the page draws. One rule, one place.
+  // Signed out, the sign-in comes to the recording. Being sent to another
+  // address after following a link to a recording is a door slamming; one
+  // field on the page he asked for is a doorman.
   const signed_out = () => { try { localStorage.removeItem('vampjam_signin'); } catch (e) {} };
   let p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (out): ' + e.message); });
   await p.addInitScript(signed_out);
   await p.goto('https://vampsf.com/session.html?p=a1');
   await p.waitForTimeout(2200);
-  ok('signed out, a recording sends you to the sign-in', /signin\.html\?back=/.test(p.url()), p.url());
-  ok('and it remembers where to send you back',
-     /back=session\.html%3Fp%3Da1/.test(p.url()), p.url());
+  ok('signed out, you stay on the recording you asked for',
+     /session\.html\?p=a1$/.test(p.url()), p.url());
+  const hi = await p.evaluate(() => {
+    const el = document.getElementById('hello');
+    return el ? { there: true, t: el.querySelector('.hello_t').textContent,
+                  fields: el.querySelectorAll('input').length } : { there: false };
+  });
+  ok('and the sign-in is right there, one field',
+     hi.there === true && hi.fields === 1, JSON.stringify(hi));
+  ok('welcoming rather than a warning', /Come on in/.test(hi.t || ''), hi.t);
   await p.close();
 
   // and one nobody was added to is untouched — only recordings with somebody on
