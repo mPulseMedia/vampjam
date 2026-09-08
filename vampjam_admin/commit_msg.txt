@@ -1,1 +1,1 @@
-who_name
+auto_commit
