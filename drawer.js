@@ -1562,6 +1562,7 @@
       + 'font-size:17px;cursor:pointer}'
       + '.hello_go:disabled{opacity:.5;cursor:default}'
       + '.hello_say{min-height:22px;margin-top:12px;line-height:1.5}'
+      + '.hello_say:empty{min-height:0;margin-top:0}'
       + '.hello_say.bad{color:var(--danger,#c75450)}'
       + '.hello_f{color:var(--muted);font-size:12.5px;margin-top:14px}';
     document.head.appendChild(st);
