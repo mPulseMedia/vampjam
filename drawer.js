@@ -1639,7 +1639,7 @@
   // the same sign-in and a second copy of it is a second thing to get wrong.
   function phone_form_html() {
     return '<input class="hello_in" type="tel" inputmode="tel" autocomplete="tel"'
-         + ' placeholder="(415) 555 1212" aria-label="Your phone number">'
+         + ' placeholder="415 555 1212" aria-label="Your phone number">'
          + '<button class="hello_go" type="button">Sign in</button>'
          + '<div class="hello_say" role="status"></div>';
   }
