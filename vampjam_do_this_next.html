@@ -64,54 +64,66 @@
 </header>
 
 <h1>Do this next</h1>
-<div class="sub">One thing. Everything else is mine.</div>
+<div class="sub">Reset who the administrator is. Three steps.</div>
 
 <div class="one_thing">
   <div class="one_num">1</div>
   <div>
-    <div class="one_title">Tell me what your browser sees</div>
-    <div class="one_why">The box at the bottom of a recording says it cannot reach the sign-in
-    worker. From out here the worker answers perfectly. So the difference is your browser, and I
-    have guessed three times already instead of finding out.
+    <div class="one_title">Put the current worker code in</div>
+    <div class="one_why">The version running still refuses this. Copy from
+    <a href="signin_steps.html">the steps page</a>, step <b>B1</b> — <b>Edit code</b> on
+    <b>vampjam-auth</b>, ⌘A, ⌘V, <b>Deploy</b>. You know this loop.
     <br><br>
-    Open this in the <b>same browser</b>, on the <b>same phone or Mac</b> where the box failed:
-    <br><br>
-    <a href="https://vampjam-auth.crimson-dust-a18d.workers.dev/?op=status" target="_blank" rel="noopener"><b>the worker's own answer →</b></a>
-    <br><br>
-    Then tell me which you got. That is the whole ask.</div>
+    Why it is needed: the page offers to hand the list over, and the worker was still answering
+    <i>admins only</i> because an administrator exists. Both sides agree now.</div>
   </div>
 </div>
 
-<div class="why">
-  <b>If you see a line of JSON</b> — something like
-  <code>{"ok":true,"worker":true,"secret":true,…}</code> — then the worker is fine and the page is
-  being blocked from calling it. Content blocker, a VPN, or a network that does not like
-  <b>workers.dev</b>. Turning a blocker off for vampsf.com is the first thing to try.
-  <br><br>
-  <b>If you see an error</b>, paste it to me exactly as it reads.
-  <br><br>
-  Either way the box itself now names which call failed and what it answered, instead of one
-  sentence that covered three different problems. Reload a recording and it will tell you more
-  than it did in your screenshot.
+<div class="one_thing">
+  <div class="one_num">2</div>
+  <div>
+    <div class="one_title">Open any recording and scroll to the bottom</div>
+    <div class="one_why">The box says <b>Who can open this recording</b>, and above the paste
+    area it should read: <i>one number is here so far (ending 0105), and nothing is private yet
+    — so nothing is really set up.</i>
+    <br><br>
+    That sentence is the permission. It appears because there is one number on the list, nobody
+    else, and no recording closed — so whoever is standing there may take it over.</div>
+  </div>
 </div>
 
-<div class="section-label">Then, and only then</div>
-<div class="why">
-  Any recording → the bottom → paste <b>917-693-0105</b> → <b>Add them</b>. That takes over from
-  the mistyped number and makes you the administrator. Everything after that is just pasting
-  numbers into whichever recordings you want shared.
+<div class="one_thing">
+  <div class="one_num">3</div>
+  <div>
+    <div class="one_title">Type your number and Add them</div>
+    <div class="one_why"><b>917-693-0105</b> → <b>Add them</b>. It <b>replaces</b> the mistyped
+    one rather than joining it: the old administrator and the old entry both go, and you are the
+    administrator.
+    <br><br>
+    You should see one tag reading <b>••0105</b>, and the line above it change to
+    <b>private — 1 person can open it</b>.</div>
+  </div>
 </div>
 
-<div class="section-label">Where things stand, so you are not wondering</div>
+<div class="section-label">That is the whole reset</div>
 <div class="why">
-  &middot; the worker is deployed and <b>AUTH_SECRET is running</b> — I checked it directly, not
-  from your screen<br>
-  &middot; the list still holds only the mistyped number; nothing you tried has written yet<br>
-  &middot; every recording is still open to anyone with the link, exactly as before — nothing is
-  half-gated<br>
-  &middot; Twilio is gone and none of it is coming back
+  After it, the window closes: add a second person, or make one recording private, and the box
+  stops offering to hand itself over and asks for a sign-in instead. So do this one first, before
+  you paste anyone else in anywhere.
   <br><br>
-  <b>Nothing is broken and nothing is at risk.</b> The sign-in is the only thing not finished.
+  Changing your mind later is a different job — the administrator can only be changed by the
+  administrator, and I would have to open the door again from here.
+</div>
+
+<div class="section-label">If step 3 refuses</div>
+<div class="why">
+  The box now names which call failed and what it answered, rather than one sentence covering
+  three problems. <b>Send me that line.</b>
+  <br><br>
+  One thing it may say is that it cannot reach the worker. From out here the worker answers fine
+  — I checked it directly a minute ago — so if your browser cannot, that is a content blocker, a
+  VPN, or a network that dislikes <b>workers.dev</b>, and not anything on Cloudflare. The box
+  gives you a link to open the worker's own address in that same browser to tell the two apart.
 </div>
 
 <div class="section-label">About the files I send into the chat</div>
