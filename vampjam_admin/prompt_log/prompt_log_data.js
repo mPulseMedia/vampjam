@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "354 admin_redo",
+        id: "355 who_arrive",
         expanded: true,
+        nodes: [
+          { text: "355 who_arrive", children: [
+            { text: "prompt_restate", children: [
+              { text: "Where do I check the worker; I have to hard reload after navigating; and sign in failed." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, well give me the link to where I look to see if the runner is working. I've misplaced that like a long time ago next, I do have to hard reload each page when I after I've navigated to the session so I guess after the animation I'm not getting a t that portion of the page displaying once I reload I get it now I went into one and I typed in my phone number and hit sign in, but I got could not sign in so I'm still a little confused on how we're gonna what we do next and how we fix it" }
+            ]},
+            { text: "the_link", children: [
+              { text: "vampsf.com/signin_steps.html \u2014 the panel at the top asks the worker itself" }
+            ]},
+            { text: "i_had_the_reload_bug_filed_wrong", children: [
+              { text: "I blamed caching \u2014 three builds changed drawer.js without moving ?v=" },
+              { text: "that is real and is fixed. it was not the cause" },
+              { text: "assuming it was would have shipped a version bump and left the bug in" }
+            ]},
+            { text: "the_actual_cause", children: [
+              { text: "boot() returns early when you arrive by tapping a row \u2014 come up shut, run the collapse backwards, return" },
+              { text: "the mount sat after that return" },
+              { text: "so typing the address built the box and tapping a row did not" },
+              { text: "and a reload worked because a reload is not a fold arrival" }
+            ]},
+            { text: "the_suite_deserved_this_one", children: [
+              { text: "it loaded session pages by address \u2014 convenient for a test writer, not the path you use" },
+              { text: "it now goes to a recording, out to the list, and taps a row" },
+              { text: "and caught the bug first run, having been green through three builds that shipped it" }
+            ]},
+            { text: "\"could not sign in\" is the expected answer, not a new fault \u2014 you typed your real number, the list holds the mistyped one. yesterday's start-over is what answers it, once you are on this build" },
+            { text: "who_add_test 83. twenty-eight suites, 770 assertions. green." },
+            { text: "rule restated, since I broke it three times running: a drawer.js change is not shipped until ?v= moves on every page" },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "354 admin_redo",
+        expanded: false,
         nodes: [
           { text: "354 admin_redo", children: [
             { text: "prompt_restate", children: [
