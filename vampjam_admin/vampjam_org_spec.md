@@ -5098,11 +5098,18 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   answers in the tab and not in the page, the difference is the browser — a content blocker, a
   VPN, a network that dislikes workers.dev — and that is a different fix from anything on
   Cloudflare.
-  do-this-next cut to one item, which is what he asked for: open that address in the browser where
-  it failed and tell me which you got, with what each answer means. Then the number. Then a short
-  "where things stand" so he is not carrying uncertainty: worker deployed and AUTH_SECRET running,
-  checked directly rather than from his screen; the list still holds only the mistyped number;
-  every recording still open; Twilio gone. Nothing broken, nothing at risk.
+  do-this-next: I first cut it to "go and diagnose your browser for me", and he said no — tell me
+  what to do to reset the admin number, the upload loop is in hand. He was right. Asking the man
+  to run my diagnostic is not the same as telling him what to do, and I had put my problem on his
+  page.
+  So it is three steps and nothing else: put the current worker code in (with one line on why it
+  is needed — the page offered to hand the list over while the worker still said admins only);
+  open any recording and scroll to the bottom, quoting the exact sentence that grants permission
+  so he knows it when he sees it; type the number and Add them, with what he should see after.
+  Then the two things he actually needs to know around it: do this before pasting anyone else,
+  because a second person or one private recording closes the window; and if step 3 refuses, send
+  the line the box gives rather than the symptom — with the browser-blocker possibility named
+  there, where it belongs, instead of as a task.
   drawer.js v=171 across every page — and this time in the same build as the change, not three
   builds later.
   who_add_test 88, up three.
