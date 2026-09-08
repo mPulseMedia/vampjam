@@ -54,11 +54,16 @@ async function open_admin(b, worker, file) {
   }));
   ok('the readout says nobody administers it',  /Nobody administers the list yet/.test(g.setup), g.setup.slice(0, 80));
   ok('and no ghost row contradicts it',         g.rows === 0, g.rows);
-  ok('it says the empty list is why sign-in refuses',
-     /cannot sign in before that/.test(g.body) && /always refuse while the list is empty/.test(g.body), 0);
-  ok('and points at the box on this page',      /put your own number in the box below/i.test(g.body), 0);
-  ok('the box is actually there',
-     await p.evaluate(() => !!document.getElementById('acc_phone') && !!document.getElementById('acc_add_btn')));
+  // One door. The Add box here was a second way to become the administrator, and
+  // two ways is what made this unlearnable — so it is gone.
+  ok('it sends him to the sign-in to become the administrator',
+     /first person to sign in becomes the/i.test(g.body)
+     && /that is the whole setup/.test(g.body), 0);
+  ok('and there is no second way to do it here',
+     await p.evaluate(() => !document.getElementById('acc_phone')
+                         && !document.getElementById('acc_add_btn')));
+  ok('it still points at the bottom of a recording for everyone else',
+     /bottom of that\s+recording/.test(g.body), 0);
   await ctx.close();
 
   // a real list still renders, from the worker

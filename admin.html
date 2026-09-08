@@ -123,19 +123,13 @@
 
 <h2>Who can sign in</h2>
 <div class="acc_note" id="acc_note">Loading…</div>
-<p class="acc_note"><b>Nobody on the list yet? Put your own number in the box below and press
-Add.</b> That number becomes the administrator. You cannot sign in before that — the sign-in page
-only lets in numbers that are already on a list, so it will always refuse while the list is
-empty.</p>
-<p class="acc_note">After that, who can open a particular recording is set <b>at the bottom of
-that recording</b> — open it, scroll to the end, paste the numbers in. This page is only for
-starting the list off and for seeing who is on it.</p>
+<p class="acc_note">Nobody is added here any more. <b>The first person to sign in becomes the
+administrator</b> — so if the list is empty, go to <a href="signin.html">the sign-in page</a>, put
+your own number in, and that is the whole setup.</p>
+<p class="acc_note">After that, who can open a particular recording is set <b>at the bottom of that
+recording</b>: open it, scroll to the end, paste the numbers in. This page only shows you who is
+on the list.</p>
 <div class="acc_people" id="acc_people"></div>
-<div class="acc_add">
-  <input id="acc_label" type="text" placeholder="name (optional)" autocomplete="off">
-  <input id="acc_phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="phone number">
-  <button id="acc_add_btn" type="button">Add</button>
-</div>
 
 <h2>Private recordings</h2>
 <div class="acc_sessions" id="acc_sessions"></div>
@@ -241,30 +235,6 @@ starting the list off and for seeing who is on it.</p>
           + 'Open a recording and use the box at the bottom of it.</span></div>';
     }
   }
-
-  // ---- add someone: the worker turns the number into an id we can store ----
-  document.getElementById('acc_add_btn').addEventListener('click', function () {
-    var label = (document.getElementById('acc_label').value || '').trim();
-    var phone = (document.getElementById('acc_phone').value || '').trim();
-    if (!phone) { document.getElementById('acc_phone').focus(); return; }
-    var first = !acc.admins.length;
-    tell('Adding…');
-    fetch(A.url + '?op=' + (first ? 'claim_admin' : 'grant_id'), {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phone, t: A.token() })
-    }).then(function (r) { return r.json(); })
-      .then(function (j) {
-        if (j.error === 'no_secret') throw new Error(j.why);
-      if (!j.ok) throw new Error(j.error || 'could not add');
-        if (acc.people.some(function (p) { return p.id === j.id; })) { tell('Already on the list.'); return; }
-        acc.people.push({ id: j.id, id7: j.id7, label: label || ('••' + j.last4), last4: j.last4 });
-        if (first) acc.admins.push(j.id);
-        document.getElementById('acc_label').value = '';
-        document.getElementById('acc_phone').value = '';
-        return save('access: add ' + (label || j.last4));
-      })
-      .catch(function (e) { tell(e.message, true); });
-  });
 
   // ---- remove, restrict, tick ----
   document.addEventListener('click', function (e) {

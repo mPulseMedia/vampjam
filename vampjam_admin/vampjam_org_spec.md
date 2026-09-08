@@ -5303,7 +5303,26 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Thirty-one suites, 866 assertions. Green.
   Left for him: sign in once. Whatever number he uses is the administrator.
   Still no new trace.
-- NEXT → add entry 360 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 360 one_door · b368 · the Add box on the admin page is gone. One way in.
+  His screenshot: the admin page, two builds behind, with the old Add box, "Nobody administers the
+  list yet" above "1 recording is private", and in red, "there is already an admin" — an error
+  string that no longer exists in the worker I shipped. I checked the worker directly rather than
+  reasoning from the screen: ?op=shut answers 400, so the code running predates 359. He has not
+  pasted it yet, which is fine and is step one.
+  But the screenshot showed something that was mine to fix regardless. 359 made the first SIGN-IN
+  the administrator, and the admin page still had its own Add box that also claimed the role.
+  Two doors to the same room, which is the exact shape of the complaint he opened with. Deleted —
+  the box, its handler, and the copy that pointed at it. The page says instead: nobody is added
+  here any more, the first person to sign in becomes the administrator, go to the sign-in page.
+  It keeps what he said he liked: the readout, and the list of who is on.
+  admin_one_test asserts the absence now, not just the presence of something better: no acc_phone
+  and no acc_add_btn on the page at all. An assertion that a thing is gone is the only kind that
+  stops it coming back.
+  Thirty-one suites, 866 assertions. Green.
+  Left for him, and it is now three lines: paste the worker, open the sign-in page, put a number
+  in. Whatever number he uses is the administrator.
+  Still no new trace.
+- NEXT → add entry 361 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

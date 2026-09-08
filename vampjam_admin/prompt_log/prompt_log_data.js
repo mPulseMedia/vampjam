@@ -9,8 +9,35 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "367 one_rule",
+        id: "368 one_door",
         expanded: true,
+        nodes: [
+          { text: "368 one_door", children: [
+            { text: "prompt_restate", children: [
+              { text: "[screenshot: admin page \u2014 \"Nobody administers the list yet\", \"1 recording is private\", and in red \"there is already an admin\"]" }
+            ]},
+            { text: "what_that_screen_is", children: [
+              { text: "two builds behind, and the worker running is older still" },
+              { text: "I checked the worker directly rather than reasoning from your screen: op=shut answers 400" },
+              { text: "\"there is already an admin\" is an error string that no longer exists in the code I shipped" }
+            ]},
+            { text: "but_it_showed_something_that_was_mine", children: [
+              { text: "the new rule makes the first SIGN-IN the administrator" },
+              { text: "and the admin page still had its own Add box that also claimed the role" },
+              { text: "two doors to the same room \u2014 the exact shape of the complaint you opened with" },
+              { text: "deleted: the box, its handler, and the copy pointing at it" },
+              { text: "kept what you said you liked: the readout, and who is on the list" }
+            ]},
+            { text: "the test asserts the ABSENCE \u2014 no phone field, no Add button. an assertion that a thing is gone is the only kind that stops it coming back" },
+            { text: "thirty-one suites, 866 assertions. green." },
+            { text: "left for you, three lines: paste the worker, open the sign-in page, put a number in. whatever number you use is the administrator." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "367 one_rule",
+        expanded: false,
         nodes: [
           { text: "367 one_rule", children: [
             { text: "prompt_restate", children: [
