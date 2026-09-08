@@ -1520,7 +1520,10 @@
       + '<button class="who_open" id="who_open" type="button" hidden>Let anyone in</button>'
       + '</div>'
       + '<div class="who_note" id="who_note"></div>';
-    document.body.appendChild(box);
+    // Inside the fold wrapper when there is one. Appended to <body> it sat
+    // OUTSIDE the element the unfold animates and clips, so arriving through
+    // the transition left it out of the page until a reload.
+    (document.getElementById('fold_page') || document.body).appendChild(box);
 
     var acc = null;
     var stateEl = box.querySelector('#who_state');
@@ -1961,6 +1964,10 @@
     // open under it. There is no page beneath, so the list cannot be closed.
     if (window.VAMPJAM_LIST_HOME) pin_list(true);
     build_menu(); wire_links(); capture_dur(); fetch_auto_sessions(); fetch_local_recs();
+    // before the fold_in branch below, which RETURNS: arriving by tapping this
+    // page's own row used to skip the mount entirely, and the box only appeared
+    // if he reloaded. That is exactly what a reload was fixing.
+    try { who_mount(); } catch (e) {}
     // orphan_sweep waits out the first registry paint, then self-publishes
     // anything the cloud has that the list forgot (6h throttle inside)
     setTimeout(orphan_sweep, 4000);
@@ -1978,7 +1985,6 @@
       });
       return;
     }
-    try { who_mount(); } catch (e) {}
     // arriving with #sessions (e.g. Back from the record screen) opens the list
     if (location.hash === '#sessions') {
       setTimeout(function () { set_open(true); }, 150);

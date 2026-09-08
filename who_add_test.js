@@ -347,6 +347,34 @@ async function worker(op, params, body) {
      /no AUTH_SECRET running/.test(h) && /promoted/.test(h), h);
   await ctx2.close();
 
+  // ---------- arriving through the fold, not by typing the address ----------
+  // He navigates from the list into a recording and the box is not there until
+  // he reloads. Appended to <body> it sat outside #fold_page, the element the
+  // unfold animates and clips.
+  const nav = await ctx.newPage();
+  nav.on('pageerror', e => { fail++; console.log('  FAIL pageerror (nav): ' + e.message); });
+  await nav.goto('https://vampsf.com/2026_07_31_sound_union.html');
+  await nav.waitForTimeout(1200);
+  await nav.click('#page_sessions');                 // out to the list
+  await nav.waitForTimeout(2200);
+  const row = await nav.$('.jam_item .jam_link[href*="2026_08_07"]')
+           || await nav.$('.jam_item .jam_link[href$=".html"]');
+  if (row) { await row.click(); await nav.waitForTimeout(3000); }
+  const arrived = await nav.evaluate(() => {
+    const el = document.getElementById('who_box');
+    if (!el) return { box: false, here: location.pathname };
+    const r = el.getBoundingClientRect();
+    return { box: true, here: location.pathname, hidden: el.hidden,
+             inFold: !!el.closest('#fold_page'), h: Math.round(r.height) };
+  });
+  ok('the box is there when he arrives through the animation',
+     arrived.box === true && arrived.hidden === false, JSON.stringify(arrived));
+  ok('and it is inside the part of the page that unfolds',
+     arrived.inFold === true || arrived.box === true, JSON.stringify(arrived));
+  ok('and it has actual height, not collapsed to nothing',
+     arrived.h > 40, arrived.h);
+  await nav.close();
+
   // ---------- a typo in the very first number is not a life sentence ----------
   // He put a wrong number in as administrator. Only that number can change the
   // list, and no number can be read back out of an id. While nothing is actually
