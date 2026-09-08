@@ -5322,6 +5322,38 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Left for him, and it is now three lines: paste the worker, open the sign-in page, put a number
   in. Whatever number he uses is the administrator.
   Still no new trace.
+- 361 who_name · b369 · a name of his own, and a box that never hides itself again.
+  Three faults in one sentence and they were two. First I checked the worker rather than guessing
+  at it — ?op=status answers ok with secret true, one admin, one person, and ?op=shut answers, so
+  the code running IS current. He pasted it. Only the pages were wrong.
+  The box appearing and disappearing: who_mount shows the box on creation, then asks the worker
+  who is looking, and on anything but admin it set box.hidden = true. Silent. That is precisely
+  the "nothing happens" this box was built to cure, twice already, and I had left one last instance
+  of it in the one branch he was most likely to hit — signed in on his phone, looking at the Mac.
+  Now it never hides. Signed out, it says so and offers the sign-in with ?back= to this recording.
+  Signed in as someone else, it says only the administrator adds numbers and names who it thinks
+  you are, and points at your own recordings. shut_controls grew a destination, and it offers the
+  worker's own address only when the worker is actually the suspect — blaming a worker that
+  answered fine is how three of these went wrong.
+  "I can't add protection to the other recordings" was the same fault. Nothing in the box was ever
+  per-recording; it reads PAGE_KEY. With the box visible it works on every one, and the test proves
+  a second recording goes private on its own without touching the first one's list.
+  The name: signin.html wrote the literal word "you" into the list because nothing ever asked.
+  Now the sign-in has an optional name field used on the first sign-in, and a signed-in person gets
+  "change my name" right there — read the list, move that one person's label, write it back, and
+  nothing else about them moves. The who box shows "Signed in as X · change your name" and links to
+  that same page rather than growing a second editor for one field. It also warns that GitHub's
+  cache means the rest of the site lags a minute, instead of letting him wonder.
+  One more thing the sign-in needed: after a normal sign-in it now asks me() rather than using
+  enter's shorter answer, because enter does not carry the id and a rename needs it.
+  who_name_test is new, 43. Two of its assertions are about my own recurring mistakes, not about
+  the product: every page that loads drawer.js or site.css asks for THIS build's version (I broke
+  that three builds running), and who_mount contains no box.hidden = true anywhere. An assertion
+  that a thing is gone is the only kind that stops it coming back.
+  drawer.js v=182, site.css v=24, bumped on all fifteen pages.
+  Thirty-two suites, 909 assertions. Green.
+  Left for him: open a recording and the box is there with a reason, whatever state he is in.
+  Still no new trace.
 - NEXT → add entry 361 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
