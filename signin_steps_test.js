@@ -248,11 +248,16 @@ let STATUS = null;           // null = the worker is not there at all
      say.warn && /public address/.test(say.text) && /lock/.test(say.text), say.warn);
   ok('the token is called a password and kept out of chat',
      /password/i.test(say.text) && /(not paste|do not.*chat|never.*chat)/i.test(say.text));
-  ok('it describes the console twilio actually shows him',
-     /1console\.twilio\.com/.test(say.text) && /Let's get building/.test(say.text)
-     && /API keys and Auth tokens/.test(say.text) && !/Account Info/.test(say.text), 0);
-  ok('and says the token is not on the first page',
-     /not on that page/i.test(say.text) && /Live credentials/.test(say.text), 0);
+  // twilio runs two consoles and he has landed on both. the runbook has to name
+  // the one it draws AND route him from the other, or the pictures lie again.
+  ok('it names the console it draws',
+     /Get started with Twilio/.test(say.text) && /Account Info/.test(say.text)
+     && /Scroll to the bottom/i.test(say.text), 0);
+  ok('and routes him back from the other one',
+     /two<\/b> consoles|two consoles/.test(say.text) && /Let's get building/.test(say.text)
+     && /Twilio Home/.test(say.text), 0);
+  ok('the trial number limit is said where the number is picked',
+     /trial number/i.test(say.text) && /verified/.test(say.text), 0);
   ok('it links out to both companies',
      say.out.some(h => /console\.twilio/.test(h)) && say.out.some(h => /dash\.cloudflare/.test(h)));
   ok('and never at itself',                 say.self === 0, say.self);

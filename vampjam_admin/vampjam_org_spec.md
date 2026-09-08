@@ -4631,7 +4631,34 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Nothing else touched. No version bump.
   He is standing on step A2 right now. Nothing is blocked.
   Still no new trace.
-- NEXT → add entry 337 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 337 signin_home · b345 · part A routes between Twilio's two consoles, and is drawn from the
+  classic one. Second screenshot in a row, and it corrected the correction: 336 rewrote part A for
+  1console because that is where he landed; this time console.twilio.com gave him the classic
+  Account Dashboard instead. Twilio runs both. Neither drawing was wrong — the runbook was wrong
+  to assume there was only one.
+  So A1 now says so outright: you want the page headed "Get started with Twilio" with the dark
+  left menu; if you land on the blue "Let's get building", click Twilio Home to come back. It
+  names the classic one as the one to use, and says why — it keeps the SID and the token on a
+  single card, where the new console splits them across two pages.
+  A2 and A3 redrawn on that card, which sits at the BOTTOM of the dashboard. "Scroll to the
+  bottom" is now the first instruction in A2, because the card is below the fold on every screen
+  and a step that does not say so reads as a step that is not working. A3 notes Twilio prints its
+  own "store your token securely" warning right underneath, which is a useful landmark as well as
+  the right advice.
+  A4 back to the classic left menu, and it now carries the thing that will actually stop him:
+  a trial number can only text numbers verified with Twilio. That is fine for testing on his own
+  phone and it is exactly where the whitelist dies for everyone else. Said at the step where he is
+  looking at the number, not in a footnote.
+  His Account SID is not in the repo. Both drawings show a truncated fake.
+  signin_steps_test 53: the page must name the console it draws (Get started with Twilio, Account
+  Info, scroll to the bottom), must route back from the other one (two consoles, Let's get
+  building, Twilio Home), and must say the trial limit at the step where the number is chosen. The
+  336 assertion that the page must NOT say "Account Info" is gone — it was true for one console
+  and false for the other, which is the whole lesson.
+  Re-ran twenty-seven suites, 675 assertions. Green.
+  Nothing else touched. No version bump.
+  Still no new trace.
+- NEXT → add entry 338 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

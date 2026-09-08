@@ -9,8 +9,52 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "344 signin_console",
+        id: "345 signin_home",
         expanded: true,
+        nodes: [
+          { text: "345 signin_home", children: [
+            { text: "prompt_restate", children: [
+              { text: "Another screenshot, and: update steps." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "update steps" },
+              { text: "[screenshot: console.twilio.com \u2014 Get started with Twilio, dark left menu, Account Info card at the bottom]" }
+            ]},
+            { text: "it_corrected_the_correction", children: [
+              { text: "344 rewrote part A for 1console, because that is where you landed" },
+              { text: "this time console.twilio.com gave you the classic dashboard instead" },
+              { text: "twilio runs both. neither drawing was wrong \u2014 the runbook was wrong to assume there was only one" }
+            ]},
+            { text: "so_a1_says_so_outright", children: [
+              { text: "you want Get started with Twilio, with the dark left menu" },
+              { text: "landed on the blue Let's get building? click Twilio Home to come back" },
+              { text: "the classic one is the one to use \u2014 it keeps the SID and the token on one card" }
+            ]},
+            { text: "a2_a3_redrawn_on_that_card", children: [
+              { text: "the card is at the BOTTOM of the dashboard" },
+              { text: "\"scroll to the bottom\" is now the first instruction \u2014 it is below the fold on every screen" },
+              { text: "a step that does not say so reads as a step that is not working" },
+              { text: "twilio prints its own store-your-token-securely warning underneath, a useful landmark" }
+            ]},
+            { text: "a4_carries_the_thing_that_will_stop_you", children: [
+              { text: "a trial number can only text numbers verified with twilio" },
+              { text: "fine for testing on your own phone; exactly where the whitelist dies for everyone else" },
+              { text: "said at the step where you are looking at the number, not in a footnote" }
+            ]},
+            { text: "your Account SID is not in the repo \u2014 both drawings show a truncated fake" },
+            { text: "signin_steps_test", children: [
+              { text: "53 now" },
+              { text: "must name the console it draws, must route back from the other one, must say the trial limit where the number is chosen" },
+              { text: "the 344 assertion that the page must NOT say Account Info is gone \u2014 true for one console, false for the other. that is the whole lesson" }
+            ]},
+            { text: "twenty-seven suites, 675 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "344 signin_console",
+        expanded: false,
         nodes: [
           { text: "344 signin_console", children: [
             { text: "prompt_restate", children: [
