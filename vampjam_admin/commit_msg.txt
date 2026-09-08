@@ -1,1 +1,1 @@
-admin_one
+auto_commit
