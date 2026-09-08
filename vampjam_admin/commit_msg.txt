@@ -1,1 +1,1 @@
-one_rule
+auto_commit
