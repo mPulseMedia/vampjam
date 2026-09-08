@@ -5382,7 +5382,7 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   step I keep missing. It now names no number: every page must agree with every other page. A
   check that maintains itself is the only kind that survives me.
   drawer.js v=183, site.css v=25.
-  Thirty-three suites. Green.
+  Thirty-three suites, 905 assertions. Green.
   Left for him: hard reload, then open a private recording signed out and it asks him there.
   Still no new trace.
 - NEXT → add entry 363 here (codename · bN · change) — every prompt that edits the page, no exceptions.

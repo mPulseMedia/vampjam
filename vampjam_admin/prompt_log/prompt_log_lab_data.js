@@ -52,7 +52,7 @@ window.prompt_log_data = [
               { text: "signin_here_test new, 30" },
               { text: "signin_test and gate_all_test both asserted the redirect this build deleted" },
               { text: "rewritten to assert you STAY on the recording" },
-              { text: "thirty-three suites, green" }
+              { text: "thirty-three suites, 905 assertions, green" }
             ]},
             { text: "skill_instruct", children: [
               { text: "proposed for you to save \u2014 ten rules distilled from what worked" },
