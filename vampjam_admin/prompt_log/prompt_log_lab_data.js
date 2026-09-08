@@ -9,8 +9,53 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "353 who_say",
+        id: "354 admin_redo",
         expanded: true,
+        nodes: [
+          { text: "354 admin_redo", children: [
+            { text: "prompt_restate", children: [
+              { text: "The first number, the one that became admin, has a typo in it." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I messed up. I made the first phone number as the Admin -- I must have done a typo. It should be 917-693-0105." }
+            ]},
+            { text: "what_is_actually_stored", children: [
+              { text: "one admin, one person, label Paul, last4 0105" },
+              { text: "the last four are RIGHT \u2014 so the mistake is in the first six digits" },
+              { text: "and there is no way to tell which. a number cannot be read back out of an id" },
+              { text: "that closes off any clever repair" }
+            ]},
+            { text: "the_real_problem_was_mine", children: [
+              { text: "one wrong keystroke locked you out of your own site permanently" },
+              { text: "the only way back was me editing the repo by hand" },
+              { text: "a design where a typo needs the author to fix it is broken, not unlucky" }
+            ]},
+            { text: "so_it_can_be_started_over", children: [
+              { text: "at most one person, nobody else, nothing private = not started" },
+              { text: "the box says so, and names the number by its last four" },
+              { text: "the next number added replaces admins and people rather than joining them" },
+              { text: "and it says why you would want that: use it if the first one had a typo" }
+            ]},
+            { text: "why_that_is_safe", children: [
+              { text: "the state itself, not a check \u2014 in it, nothing is protected" },
+              { text: "nobody is kept out of anything, so there is nothing to take" },
+              { text: "two people on the list, or one recording closed, and the door shuts" }
+            ]},
+            { text: "also_caught_and_not_yet_fixed", children: [
+              { text: "github has the populated access.json; the mac's git tree does not" },
+              { text: "the sync worker writes to github, the auto-push robot commits the mac's tree" },
+              { text: "two writers, one file, and the mac's copy is the stale one" },
+              { text: "nothing lost this time. it will bite. wants its own build" }
+            ]},
+            { text: "who_add_test 80, up eight" },
+            { text: "twenty-eight suites, 767 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "353 who_say",
+        expanded: false,
         nodes: [
           { text: "353 who_say", children: [
             { text: "prompt_restate", children: [
