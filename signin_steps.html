@@ -296,27 +296,28 @@ footer a{color:var(--signal)}
 
 <script type="text/plain" id="worker_src">// vampjam — sign-in Worker
 //
-// Someone types their phone number and is signed in, if that number is on the
-// list for a recording. No text message, no link, no waiting: the number IS the
-// key. Which recordings they can then open is decided by access.json in the
-// repo, which the session pages write.
+// One rule: a phone number gets you in, and you see the recordings your number
+// is on. Nothing else. No text message, no link, no password, no waiting.
+//
+//   · nobody signed in yet → the first number to sign in becomes the
+//     administrator, and sees everything
+//   · after that → your number must be on a recording's list, and you see only
+//     the recordings it is on
+//   · the administrator adds numbers at the bottom of each recording
 //
 // Say the tradeoff out loud rather than implying a strength this does not have:
 // anyone who knows a number on the list can sign in as that person. This keeps
-// a recording out of the way of strangers and search engines. It is not proof
-// of who is holding the phone, and it is not a password.
+// recordings away from strangers and search engines. It is not proof of who is
+// holding the phone, and it is not a password.
 //
-// ONE-TIME SETUP (Cloudflare dashboard → Settings → Variables and Secrets):
-//   AUTH_SECRET      = a long random string you make up (32+ chars)
-// That is the only one. Then Deployments → Promote deployment → the newest
-// version, or the setting is saved and not running.
+// ONE SETTING (Cloudflare → Settings → Variables and Secrets):
+//   AUTH_SECRET = a long random string you make up (32+ chars)
 //
-// There is NO database. A token is the payload plus an HMAC of it, so the
-// worker can check its own tokens without storing anything. Signing everybody
-// out means changing AUTH_SECRET.
+// No database. A token is the payload plus an HMAC of it. Changing AUTH_SECRET
+// signs everybody out.
 //
 // And no phone number is ever written to the repo. access.json holds an opaque
-// id — an HMAC of the number under AUTH_SECRET — plus a label and the last four
+// id — an HMAC of the number under AUTH_SECRET — plus a name and the last four
 // digits, which is enough to administer and useless to anyone who reads it.
 
 const SESS_TTL = 60 * 60 * 24 * 60;    // a signed-in phone stays signed in ~2 months
@@ -345,7 +346,7 @@ export default {
         var acc0 = { admins: [], people: [], sessions: {} };
         try { acc0 = await access(); } catch (e0) {}
         var priv = Object.keys(acc0.sessions || {})
-          .filter(function (k) { return (acc0.sessions[k] || {}).mode === 'list'; }).length;
+          .filter(function (k) { return ((acc0.sessions[k] || {}).allow || []).length; }).length;
         return json({
           ok: true, worker: true,
           secret: !!env.AUTH_SECRET,
@@ -363,6 +364,13 @@ export default {
                     503, cors);
 
       // ---- who is this? ----
+      // which recordings are private at all — no token needed, and no secret in
+      // it. A page has to know whether IT is gated before it knows who is asking.
+      if (op === 'shut') {
+        const acc = await access();
+        return json({ ok: true, shut: shut_pages(acc) }, 200, cors);
+      }
+
       if (op === 'me') {
         const who = await read_session(q('t'), env);
         if (!who) return json({ ok: true, signed_in: false }, 200, cors);
@@ -380,11 +388,17 @@ export default {
         const cand = await ids_for(env.AUTH_SECRET, q('phone'));
         if (!cand) return json({ ok: false, why: 'that does not look like a phone number' }, 200, cors);
         const acc = await access();
-        const id = settle(acc, cand);
-        if (!id || !recognized(acc, id)) {
-          return json({ ok: false, why: 'that number is not on any list yet',
-                        unknown: true }, 200, cors);
+        const nobody = !(acc.admins || []).length;
+        // the first number to sign in owns the place. The page writes it down;
+        // the worker only says that it may, because the worker cannot write.
+        if (nobody) {
+          const sess0 = await sign(env.AUTH_SECRET, { i: cand.id, k: 'sess' }, SESS_TTL);
+          return json({ ok: true, first: true, session: sess0, id: cand.id, id7: cand.id7,
+                        last4: cand.last4, label: '', admin: true, allow: '*' }, 200, cors);
         }
+        const id = settle(acc, cand);
+        if (!id) return json({ ok: false, unknown: true,
+                              why: 'that number is not on any recording yet' }, 200, cors);
         const sess = await sign(env.AUTH_SECRET, { i: id, k: 'sess' }, SESS_TTL);
         return json({ ok: true, session: sess, label: label_of(acc, id),
                       admin: is_admin(acc, id), allow: allowed_pages(acc, id) }, 200, cors);
@@ -415,7 +429,7 @@ export default {
         // is what happened: one mistyped admin, no way to sign in as them, and
         // every add answered "admins only" — a locked door with a handle drawn
         // on it. In this state nothing is protected, so nothing is given away.
-        const first = unstarted(acc);
+        const first = !(acc.admins || []).length;
         if (!first && !(who && is_admin(acc, who.i)))
           return json({ error: 'admins only' }, 403, cors);
         let list = body.phones;
@@ -439,16 +453,6 @@ export default {
         const who = await read_session(q('t'), env);
         const acc = await access();
         if (!who || !is_admin(acc, who.i)) return json({ error: 'admins only' }, 403, cors);
-        const phone = e164(q('phone'));
-        if (!phone) return json({ error: 'that does not look like a phone number' }, 400, cors);
-        return json({ ok: true, id: await hmac(env.AUTH_SECRET, 'p:' + phone),
-                      last4: phone.slice(-4) }, 200, cors);
-      }
-
-      // ---- bootstrap: the very first admin, once, while access.json has none ----
-      if (op === 'claim_admin') {
-        const acc = await access();
-        if (!unstarted(acc)) return json({ error: 'there is already an admin' }, 403, cors);
         const phone = e164(q('phone'));
         if (!phone) return json({ error: 'that does not look like a phone number' }, 400, cors);
         return json({ ok: true, id: await hmac(env.AUTH_SECRET, 'p:' + phone),
@@ -482,22 +486,6 @@ function is_admin(acc, id) { return (acc.admins || []).indexOf(id) >= 0; }
 // known to the site at all: an admin, a named person, or on any one
 // recording's list. The last is what makes "paste a number at the bottom of a
 // session" enough on its own - he should not have to add someone twice.
-// Nothing is really set up: at most one person on the list, nobody else, and no
-// recording actually closed. Whoever is standing here may take it over, because
-// there is nothing yet to take. The moment a second person is added or one
-// recording is made private, this is false for good.
-function unstarted(acc) {
-  if ((acc.admins || []).length > 1) return false;
-  if ((acc.people || []).length > 1) return false;
-  const s = acc.sessions || {};
-  return Object.keys(s).every((k) => (s[k] || {}).mode !== 'list');
-}
-function recognized(acc, id) {
-  if (is_admin(acc, id)) return true;
-  if ((acc.people || []).some((p) => p && p.id === id)) return true;
-  const s = acc.sessions || {};
-  return Object.keys(s).some((page) => ((s[page] || {}).allow || []).indexOf(id) >= 0);
-}
 // Turn what was typed into the id this site knows them by. A person is stored
 // under one id; this finds them by either form, so an area code is optional at
 // the door even though the list holds the full number's id.
@@ -530,17 +518,25 @@ function label_of(acc, id) {
   const p = (acc.people || []).find((x) => x && x.id === id);
   return (p && p.label) || 'you';
 }
-// which pages this id may open. A session nobody has restricted is open to
-// everyone — the gate is opt-in, so nothing that worked yesterday stops working.
+// which recordings this id may open. The administrator sees everything. For
+// anyone else: a recording becomes private the moment a number is added to it,
+// and until then it is open to whoever has the link. So this returns the ones
+// they were added to; everything with an empty list needs no permission at all
+// and is not listed here.
 function allowed_pages(acc, id) {
   if (is_admin(acc, id)) return '*';
   const out = [];
   const s = acc.sessions || {};
   Object.keys(s).forEach((page) => {
-    const rule = s[page] || {};
-    if (rule.mode !== 'list' || (rule.allow || []).indexOf(id) >= 0) out.push(page);
+    if (((s[page] || {}).allow || []).indexOf(id) >= 0) out.push(page);
   });
   return out;
+}
+// the recordings that need permission at all: the ones with somebody on them.
+// Everything else is open, so the page can decide without knowing who is asking.
+function shut_pages(acc) {
+  const s = acc.sessions || {};
+  return Object.keys(s).filter((page) => ((s[page] || {}).allow || []).length);
 }
 
 // ---------- tokens: payload.signature, no storage ----------

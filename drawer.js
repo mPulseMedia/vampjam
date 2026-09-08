@@ -643,6 +643,10 @@
   }
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
+  // what this phone may see. '*' until the worker answers, so a slow answer
+  // never blanks the list — hiding rows is a courtesy, not the gate.
+  var myAllow = '*';
+  var myShut = null;
   function build_menu() {
     var menu = document.querySelector('.session_drawer .jam_menu');
     if (!menu || !window.VAMPJAM_SESSIONS) return;   // no manifest -> keep static markup
@@ -671,6 +675,13 @@
     });
     var all = window.VAMPJAM_SESSIONS.concat(autos).concat(locals);
     all = all.filter(function (s2) { return !deleted_has(s2.page) || deleting[s2.page]; });
+    if (myAllow !== '*' && myShut && myShut.length) {
+      all = all.filter(function (s2) {
+        if (s2._local || s2.local) return true;                  // still on this device
+        if (myShut.indexOf(s2.page) < 0) return true;            // open to everyone
+        return (myAllow || []).indexOf(s2.page) >= 0;            // private: only if yours
+      });
+    }
     var pend = pending_get();
     var pendDone = (pend && pend.done) ? pend.page : null;
     if (pend) {
@@ -1482,12 +1493,58 @@
     var tok = auth_token();
     authCache = fetch(AUTH_URL + '?op=me&t=' + encodeURIComponent(tok), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
-      .then(function (j) { return (j && j.ok) ? j : { signed_in: false, allow: [] }; })
+      // An answer that is not a proper ok is an outage, not a signed-out person.
+      // Only the worker saying so, clearly, may turn anyone away.
+      .then(function (j) { return (j && j.ok) ? j : { signed_in: false, allow: [], offline: true }; })
       .catch(function () { return { signed_in: false, allow: [], offline: true }; });
     return authCache;
   }
   function auth_out() { auth_set(''); }
   window.vampjamAuth = { url: AUTH_URL, token: auth_token, set: auth_set, me: auth_me, out: auth_out };
+
+  // gate_shut — one question, asked in one place. A recording becomes private
+  // the moment a number is added to it, and until then it is open to whoever
+  // has the link, exactly as it always was.
+  //   is THIS recording private?  no  → in. nobody signs in for nothing
+  //                               yes → on it?  no, signed out → the sign-in,
+  //                                     with where you were going
+  //                                     no, signed in → say so, point at the list
+  // A worker that cannot be reached lets everyone through: an outage must not
+  // lock the owner out of his own recordings.
+  function gate_shut() {
+    if (location.protocol === 'file:') return;
+    if (!document.getElementById('tag_list')) return;          // recordings only
+    var key = window.PAGE_KEY || (location.pathname.split('/').pop() || '');
+    if (!key) return;
+    fetch(AUTH_URL + '?op=shut&t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (!j || !j.ok || (j.shut || []).indexOf(key) < 0) return;   // open
+        return auth_me().then(function (me) {
+          if (!me || me.offline) return;
+          if (me.signed_in === true
+              && (me.allow === '*' || (me.allow || []).indexOf(key) >= 0)) return;
+          if (me.signed_in === true) { shut_out(); return; }
+          if (me.signed_in !== false) return;                  // half an answer
+          location.replace('signin.html?back=' + encodeURIComponent(key + location.search));
+        });
+      })
+      .catch(function () {});
+  }
+  // signed in and it is simply not one of theirs. Not a locked door — say so and
+  // point at the list, which holds everything they CAN open.
+  function shut_out() {
+    document.body.classList.add('gated');
+    var g = document.getElementById('gate');
+    if (g) {
+      g.hidden = false;
+      var w = document.getElementById('gate_why');
+      if (w) w.textContent = 'This one has not been shared with you. Ask Paul to add your number.';
+      var go = document.getElementById('gate_go');
+      if (go) { go.textContent = 'Your recordings'; go.setAttribute('href', 'index.html#sessions'); }
+    }
+    try { var pl = document.getElementById('player'); if (pl) pl.pause(); } catch (e) {}
+  }
 
   // ---- who_add: the list of numbers lives at the bottom of the recording ----
   // He wanted this where the thing being shared is, not on a separate admin
@@ -1539,7 +1596,7 @@
       + '<div class="who_row">'
       + '<button class="who_add" id="who_add" type="button">Add them</button>'
       + '<button class="who_open" id="who_open" type="button" hidden>Let anyone in</button>'
-      + '<button class="who_open" id="who_over" type="button" hidden>Start the list over</button>'
+
       + '</div>'
       + '<div class="who_note" id="who_note"></div>';
     // Inside the fold wrapper when there is one. Appended to <body> it sat
@@ -1554,7 +1611,6 @@
     var inEl    = box.querySelector('#who_in');
     var addBtn  = box.querySelector('#who_add');
     var openBtn = box.querySelector('#who_open');
-    var overBtn = box.querySelector('#who_over');
 
     function note(m, bad) {
       noteEl.textContent = m || '';
@@ -1608,18 +1664,6 @@
       noteEl.appendChild(br);
     }
     function rule() { return (acc.sessions && acc.sessions[page]) || {}; }
-    // A typo in the very first number used to be unrecoverable: that number is
-    // the administrator, only they can change the list, and nobody can read a
-    // number back out of an id. So while the list is this new — at most one
-    // person, nobody else, nothing made private — it counts as not started, and
-    // the next number added takes it over. Nothing is protected in that state,
-    // so there is nothing for this to give away.
-    function unstarted() {
-      if ((acc.admins || []).length > 1) return false;
-      if ((acc.people || []).length > 1) return false;
-      var ss = acc.sessions || {};
-      return Object.keys(ss).every(function (k) { return (ss[k] || {}).mode !== 'list'; });
-    }
     function allow() { return rule().allow || []; }
     function person(id) {
       var p = (acc.people || []).filter(function (x) { return x && x.id === id; })[0];
@@ -1628,12 +1672,14 @@
 
     function paint() {
       var ids = allow();
-      var priv = rule().mode === 'list';
-      stateEl.textContent = priv
-        ? (ids.length === 1 ? 'private — 1 person can open it' : 'private — ' + ids.length + ' people can open it')
+      // a recording with nobody on it is open, exactly as it always was; adding
+      // the first person is what makes it private, and the line says which.
+      stateEl.textContent = ids.length
+        ? (ids.length === 1 ? 'private — 1 person can open it'
+                            : 'private — ' + ids.length + ' people can open it')
         : 'open — anyone with the link can open it';
-      stateEl.className = 'who_state' + (priv ? ' shut' : '');
-      openBtn.hidden = !priv;
+      stateEl.className = 'who_state' + (ids.length ? ' shut' : '');
+      openBtn.hidden = !ids.length;
       listEl.innerHTML = '';
       ids.forEach(function (id) {
         var p = person(id);
@@ -1681,7 +1727,7 @@
     }
 
     // one call for the whole paste, so twenty numbers cost one round trip
-    function add(opt_over) {
+    function add() {
       var raw = inEl.value;
       if (!raw.trim()) { inEl.focus(); btn_say('Type a number first'); note('Type or paste a phone number above, then Add them.', true); return; }
       addBtn.disabled = true; btn_say('Reading…'); note('Reading them…');
@@ -1701,10 +1747,7 @@
             // was small enough to count as "not started", which meant the first
             // person he added after himself silently deleted him. Taking the
             // list over is a separate, labelled button now.
-            var over = !!opt_over;
-            if (over) { acc.admins = []; acc.people = []; }
             var r2 = acc.sessions[page] || {};
-            r2.mode = 'list';                       // adding anyone makes it private
             r2.allow = r2.allow || [];
             var added = 0;
             good.forEach(function (g) {
@@ -1719,7 +1762,7 @@
               inEl.value = '';
               paint();
               btn_say(added ? 'Added ' + added : 'Already there');
-              note((over ? 'Started over. ' : '')
+              note(
                 + added + (added === 1 ? ' added' : ' added')
                 + (bad.length ? ' · ' + bad.length + ' line' + (bad.length > 1 ? 's' : '')
                    + ' were not phone numbers: ' + bad.map(function (b) { return b.line; }).join(', ') : ''),
@@ -1749,70 +1792,20 @@
                               function (e) { note('Could not save: ' + e.message, true); });
     }
 
-    addBtn.addEventListener('click', function () { add(false); });
+    addBtn.addEventListener('click', add);
     openBtn.addEventListener('click', open_up);
-    overBtn.addEventListener('click', function () {
-      var who = (acc.people || [])[0];
-      if (!inEl.value.trim()) { inEl.focus(); btn_say('Type a number first');
-        note('Type your own number above first — Start the list over makes THAT number the administrator.', true); return; }
-      drawer_confirm('Throw away the list and start over?'
-        + (who ? '\n\n' + (who.label || 'the one number') + ' ••' + (who.last4 || '') + ' will be removed.' : ''),
-        'Start over', function () { add(true); });
-    });
 
     // ---- who sees it ----
-    // Before: only an admin, or anybody while there was no admin. That closed
-    // the door behind him — add yourself as administrator from another page,
-    // never sign in, and the box is invisible everywhere with no way back. Now
-    // it is always reachable: signed out, it shows the one field that fixes it.
-    function sign_in_here() {
-      stateEl.textContent = '';
-      listEl.innerHTML = '';
-      inEl.hidden = true; addBtn.hidden = true; openBtn.hidden = true;
-      var wrap = document.createElement('div');
-      wrap.className = 'who_row';
-      wrap.innerHTML = '<input class="who_in who_one" id="who_phone" type="tel" inputmode="tel"'
-        + ' autocomplete="tel" placeholder="your phone number">'
-        + '<button class="who_add" id="who_go" type="button">Sign in</button>';
-      box.insertBefore(wrap, noteEl);
-      note('Sign in to manage who can open this recording.');
-      function go() {
-        var v = (wrap.querySelector('#who_phone').value || '').trim();
-        if (!v) return;
-        note('Checking…');
-        fetch(A.url + '?op=enter', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: v })
-        }).then(function (r) { return r.json(); })
-          .then(function (j) {
-            if (j && j.error === 'no_secret') { note(j.why, true); return; }
-            if (!j || !j.ok) { note(j && j.unknown
-              ? 'That number is not on any list yet.' : ((j && j.why) || 'Could not sign in'), true); return; }
-            A.set(j.session);
-            location.reload();
-          })
-          .catch(function (e) { note(reach(e, 'Signing in failed'), true); });
-      }
-      wrap.querySelector('#who_go').addEventListener('click', go);
-      wrap.querySelector('#who_phone').addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') go();
-      });
-    }
-
-    // Ask the worker how it is before offering him a button that cannot work.
-    // He clicked Add, nothing appeared to happen, and the reason — no worker —
-    // was a browser error string in a line below the fold.
-    var STATUS_URL = A.url + '?op=status&t=' + Date.now();
-    get('the sign-in worker', STATUS_URL, { cache: 'no-store' })
+    // The administrator, and nobody else. There is no bootstrap here any more:
+    // the first person to SIGN IN becomes the administrator, which is one rule
+    // in one place instead of two rules in two.
+    get('the sign-in worker', A.url + '?op=status&t=' + Date.now(), { cache: 'no-store' })
       .catch(function (e) { return { __bad: e.message }; })
       .then(function (st) {
-        if (st && st.__bad) {
-          shut_controls(st.__bad, 'the steps →');
-          return;
-        }
+        if (st && st.__bad) { shut_controls(st.__bad, 'the steps →'); return; }
         if (!st || !st.ok) {
-          shut_controls('The sign-in worker answered, but not with an ok — ' + JSON.stringify(st).slice(0, 120),
-                        'the steps →');
+          shut_controls('The sign-in worker answered, but not with an ok — '
+                      + JSON.stringify(st).slice(0, 120), 'the steps →');
           return;
         }
         if (!st.secret) {
@@ -1820,31 +1813,14 @@
                       + 'and not promoted, so nothing here can be saved.', 'step C →');
           return;
         }
-        return load().then(function () {
-          if (!acc.admins.length) {
-            note('Nobody administers this yet. The first number you add becomes the administrator — make it your own.');
-            paint();
-            return;
-          }
-          if (unstarted()) {
-            var who = (acc.people || [])[0];
-            overBtn.hidden = false;
-            note('One number is here so far'
-               + (who && who.last4 ? ' (ending ' + who.last4 + ')' : '')
-               + ', and nothing is private yet — so nothing is really set up. '
-               + '"Add them" adds alongside it. "Start the list over" throws it away and makes '
-               + 'the number you type the administrator — use that if the first one was wrong.');
-            paint();
-            return;
-          }
-          return A.me().then(function (me) {
-            if (me && me.admin) { paint(); return; }
-            sign_in_here();
-          });
+        return A.me().then(function (me) {
+          if (!me || me.admin !== true) { box.hidden = true; return; }
+          return load().then(function () { paint(); });
         });
       })
       .catch(function (e) { shut_controls(reach(e, 'Something else failed'), 'the steps →'); });
   }
+
   window.vampjamWhoMount = who_mount;
 
   // name_edit — a session's display name lives in two places: the session file's
@@ -2058,7 +2034,18 @@
     // before the fold_in branch below, which RETURNS: arriving by tapping this
     // page's own row used to skip the mount entirely, and the box only appeared
     // if he reloaded. That is exactly what a reload was fixing.
+    try { gate_shut(); } catch (e) {}
     try { who_mount(); } catch (e) {}
+    auth_me().then(function (me) {
+      myAllow = (!me || me.offline || me.signed_in !== true) ? []
+              : (me.allow === '*' ? '*' : (me.allow || []));
+      if (myAllow === '*') { myShut = []; build_menu(); wire_links(); return; }
+      return fetch(AUTH_URL + '?op=shut&t=' + Date.now(), { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { myShut = (j && j.ok) ? (j.shut || []) : []; })
+        .catch(function () { myShut = []; })
+        .then(function () { build_menu(); wire_links(); });
+    }).catch(function () {});
     // orphan_sweep waits out the first registry paint, then self-publishes
     // anything the cloud has that the list forgot (6h throttle inside)
     setTimeout(orphan_sweep, 4000);

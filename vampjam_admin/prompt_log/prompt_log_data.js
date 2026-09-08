@@ -9,8 +9,47 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "366 add_adds",
+        id: "367 one_rule",
         expanded: true,
+        nodes: [
+          { text: "367 one_rule", children: [
+            { text: "prompt_restate", children: [
+              { text: "Strip it out and make it simple. Sign-in first, first person in is the admin, you see only your sessions. Then: only recordings I have added numbers to are private." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I don't understand why all of this Admin and sign in is so complicated it shouldn't be. I want to strip everything out and create a very simple thing... the very first person that Signs in becomes the Administrator and is able to add phone numbers to other sessions... you have to put in a phone number in order to get through to a page and you're only gonna see the sessions where you are on." },
+              { text: "no. only make recordings where I've added some number be private" }
+            ]},
+            { text: "you_were_right_and_here_is_why", children: [
+              { text: "the complication was not any one build \u2014 it was three overlapping rules" },
+              { text: "open-or-private by a flag; the admin claimed by a separate bootstrap; and an add that could rescue a typo by deleting the list" },
+              { text: "each defensible alone. together, unlearnable \u2014 and I kept patching whichever one you hit" }
+            ]},
+            { text: "one_rule_now", children: [
+              { text: "a recording is private the moment a number is added to it, open until then" },
+              { text: "open \u2192 opens. nobody signs in for nothing" },
+              { text: "private, signed out \u2192 sign-in, then straight back to it" },
+              { text: "private, signed in, not on it \u2192 told so, pointed at your own list" },
+              { text: "the list \u2192 every open recording plus the private ones that are yours" },
+              { text: "the first number to SIGN IN is the administrator. no claim step" }
+            ]},
+            { text: "deleted: the mode flag, Let anyone in, Start the list over, claim_admin, and the rule that let Add remove anyone" },
+            { text: "two things I made sure of, having been bitten by both today: an unreachable worker lets everyone through, and a half-answer counts as an outage rather than as signed-out" },
+            { text: "i_mangled_drawer_js_midway", children: [
+              { text: "a cut whose anchor no longer existed \u2014 who_mount vanished and the file still parsed" },
+              { text: "restored from the last commit, re-applied in one clean pass. nothing lost" },
+              { text: "two old lessons: assert the anchor before replacing, and a syntax check proves nothing about what is still in the file" }
+            ]},
+            { text: "gate_all_test is new, 33 \u2014 the definition of the rule, not a description of it" },
+            { text: "thirty-one suites, 866 assertions. green." },
+            { text: "left for you: sign in once. whatever number you use is the administrator." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "366 add_adds",
+        expanded: false,
         nodes: [
           { text: "366 add_adds", children: [
             { text: "prompt_restate", children: [

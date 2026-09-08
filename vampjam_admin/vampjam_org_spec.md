@@ -5265,7 +5265,45 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   What he has to do: type his number, press Start the list over, confirm. Then Add them is safe
   for everyone else, Eileen included.
   Still no new trace.
-- NEXT → add entry 359 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 359 one_rule · b367 · stripped to one rule, because three was what made it impossible.
+  "I don't understand why all of this Admin and sign in is so complicated it shouldn't be." He was
+  right, and the complication was not in any one build — it was that I had three overlapping
+  rules and kept patching whichever one he hit. A recording could be open or private by a mode
+  flag; the administrator was claimed by a separate bootstrap; and a third rule let an add rescue
+  a typo by deleting the list. Each defensible alone. Together, unlearnable.
+  What he asked for, in his words: land on a page and be presented with a sign-in; the very first
+  person who signs in becomes the administrator and can add numbers to sessions; you put in a
+  phone number to get through; you only see the sessions your number is on. Then, immediately
+  after: "no. only make recordings where I've added some number be private."
+  So, one rule: a recording is private the moment a number is added to it, and open until then.
+  Everything follows from that and nothing else is a setting.
+    · open recording → opens. Nobody signs in for nothing.
+    · private, signed out → the sign-in, carrying where he was going, and back afterwards
+    · private, signed in, not on it → told so, and pointed at his own list
+    · the list → every open recording, plus the private ones that are his; admin sees all
+    · the first number to SIGN IN is the administrator. There is no claim step
+  Deleted: the mode flag, "Let anyone in", "Start the list over", claim_admin, unstarted() on both
+  sides, and the rule that let Add remove anyone. The worker lost two ops and gained one — `shut`,
+  which says which recordings need permission at all, and needs no token because a page has to
+  know whether IT is gated before it knows who is asking.
+  Two things I made sure of, having been bitten by both today: a worker that cannot be reached
+  lets everyone through, and a half-answer from it counts as an outage rather than as "signed
+  out". Filtering the list is a courtesy; it is never what keeps anybody out.
+  Mid-build I mangled drawer.js with a cut whose anchor no longer existed — who_mount vanished and
+  the file still parsed. Restored from the last commit and re-applied in one clean pass. Two
+  lessons and both are old: a python replace whose target is absent fails silently, so assert the
+  anchor; and syntax-checking a file proves nothing about whether the function you meant to keep
+  is still in it.
+  gate_all_test is new, 33, and it is the definition of the rule rather than a description of it:
+  the first number in becomes the administrator and the page writes it down with no phone number
+  in what is written; a second number is refused; the administrator puts it on ONE recording and
+  it opens only that one; an open recording is untouched signed out; a private one turns him
+  around and remembers where he was going.
+  signin_test 50 and who_add_test 74, both rewritten where they asserted the deleted rules.
+  Thirty-one suites, 866 assertions. Green.
+  Left for him: sign in once. Whatever number he uses is the administrator.
+  Still no new trace.
+- NEXT → add entry 360 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

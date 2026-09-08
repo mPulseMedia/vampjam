@@ -25,7 +25,7 @@ function fresh_access(ids) {
     people: [{ id: ids.paul, label: 'Paul', last4: '7777' },
              { id: ids.matt, label: 'Matt', last4: '1212' },
              { id: ids.kathy, label: 'Kathy', last4: '3434' }],
-    sessions: { [PAGE_A]: { mode: 'list', allow: [ids.matt] } }
+    sessions: { [PAGE_A]: { allow: [ids.matt] } }
   };
 }
 const ENV = {
@@ -53,29 +53,17 @@ const ENV = {
   };
 
   // ---------- ids come from the worker, never from the page ----------
+  // The bootstrap is the first SIGN-IN now, not a separate claim step; the shape
+  // of it is asserted in gate_all_test. Here we only need an administrator to
+  // exist so the rest of this suite has one.
   ACCESS = { admins: [], people: [], sessions: {} };            // nobody owns the list yet
-  const cp = await call('claim_admin', { phone: '(415) 555 7777' });
-  ok('the first admin can claim the empty list', cp.j.ok && cp.j.id && cp.j.last4 === '7777', JSON.stringify(cp.j));
+  const cp = await call('enter', { phone: '(415) 555 7777' });
+  ok('the first number to sign in is let in',   cp.j.ok === true && cp.j.first === true, JSON.stringify(cp.j).slice(0, 90));
   const ids = { paul: cp.j.id };
-  ACCESS = { admins: [cp.j.id], people: [{ id: cp.j.id, label: 'Paul', last4: '7777' }], sessions: {} };
-  // one admin and nothing else is deliberately still claimable: that is the
-  // recovery for a mistyped first number, and in that state nothing is protected
-  const cp2 = await call('claim_admin', { phone: '(415) 555 0000' });
-  ok('one admin and nothing else can still be taken over', cp2.j.ok === true, JSON.stringify(cp2.j));
   ACCESS = { admins: [cp.j.id],
-             people: [{ id: cp.j.id, label: 'Paul', last4: '7777' },
-                      { id: 'SOMEONE', label: 'Dave', last4: '1212' }],
-             sessions: {} };
-  const cp3 = await call('claim_admin', { phone: '(415) 555 0000' });
-  ok('but not once a second person is on the list', cp3.status === 403, cp3.status + ' ' + cp3.j.error);
-  ACCESS = { admins: [cp.j.id], people: [{ id: cp.j.id, label: 'Paul', last4: '7777' }],
-             sessions: { 'x.html': { mode: 'list', allow: [cp.j.id] } } };
-  const cp4 = await call('claim_admin', { phone: '(415) 555 0000' });
-  ok('nor once one recording is closed',        cp4.status === 403, cp4.status + ' ' + cp4.j.error);
-  ACCESS = { admins: [cp.j.id], people: [{ id: cp.j.id, label: 'Paul', last4: '7777' }], sessions: {} };
-
+             people: [{ id: cp.j.id, id7: cp.j.id7, label: 'Paul', last4: '7777' }], sessions: {} };
   const paulSess = (await call('enter', { phone: '415-555-7777' })).j.session;
-  ok('the admin can sign in',                   !!paulSess, !!paulSess);
+  ok('and can sign in again afterwards',        !!paulSess, !!paulSess);
 
   const gm = await call('grant_id', { phone: MATT, t: paulSess });
   const gk = await call('grant_id', { phone: KATHY, t: paulSess });
@@ -99,7 +87,7 @@ const ENV = {
 
   const no = await call('enter', { phone: STRANGER });
   ok('a number NOT on any list is refused',       no.j.ok === false && no.j.unknown === true, JSON.stringify(no.j));
-  ok('and told so rather than left waiting',      /not on any list/.test(no.j.why || ''), no.j.why);
+  ok('and told so rather than left waiting',      /not on any recording/.test(no.j.why || ''), no.j.why);
   ok('with no session handed out',                !no.j.session, no.j.session);
   const bad = await call('enter', { phone: '12' });
   ok('nonsense is refused as a number',           bad.j.ok === false && !bad.j.unknown, JSON.stringify(bad.j));
@@ -174,29 +162,29 @@ const ENV = {
     listShown: getComputedStyle(document.getElementById('tag_list')).display !== 'none'
   })).catch(() => null);
 
-  // signed out, private page
+  // Signed out, a recording is not gated in place any more — you are turned
+  // around at the door, before the page draws. One rule, one place.
   const signed_out = () => { try { localStorage.removeItem('vampjam_signin'); } catch (e) {} };
   let p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (out): ' + e.message); });
   await p.addInitScript(signed_out);
   await p.goto('https://vampsf.com/session.html?p=a1');
-  await p.waitForTimeout(2000);
-  const outA = await look(p);
-  ok('signed out, a private recording is gated', outA.gated && outA.gate, JSON.stringify(outA));
-  ok('the player is not shown',                  outA.playerShown === false, outA.playerShown);
-  ok('nor the moments',                          outA.listShown === false, outA.listShown);
-  const backHref = await p.evaluate(() => document.getElementById('gate_go').getAttribute('href'));
-  ok('and it remembers where to send you back',  /back=session\.html%3Fp%3Da1/.test(backHref), backHref);
+  await p.waitForTimeout(2200);
+  ok('signed out, a recording sends you to the sign-in', /signin\.html\?back=/.test(p.url()), p.url());
+  ok('and it remembers where to send you back',
+     /back=session\.html%3Fp%3Da1/.test(p.url()), p.url());
   await p.close();
 
-  // signed out, open page — untouched
+  // and one nobody was added to is untouched — only recordings with somebody on
+  // them are private. That is his rule, stated in his words.
   p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (open): ' + e.message); });
   await p.addInitScript(signed_out);
   await p.goto('https://vampsf.com/session.html?p=b2');
-  await p.waitForTimeout(2000);
-  const outB = await look(p);
-  ok('a recording nobody restricted still opens', !outB.gated && outB.playerShown, JSON.stringify(outB));
+  await p.waitForTimeout(2200);
+  ok('a recording nobody was added to just opens', /session\.html\?p=b2$/.test(p.url()), p.url());
+  ok('and nothing on it is gated',
+     await p.evaluate(() => !document.body.classList.contains('gated')));
   await p.close();
 
   // signed in as Matt — his page opens
@@ -209,17 +197,23 @@ const ENV = {
   ok('signed in and shared with, it opens',      !inA.gated && inA.playerShown && inA.listShown, JSON.stringify(inA));
   await p.close();
 
-  // signed in as Kathy — same page, not shared with her
+  const kLink = (await call('enter', { phone: KATHY })).j.session;
+  // signed in as Kathy — the same page, not one of hers. She is not shown a
+  // locked door; she is put on her own list, which is the honest place to land.
   p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (kathy): ' + e.message); });
-  const kLink = (await call('enter', { phone: KATHY })).j.session;
   await p.addInitScript(t => { try { localStorage.setItem('vampjam_signin', t); } catch (e) {} }, kLink);
   await p.goto('https://vampsf.com/session.html?p=a1');
-  await p.waitForTimeout(2000);
-  const inK = await look(p);
-  ok('signed in but NOT shared with, still gated', inK.gated, JSON.stringify(inK));
-  ok('and told why, not just refused',           /not been shared with you/.test(inK.why), inK.why);
+  await p.waitForTimeout(2400);
+  ok('signed in but not shared with, she is told so',
+     await p.evaluate(() => document.body.classList.contains('gated')
+       && /not been shared with you/.test((document.getElementById('gate_why') || {}).textContent || '')),
+     await p.evaluate(() => (document.getElementById('gate_why') || {}).textContent || ''));
+  ok('and pointed at her own recordings',
+     await p.evaluate(() => /index\.html/.test(
+       (document.getElementById('gate_go') || {}).getAttribute('href') || '')));
   await p.close();
+
 
   // the worker being down must not lock anyone out
   authDown = true;
@@ -243,7 +237,7 @@ const ENV = {
   await p.click('#go');
   await p.waitForTimeout(900);
   const said = await p.evaluate(() => document.getElementById('say').textContent);
-  ok('signin says plainly when a number is not listed', /not on any list/.test(said), said);
+  ok('signin says plainly when a number is not listed', /not on any recording/.test(said), said);
   await p.fill('#phone', MATT);
   texts = [];
   await p.click('#go');

@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="site.css?v=23">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=130"></script>
-<script src="drawer.js?v=174"></script>
+<script src="drawer.js?v=181"></script>
 <style>
   h1 { text-align: center; font-size: 22px; margin: 6px 0 4px; }
   .lede { text-align: center; color: var(--muted); margin: 0 auto 18px; max-width: 420px; line-height: 1.5; }
@@ -52,7 +52,7 @@
 </header>
 
 <h1 id="head">Sign in</h1>
-<div class="lede" id="lede">Enter your phone number. If it is on the list you are in — no text message, no password, no waiting.</div>
+<div class="lede" id="lede">Enter your phone number. That is the whole sign-in — no text message, no password, no waiting.</div>
 
 <div class="box" id="ask">
   <input type="tel" id="phone" inputmode="tel" autocomplete="tel"
@@ -71,6 +71,7 @@
 
 <script>
 (function () {
+  var SYNC = 'https://vampjam-sync.crimson-dust-a18d.workers.dev/';
   var A = window.vampjamAuth;
   var phone = document.getElementById('phone'), go = document.getElementById('go');
   var say = document.getElementById('say'), ask = document.getElementById('ask');
@@ -146,12 +147,41 @@
     }).then(function (r) { return r.json(); })
       .then(function (j) {
         go.disabled = false;
-        if (j.ok) { A.set(j.session); show_signed_in(j); return; }
-        tell(j.unknown
-          ? 'That number is not on any list yet. Ask Paul to add it to the recording he wants you to hear.'
-          : (j.why || j.error || 'Could not sign in'), true);
+        if (!j.ok) {
+          tell(j.unknown
+            ? 'That number is not on any recording yet. Ask Paul to add it to the one he wants you to hear.'
+            : (j.why || j.error || 'Could not sign in'), true);
+          return;
+        }
+        A.set(j.session);
+        // the first person to sign in owns the place. The worker cannot write,
+        // so the page writes it down — one number, admin, and that is the whole
+        // of the setup. There is no separate "claim" step anywhere else.
+        if (j.first) {
+          tell('Setting you up as the administrator…');
+          return fetch(SYNC, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ path: 'access.json', message: 'first sign-in — administrator',
+              content: JSON.stringify({
+                admins: [j.id],
+                people: [{ id: j.id, id7: j.id7, label: 'you', last4: j.last4 }],
+                sessions: {}
+              }, null, 2) })
+          }).then(function (r) { if (!r.ok) throw new Error('could not save (' + r.status + ')'); })
+            .then(function () { j.label = 'you'; show_signed_in(j); go_back(); },
+                  function (e) { tell('Signed in, but could not write the list: ' + e.message, true); });
+        }
+        show_signed_in(j);
+        go_back();
       })
       .catch(function (err) { go.disabled = false; tell('Could not reach the server: ' + err.message, true); });
+  }
+  // ?back= is where the gate turned him around. Go there once he is in.
+  function go_back() {
+    var to = '';
+    try { to = new URLSearchParams(location.search).get('back') || ''; } catch (e) {}
+    if (!/^[A-Za-z0-9_.\-]+\.html(\?[^#]*)?$/.test(to)) return;
+    setTimeout(function () { location.replace(to); }, 900);
   }
   go.addEventListener('click', send);
   phone.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
