@@ -59,7 +59,9 @@ window.prompt_log_data = [
               { text: "every page asks for THIS build's drawer.js and site.css \u2014 I broke that three builds running" },
               { text: "and who_mount contains no box.hidden = true anywhere" },
               { text: "an assertion that a thing is gone is the only kind that stops it coming back" },
-              { text: "thirty-two suites, 909 assertions, green" }
+              { text: "gate_all_test used to assert the box was GONE for a guest \u2014 the bug wearing a test's clothes" },
+              { text: "now it asserts the box is there and says whose job it is" },
+              { text: "thirty-two suites, 873 assertions, green" }
             ]},
             { text: "codename_list", children: [
               { text: "who_name \u00b7 who_you \u00b7 shut_controls \u00b7 who_me \u00b7 name_save \u00b7 meNow \u00b7 rename" }

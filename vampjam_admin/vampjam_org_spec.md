@@ -5351,7 +5351,10 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   that three builds running), and who_mount contains no box.hidden = true anywhere. An assertion
   that a thing is gone is the only kind that stops it coming back.
   drawer.js v=182, site.css v=24, bumped on all fifteen pages.
-  Thirty-two suites, 909 assertions. Green.
+  gate_all_test grew three where it had one: it used to assert the box was gone for a guest,
+  which was the bug wearing a test's clothes. Now it asserts the box is THERE and says whose job
+  it is.
+  Thirty-two suites, 873 assertions. Green.
   Left for him: open a recording and the box is there with a reason, whatever state he is in.
   Still no new trace.
 - NEXT → add entry 361 here (codename · bN · change) — every prompt that edits the page, no exceptions.
