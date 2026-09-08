@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "346 signin_make",
+        id: "347 signin_paste",
         expanded: true,
+        nodes: [
+          { text: "347 signin_paste", children: [
+            { text: "prompt_restate", children: [
+              { text: "The copy button in step C does not work." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I can't copy the program in step C" }
+            ]},
+            { text: "why_this_one_mattered", children: [
+              { text: "it is the only step in the runbook with no manual alternative" },
+              { text: "every other step is a click you can find by looking" }
+            ]},
+            { text: "i_could_not_reproduce_it", children: [
+              { text: "the sandbox has no route to vampsf.com; your mac's shell has no network either" },
+              { text: "both ends blind, three candidates: a 404 on the path, a CORS or cache refusal, or safari voiding the clipboard because writeText came after an await" },
+              { text: "so rather than guess, the fetch is gone. all three disappear with it" }
+            ]},
+            { text: "the_page_carries_it_now", children: [
+              { text: "the worker sits inline in the page" },
+              { text: "the tap copies from that string with nothing awaited first" },
+              { text: "execCommand behind it for older browsers" }
+            ]},
+            { text: "the_honesty_moves_into_the_suite", children: [
+              { text: "the fetch was buying \"no second copy anywhere to drift\"" },
+              { text: "the suite now compares the embedded text to the committed file byte for byte" },
+              { text: "edit the worker without rebuilding the page and it goes red \u2014 stronger than a fetch, because it fails at build time instead of in your hands" }
+            ]},
+            { text: "two_ways_out_that_do_not_use_the_clipboard", children: [
+              { text: "\"show it\" opens the program on the page in a selectable box" },
+              { text: "a link in C1 to the raw file on github" },
+              { text: "C1 says all three give exactly the same thing" },
+              { text: "a step with one mechanism and no fallback is what stranded you" }
+            ]},
+            { text: "signin_steps_test 65, up nine \u2014 including that the tap asks the network for NOTHING, watched request by request, because that is the actual fix" },
+            { text: "twenty-seven suites, 687 assertions. green." },
+            { text: "the page is 53 KB now, up from 40. the worker is 11 KB of that. worth it." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "346 signin_make",
+        expanded: false,
         nodes: [
           { text: "346 signin_make", children: [
             { text: "prompt_restate", children: [

@@ -4685,7 +4685,34 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Re-ran twenty-seven suites, 678 assertions. Green.
   Nothing else touched. No version bump.
   Still no new trace.
-- NEXT → add entry 339 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 339 signin_paste · b347 · the program is carried BY the runbook now, not fetched at the tap.
+  He said he could not copy it, which is the one step in the whole runbook that has no manual
+  alternative — every other step is a click he can find by looking.
+  The old button fetched cloudflare/vampjam_auth_worker.js off the site at the moment of the tap,
+  and I could not reproduce the failure from here: the sandbox has no route to vampsf.com and his
+  Mac's shell has no network either, so both ends were blind. Rather than guess which of the three
+  candidates it was — a 404 on the path, a CORS or cache refusal, or Safari voiding the clipboard
+  because writeText came after an await — the fetch is gone. All three disappear with it.
+  The page now carries the worker inline in a `script type="text/plain"` and the tap copies from
+  that string synchronously, with nothing awaited before writeText. execCommand behind it for
+  older browsers.
+  What the fetch was buying was honesty: "there is no second copy anywhere to drift out of date."
+  That guarantee moves into the suite, which compares the embedded text to the committed file byte
+  for byte. Edit the worker without rebuilding the page and signin_steps_test goes red. That is a
+  stronger guarantee than a fetch, because it fails at build time rather than in his hands.
+  And because the clipboard can still refuse for reasons that are none of the page's business,
+  there are now two ways out that do not use it: a "show it" button that opens the program on the
+  page in a selectable box, and a link in C1 to the raw file on GitHub. C1 says all three give
+  exactly the same thing. A step with one mechanism and no fallback is what stranded him.
+  signin_steps_test 65, up nine: the page carries the program; it is the committed worker byte for
+  byte; one tap copies it; the tap asks the network for NOTHING (asserted by watching requests,
+  because that is the actual fix); show it opens, holds the same bytes, is selectable, toggles to
+  hide it, and closes; and C1 names both ways out.
+  Re-ran twenty-seven suites, 687 assertions. Green.
+  The page is 53 KB now, up from 40 — the worker is 11 KB of that. Worth it.
+  Nothing else touched. No version bump.
+  Still no new trace.
+- NEXT → add entry 340 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

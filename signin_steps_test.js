@@ -205,17 +205,50 @@ let STATUS = null;           // null = the worker is not there at all
   ok('one of a thing reads as one', /1 person on the list/.test(s3) && /1 recording is private/.test(s3), s3);
 
   // ---------- the program it hands over ----------
-  await p.click('#copy_code'); await p.waitForTimeout(700);
+  // it used to fetch the file at the moment of the tap. that put a network call, a path
+  // and safari's clipboard-after-await rule between him and the thing he needed, and it
+  // failed on him. the page carries the program now, so this suite is what guarantees it
+  // matches what is committed - there is no fetch left to guarantee it at run time.
+  const carried = await p.evaluate(() => {
+    const e = document.getElementById('worker_src');
+    return e ? e.textContent : null;
+  });
+  ok('the page carries the program itself',  typeof carried === 'string' && carried.length > 5000,
+     carried === null ? 'no worker_src' : carried.length);
+  ok('and it is the committed worker, byte for byte', carried === WORKER,
+     (carried || '').length + ' vs ' + WORKER.length);
+
+  await p.click('#copy_code'); await p.waitForTimeout(400);
   const cc = await p.evaluate(async () => ({
     clip: await navigator.clipboard.readText().catch(() => ''),
     lab:  document.querySelector('#copy_code small').textContent
   }));
-  ok('the copy button hands over the committed worker, byte for byte', cc.clip === WORKER,
-     cc.clip.length + ' vs ' + WORKER.length);
+  ok('one tap copies it',          cc.clip === WORKER, cc.clip.length + ' vs ' + WORKER.length);
   ok('and says what it just did',  /copied/.test(cc.lab) && /KB/.test(cc.lab) && /Edit code/.test(cc.lab), cc.lab);
-  await p.waitForTimeout(6400);
+  await p.waitForTimeout(6200);
   const cc2 = await p.textContent('#copy_code small');
   ok('then goes back to inviting a tap', /tap to copy/.test(cc2), cc2);
+
+  // nothing may go over the wire for this - that is the fix
+  const wire = [];
+  p.on('request', r => { if (/vampjam_auth_worker/.test(r.url())) wire.push(r.url()); });
+  await p.click('#copy_code'); await p.waitForTimeout(500);
+  ok('and asks the network for nothing', wire.length === 0, wire.join(','));
+
+  // ---------- the way out when the clipboard will not play ----------
+  await p.click('#show_code'); await p.waitForTimeout(200);
+  const box = await p.evaluate(() => {
+    const b = document.getElementById('code_box');
+    return { open: !b.hidden, text: b.textContent, lab: document.getElementById('show_code').textContent,
+             sel: getComputedStyle(b).userSelect || getComputedStyle(b).webkitUserSelect };
+  });
+  ok('show it opens the program on the page',  box.open === true, box.open);
+  ok('with the same bytes in it',              box.text === WORKER, box.text.length);
+  ok('and it is selectable by hand',           box.sel !== 'none', box.sel);
+  ok('the button turns into hide it',          /hide it/.test(box.lab), box.lab);
+  await p.click('#show_code'); await p.waitForTimeout(150);
+  ok('and closes again',
+     await p.evaluate(() => document.getElementById('code_box').hidden === true));
 
   // ---------- the secret ----------
   const shown = () => p.evaluate(() =>
@@ -266,6 +299,9 @@ let STATUS = null;           // null = the worker is not there at all
   ok('and rules out the four that look plausible',
      /Not GitHub, not a template, not upload/.test(say.text)
      && /Continue to Pages/.test(say.text), 0);
+  ok('c1 names both ways out when copying fails',
+     /could not copy/.test(say.text) && /show it/.test(say.text)
+     && /raw\.githubusercontent\.com/.test(say.out.join(' ')), 0);
   ok('the worker name is given exactly, and the taken case handled',
      /vampjam-auth/.test(say.text) && /lower case/.test(say.text)
      && /name is taken/.test(say.text), 0);
