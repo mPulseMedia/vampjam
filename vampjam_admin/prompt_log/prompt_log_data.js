@@ -44,7 +44,7 @@ window.prompt_log_data = [
             ]},
             { text: "tests", children: [
               { text: "five suites rewritten: who_name, gate_all, who_add, signin_here, signin_ask" },
-              { text: "thirty-five suites, green" }
+              { text: "thirty-five suites, 958 assertions, green" }
             ]},
             { text: "codename_list", children: [
               { text: "share_mine \u00b7 mount \u00b7 ask_h \u00b7 ask_w" }

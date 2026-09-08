@@ -5463,7 +5463,7 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   intact and is still the reason that test exists.
   Five suites rewritten: who_name, gate_all, who_add, signin_here, signin_ask.
   drawer.js v=187.
-  Thirty-five suites. Green.
+  Thirty-five suites, 958 assertions. Green.
   Left for him: hard reload, then look at a recording signed out and signed in.
   Still no new trace.
 - NEXT → add entry 366 here (codename · bN · change) — every prompt that edits the page, no exceptions.
