@@ -4995,7 +4995,37 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   says so.
   Twenty-eight suites, 770 assertions. Green — no code moved.
   Still no new trace.
-- NEXT → add entry 349 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 349 promote_menu · b357 · secret_run.svg, and the third correction of the same mistake.
+  He asked for a drawing of how to make the secret run, from his own screenshot. The screenshot
+  answered two things at once.
+  First: it is already done. Active deployment reads 96a945f0, which IS the top row of Version
+  History, so AUTH_SECRET is running. do-this-next's item 1 is now a note saying so rather than a
+  task, and 2 and 3 became 1 and 2.
+  Second, and worse: there is no "Promote deployment" button on that screen. I said there was, in
+  342 and again in 348, and drew one. What actually promotes a version is the "…" at the right end
+  of its row in Version History, and "Deploy this version" inside that menu. Both pages corrected,
+  and C3 says outright that no such button exists — because he read it twice and looked for it
+  twice, and a runbook that quietly drops a wrong instruction leaves him wondering whether he
+  missed something.
+  This is the third vendor screen in this run that I described from memory after his screenshot
+  had already shown me otherwise, and the second time after writing "read the vendor's docs before
+  drawing the screen" into this file. The docs were not enough either: Cloudflare's own page says
+  "Select Deploy to implement your changes", which is true of the add-a-variable modal and says
+  nothing about promoting. The rule that actually holds is narrower: draw only what is in a
+  screenshot of HIS screen, and when there is none, say which part is a guess.
+  secret_run.svg is the full drawing he asked for, at 900x560 — the real sidebar, the real tabs,
+  the Active deployment card with its six columns, seven version rows, the … menu drawn open, and
+  three numbered callouts. Plus a green panel saying his is already done, because a runbook that
+  cannot tell him he has finished is a runbook he keeps re-reading. Committed as a file so it can
+  be opened on its own.
+  C3's inline drawing redrawn to match at phone size: the ringed …, the menu open beneath it, the
+  Active deployment line ringed in green with "must match the top row below", and a line under it
+  saying there is no big Deploy button.
+  Also told him what the 404 was: he opened a file card, claudeusercontent.com/signin_steps.html,
+  which is the chat's preview host and not the site.
+  signin_steps_test 74, up two. Twenty-eight suites, 772 assertions. Green.
+  Still no new trace.
+- NEXT → add entry 350 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

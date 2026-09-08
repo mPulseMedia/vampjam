@@ -9,8 +9,47 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "356 next_now",
+        id: "357 promote_menu",
         expanded: true,
+        nodes: [
+          { text: "357 promote_menu", children: [
+            { text: "prompt_restate", children: [
+              { text: "Draw an SVG of how I make the secret run, from this screen." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "draw an svg of how I Make the secret run based on this image." },
+              { text: "also... [screenshot: claudeusercontent.com/signin_steps.html \u2014 404]" }
+            ]},
+            { text: "your_screenshot_answered_two_things", children: [
+              { text: "it is already done \u2014 Active deployment reads 96a945f0, which IS the top row" },
+              { text: "AUTH_SECRET is running. nothing left on cloudflare" },
+              { text: "do-this-next item 1 is a note now, not a task" }
+            ]},
+            { text: "and_i_had_it_wrong_again", children: [
+              { text: "there is no \"Promote deployment\" button on that screen" },
+              { text: "I said there was, twice, and drew one" },
+              { text: "it is the \u2026 at the right end of the row, then Deploy this version" },
+              { text: "C3 now says outright that no such button exists \u2014 you looked for it twice" }
+            ]},
+            { text: "the_rule_i_wrote_was_not_enough", children: [
+              { text: "third vendor screen this run described from memory after your screenshot had shown me otherwise" },
+              { text: "and the docs did not save me: cloudflare says \"Select Deploy to implement your changes\", which is true of the add-a-variable box and silent about promoting" },
+              { text: "narrower rule: draw only what is in a screenshot of YOUR screen, and where there is none, say which part is a guess" }
+            ]},
+            { text: "secret_run_svg", children: [
+              { text: "900x560, the real sidebar and tabs, the Active deployment card, seven version rows, the \u2026 menu drawn open" },
+              { text: "three numbered callouts, and a green panel saying yours is done" },
+              { text: "a runbook that cannot tell you that you have finished is one you keep re-reading" }
+            ]},
+            { text: "the 404 was a file card \u2014 claudeusercontent.com is the chat's preview host, not the site" },
+            { text: "signin_steps_test 74. twenty-eight suites, 772 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "356 next_now",
+        expanded: false,
         nodes: [
           { text: "356 next_now", children: [
             { text: "prompt_restate", children: [

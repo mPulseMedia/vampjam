@@ -67,25 +67,18 @@
 <div class="sub">This page only ever holds things that are <b>waiting on you</b>. If it's empty, nothing is.
 Everything else I do myself — you don't need to act on anything I send into the chat.</div>
 
+<div class="why">
+  <b>The worker is running.</b> Its Active deployment reads <b>96a945f0</b>, which is the newest
+  version, so <b>AUTH_SECRET</b> is live. That was step 1 and it is done — nothing to do on
+  Cloudflare at all now.
+  <br><br>
+  For the record, because I got it wrong twice: promoting a version is <b>not</b> a "Promote
+  deployment" button. It is the <b>…</b> at the right end of the newest row in Version History,
+  then <b>Deploy this version</b>. There is no such button on that screen.
+</div>
+
 <div class="one_thing">
   <div class="one_num">1</div>
-  <div>
-    <div class="one_title">Make the secret run</div>
-    <div class="one_why">You added <b>AUTH_SECRET</b> to the worker and it saved as a version
-    that was never deployed — so the worker is still running a copy from before it existed. That
-    is why nothing you type into the site sticks. In Cloudflare:
-    <b>vampjam-auth</b> → <b>Deployments</b> → <b>Promote deployment</b> → the <b>newest</b> row.
-    One click.</div>
-  </div>
-</div>
-
-<div class="why">
-  <a href="signin_steps.html"><b>Check whether it is already done →</b></a> — the panel at the top
-  of that page asks the worker itself. If <b>AUTH_SECRET is set</b> is lit, skip this and go to 2.
-</div>
-
-<div class="one_thing">
-  <div class="one_num">2</div>
   <div>
     <div class="one_title">Put your own number back</div>
     <div class="one_why">The first number added became the administrator and it has a typo in it —
@@ -106,7 +99,7 @@ Everything else I do myself — you don't need to act on anything I send into th
 </div>
 
 <div class="one_thing">
-  <div class="one_num">3</div>
+  <div class="one_num">2</div>
   <div>
     <div class="one_title">Check one name I guessed</div>
     <div class="one_why">I renamed

@@ -297,9 +297,17 @@ let STATUS = null;           // null = the worker is not there at all
      /does <b>not<\/b> put it to work/.test(say.html)
      && /no Deploy button on that page/i.test(say.text)
      && /Deployments<\/b> tab/.test(say.html), 0);
-  ok('and names the action by cloudflare\'s own word',
-     /Promote deployment/.test(say.text) && /newest<\/b> row/.test(say.html)
-     && /complete snapshot, not a change/.test(say.text), 0);
+  // there is no "Promote deployment" button on that screen. I said there was,
+  // twice, from memory. It is the … menu on the row itself.
+  ok('it points at the menu on the row, not a button',
+     /the <b>…<\/b> at the right-hand\s+end/.test(say.html)
+     && /Deploy this version/.test(say.text)
+     && /newest<\/b> row/.test(say.html), 0);
+  ok('and says outright that no such button exists',
+     /no big button for this/.test(say.text)
+     && /no such control on that screen/.test(say.text), 0);
+  ok('and it is still newest only, once',
+     /complete snapshot, not a change/.test(say.text), 0);
   // the part he will actually use lives on the recording, not here
   ok('it sends him to the bottom of a recording, not an admin page',
      /bottom of each recording/i.test(say.text)
