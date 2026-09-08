@@ -1,1 +1,1 @@
-admin_redo
+auto_commit

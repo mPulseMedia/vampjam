@@ -4917,7 +4917,33 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   who_add_test 72, up eleven.
   Twenty-eight suites, 759 assertions. Green.
   Still no new trace.
-- NEXT → add entry 346 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 346 admin_redo · b354 · a typo in the very first number stops being permanent.
+  He made the first number the administrator and mistyped it. That number is the only one that can
+  change the list, and a number cannot be read back out of an id — that is the whole point of
+  storing a hash. So a single wrong keystroke locked him out of his own site permanently, and the
+  only way back was me editing the repo by hand. A design where a typo needs the author to fix it
+  is a broken design, not bad luck.
+  What is on GitHub: one admin, one person, label Paul, last4 0105. The last four are RIGHT — his
+  number ends 0105 — so the mistake is somewhere in the first six digits, and there is no way to
+  tell which from what is stored. That closes off any clever repair and leaves starting over.
+  So: while the list holds at most one person, nobody else, and nothing is actually private, the
+  site reads it as not started. The box says so — "one number is here so far (ending 0105), and
+  nothing is private yet, so nothing is really set up" — and the next number added REPLACES admins
+  and people rather than joining them. It even says why you would want that: use it if the first
+  one had a typo in it.
+  The safety of this is the state itself, not a check: in that state nothing is protected. Nobody
+  is kept out of anything, so there is nothing for a stranger to take. The moment there are two
+  people on the list, or one recording is closed, the door shuts and the box asks for a sign-in
+  instead. Both halves asserted.
+  Also caught, and worth writing down: raw.githubusercontent has the populated access.json and the
+  Mac's git tree does not. The sync worker writes to GitHub; the Mac's auto-push robot commits the
+  Mac's tree. Two writers, one file, and the Mac's copy is the stale one. Nothing was lost this
+  time because the Mac's copy has not been touched since, but this will bite. It wants its own
+  build: either the robot leaves access.json alone, or the page stops writing through the worker.
+  who_add_test 80, up eight.
+  Twenty-eight suites, 767 assertions. Green.
+  Still no new trace.
+- NEXT → add entry 347 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
