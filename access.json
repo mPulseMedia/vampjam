@@ -1,22 +1,11 @@
 {
   "ok": true,
-  "admins": [
-    "KHRwn2gMUVIvJf-ARXIny04vWFdAZIiNtcdRVQx3g3I"
-  ],
-  "people": [
-    {
-      "id": "KHRwn2gMUVIvJf-ARXIny04vWFdAZIiNtcdRVQx3g3I",
-      "id7": "m80KjC-Kg12Lvz4lYE7jP2Kjot2XGZcTAwnwuymI0q4",
-      "label": "Eileen",
-      "last4": "9506"
-    }
-  ],
+  "admins": [],
+  "people": [],
   "sessions": {
     "session.html?p=2026_09_05_san_francisco_5_44_14p": {
       "mode": "list",
-      "allow": [
-        "KHRwn2gMUVIvJf-ARXIny04vWFdAZIiNtcdRVQx3g3I"
-      ]
+      "allow": []
     }
   }
 }
