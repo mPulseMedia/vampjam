@@ -30,22 +30,18 @@ function fresh_access(ids) {
 }
 const ENV = {
   AUTH_SECRET: 'test-secret-that-is-long-enough-0123456789',
-  TWILIO_SID: 'ACtest', TWILIO_TOKEN: 'tok', TWILIO_FROM: '+15005550006',
   SITE: 'https://vampsf.com',
 };
 
 (async () => {
   const worker = (await import(path.join(DIR, 'cloudflare', 'vampjam_auth_worker.js'))).default;
 
-  // the worker's own fetch: intercept Twilio and the raw access.json
+  // the worker's own fetch: only the raw access.json now — nothing is sent anywhere
   const realFetch = global.fetch;
   global.fetch = async (u, opt) => {
     const s = String(u && u.url ? u.url : u);
-    if (s.includes('api.twilio.com')) {
-      const body = new URLSearchParams((opt && opt.body) || '');
-      texts.push({ to: body.get('To'), body: body.get('Body') });
-      return new Response('{"sid":"SM1"}', { status: 201 });
-    }
+    if (s.includes('api.twilio.com')) { texts.push({ to: 'SHOULD NEVER HAPPEN' });
+      return new Response('{}', { status: 500 }); }
     if (s.includes('access.json')) return new Response(JSON.stringify(ACCESS), { status: 200 });
     return realFetch(u, opt);
   };
@@ -65,7 +61,7 @@ const ENV = {
   const cp2 = await call('claim_admin', { phone: '(415) 555 0000' });
   ok('and only while it IS empty',              cp2.status === 403, cp2.status + ' ' + cp2.j.error);
 
-  const paulSess = (await call('check', { t: (await call('start', { phone: '415-555-7777' }), texts.pop().body.match(/t=([^\s]+)/)[1]) })).j.session;
+  const paulSess = (await call('enter', { phone: '415-555-7777' })).j.session;
   ok('the admin can sign in',                   !!paulSess, !!paulSess);
 
   const gm = await call('grant_id', { phone: MATT, t: paulSess });
@@ -78,37 +74,25 @@ const ENV = {
   ids.matt = gm.j.id; ids.kathy = gk.j.id;
   ACCESS = fresh_access(ids);
 
-  // ---------- the text ----------
+  // ---------- the whole sign-in, now that there is no text ----------
   texts = [];
-  const st = await call('start', { phone: '(415) 555-1212' });
-  ok('a listed number gets a text',              st.j.ok === true, JSON.stringify(st.j));
-  ok('sent to that number, in E.164',            texts.length === 1 && texts[0].to === MATT, texts[0] && texts[0].to);
-  ok('and the reply masks it back',              st.j.sent_to === '(•••) •••-1212', st.j.sent_to);
-  ok('the text carries a vampsf link',           /https:\/\/vampsf\.com\/signin\.html\?t=/.test(texts[0].body), texts[0].body);
-  ok('and says how long it lasts',               /ten minutes|10 minutes/.test(texts[0].body), texts[0].body);
-  const link = texts[0].body.match(/t=([^\s]+)/)[1];
-
-  texts = [];
-  const no = await call('start', { phone: STRANGER });
-  ok('a number NOT on the list gets nothing',    no.status === 403 && no.j.error === 'not_listed', no.status);
-  ok('and no text is sent',                      texts.length === 0, texts.length);
-  const bad = await call('start', { phone: '12' });
-  ok('nonsense is refused before Twilio',        bad.status === 400 && texts.length === 0, bad.status);
-
-  // ---------- the link ----------
-  const ck = await call('check', { t: link });
-  ok('tapping the link signs you in',            ck.j.ok && ck.j.session, JSON.stringify(ck.j).slice(0, 80));
-  ok('it knows who you are',                     ck.j.label === 'Matt', ck.j.label);
-  ok('and what you may open',                    JSON.stringify(ck.j.allow) === JSON.stringify([PAGE_A]), JSON.stringify(ck.j.allow));
-  ok('you are not an admin',                     ck.j.admin === false, ck.j.admin);
+  const ck = await call('enter', { phone: '(415) 555-1212' });
+  ok('a listed number is signed in on the spot',  ck.j.ok && !!ck.j.session, JSON.stringify(ck.j).slice(0, 80));
+  ok('and nothing is sent anywhere',              texts.length === 0, texts.length);
+  ok('it knows who you are',                      ck.j.label === 'Matt', ck.j.label);
+  ok('and what you may open',                     JSON.stringify(ck.j.allow) === JSON.stringify([PAGE_A]), JSON.stringify(ck.j.allow));
+  ok('you are not an admin',                      ck.j.admin === false, ck.j.admin);
   const mattSess = ck.j.session;
 
-  const forged = await call('check', { t: link.split('.')[0] + '.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' });
-  ok('a forged signature is refused',            forged.status === 400, forged.status);
-  const swapped = await call('check', { t: mattSess });
-  ok('a session token is not a sign-in link',    swapped.status === 400, swapped.status);
-  const asLink = await worker.fetch(new Request('https://auth.example/?op=me&t=' + encodeURIComponent(link)), ENV);
-  ok('and a sign-in link is not a session',      (await asLink.json()).signed_in === false, '');
+  const no = await call('enter', { phone: STRANGER });
+  ok('a number NOT on any list is refused',       no.j.ok === false && no.j.unknown === true, JSON.stringify(no.j));
+  ok('and told so rather than left waiting',      /not on any list/.test(no.j.why || ''), no.j.why);
+  ok('with no session handed out',                !no.j.session, no.j.session);
+  const bad = await call('enter', { phone: '12' });
+  ok('nonsense is refused as a number',           bad.j.ok === false && !bad.j.unknown, JSON.stringify(bad.j));
+
+  const forged = await call('me', { t: mattSess.split('.')[0] + '.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' });
+  ok('a forged signature is refused',             forged.j.signed_in === false, JSON.stringify(forged.j));
 
   // ---------- me ----------
   const meR = await worker.fetch(new Request('https://auth.example/?op=me&t=' + encodeURIComponent(mattSess)), ENV);
@@ -215,21 +199,7 @@ const ENV = {
   // signed in as Kathy — same page, not shared with her
   p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (kathy): ' + e.message); });
-  const kLink = (await (async () => {
-    texts = []; const rf = global.fetch;
-    global.fetch = async (u, opt) => {
-      const s = String(u && u.url ? u.url : u);
-      if (s.includes('api.twilio.com')) { const bd = new URLSearchParams((opt && opt.body) || '');
-        texts.push({ body: bd.get('Body') }); return new Response('{}', { status: 201 }); }
-      if (s.includes('access.json')) return new Response(JSON.stringify(ACCESS), { status: 200 });
-      return rf(u, opt);
-    };
-    await call('start', { phone: KATHY });
-    const tk = texts[0].body.match(/t=([^\s]+)/)[1];
-    const c = await call('check', { t: tk });
-    global.fetch = rf;
-    return c.j.session;
-  })());
+  const kLink = (await call('enter', { phone: KATHY })).j.session;
   await p.addInitScript(t => { try { localStorage.setItem('vampjam_signin', t); } catch (e) {} }, kLink);
   await p.goto('https://vampsf.com/session.html?p=a1');
   await p.waitForTimeout(2000);
@@ -260,30 +230,35 @@ const ENV = {
   await p.click('#go');
   await p.waitForTimeout(900);
   const said = await p.evaluate(() => document.getElementById('say').textContent);
-  ok('signin says plainly when a number is not listed', /not on the list/.test(said), said);
+  ok('signin says plainly when a number is not listed', /not on any list/.test(said), said);
   await p.fill('#phone', MATT);
   texts = [];
   await p.click('#go');
   await p.waitForTimeout(1200);
-  const said2 = await p.evaluate(() => document.getElementById('say').textContent);
-  ok('and confirms the text, masked',            /••••-?1212|•-1212|1212/.test(said2), said2);
-  await p.close();
-
-  p = await ctx.newPage();
-  p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (land): ' + e.message); });
-  await p.addInitScript(signed_out);
-  const linkTok = texts[0].body.match(/t=([^\s]+)/)[1];
-  await p.goto('https://vampsf.com/signin.html?t=' + linkTok);
-  await p.waitForTimeout(1600);
-  const landed = await p.evaluate(() => ({
+  const inNow = await p.evaluate(() => ({
     head: document.getElementById('head').textContent,
     who: document.getElementById('who').textContent,
-    stored: (() => { try { return !!localStorage.getItem('vampjam_signin'); } catch (e) { return false; } })(),
+    stored: (() => { try { return !!localStorage.getItem('vampjam_signin'); } catch (e) { return false; } })()
+  }));
+  ok('a listed number signs in from the page itself',
+     inNow.stored && /Signed in/.test(inNow.head), JSON.stringify(inNow).slice(0, 120));
+  ok('and greets you by name',                   /Matt/.test(inNow.who), inNow.who);
+  ok('and nothing was texted',                   texts.length === 0, texts.length);
+  await p.close();
+
+  // a stale ?t= bookmark from the old link era must not break the page
+  p = await ctx.newPage();
+  p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (stale): ' + e.message); });
+  await p.addInitScript(signed_out);
+  await p.goto('https://vampsf.com/signin.html?t=old_dead_token');
+  await p.waitForTimeout(1200);
+  const stale = await p.evaluate(() => ({
+    head: document.getElementById('head').textContent,
+    ask: !document.getElementById('ask').hidden,
     url: location.search
   }));
-  ok('landing on the link signs the phone in',   landed.stored && /Signed in/.test(landed.head), JSON.stringify(landed).slice(0, 120));
-  ok('and greets you by name',                   /Matt/.test(landed.who), landed.who);
-  ok('the token is taken out of the address bar', !/t=/.test(landed.url), landed.url);
+  ok('an old link just asks for the number',     stale.ask && /Sign in/.test(stale.head), JSON.stringify(stale));
+  ok('and the dead token is taken out of the address', !/t=/.test(stale.url), stale.url);
   await p.close();
 
   // ---------- signin_show: it is reachable, and it says how far along it is ----------
@@ -360,13 +335,14 @@ const ENV = {
   ok('and how much is actually gated',      /1 recording is private/.test(setup.text), setup.text.slice(0, 200));
   const stat = await (await worker.fetch(new Request('https://auth.example/?op=status'), ENV)).json();
   ok('the readout never carries a secret',
-     !JSON.stringify(stat).includes(ENV.AUTH_SECRET) && !JSON.stringify(stat).includes(ENV.TWILIO_TOKEN),
+     !JSON.stringify(stat).includes(ENV.AUTH_SECRET),
      JSON.stringify(stat));
-  ok('and masks the sending number',        stat.from === '•••0006', stat.from);
+  ok('and reports nothing about texting any more', stat.twilio === undefined && stat.from === undefined,
+                                            JSON.stringify(stat));
 
   // a worker with nothing configured still answers, and says nothing is
   const bare = await (await worker.fetch(new Request('https://auth.example/?op=status'), { })).json();
-  ok('an unconfigured worker still reports', bare.ok === true && bare.secret === false && bare.twilio === false,
+  ok('an unconfigured worker still reports', bare.ok === true && bare.secret === false,
                                              JSON.stringify(bare));
   await p.close();
 

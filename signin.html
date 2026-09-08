@@ -7,10 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=21">
+<link rel="stylesheet" href="site.css?v=22">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=130"></script>
-<script src="drawer.js?v=165"></script>
+<script src="drawer.js?v=166"></script>
 <style>
   h1 { text-align: center; font-size: 22px; margin: 6px 0 4px; }
   .lede { text-align: center; color: var(--muted); margin: 0 auto 18px; max-width: 420px; line-height: 1.5; }
@@ -52,12 +52,12 @@
 </header>
 
 <h1 id="head">Sign in</h1>
-<div class="lede" id="lede">Your phone number, and I'll text you a link. No password.</div>
+<div class="lede" id="lede">Enter your phone number. If it is on the list you are in — no text message, no password, no waiting.</div>
 
 <div class="box" id="ask">
   <input type="tel" id="phone" inputmode="tel" autocomplete="tel"
          placeholder="(415) 555 1212" aria-label="Your phone number">
-  <button class="go" id="go">Text me a link</button>
+  <button class="go" id="go">Sign in</button>
 </div>
 
 <div class="say" id="say" role="status"></div>
@@ -123,49 +123,33 @@
     });
   }
 
-  // ---- arriving from the text ----
-  var t = null;
-  try { t = new URLSearchParams(location.search).get('t'); } catch (e) {}
-  if (t) {
-    head.textContent = 'Signing you in…';
-    lede.textContent = '';
-    ask.hidden = true;
-    fetch(A.url + '?op=check&t=' + encodeURIComponent(t), { cache: 'no-store' })
-      .then(function (r) { return r.json(); })
-      .then(function (j) {
-        if (!j.ok) throw new Error(j.error === 'not_listed'
-          ? 'That number is not on the list — ask Paul to add it.' : (j.error || 'sign-in failed'));
-        A.set(j.session);
-        try { history.replaceState(null, '', 'signin.html'); } catch (e) {}
-        show_signed_in(j);
-      })
-      .catch(function (err) {
-        head.textContent = 'Sign in';
-        lede.textContent = "Your phone number, and I'll text you a link. No password.";
-        ask.hidden = false;
-        tell(err.message, true);
-      });
-  } else {
-    // ---- already signed in? ----
-    A.me().then(function (j) { if (j.signed_in) show_signed_in(j); });
-  }
+  // ---- already signed in? ----
+  // The link-in-a-text is gone: there is nothing to arrive from any more, so a
+  // ?t= in the address is only ever a stale bookmark. Ignore it and ask.
+  try {
+    if (new URLSearchParams(location.search).get('t'))
+      history.replaceState(null, '', 'signin.html' + location.hash);
+  } catch (e) {}
+  A.me().then(function (j) { if (j.signed_in) show_signed_in(j); });
 
-  // ---- asking for the link ----
+  // ---- the whole sign-in ----
+  // One call. The number is the key: if it is on a list somewhere, the worker
+  // hands back a session and this phone is signed in from here on.
   function send() {
     var v = (phone.value || '').trim();
     if (!v) { phone.focus(); return; }
     go.disabled = true;
-    tell('Sending…');
-    fetch(A.url + '?op=start', {
+    tell('Checking…');
+    fetch(A.url + '?op=enter', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone: v })
     }).then(function (r) { return r.json(); })
       .then(function (j) {
         go.disabled = false;
-        if (j.ok) { tell('Texted to ' + j.sent_to + '. Tap the link — it is good for ten minutes.'); return; }
-        tell(j.error === 'not_listed'
-          ? 'That number is not on the list — ask Paul to add it.'
-          : (j.error || 'Could not send'), true);
+        if (j.ok) { A.set(j.session); show_signed_in(j); return; }
+        tell(j.unknown
+          ? 'That number is not on any list yet. Ask Paul to add it to the recording he wants you to hear.'
+          : (j.why || j.error || 'Could not sign in'), true);
       })
       .catch(function (err) { go.disabled = false; tell('Could not reach the server: ' + err.message, true); });
   }

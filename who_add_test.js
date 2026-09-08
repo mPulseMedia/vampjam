@@ -1,0 +1,199 @@
+// who_add_test — twilio is gone. The number IS the key, and the list of numbers
+// lives at the bottom of the recording it governs. Two halves here:
+//   · the worker, run in node: does a number on a list get in, and does one that
+//     is not on any list get told so rather than left waiting for a text
+//   · the box on the page: paste a block of numbers however they came out of
+//     Messages, see what it understood, and have the recording go private
+const { chromium } = require('playwright');
+const fs = require('fs'), path = require('path');
+const DIR = process.env.VJ_DIR || '/tmp/vj';
+
+let pass = 0, fail = 0;
+const ok = (n, c, g) => { c ? (pass++, console.log('  ok   ' + n))
+                            : (fail++, console.log('  FAIL ' + n + (g !== undefined ? '  got: ' + g : ''))); };
+
+// ---------- half one: the worker, for real ----------
+const SECRET = 'test_secret_that_is_long_enough_to_be_a_secret';
+let ACCESS = { admins: [], people: [], sessions: {} };
+async function worker(op, params, body) {
+  const src = fs.readFileSync(path.join(DIR, 'cloudflare/vampjam_auth_worker.js'), 'utf8');
+  const url = 'https://w.example/?op=' + op + Object.keys(params || {})
+    .map(k => '&' + k + '=' + encodeURIComponent(params[k])).join('');
+  const real = global.fetch;
+  global.fetch = async (u) => String(u).indexOf('access.json') >= 0
+    ? { ok: true, json: async () => ACCESS }
+    : real(u);
+  try {
+    const mod = await import('data:text/javascript;base64,' + Buffer.from(src).toString('base64'));
+    const req = { method: body ? 'POST' : 'GET', json: async () => body || {} };
+    const res = await mod.default.fetch(Object.assign(req, { url }), { AUTH_SECRET: SECRET });
+    return await res.json();
+  } finally { global.fetch = real; }
+}
+
+(async () => {
+  // the worker turns numbers into ids without ever being told who they are
+  const ids = await worker('ids', {}, { phones: ['Dave 415 555 1212', '(650) 555-0000', 'not a number'] });
+  ok('a pasted block comes back understood', ids.ok && ids.people.length === 3, JSON.stringify(ids).slice(0, 120));
+  const good = (ids.people || []).filter(p => p.ok);
+  ok('two of the three were phone numbers',  good.length === 2, good.length);
+  ok('and the third is handed back, not dropped',
+     (ids.people || []).some(p => !p.ok && /not a number/.test(p.line)), 0);
+  ok('the name is kept off the number',      good[0].label === 'Dave', good[0].label);
+  ok('a bare number gets its last four as a name', /0000$/.test(good[1].label), good[1].label);
+  ok('only the last four digits come back',  good[0].phone_last4 === '1212' && !JSON.stringify(good[0]).includes('4155551212'),
+     JSON.stringify(good[0]));
+  ok('the id is opaque and not the number',  good[0].id.length > 20 && !/1212/.test(good[0].id), good[0].id);
+  ok('the same number always makes the same id',
+     (await worker('ids', {}, { phones: ['+1 415-555-1212'] })).people[0].id === good[0].id);
+  ok('the first paste is allowed with no admin', ids.first === true, ids.first);
+
+  // put one of them on one recording, and only that one
+  ACCESS = {
+    admins: [good[0].id], people: good.map(g => ({ id: g.id, label: g.label, last4: g.phone_last4 })),
+    sessions: { '2026_08_14_sound_union.html': { mode: 'list', allow: [good[1].id] } }
+  };
+
+  const inn = await worker('enter', {}, { phone: '650-555-0000' });
+  ok('a number on a list is signed in at once', inn.ok && !!inn.session, JSON.stringify(inn).slice(0, 100));
+  ok('and nothing was texted anywhere',        !/sent_to|link|text/i.test(JSON.stringify(inn)), 0);
+  ok('it gets exactly the one recording',
+     Array.isArray(inn.allow) && inn.allow.length === 1
+     && inn.allow[0] === '2026_08_14_sound_union.html', JSON.stringify(inn.allow));
+  ok('and is not an admin',                    inn.admin === false, inn.admin);
+
+  const adm = await worker('enter', {}, { phone: '4155551212' });
+  ok('the admin gets everything',              adm.ok && adm.allow === '*', adm.allow);
+
+  const no = await worker('enter', {}, { phone: '212-555-9999' });
+  ok('a number on no list is refused',         no.ok === false && no.unknown === true, JSON.stringify(no));
+  ok('and told so plainly, not left waiting',  /not on any list/.test(no.why || ''), no.why);
+  ok('with no session handed out',             !no.session, no.session);
+
+  const junk = await worker('enter', {}, { phone: 'hello' });
+  ok('nonsense is not a phone number',         junk.ok === false && !junk.unknown, JSON.stringify(junk));
+
+  // a session nobody restricted stays open — the gate is opt-in
+  ACCESS.sessions['2026_07_31_sound_union.html'] = { mode: 'open' };
+  const inn2 = await worker('enter', {}, { phone: '650-555-0000' });
+  ok('an unrestricted recording is on everyone\'s list',
+     inn2.allow.indexOf('2026_07_31_sound_union.html') >= 0, JSON.stringify(inn2.allow));
+
+  ok('the worker no longer knows how to text',
+     !/twilio/i.test(fs.readFileSync(path.join(DIR, 'cloudflare/vampjam_auth_worker.js'), 'utf8')), 0);
+
+  // ---------- half two: the box at the bottom of a recording ----------
+  const b = await chromium.launch();
+  const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
+  let WROTE = null, ACC = { admins: [], people: [], sessions: {} };
+  const IDS = { ok: true, first: true, people: [
+    { line: 'Dave 415 555 1212', ok: true, id: 'ID_DAVE', label: 'Dave', phone_last4: '1212' },
+    { line: '650 555 0000',      ok: true, id: 'ID_SAM',  label: '•••0000', phone_last4: '0000' },
+    { line: 'banana',            ok: false }
+  ]};
+  await ctx.route('**/*', async (r) => {
+    const u = r.request().url();
+    const J = (o) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(o) });
+    if (u.indexOf('access.json') >= 0) return J(ACC);
+    if (u.indexOf('vampjam-sync') >= 0) {
+      WROTE = JSON.parse(r.request().postData() || '{}');
+      ACC = JSON.parse(WROTE.content);                 // the write is what the page reads next
+      return J({ ok: true });
+    }
+    if (u.indexOf('op=ids') >= 0) return J(IDS);
+    if (u.indexOf('vampjam-auth') >= 0) return J({ ok: true, signed_in: true, admin: true, allow: '*' });
+    if (u.startsWith('https://vampsf.com/')) {
+      const rel = u.replace('https://vampsf.com/', '').split('?')[0] || 'index.html';
+      const p2 = path.join(DIR, rel);
+      if (fs.existsSync(p2)) {
+        const t = rel.endsWith('.css') ? 'text/css' : rel.endsWith('.js') ? 'application/javascript'
+                : rel.endsWith('.json') ? 'application/json' : 'text/html';
+        return r.fulfill({ status: 200, contentType: t, body: fs.readFileSync(p2) });
+      }
+      return r.fulfill({ status: 404, body: '' });
+    }
+    if (u.indexOf('api.github.com') >= 0) return J([]);
+    return r.fulfill({ status: 204, body: '' });
+  });
+  const p = await ctx.newPage();
+  p.on('pageerror', e => { fail++; console.log('  FAIL pageerror: ' + e.message); });
+  await p.goto('https://vampsf.com/2026_08_14_sound_union.html');
+  await p.waitForTimeout(1200);
+
+  const box = await p.evaluate(() => {
+    const el = document.getElementById('who_box');
+    if (!el) return null;
+    return { shown: !el.hidden, head: el.querySelector('.who_h').textContent,
+             state: el.querySelector('#who_state').textContent,
+             ph: el.querySelector('#who_in').getAttribute('placeholder'),
+             last: el.parentNode.lastElementChild === el || el.compareDocumentPosition(
+               document.getElementById('tag_list')) & Node.DOCUMENT_POSITION_PRECEDING ? true : false };
+  });
+  ok('the box is on the recording',           !!box, box);
+  ok('and it is at the bottom, after the moments', box && box.last === true, box && box.last);
+  ok('named for what it does',                /Who can open this recording/.test(box.head), box.head);
+  ok('it starts open to anyone',              /open — anyone with the link/.test(box.state), box.state);
+  ok('the box says how to paste',             /one per line, or separated by commas/i.test(box.ph), box.ph);
+
+  await p.fill('#who_in', 'Dave 415 555 1212\n650 555 0000\nbanana');
+  await p.click('#who_add');
+  await p.waitForTimeout(700);
+
+  const after = await p.evaluate(() => ({
+    state: document.getElementById('who_state').textContent,
+    chips: [...document.querySelectorAll('.who_chip')].map(c => c.textContent),
+    note:  document.getElementById('who_note').textContent,
+    empty: document.getElementById('who_in').value
+  }));
+  ok('both good numbers become tags',  after.chips.length === 2, JSON.stringify(after.chips));
+  ok('a tag shows the name and the last two digits',
+     /Dave/.test(after.chips[0]) && /••12/.test(after.chips[0]), after.chips[0]);
+  ok('the recording is private now',   /private — 2 people/.test(after.state), after.state);
+  ok('the line that was not a number is reported back',
+     /banana/.test(after.note) && /not phone numbers/.test(after.note), after.note);
+  ok('and the box is cleared for the next paste', after.empty === '', after.empty);
+
+  const w = WROTE && JSON.parse(WROTE.content);
+  ok('the write goes to access.json',  WROTE && WROTE.path === 'access.json', WROTE && WROTE.path);
+  ok('no phone number is in what was written',
+     !/415|555|1212|0000/.test(JSON.stringify(w.people.map(x => x.id)) + JSON.stringify(w.sessions)),
+     JSON.stringify(w.sessions));
+  ok('the last four are kept, because he has to recognise them',
+     w.people.some(x => x.last4 === '1212'), JSON.stringify(w.people));
+  ok('this recording is restricted to those two',
+     w.sessions['2026_08_14_sound_union.html'].mode === 'list'
+     && w.sessions['2026_08_14_sound_union.html'].allow.length === 2,
+     JSON.stringify(w.sessions));
+  ok('and the first one added took the list over',
+     w.admins.length === 1 && w.admins[0] === 'ID_DAVE', JSON.stringify(w.admins));
+  ok('nothing else was restricted',    Object.keys(w.sessions).length === 1, Object.keys(w.sessions).join(','));
+
+  // taking someone off
+  await p.click('.who_chip .who_x');
+  await p.waitForTimeout(500);
+  const w2 = JSON.parse(WROTE.content);
+  ok('the × takes one person off',
+     w2.sessions['2026_08_14_sound_union.html'].allow.length === 1, JSON.stringify(w2.sessions));
+  ok('and leaves them known to the site',  w2.people.length === 2, w2.people.length);
+
+  // and putting it back
+  await p.click('#who_open');
+  await p.waitForTimeout(500);
+  const w3 = JSON.parse(WROTE.content);
+  ok('"let anyone in" opens it again',
+     w3.sessions['2026_08_14_sound_union.html'].mode === 'open', JSON.stringify(w3.sessions));
+  ok('and the state line says so',
+     /open — anyone with the link/.test(await p.textContent('#who_state')), 0);
+
+  // the sign-in page asks for a number and nothing else
+  const si = fs.readFileSync(path.join(DIR, 'signin.html'), 'utf8');
+  ok('signin.html asks the worker to let them in',  /op=enter/.test(si));
+  ok('and no longer sends or waits for a link',     !/op=start|op=check|Text me/.test(si));
+  ok('and says there is no text message',           /no text message/i.test(si));
+  const page = fs.readFileSync(path.join(DIR, '2026_08_14_sound_union.html'), 'utf8');
+  ok('the gate stopped promising a text',           !/text with a link/i.test(page));
+
+  await b.close();
+  console.log('\nwho_add: ' + pass + ' pass, ' + fail + ' fail');
+  process.exit(fail ? 1 : 0);
+})();

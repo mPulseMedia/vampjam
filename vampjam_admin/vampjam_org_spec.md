@@ -4811,7 +4811,50 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Re-ran twenty-seven suites, 695 assertions. Green.
   Nothing else touched. No version bump.
   Still no new trace.
-- NEXT → add entry 343 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 343 signin_number · b351 · Twilio is out. The number IS the key, and the list of numbers moved
+  to the bottom of the recording it governs. He called the text-message half a distraction and he
+  was right: five settings, a toll-free verification queue, and an error code, all to deliver a
+  link that only proves someone can read a text.
+  What replaces it: type a phone number, and if it is on a list anywhere you are signed in. One
+  round trip, no waiting.
+  The honest cost, said on the page and in the worker's own header rather than buried: a phone
+  number is not a password. Anyone who knows a number on a list can be signed in as that person.
+  That is a fair trade for keeping a jam session away from strangers and search engines and an
+  unfair one for anything he would mind being wrong about.
+  worker: start and check are gone, and so is twilio(). `enter` does the whole sign-in. `ids`
+  takes a whole pasted block in one call and returns, per line, an opaque id, the last four
+  digits, and whatever was left of the line to use as a name — so twenty numbers cost one round
+  trip rather than twenty. recognized() is new and it is what makes the design work: a number on
+  ANY one recording's list is known to the site, so pasting it at the bottom of a session is
+  enough on its own and he never has to add anyone twice.
+  Still no phone number in the repo. access.json holds the id, a label and the last four.
+  who_add, in drawer.js so it exists on every session page at once rather than nine times: a box
+  at the bottom headed "Who can open this recording". Paste anything — one per line, commas,
+  "Dave 415 555 1212", however it came out of Messages. Each becomes a tag with the name and the
+  last two digits. Lines that were not numbers are listed back rather than dropped, because a
+  paste that silently loses one is worse than a paste that fails.
+  Adding the first person flips that recording to private. Said in the step, because it is a real
+  consequence of an action that reads like bookkeeping. "Let anyone in" puts it back.
+  Bootstrap: the very first number added anywhere becomes the administrator. Before that the box
+  shows for anybody, or the first list could never be started; after it, admins only.
+  signin.html: one field, one button, no waiting. A stale ?t= from the link era is stripped rather
+  than failing. The gate on all nine pages stopped promising a text.
+  The runbook lost its whole first part and two more steps: 24 → 14, seven parts → five, eight
+  drawings → three. A is make the worker, B paste it, C one setting and the promote, D check, E
+  the part he will actually use — which is not on that page at all, and says so.
+  site.css v=22, drawer.js v=166, and every page normalised to them: seven pages were still asking
+  for v=20 and v=161 and would not have seen this at all.
+  who_add_test is new, 44 assertions, and it runs the real worker in node: a pasted block
+  understood with the junk line handed back; the name kept off the number; the id opaque and
+  stable; a listed number signed in with exactly its own recordings; an unlisted one refused and
+  told so; nothing texted anywhere; then the box on a real page — tags, the recording going
+  private, the × , "let anyone in", and no phone number anywhere in what gets written.
+  signin_test converted rather than retired, 52: the link-fishing is gone, the forgery and gate
+  and session-list assertions stay. signin_steps_test 72.
+  Twenty-eight suites, 731 assertions. Green.
+  Left for him: A through D on Cloudflare, once. Then E, at the bottom of a recording.
+  Still no new trace.
+- NEXT → add entry 344 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

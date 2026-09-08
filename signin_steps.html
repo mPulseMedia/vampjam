@@ -84,9 +84,10 @@ footer a{color:var(--signal)}
   <div class="cap">
     <h2>Where you are right now</h2>
     <p>this is asked of the sign-in program itself, every time you open this page — so it cannot
-    drift from the truth. about twenty minutes end to end, on the Mac. every step below has a
-    picture of the screen you will be looking at; the red ring is the one thing to click. tick
-    them off as you go — the ticks stay put if you close this and come back.</p>
+    drift from the truth. about ten minutes now that the text-message half is gone. every step
+    that lands you on someone else's screen has a picture of it, with a red ring around the one
+    thing to click. tick them off as you go — the ticks stay put if you close this and come
+    back.</p>
   </div>
   <div class="state" id="state"><div><span class="dot wait"></span><span>checking…</span></div></div>
   <div class="cap" style="padding-top:0"><button class="reset" id="recheck">check again</button></div>
@@ -95,52 +96,35 @@ footer a{color:var(--signal)}
 <!-- ================= A ================= -->
 <div class="panel see" data-part="a"><div class="n">A</div><div class="body">
   <div class="cap">
-    <h2>Three things from Twilio</h2>
-    <p>twilio is the company that actually sends the text message. you need three things off their
-    site: an account SID, an auth token, and a phone number to send from. nothing here touches
-    vampsf yet.</p>
+    <h2>Make the worker</h2>
+    <p>a "worker" is a small program of yours that lives on cloudflare — the same place your audio
+    and your session list already live. this one checks whether a phone number is on a list. that
+    is the whole of its job now. you already have vampjam-upload, vampjam-sync and
+    page-agent-keeper there; this is another of the same kind.</p>
   </div>
   <ol class="steps">
     <li data-k="a1"><button class="tick" aria-label="Done">✓</button>
-      Go to <a href="https://console.twilio.com" target="_blank" rel="noopener">console.twilio.com</a>
-      and sign in.
-      <span class="said">You want the page headed <b>Get started with Twilio</b>, with a dark
-      menu down the left: Phone Numbers, Messaging, Voice.</span>
-      <span class="odd">Twilio runs <b>two</b> consoles. If you land on a blue
-      <b>Let's get building</b> instead, that is the newer one — click <b>Twilio Home</b> top left
-      to come back here. Both work; this one is easier, because it keeps both of the things you
-      need on a single card.</span>
+      <a href="https://dash.cloudflare.com" target="_blank" rel="noopener">dash.cloudflare.com</a>,
+      sign in. Left menu: <b>Compute</b> → <b>Workers &amp; Pages</b>.
+      <span class="said">Your own workers listed, and a blue <b>Create application</b> right of
+      the heading.</span>
+      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span><svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="20" rx="8" fill="#f6f7f8"/><circle cx="32" cy="26" r="5" fill="#f6821f"/><text x="44" y="30" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">dash.cloudflare.com</text><rect x="20" y="36" width="86" height="150" fill="#fafafa"/><text x="28" y="54" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">Account home</text><text x="28" y="76" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">Compute</text><rect x="26" y="82" width="76" height="14" rx="4" fill="#eef1f4"/><text x="32" y="92" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#101820">Workers &amp; Pages</text><text x="118" y="56" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#101820">Workers &amp; Pages</text><rect x="252" y="46" width="70" height="16" rx="5" fill="#1b6be0"/><text x="287" y="57" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="600" fill="#fff" text-anchor="middle">Create application</text><rect x="118" y="76" width="204" height="20" rx="5" fill="#fff" stroke="#e6e8ea"/><text x="126" y="89" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">page-agent-keeper</text><rect x="118" y="100" width="204" height="20" rx="5" fill="#fff" stroke="#e6e8ea"/><text x="126" y="113" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">vampjam-upload</text><rect x="118" y="124" width="204" height="20" rx="5" fill="#fff" stroke="#e6e8ea"/><text x="126" y="137" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">vampjam-sync</text><rect x="247" y="41" width="80" height="26" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
     </li>
 
     <li data-k="a2"><button class="tick" aria-label="Done">✓</button>
-      <b>Scroll to the bottom</b> of that dashboard. Bottom left there is a card headed
-      <b>Account Info</b>. Copy the <b>Account SID</b> — the copy icon is at the right of the box.
-      Paste it into Notes for a minute.
-      <span class="said">A long string starting <b>AC</b>. Not secret, but it is half of a pair.</span>
-      <span class="mini_cap">drawn from twilio's own screen, not yours</span>
-      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">console.twilio.com — account dashboard, bottom</text><rect x="20" y="38" width="92" height="148" fill="#1b2733"/><rect x="26" y="44" width="80" height="16" rx="4" fill="#2b3a4a"/><text x="32" y="56" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#fff">Account Dashboard</text><text x="34" y="78" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Phone Numbers</text><text x="34" y="96" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Messaging</text><text x="34" y="114" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Voice</text><text x="34" y="132" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Email</text><text x="34" y="150" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Verify</text><rect x="124" y="46" width="200" height="130" rx="6" fill="#fff" stroke="#dfe4e9"/><text x="136" y="66" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#101820">Account Info</text><text x="136" y="90" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Account SID</text><rect x="136" y="96" width="150" height="20" rx="4" fill="#f6f7f9" stroke="#dfe4e9"/><text x="143" y="110" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">AC23e753…6ac31d381</text><rect x="292" y="96" width="20" height="20" rx="4" fill="none" stroke="#9aa5ae"/><text x="136" y="136" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Auth Token</text><rect x="136" y="142" width="150" height="20" rx="4" fill="#f6f7f9" stroke="#dfe4e9"/><text x="143" y="156" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#8f959b">••••••••••••••</text><rect x="292" y="142" width="20" height="20" rx="4" fill="none" stroke="#9aa5ae"/><rect x="130" y="90" width="188" height="32" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+      Click <b>Create application</b>. A box comes up headed <b>Make something new</b>. Take
+      <b>Start with Hello World!</b>
+      <span class="odd">Not GitHub, not GitLab, not a template, not upload — those all want a
+      repository or files you do not have. Ignore <b>Continue to Pages</b> at the bottom; that is
+      the old workflow, and it is for websites rather than workers.</span>
+      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span><svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fbfbfa"/><rect x="20" y="16" width="320" height="20" rx="8" fill="#fff"/><circle cx="32" cy="26" r="5" fill="#f6821f"/><text x="44" y="30" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">Create an app</text><rect x="96" y="48" width="168" height="126" rx="7" fill="#fff" stroke="#e3e3e0"/><text x="108" y="66" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="#101820">Make something new</text><text x="108" y="79" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#6b7580">Start from a template, connect a repository.</text><rect x="108" y="86" width="72" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="95" r="4" fill="#101820"/><text x="126" y="98" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Continue with GitHub</text><rect x="184" y="86" width="68" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="194" cy="95" r="4" fill="#e8562a"/><text x="202" y="98" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Connect GitLab</text><rect x="108" y="108" width="144" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="117" r="4" fill="#2f8f5b"/><text x="126" y="120" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" font-weight="700" fill="#101820">Start with Hello World!</text><rect x="108" y="130" width="144" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="139" r="4" fill="#1b6be0"/><text x="126" y="142" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Select a template</text><rect x="108" y="152" width="144" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="161" r="4" fill="#f6b73c"/><text x="126" y="164" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Upload your static files</text><rect x="103" y="103" width="154" height="28" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
     </li>
 
     <li data-k="a3"><button class="tick" aria-label="Done">✓</button>
-      Directly under it on the same card: <b>Auth Token</b>, shown as dots. Use its copy icon, or
-      click <b>Show</b> first if you want to see it.
-      <span class="odd">This one is a <b>password</b> — Twilio says so right underneath. It goes
-      into one box on Cloudflare in step D3 and nowhere else. Do not paste it into a chat,
-      including to me.</span>
-      <span class="mini_cap">drawn from twilio's own screen, not yours</span>
-      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">console.twilio.com — account dashboard, bottom</text><rect x="20" y="38" width="92" height="148" fill="#1b2733"/><rect x="26" y="44" width="80" height="16" rx="4" fill="#2b3a4a"/><text x="32" y="56" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#fff">Account Dashboard</text><text x="34" y="78" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Phone Numbers</text><text x="34" y="96" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Messaging</text><text x="34" y="114" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Voice</text><text x="34" y="132" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Email</text><text x="34" y="150" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Verify</text><rect x="124" y="46" width="200" height="130" rx="6" fill="#fff" stroke="#dfe4e9"/><text x="136" y="66" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#101820">Account Info</text><text x="136" y="90" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Account SID</text><rect x="136" y="96" width="150" height="20" rx="4" fill="#f6f7f9" stroke="#dfe4e9"/><text x="143" y="110" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">AC23e753…6ac31d381</text><rect x="292" y="96" width="20" height="20" rx="4" fill="none" stroke="#9aa5ae"/><text x="136" y="136" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Auth Token</text><rect x="136" y="142" width="150" height="20" rx="4" fill="#f6f7f9" stroke="#dfe4e9"/><text x="143" y="156" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#8f959b">••••••••••••••</text><rect x="292" y="142" width="20" height="20" rx="4" fill="none" stroke="#9aa5ae"/><rect x="130" y="136" width="188" height="32" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
-    </li>
-
-    <li data-k="a4"><button class="tick" aria-label="Done">✓</button>
-      In the left menu: <b>Phone Numbers</b> → <b>Manage</b> → <b>Active numbers</b>. Copy the
-      number in the form <b>+14155551212</b> — keep the <b>+1</b>.
-      <span class="said">Its capabilities must include <b>SMS</b>. Voice alone will not do.</span>
-      <span class="odd">If this is still a <b>trial number</b>, it can only text numbers you have
-      verified with Twilio. That is enough to test on your own phone, and it is where the whitelist
-      will stop for everyone else until you upgrade. If the list is empty: <b>Buy a number</b>,
-      tick <b>SMS</b>, search, buy — about $1.15 a month plus roughly a cent per text.</span>
-      <span class="mini_cap">drawn from twilio's own screen, not yours</span>
-      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">console.twilio.com — active numbers</text><rect x="20" y="38" width="92" height="148" fill="#1b2733"/><rect x="26" y="44" width="80" height="16" rx="4" fill="#2b3a4a"/><text x="32" y="56" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#fff">Account Dashboard</text><text x="34" y="78" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#fff">Phone Numbers</text><text x="34" y="96" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Messaging</text><text x="34" y="114" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Voice</text><text x="34" y="132" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Email</text><text x="34" y="150" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="400" fill="#9fb0c0">Verify</text><text x="42" y="114" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#9fb0c0">Manage</text><text x="50" y="130" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#fff">Active numbers</text><text x="126" y="62" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#101820">Active numbers</text><rect x="126" y="76" width="196" height="1" fill="#e6e2d9"/><text x="126" y="96" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#8f8b83">NUMBER            CAPABILITIES</text><text x="126" y="120" font-family="ui-monospace,Menlo,monospace" font-size="11" fill="#101820">+1 415 555 1212</text><text x="250" y="120" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#2f8f5b">SMS · Voice</text><rect x="120" y="106" width="140" height="22" rx="6" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+      Name it <b>vampjam-auth</b> — exactly that, lower case, with the hyphen. Then
+      <b>Deploy</b>.
+      <span class="odd">Says the name is taken? You already made it. Open it from the list and
+      carry on at B.</span>
     </li>
   </ol>
 </div></div>
@@ -148,226 +132,133 @@ footer a{color:var(--signal)}
 <!-- ================= B ================= -->
 <div class="panel" data-part="b"><div class="n">B</div><div class="body">
   <div class="cap">
-    <h2>Make the worker</h2>
-    <p>a "worker" is a small program of yours that lives on cloudflare — the same place your audio
-    and your session list already live. this one checks who is on your list and asks twilio to send
-    the text. you already have vampjam-upload, vampjam-sync and page-agent-keeper there. this is
-    another of the same kind.</p>
+    <h2>Paste the real program in</h2>
+    <p>the button below hands you the program. this page carries it, and the test suite checks it
+    against what is committed, so what you paste is what is meant to be there. nothing in it needs
+    editing.</p>
   </div>
   <ol class="steps">
     <li data-k="b1"><button class="tick" aria-label="Done">✓</button>
-      <a href="https://dash.cloudflare.com" target="_blank" rel="noopener">dash.cloudflare.com</a>,
-      sign in. Left menu: <b>Compute</b> → <b>Workers &amp; Pages</b>.
-      <span class="said">Your own workers listed: <b>page-agent-keeper</b>,
-      <b>vampjam-upload</b>, <b>vampjam-sync</b>. Right of the heading, a blue
-      <b>Create application</b>.</span>
-      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
-      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="20" rx="8" fill="#f6f7f8"/><circle cx="32" cy="26" r="5" fill="#f6821f"/><text x="44" y="30" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">dash.cloudflare.com</text><rect x="20" y="36" width="86" height="150" fill="#fafafa"/><text x="28" y="54" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">Account home</text><text x="28" y="76" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">Compute</text><rect x="26" y="82" width="76" height="14" rx="4" fill="#eef1f4"/><text x="32" y="92" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#101820">Workers &amp; Pages</text><text x="118" y="56" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#101820">Workers &amp; Pages</text><rect x="252" y="46" width="70" height="16" rx="5" fill="#1b6be0"/><text x="287" y="57" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="600" fill="#fff" text-anchor="middle">Create application</text><rect x="118" y="76" width="204" height="22" rx="5" fill="#fff" stroke="#e6e8ea"/><text x="126" y="90" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">page-agent-keeper</text><rect x="118" y="102" width="204" height="22" rx="5" fill="#fff" stroke="#e6e8ea"/><text x="126" y="116" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">vampjam-upload</text><rect x="118" y="128" width="204" height="22" rx="5" fill="#fff" stroke="#e6e8ea"/><text x="126" y="142" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">vampjam-sync</text><rect x="247" y="41" width="80" height="26" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+      Tap the dark line below — it copies itself. About 200 lines.
+      <span class="said">The label tells you how big it was.</span>
+      <span class="odd">Nothing happens, or it says it could not copy? Tap <b>show it</b> under the
+      button and select the text by hand, or open
+      <a href="https://raw.githubusercontent.com/mPulseMedia/vampjam/main/cloudflare/vampjam_auth_worker.js" target="_blank" rel="noopener">the file on GitHub</a> and use
+      ⌘A ⌘C. All three give you exactly the same thing.</span>
     </li>
-
     <li data-k="b2"><button class="tick" aria-label="Done">✓</button>
-      Click <b>Create application</b>. A box comes up headed <b>Make something new</b> with five
-      choices. Take <b>Start with Hello World!</b> — the middle one.
-      <span class="odd">Not GitHub, not a template, not upload. Those all want a repository or
-      files; you are going to paste the program in by hand in part C. Ignore <b>Continue to
-      Pages</b> at the bottom too — that is the old workflow, and it is for websites, not
-      workers.</span>
-      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
-      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fbfbfa"/><rect x="20" y="16" width="320" height="20" rx="8" fill="#fff"/><circle cx="32" cy="26" r="5" fill="#f6821f"/><text x="44" y="30" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">Cloudflare@pauldsmith.com's Account</text><text x="322" y="30" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#8f959b">✕</text><rect x="96" y="48" width="168" height="126" rx="7" fill="#fff" stroke="#e3e3e0"/><text x="108" y="66" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="#101820">Make something new</text><text x="108" y="79" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#6b7580">Start from a template, connect a repository.</text><rect x="108" y="86" width="72" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="95" r="4" fill="#101820"/><text x="126" y="98" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Continue with GitHub</text><rect x="184" y="86" width="68" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="194" cy="95" r="4" fill="#e8562a"/><text x="202" y="98" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Connect GitLab</text><rect x="108" y="108" width="144" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="117" r="4" fill="#2f8f5b"/><text x="126" y="120" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" font-weight="700" fill="#101820">Start with Hello World!</text><rect x="108" y="130" width="144" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="139" r="4" fill="#1b6be0"/><text x="126" y="142" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Select a template</text><rect x="108" y="152" width="144" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="161" r="4" fill="#f6b73c"/><text x="126" y="164" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Upload your static files</text><rect x="103" y="103" width="154" height="28" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+      On <b>vampjam-auth</b>: <b>Edit code</b>, top right. Click inside the code, <b>⌘A</b> to
+      select all, <b>⌘V</b> to paste over it. Then <b>Deploy</b>.
+      <span class="said">Done when the button settles and there is no red anywhere.</span>
     </li>
-
     <li data-k="b3"><button class="tick" aria-label="Done">✓</button>
-      Name it <b>vampjam-auth</b> — exactly that, lower case, with the hyphen. The site looks for
-      that name. Then <b>Deploy</b>.
-      <span class="said">It deploys a do-nothing program that answers "Hello World". That is
-      expected — the real one goes in next.</span>
-      <span class="odd">If it says the name is taken, you already made it. Go back to the list,
-      open <b>vampjam-auth</b>, and carry on at C.</span>
+      Near the top of the worker page is an address ending <b>.workers.dev</b>. The site expects
+      <span class="addr">vampjam-auth.crimson-dust-a18d.workers.dev</span>
+      <span class="odd">If yours is different, <b>paste it to me</b> — one line for me to
+      change. Do not rename anything.</span>
     </li>
   </ol>
+  <button class="line" id="copy_code" type="button"><small>tap to copy the program</small>the sign-in worker · cloudflare/vampjam_auth_worker.js</button>
+  <div class="cap" style="padding-top:0">
+    <p class="note"><button class="reset" id="show_code" type="button">show it</button> — if
+    copying will not work, select it here by hand.</p>
+    <pre id="code_box" hidden></pre>
+  </div>
 </div></div>
 
 <!-- ================= C ================= -->
 <div class="panel" data-part="c"><div class="n">C</div><div class="body">
   <div class="cap">
-    <h2>Paste the real program in</h2>
-    <p>the button below hands you the exact program that is committed to your repo — it is fetched
-    off the site when you tap it, so there is no second copy anywhere to drift out of date.
-    nothing in it needs editing.</p>
+    <h2>One setting</h2>
+    <p>there used to be five of these. twilio is gone, so there is one, and it is a random string
+    you never have to look at again.</p>
   </div>
   <ol class="steps">
     <li data-k="c1"><button class="tick" aria-label="Done">✓</button>
-      Tap the dark line below — it copies itself. About 200 lines.
-      <span class="said">The label turns green and tells you how big it was.</span>
-      <span class="odd">Nothing happens, or it says it could not copy? Tap <b>show it</b> under the
-      button and select the text by hand, or open
-      <a href="https://raw.githubusercontent.com/mPulseMedia/vampjam/main/cloudflare/vampjam_auth_worker.js" target="_blank" rel="noopener">the file on GitHub</a> and use ⌘A ⌘C. All three
-      give you exactly the same thing.</span>
+      Same worker: <b>Settings</b> → <b>Variables and Secrets</b> → <b>Add</b>. Type
+      <b>Secret</b>, name <b>AUTH_SECRET</b>. For the value, tap the dark line below — it
+      invents one and copies it.
+      <span class="odd">Changing this later signs everybody out at once. That is your emergency
+      lever, and the only reason you would ever come back to it.</span>
+      <span class="odd">TWILIO_SID, TWILIO_TOKEN, TWILIO_FROM or SITE still there from before?
+      Leave them. The program ignores them now. Deleting them is tidying, not a step.</span>
     </li>
     <li data-k="c2"><button class="tick" aria-label="Done">✓</button>
-      On <b>vampjam-auth</b>: <b>Edit code</b>, top right (sometimes behind a <b>&lt;/&gt;</b>
-      icon). Click inside the code, <b>⌘A</b> to select all, <b>⌘V</b> to paste over it. Then
-      <b>Deploy</b>.
-      <span class="said">Done when the button settles and there is no red anywhere.</span>
-      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
-      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">dash.cloudflare.com — vampjam-auth</text><text x="36" y="58" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#101820">vampjam-auth</text><rect x="238" y="44" width="84" height="24" rx="6" fill="#f5f6f8" stroke="#c8ccd0"/><text x="280" y="60" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="600" fill="#101820" text-anchor="middle">Edit code</text><rect x="36" y="80" width="286" height="96" rx="6" fill="#1b1b1b"/><text x="46" y="100" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#8fd8a0">export default {</text><text x="46" y="116" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#ffd7a8">  async fetch(request, env) {</text><text x="46" y="132" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#ffd7a8">    return new Response("Hello World!");</text><text x="46" y="148" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#ffd7a8">  }</text><text x="46" y="164" font-family="ui-monospace,Menlo,monospace" font-size="9" fill="#8fd8a0">}</text><rect x="232" y="38" width="96" height="36" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+      Adding it does <b>not</b> put it to work, and there is no Deploy button on that page to fix
+      that. It became a saved <b>version</b>, sitting in a list, doing nothing. Go to the
+      <b>Deployments</b> tab.
+      <span class="said">At the top, <b>Active deployment</b>, with a version id. Below,
+      <b>Version History</b>, with a row reading <b>Add secret: AUTH_SECRET</b>.</span>
+      <span class="odd">If the Active deployment is OLDER than that row, the worker is running a
+      version from before you added it. That is the whole problem, and it is why nothing you did
+      seemed to take.</span>
     </li>
     <li data-k="c3"><button class="tick" aria-label="Done">✓</button>
-      Near the top of the worker page is an address ending <b>.workers.dev</b>. The site expects
-      <span class="addr">vampjam-auth.crimson-dust-a18d.workers.dev</span>
-      <span class="odd">If yours is different, <b>paste it to me</b> — one line for me to change.
-      Do not rename anything.</span>
-    </li>
-  </ol>
-  <button class="line" id="copy_code" type="button"><small>tap to copy the program</small>the sign-in worker · cloudflare/vampjam_auth_worker.js</button>
-  <div class="cap" style="padding-top:0">
-    <p class="note"><button class="reset" id="show_code" type="button">show it</button> — if copying
-    will not work, select it here by hand.</p>
-    <pre id="code_box" hidden></pre>
-  </div>
-</div></div>
-
-<!-- ================= D ================= -->
-<div class="panel" data-part="d"><div class="n">D</div><div class="body">
-  <div class="cap">
-    <h2>Five settings</h2>
-    <p>same worker: <b>Settings</b> → <b>Variables and Secrets</b> → <b>Add</b>, five times. the
-    type matters — three <b>Secret</b>, two <b>Text</b>. then D6 and D7, which are the ones that
-    actually make them live, and they are on a different tab entirely. filling the boxes in is
-    only half of it.</p>
-  </div>
-  <ol class="steps">
-    <li data-k="d1"><button class="tick" aria-label="Done">✓</button>
-      <b>AUTH_SECRET</b> · type <b>Secret</b> · a long random string you invent. nothing depends on
-      what it is; changing it later signs everybody out, which is your emergency lever.
-      <span class="said">Tap the dark line below and it invents one and copies it. A different one
-      every tap.</span>
-      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
-      <svg class="mini" viewBox="0 0 360 220"><rect width="360" height="220" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="190" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">vampjam-auth — settings — variables and secrets</text><text x="36" y="60" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#101820">Add variable</text><text x="36" y="84" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Type</text><rect x="36" y="90" width="130" height="24" rx="5" fill="#f2f4f6" stroke="#d5dbe0"/><text x="46" y="106" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#101820">Secret  ▾</text><text x="180" y="106" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#8f8b83">(Text is the other option)</text><text x="36" y="134" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Variable name</text><rect x="36" y="140" width="286" height="24" rx="5" fill="#f2f4f6" stroke="#d5dbe0"/><text x="46" y="156" font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#101820">AUTH_SECRET</text><text x="36" y="182" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#5d6e7b">Value</text><rect x="36" y="188" width="286" height="12" rx="4" fill="#f2f4f6" stroke="#d5dbe0"/><rect x="30" y="84" width="150" height="36" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
-    </li>
-    <li data-k="d2"><button class="tick" aria-label="Done">✓</button>
-      <b>TWILIO_SID</b> · type <b>Secret</b> · the Account SID from A2, starting <b>AC</b>.
-    </li>
-    <li data-k="d3"><button class="tick" aria-label="Done">✓</button>
-      <b>TWILIO_TOKEN</b> · type <b>Secret</b> · the Auth Token from A3.
-    </li>
-    <li data-k="d4"><button class="tick" aria-label="Done">✓</button>
-      <b>TWILIO_FROM</b> · type <b>Text</b> · your Twilio number from A4, with the plus:
-      <b>+14155551212</b>.
-    </li>
-    <li data-k="d5"><button class="tick" aria-label="Done">✓</button>
-      <b>SITE</b> · type <b>Text</b> · <b>https://vampsf.com</b>.
-    </li>
-
-    <li data-k="d6"><button class="tick" aria-label="Done">✓</button>
-      Filling the five in does <b>not</b> put them to work, and there is no Deploy button on that
-      page to fix it. Each one you added became a saved <b>version</b>, sitting in a list, doing
-      nothing. Go to the <b>Deployments</b> tab.
-      <span class="said">At the top, <b>Active deployment</b>, with a version id. Below,
-      <b>Version History</b> — one row per variable you added: Add variable: SITE, Add variable:
-      TWILIO_FROM, Add secret: TWILIO_TOKEN, and so on.</span>
-      <span class="odd">Look at the times. If the <b>Active deployment</b> is OLDER than those
-      rows, the worker is running a version from before you touched anything. That is the whole
-      problem, and it is why nothing you did seemed to take.</span>
-    </li>
-
-    <li data-k="d7"><button class="tick" aria-label="Done">✓</button>
-      Click <b>Promote deployment</b>, top right of that tab, and choose the <b>newest</b> row —
-      the topmost one, <b>Add variable: SITE</b>.
-      <span class="said">Active deployment changes to that version id. That is the moment the five
-      settings start existing as far as the program is concerned.</span>
-      <span class="odd">Only the newest, and only once. A version is a complete snapshot, not a
-      change — the last one you added carries all five. You do not promote them one at a time.</span>
-      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
-      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="26" y="22" width="40" height="13" rx="4" fill="#f1f3f5"/><text x="46" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b" text-anchor="middle">Overview</text><rect x="68" y="22" width="52" height="13" rx="4" fill="#fff" stroke="#101820"/><text x="94" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" font-weight="700" fill="#101820" text-anchor="middle">Deployments</text><rect x="122" y="22" width="34" height="13" rx="4" fill="#f1f3f5"/><text x="139" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b" text-anchor="middle">Settings</text><rect x="252" y="21" width="74" height="15" rx="5" fill="#1b6be0"/><text x="289" y="32" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">Promote deployment</text><rect x="246" y="16" width="86" height="25" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/><rect x="30" y="46" width="296" height="26" rx="5" fill="#f6f7f8" stroke="#e6e8ea"/><text x="38" y="57" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Active deployment</text><text x="38" y="68" font-family="ui-monospace,Menlo,monospace" font-size="8.5" font-weight="700" fill="#d7263d">4a7a4acf</text><text x="92" y="68" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" font-style="italic" fill="#8f959b">Manually deployed · 24 minutes ago — older than all five</text><text x="30" y="88" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#101820">Version History</text><rect x="30" y="94" width="296" height="15" rx="3" fill="#fff" stroke="#eef0f2"/><text x="38" y="104" font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#101820">96a945f0</text><text x="92" y="104" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Add variable: SITE</text><text x="300" y="104" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#8f959b">19m</text><rect x="26" y="90" width="212" height="23" rx="7" fill="none" stroke="#d7263d" stroke-width="3"/><rect x="30" y="111" width="296" height="14" rx="3" fill="#fafbfb"/><text x="38" y="121" font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#5d6e7b">b06dd2e5</text><text x="92" y="121" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#8f959b">Add variable: TWILIO_FROM</text><rect x="30" y="127" width="296" height="14" rx="3" fill="#fff"/><text x="38" y="137" font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#5d6e7b">a08945a3</text><text x="92" y="137" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#8f959b">Add secret: TWILIO_TOKEN</text><rect x="30" y="143" width="296" height="14" rx="3" fill="#fafbfb"/><text x="38" y="153" font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#5d6e7b">47c7a217</text><text x="92" y="153" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#8f959b">Add secret: TWILIO_SID</text><rect x="30" y="159" width="296" height="14" rx="3" fill="#fff"/><text x="38" y="169" font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#5d6e7b">766055b8</text><text x="92" y="169" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#8f959b">Add secret: AUTH_SECRET</text></svg>
+      Click <b>Promote deployment</b>, top right of that tab, and choose the <b>newest</b> row.
+      <span class="said">Active deployment changes to that version id. That is the moment the
+      setting starts existing as far as the program is concerned.</span>
+      <span class="odd">Newest only, and only once. A version is a complete snapshot, not a
+      change — the last one carries everything before it.</span>
+      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span><svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="26" y="22" width="40" height="13" rx="4" fill="#f1f3f5"/><text x="46" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b" text-anchor="middle">Overview</text><rect x="68" y="22" width="52" height="13" rx="4" fill="#fff" stroke="#101820"/><text x="94" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" font-weight="700" fill="#101820" text-anchor="middle">Deployments</text><rect x="122" y="22" width="34" height="13" rx="4" fill="#f1f3f5"/><text x="139" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b" text-anchor="middle">Settings</text><rect x="252" y="21" width="74" height="15" rx="5" fill="#1b6be0"/><text x="289" y="32" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">Promote deployment</text><rect x="246" y="16" width="86" height="25" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/><rect x="30" y="52" width="296" height="28" rx="5" fill="#f6f7f8" stroke="#e6e8ea"/><text x="38" y="64" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Active deployment</text><text x="38" y="76" font-family="ui-monospace,Menlo,monospace" font-size="8.5" font-weight="700" fill="#d7263d">4a7a4acf</text><text x="92" y="76" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" font-style="italic" fill="#8f959b">Manually deployed — OLDER than the row below</text><text x="30" y="100" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#101820">Version History</text><rect x="30" y="108" width="296" height="20" rx="3" fill="#fff" stroke="#eef0f2"/><text x="38" y="121" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">766055b8</text><text x="96" y="121" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">Add secret: AUTH_SECRET</text><text x="300" y="121" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#8f959b">2m</text><rect x="26" y="104" width="238" height="28" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/><rect x="30" y="134" width="296" height="18" rx="3" fill="#fafbfb"/><text x="38" y="146" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#8f959b">4a7a4acf</text><text x="96" y="146" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-style="italic" fill="#a8b0b7">Manually deployed</text><text x="30" y="172" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#8f959b">promote the top one — a version carries everything before it</text></svg>
     </li>
   </ol>
   <button class="line" id="make_secret" type="button"><small>tap to invent one and copy it</small>AUTH_SECRET — 48 random characters</button>
 </div></div>
 
+<!-- ================= D ================= -->
+<div class="panel" data-part="d"><div class="n">D</div><div class="body">
+  <div class="cap">
+    <h2>Check it took</h2>
+    <p>come back here and press <b>check again</b> at the top.</p>
+  </div>
+  <ol class="steps">
+    <li data-k="d1"><button class="tick" aria-label="Done">✓</button>
+      Scroll to the top of this page and press <b>check again</b>. The worker is up and
+      AUTH_SECRET is set: that is Cloudflare finished, for good.
+      <span class="odd">Still says the worker is not there? The name is probably not exactly
+      <b>vampjam-auth</b>, or the address in B3 is different. Send me the address.</span>
+      <span class="odd">Says AUTH_SECRET is not set, but you added it? Saved and not running. Go
+      back to <b>C3</b> and promote the newest version.</span>
+    </li>
+  </ol>
+</div></div>
+
 <!-- ================= E ================= -->
 <div class="panel" data-part="e"><div class="n">E</div><div class="body">
   <div class="cap">
-    <h2>Check it took</h2>
-    <p>come back here and press <b>check again</b> at the top. the first three lights should fill.
-    the last three are about people and recordings — those are F and G. the second step here is
-    the one that catches people out after everything else is right.</p>
+    <h2>Give people a recording</h2>
+    <p>this is the part you will actually use, and it is not on this page — it is at the
+    bottom of each recording. open the one you want to share and scroll to the end of it.</p>
   </div>
   <ol class="steps">
     <li data-k="e1"><button class="tick" aria-label="Done">✓</button>
-      Scroll to the top of this page and press <b>check again</b>.
-      <span class="said">The first three lights fill: the worker is up, AUTH_SECRET is set, Twilio
-      can send. This is the proof, not any button on Cloudflare.</span>
-      <span class="odd">Still says the worker is not there? The name is probably not exactly
-      <b>vampjam-auth</b>, or the address in C3 is different. Send me the address.</span>
-      <span class="odd">Says Twilio cannot send, but you filled all three in? Then they are saved
-      and not running. Go back to <b>D7</b> and promote the newest version.</span>
+      Open any recording. At the very bottom, a box headed <b>Who can open this recording</b>.
+      <span class="odd">Cannot see it? Only the administrator can — and nobody is the
+      administrator until a first number is added. The very first number added anywhere becomes
+      it, so make the first one your own.</span>
     </li>
-
     <li data-k="e2"><button class="tick" aria-label="Done">✓</button>
-      Your number is <b>+1844…</b>, which makes it <b>toll-free</b>, and a toll-free number cannot
-      text anyone in the US until Twilio has verified it. Check it now, before you test:
-      <b>Phone Numbers</b> → <b>Manage</b> → <b>Active numbers</b> → your number →
-      <b>Regulatory Information</b>. If it is not <b>Approved</b>, use <b>Verify this toll free
-      number</b> there.
-      <span class="said">Approved is the only status that sends. Not verified, Verification in
-      progress and Rejected all mean blocked.</span>
-      <span class="odd">Twilio blocks these outright rather than quietly dropping them, which is
-      the good news: the failure has a name. If a text does not arrive, the error is
-      <b>30032 — toll-free number has not been verified</b>. Tell me if you see it and I will show
-      it to you on the site rather than leaving it in a log.</span>
-      <span class="odd">Verification is a form a person at Twilio reviews, so it is not instant. A
-      normal local number needs none of this — if waiting is worse than a dollar a month, buy one
-      in A4 and change <b>TWILIO_FROM</b> in D4.</span>
+      Paste phone numbers into the box. One per line, or separated by commas — however they
+      came out of Messages or Contacts. Names on the same line are fine:
+      <b>Dave 415 555 1212</b>. Then <b>Add them</b>.
+      <span class="said">Each becomes a small tag with the name and the last two digits. Anything
+      that was not a phone number is listed back to you rather than quietly dropped.</span>
+      <span class="odd">Adding the first person makes that recording <b>private</b>. Everything you
+      do not touch stays open to anyone with the link, exactly as it is today.</span>
     </li>
-  </ol>
-</div></div>
-
-<!-- ================= F ================= -->
-<div class="panel" data-part="f"><div class="n">F</div><div class="body">
-  <div class="cap">
-    <h2>Put people on the list</h2>
-    <p>phone or Mac, either is fine. no phone number is ever stored on the site: the worker
-    scrambles each one with its own secret, and the list keeps the scrambled version, the name you
-    type, and the last four digits.</p>
-  </div>
-  <ol class="steps">
-    <li data-k="f1"><button class="tick" aria-label="Done">✓</button>
-      Open <a href="admin.html">Admin</a> → <b>Who can sign in</b>. Type your name and your own
-      mobile number → <b>Add</b>.
-      <span class="said">The <b>first</b> number added becomes the administrator. It has to be
-      yours.</span>
+    <li data-k="e3"><button class="tick" aria-label="Done">✓</button>
+      They go to <a href="signin.html">the sign-in page</a>, type that number, and they are in. No
+      text message, no link, no waiting.
+      <span class="said">A number added to one recording opens that recording. Add the same number
+      at the bottom of two and they get two.</span>
+      <span class="odd">Taking someone off: the <b>×</b> on their tag. It takes effect on
+      their next tap.</span>
     </li>
-    <li data-k="f2"><button class="tick" aria-label="Done">✓</button>
-      Prove it on yourself: <a href="signin.html">Sign in</a> → your number → <b>Text me a
-      link</b> → tap the link in the text.
-      <span class="said">You land back signed in, and the <b>Sign in</b> row at the foot of the
-      session list now shows your name.</span>
-      <span class="odd">If no text arrives, the page prints what Twilio said. A trial account
-      refuses any number you have not verified — verify yours under <b>Verified Caller IDs</b>, or
-      add a card.</span>
-    </li>
-    <li data-k="f3"><button class="tick" aria-label="Done">✓</button>
-      Add the others, one at a time. Nobody gets a text now — only when they ask to sign in.
-    </li>
-  </ol>
-</div></div>
-
-<!-- ================= G ================= -->
-<div class="panel" data-part="g"><div class="n">G</div><div class="body">
-  <div class="cap">
-    <h2>Close a recording</h2>
-    <p>anything you do not touch stays open to anyone with the link, exactly as it is today.</p>
-  </div>
-  <ol class="steps">
-    <li data-k="g1"><button class="tick" aria-label="Done">✓</button>
-      <a href="admin.html">Admin</a> → <b>Private recordings</b> → find the one → <b>make
-      private</b> → tick who may open it.
-      <span class="said">Unticking takes it away on their next tap. No waiting.</span>
-    </li>
-    <li data-k="g2"><button class="tick" aria-label="Done">✓</button>
+    <li data-k="e4"><button class="tick" aria-label="Done">✓</button>
       Open that recording in a private browser window. You should get the sign-in panel instead of
       the player and the moments.
+      <span class="odd">Changed your mind? <b>Let anyone in</b>, in the same box, puts it back the
+      way it was.</span>
     </li>
   </ol>
 </div></div>
@@ -376,12 +267,14 @@ footer a{color:var(--signal)}
 <div class="panel warn"><div class="n">!</div><div class="body">
   <div class="cap">
     <h2>What this is not</h2>
-    <p>the audio files still sit at a public address. someone who already has that exact address
-    can still play the file directly. this closes the door on the site — it is not a locked door.
-    <br><br>
-    the lock is a separate job: the audio moves behind the worker and the public address is
-    switched off. say the word and I will do it. it changes how all nine existing recordings load,
-    so it wants its own build rather than being smuggled into this one.</p>
+    <p>a phone number is not a password. anyone who knows a number you have added can type it and
+    be signed in as that person. that is the trade you made when you dropped the text message, and
+    it is a fair one for keeping a jam session out of the way of strangers and search engines. it
+    is not a fair one for anything you would mind being wrong about.</p>
+    <p>and the audio files still sit at a public address. someone who already has that exact
+    address can still play the file, gate or no gate. the lock is a separate job: the audio moves
+    behind the worker and the public address is switched off. say the word and I will do it. it
+    changes how all nine existing recordings load, so it wants its own build.</p>
   </div>
 </div></div>
 
@@ -401,30 +294,29 @@ footer a{color:var(--signal)}
 
 <script type="text/plain" id="worker_src">// vampjam — sign-in Worker
 //
-// Someone types their phone number, gets a text with a link, taps it, and is
-// signed in on that phone. Which recordings they can then open is decided by
-// access.json in the repo, which the admin page writes.
+// Someone types their phone number and is signed in, if that number is on the
+// list for a recording. No text message, no link, no waiting: the number IS the
+// key. Which recordings they can then open is decided by access.json in the
+// repo, which the session pages write.
 //
-// ONE-TIME SETUP (Cloudflare dashboard → Workers & Pages → Create Worker,
-// paste this in, then Settings → Variables & Secrets):
+// Say the tradeoff out loud rather than implying a strength this does not have:
+// anyone who knows a number on the list can sign in as that person. This keeps
+// a recording out of the way of strangers and search engines. It is not proof
+// of who is holding the phone, and it is not a password.
+//
+// ONE-TIME SETUP (Cloudflare dashboard → Settings → Variables and Secrets):
 //   AUTH_SECRET      = a long random string you make up (32+ chars)
-//   TWILIO_SID       = your Twilio Account SID   (starts AC...)
-//   TWILIO_TOKEN     = your Twilio Auth Token
-//   TWILIO_FROM      = your Twilio phone number, e.g. +14155551212
-//   SITE             = https://vampsf.com
-// Deploy, then put the worker URL in signin.html / drawer.js as AUTH_URL.
+// That is the only one. Then Deployments → Promote deployment → the newest
+// version, or the setting is saved and not running.
 //
 // There is NO database. A token is the payload plus an HMAC of it, so the
-// worker can check its own tokens without storing anything. Two consequences,
-// stated rather than hidden:
-//   · a sign-in link works until it expires (10 minutes), not just once
-//   · signing someone out everywhere means changing AUTH_SECRET
+// worker can check its own tokens without storing anything. Signing everybody
+// out means changing AUTH_SECRET.
 //
 // And no phone number is ever written to the repo. access.json holds an opaque
 // id — an HMAC of the number under AUTH_SECRET — plus a label and the last four
 // digits, which is enough to administer and useless to anyone who reads it.
 
-const LINK_TTL = 10 * 60;              // a sign-in link is good for ten minutes
 const SESS_TTL = 60 * 60 * 24 * 60;    // a signed-in phone stays signed in ~2 months
 const RAW = 'https://raw.githubusercontent.com/mPulseMedia/vampjam/main/access.json';
 
@@ -455,9 +347,6 @@ export default {
         return json({
           ok: true, worker: true,
           secret: !!env.AUTH_SECRET,
-          twilio: !!(env.TWILIO_SID && env.TWILIO_TOKEN && env.TWILIO_FROM),
-          from: env.TWILIO_FROM ? '•••' + String(env.TWILIO_FROM).slice(-4) : null,
-          site: env.SITE || null,
           admins: (acc0.admins || []).length,
           people: (acc0.people || []).length,
           private: priv
@@ -475,32 +364,49 @@ export default {
                       admin: is_admin(acc, who.i), allow: allowed_pages(acc, who.i) }, 200, cors);
       }
 
-      // ---- send me a link ----
-      if (op === 'start') {
+      // ---- the whole sign-in: a number that is on a list is signed in ----
+      // No round trip through a phone. If the number is recognised anywhere -
+      // an admin, a named person, or on any one recording's list - it gets a
+      // session. Unrecognised numbers are told so plainly rather than being
+      // left to wonder whether a text is coming.
+      if (op === 'enter') {
         const phone = e164(q('phone'));
-        if (!phone) return json({ error: 'that does not look like a phone number' }, 400, cors);
-        const id = await hmac(env.AUTH_SECRET, 'p:' + phone);
+        if (!phone) return json({ ok: false, why: 'that does not look like a phone number' }, 200, cors);
         const acc = await access();
-        // the list is small and private and everyone on it was invited by name,
-        // so "you are not on the list" is the useful answer, not a leak
-        if (!known(acc, id)) return json({ error: 'not_listed' }, 403, cors);
-        const token = await sign(env.AUTH_SECRET, { i: id, k: 'link' }, LINK_TTL);
-        const site = (env.SITE || 'https://vampsf.com').replace(/\/+$/, '');
-        const link = site + '/signin.html?t=' + encodeURIComponent(token);
-        const sent = await twilio(env, phone, 'vampSF sign-in: ' + link + '\n(good for 10 minutes)');
-        if (!sent.ok) return json({ error: 'could not send the text: ' + sent.why }, 502, cors);
-        return json({ ok: true, sent_to: mask(phone) }, 200, cors);
+        const id = await hmac(env.AUTH_SECRET, 'p:' + phone);
+        if (!recognized(acc, id)) {
+          return json({ ok: false, why: 'that number is not on any list yet',
+                        unknown: true }, 200, cors);
+        }
+        const sess = await sign(env.AUTH_SECRET, { i: id, k: 'sess' }, SESS_TTL);
+        return json({ ok: true, session: sess, label: label_of(acc, id),
+                      admin: is_admin(acc, id), allow: allowed_pages(acc, id) }, 200, cors);
       }
 
-      // ---- I tapped the link ----
-      if (op === 'check') {
-        const p = await verify(env.AUTH_SECRET, q('t'));
-        if (!p || p.k !== 'link') return json({ error: 'that link has expired — ask for a new one' }, 400, cors);
+      // ---- admin: many numbers at once, because he pastes them in a block ----
+      // One call for a whole paste. Each line comes back with its id and last
+      // four, or a note that it was not a number, so the page can show him what
+      // it understood before anything is written.
+      if (op === 'ids') {
         const acc = await access();
-        if (!known(acc, p.i)) return json({ error: 'not_listed' }, 403, cors);
-        const sess = await sign(env.AUTH_SECRET, { i: p.i, k: 'sess' }, SESS_TTL);
-        return json({ ok: true, session: sess, label: label_of(acc, p.i),
-                      admin: is_admin(acc, p.i), allow: allowed_pages(acc, p.i) }, 200, cors);
+        const who = await read_session(q('t'), env);
+        const first = !(acc.admins || []).length;    // nobody owns the list yet
+        if (!first && !(who && is_admin(acc, who.i)))
+          return json({ error: 'admins only' }, 403, cors);
+        let list = body.phones;
+        if (!Array.isArray(list)) list = String(q('phones') || '').split(/[\n,;]+/);
+        if (list.length > 200) list = list.slice(0, 200);
+        const out = [];
+        for (const raw of list) {
+          const line = String(raw || '').trim();
+          if (!line) continue;
+          const phone = e164(line);
+          if (!phone) { out.push({ line, ok: false }); continue; }
+          out.push({ line, ok: true, phone_last4: phone.slice(-4),
+                     label: label_from(line, phone),
+                     id: await hmac(env.AUTH_SECRET, 'p:' + phone) });
+        }
+        return json({ ok: true, first, people: out }, 200, cors);
       }
 
       // ---- admin: turn a phone number into the opaque id access.json stores ----
@@ -548,6 +454,26 @@ function known(acc, id) {
   return (acc.people || []).some((p) => p && p.id === id);
 }
 function is_admin(acc, id) { return (acc.admins || []).indexOf(id) >= 0; }
+// known to the site at all: an admin, a named person, or on any one
+// recording's list. The last is what makes "paste a number at the bottom of a
+// session" enough on its own - he should not have to add someone twice.
+function recognized(acc, id) {
+  if (is_admin(acc, id)) return true;
+  if ((acc.people || []).some((p) => p && p.id === id)) return true;
+  const s = acc.sessions || {};
+  return Object.keys(s).some((page) => ((s[page] || {}).allow || []).indexOf(id) >= 0);
+}
+// a pasted line is often "Dave 415-555-1212" or "Dave <415 555 1212>": whatever
+// is left when the number comes out is what he meant to call them.
+function label_from(line, phone) {
+  const rest = String(line || '')
+    .replace(/[+()\-.\s]/g, ' ')
+    .replace(/\d/g, ' ')
+    .replace(/[<>,;:"']/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return rest || ('•••' + phone.slice(-4));
+}
 function label_of(acc, id) {
   const p = (acc.people || []).find((x) => x && x.id === id);
   return (p && p.label) || 'you';
@@ -613,28 +539,8 @@ function e164(raw) {
   if (s.length === 11 && s[0] === '1') return '+' + s;
   return null;
 }
-function mask(p) { return '(•••) •••-' + p.slice(-4); }
 
-async function twilio(env, to, text) {
-  if (!env.TWILIO_SID || !env.TWILIO_TOKEN || !env.TWILIO_FROM) {
-    return { ok: false, why: 'Twilio is not configured on the worker' };
-  }
-  const form = new URLSearchParams({ To: to, From: env.TWILIO_FROM, Body: text });
-  const r = await fetch('https://api.twilio.com/2010-04-01/Accounts/' + env.TWILIO_SID + '/Messages.json', {
-    method: 'POST',
-    headers: {
-      Authorization: 'Basic ' + btoa(env.TWILIO_SID + ':' + env.TWILIO_TOKEN),
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: form.toString(),
-  });
-  if (r.ok) return { ok: true };
-  const t = await r.text();
-  let why = r.status + '';
-  try { const j = JSON.parse(t); why = (j.message || why) + (j.code ? ' (' + j.code + ')' : ''); } catch (e) {}
-  return { ok: false, why };
-}
-
+// ---------- the one reply shape ----------
 function json(obj, status, cors) {
   return new Response(JSON.stringify(obj), {
     status, headers: { ...cors, 'Content-Type': 'application/json' },
@@ -764,17 +670,16 @@ function json(obj, status, cors) {
       .then(function (r) { return r.json(); })
       .then(function (j) {
         if (!j || !j.ok) throw new Error('no');
-        el.innerHTML = line(true, 'the worker is up', 'B and C are done')
-          + line(j.secret, 'AUTH_SECRET is set', j.secret ? '' : 'step D1')
-          + line(j.twilio, 'twilio can send', j.twilio ? 'from ' + j.from : 'steps D2, D3, D4')
+        el.innerHTML = line(true, 'the worker is up', 'A and B are done')
+          + line(j.secret, 'AUTH_SECRET is set', j.secret ? '' : 'steps C1 to C3')
           + line(j.admins > 0, j.admins > 0 ? 'you are the administrator' : 'no administrator yet',
-                 j.admins > 0 ? '' : 'step F1')
-          + line(j.people > 0, j.people + (j.people === 1 ? ' person on the list' : ' people on the list'),
-                 j.people > 0 ? '' : 'steps F1 and F3')
+                 j.admins > 0 ? '' : 'step E1')
+          + line(j.people > 0, j.people + (j.people === 1 ? ' person on a list' : ' people on lists'),
+                 j.people > 0 ? '' : 'step E2')
           + line(j.private > 0, j.private > 0
                  ? j.private + (j.private === 1 ? ' recording is private' : ' recordings are private')
-                 : 'nothing is private yet', j.private > 0 ? '' : 'step G1');
-        pn.className = (j.secret && j.twilio && j.admins && j.private) ? 'panel done' : 'panel go';
+                 : 'nothing is private yet', j.private > 0 ? '' : 'step E2');
+        pn.className = (j.secret && j.admins && j.private) ? 'panel done' : 'panel go';
       })
       .catch(function () {
         el.innerHTML = line(false, 'the worker is not there yet', 'start at A');

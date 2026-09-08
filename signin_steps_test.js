@@ -61,10 +61,10 @@ let STATUS = null;           // null = the worker is not there at all
     heads:  [...document.querySelectorAll('.panel[data-part] h2')].map(e => e.textContent.trim()).filter(Boolean).length,
     keys:   [...document.querySelectorAll('li[data-k]')].map(e => e.getAttribute('data-k'))
   }));
-  ok('twenty-four steps, each its own tickable thing', shape.steps === 24, shape.steps);
+  ok('fourteen steps, each its own tickable thing', shape.steps === 14, shape.steps);
   ok('every step carries a tick',                 shape.ticked === shape.steps, shape.ticked);
-  ok('grouped a through g',                       shape.parts.join('') === 'abcdefg', shape.parts.join(''));
-  ok('every part says what it is for',            shape.heads === 7, shape.heads);
+  ok('grouped a through e',                       shape.parts.join('') === 'abcde', shape.parts.join(''));
+  ok('every part says what it is for',            shape.heads === 5, shape.heads);
   ok('the keys are unique',                       new Set(shape.keys).size === shape.keys.length, shape.keys.join(','));
 
   // ---------- it looks like share_howto ----------
@@ -109,7 +109,7 @@ let STATUS = null;           // null = the worker is not there at all
       wide:   svgs.every(s => s.getBoundingClientRect().width > 230)
     };
   });
-  ok('eight screens drawn out',         draw.n === 8, draw.n);
+  ok('three screens drawn out',         draw.n === 3, draw.n);
   ok('each one sits inside its step',   draw.instep === draw.n, draw.instep);
   ok('each has the red ring on it',     draw.ringed === draw.n, draw.ringed);
   ok('and admits it is not his screen', draw.honest === draw.n, draw.honest);
@@ -175,16 +175,14 @@ let STATUS = null;           // null = the worker is not there at all
   ok('with no worker it says so and points at a',
      /not there yet/.test(s0) && /start at A/i.test(s0), s0);
 
-  STATUS = { ok: true, worker: true, secret: true, twilio: false, from: null,
-             admins: 0, people: 0, private: 0 };
+  STATUS = { ok: true, worker: true, secret: true, admins: 0, people: 0, private: 0 };
   await p.click('#recheck'); await p.waitForTimeout(400);
   const s1 = (await p.textContent('#state')).replace(/\s+/g, ' ').trim();
   ok('half done, it names the steps still to do',
      /worker is up/.test(s1) && /AUTH_SECRET is set/.test(s1)
-     && /D2, D3, D4/.test(s1) && /step F1/.test(s1) && /step G1/.test(s1), s1);
+     && /step E1/.test(s1) && /step E2/.test(s1), s1);
 
-  STATUS = { ok: true, worker: true, secret: true, twilio: true, from: '•••4417',
-             admins: 1, people: 3, private: 2 };
+  STATUS = { ok: true, worker: true, secret: true, admins: 1, people: 3, private: 2 };
   await p.click('#recheck'); await p.waitForTimeout(400);
   const s2 = await p.evaluate(() => ({
     t: document.getElementById('state').textContent.replace(/\s+/g, ' ').trim(),
@@ -192,17 +190,16 @@ let STATUS = null;           // null = the worker is not there at all
     dots: [...document.querySelectorAll('#state .dot')].map(d => d.className)
   }));
   ok('finished, it counts what is actually set up',
-     /from •••4417/.test(s2.t) && /you are the administrator/.test(s2.t)
-     && /3 people on the list/.test(s2.t) && /2 recordings are private/.test(s2.t), s2.t);
+     /you are the administrator/.test(s2.t)
+     && /3 people on lists/.test(s2.t) && /2 recordings are private/.test(s2.t), s2.t);
   ok('and the now panel goes green',      /\bdone\b/.test(s2.c), s2.c);
-  ok('every line lit, none left waiting', s2.dots.length === 6 && s2.dots.every(c => /dot on/.test(c)), s2.dots.join(' | '));
+  ok('every line lit, none left waiting', s2.dots.length === 5 && s2.dots.every(c => /dot on/.test(c)), s2.dots.join(' | '));
 
   // singular, because "1 people" is how a page loses trust
-  STATUS = { ok: true, worker: true, secret: true, twilio: true, from: '•••4417',
-             admins: 1, people: 1, private: 1 };
+  STATUS = { ok: true, worker: true, secret: true, admins: 1, people: 1, private: 1 };
   await p.click('#recheck'); await p.waitForTimeout(400);
   const s3 = (await p.textContent('#state')).replace(/\s+/g, ' ').trim();
-  ok('one of a thing reads as one', /1 person on the list/.test(s3) && /1 recording is private/.test(s3), s3);
+  ok('one of a thing reads as one', /1 person on a list/.test(s3) && /1 recording is private/.test(s3), s3);
 
   // ---------- the program it hands over ----------
   // it used to fetch the file at the moment of the tap. that put a network call, a path
@@ -280,63 +277,54 @@ let STATUS = null;           // null = the worker is not there at all
   }));
   ok('it still admits the audio is not locked',
      say.warn && /public address/.test(say.text) && /lock/.test(say.text), say.warn);
-  ok('the token is called a password and kept out of chat',
-     /password/i.test(say.text) && /(not paste|do not.*chat|never.*chat)/i.test(say.text));
+  ok('the emergency lever is named',
+     /signs everybody out at once/.test(say.text) && /emergency/.test(say.text));
+  ok('and that a phone number is not a password',
+     /a phone number is not a password/.test(say.text)
+     && /signed in as that person/.test(say.text));
   // twilio runs two consoles and he has landed on both. the runbook has to name
   // the one it draws AND route him from the other, or the pictures lie again.
-  ok('it names the console it draws',
-     /Get started with Twilio/.test(say.text) && /Account Info/.test(say.text)
-     && /Scroll to the bottom/i.test(say.text), 0);
-  ok('and routes him back from the other one',
-     /two<\/b> consoles|two consoles/.test(say.text) && /Let's get building/.test(say.text)
-     && /Twilio Home/.test(say.text), 0);
-  ok('the check step points back at the promote, not at a save',
-     /Go back to <b>D7<\/b>/.test(say.html) && /saved\s+and not running/.test(say.text), 0);
-  ok('the trial number limit is said where the number is picked',
-     /trial number/i.test(say.text) && /verified/.test(say.text), 0);
-  // cloudflare replaced "Create Worker" with a five-choice box; the wrong choice
-  // there sends him off to connect a repository he does not have
-  ok('it names the box and the one choice in it',
-     /Create application/.test(say.text) && /Make something new/.test(say.text)
-     && /Start with Hello World/.test(say.text), 0);
-  ok('and rules out the four that look plausible',
-     /Not GitHub, not a template, not upload/.test(say.text)
-     && /Continue to Pages/.test(say.text), 0);
-  // he filled all five settings in and then hunted for a Deploy button that is not
-  // on that card. the step has to say where it is, and that saving is not deploying.
-  // he had all five variables in and could not find the button. it is below the
-  // table, not on the card, and cloudflare's own wording for it is "Deploy".
-  // filling the five in saves five versions and deploys none of them. his active
-  // deployment was OLDER than all five, which is the actual failure and is visible
-  // only on the Deployments tab. there is no Deploy button on Settings at all.
-  ok('it says filling them in is not enough',
-     /does <b>not<\/b> put them to work/.test(say.html)
-     && /no Deploy button on that page/i.test(say.text), 0);
-  ok('and sends him to the Deployments tab to see why',
-     /Deployments<\/b> tab/.test(say.html) && /Version History/.test(say.text)
-     && /Active deployment is OLDER/i.test(say.text), 0);
+  // twilio is gone entirely: no SMS, no link, no five settings. what is left on
+  // cloudflare is one secret and the promote that makes it real.
+  ok('twilio is out of the instructions',
+     !/console\.twilio|toll-free|Regulatory Information|30032/i.test(say.text), 0);
+  ok('one setting, and it says so',
+     /One setting/.test(say.text) && /AUTH_SECRET/.test(say.text)
+     && /there used to be five/.test(say.text), 0);
+  ok('and tells him to leave the old twilio ones alone',
+     /Leave them/.test(say.text) && /tidying, not a step/.test(say.text), 0);
+  ok('adding the secret is not enough, and it says where the button is not',
+     /does <b>not<\/b> put it to work/.test(say.html)
+     && /no Deploy button on that page/i.test(say.text)
+     && /Deployments<\/b> tab/.test(say.html), 0);
   ok('and names the action by cloudflare\'s own word',
-     /Promote deployment/.test(say.text), 0);
-  ok('and says newest only, once, because a version is a snapshot',
-     /newest<\/b> row/.test(say.html) && /complete snapshot, not a change/.test(say.text)
-     && /not promote them one at a time/.test(say.text), 0);
-  // toll-free: blocked outright with a named error, not silently filtered
-  ok('it warns about a toll-free number',
-     /toll-free/i.test(say.text) && /\+1844/.test(say.text)
-     && /Regulatory Information/.test(say.text), 0);
-  ok('and names the only status that sends',
-     /Approved is the only status that sends/.test(say.text)
-     && /Verification in progress/.test(say.text), 0);
-  ok('and names the error he would actually see',
-     /30032/.test(say.text) && /blocks these outright/.test(say.text), 0);
+     /Promote deployment/.test(say.text) && /newest<\/b> row/.test(say.html)
+     && /complete snapshot, not a change/.test(say.text), 0);
+  // the part he will actually use lives on the recording, not here
+  ok('it sends him to the bottom of a recording, not an admin page',
+     /bottom of each recording/i.test(say.text)
+     && /Who can open this recording/.test(say.text), 0);
+  ok('and says how to paste them',
+     /One per line, or separated by commas/.test(say.text)
+     && /Dave 415 555 1212/.test(say.text), 0);
+  ok('and that adding the first person makes it private',
+     /makes that recording <b>private<\/b>/.test(say.html)
+     && /stays open to anyone with the link/.test(say.text), 0);
+  ok('and that no text message is coming',
+     /No text message, no link, no waiting/.test(say.text), 0);
+  ok('the first number added becomes the administrator',
+     /first number added anywhere becomes/.test(say.text), 0);
+  ok('the check step points back at the promote',
+     /Go back to <b>C3<\/b>/.test(say.html), 0);
   ok('c1 names both ways out when copying fails',
      /could not copy/.test(say.text) && /show it/.test(say.text)
      && /raw\.githubusercontent\.com/.test(say.out.join(' ')), 0);
   ok('the worker name is given exactly, and the taken case handled',
      /vampjam-auth/.test(say.text) && /lower case/.test(say.text)
      && /name is taken/.test(say.text), 0);
-  ok('it links out to both companies',
-     say.out.some(h => /console\.twilio/.test(h)) && say.out.some(h => /dash\.cloudflare/.test(h)));
+  ok('it links out to cloudflare and to the raw program',
+     say.out.some(h => /dash\.cloudflare/.test(h))
+     && say.out.some(h => /raw\.githubusercontent/.test(h)));
   ok('and never at itself',                 say.self === 0, say.self);
 
   // ---------- and the two pages that should point here ----------

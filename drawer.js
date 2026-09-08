@@ -1489,6 +1489,168 @@
   function auth_out() { auth_set(''); }
   window.vampjamAuth = { url: AUTH_URL, token: auth_token, set: auth_set, me: auth_me, out: auth_out };
 
+  // ---- who_add: the list of numbers lives at the bottom of the recording ----
+  // He wanted this where the thing being shared is, not on a separate admin
+  // page: standing on a session, paste the numbers of the people who should be
+  // able to open THIS one. Everything else follows from that.
+  //
+  // No number ever reaches the repo. The worker turns each pasted line into an
+  // opaque id under AUTH_SECRET and hands back the id, the last four digits and
+  // whatever was left of the line to use as a name.
+  function who_mount() {
+    var page = window.PAGE_KEY;
+    if (!page || !document.getElementById('tag_list')) return;   // session pages only
+    var A = window.vampjamAuth;
+    if (!A) return;
+
+    var box = document.createElement('section');
+    box.className = 'who_box';
+    box.id = 'who_box';
+    box.hidden = true;
+    box.innerHTML =
+      '<h2 class="who_h">Who can open this recording</h2>'
+      + '<div class="who_state" id="who_state"></div>'
+      + '<div class="who_list" id="who_list"></div>'
+      + '<textarea class="who_in" id="who_in" rows="3" autocapitalize="off" autocorrect="off"'
+      + ' placeholder="Paste phone numbers here&#10;one per line, or separated by commas&#10;names are fine: Dave 415 555 1212"></textarea>'
+      + '<div class="who_row">'
+      + '<button class="who_add" id="who_add" type="button">Add them</button>'
+      + '<button class="who_open" id="who_open" type="button" hidden>Let anyone in</button>'
+      + '</div>'
+      + '<div class="who_note" id="who_note"></div>';
+    document.body.appendChild(box);
+
+    var acc = null;
+    var stateEl = box.querySelector('#who_state');
+    var listEl  = box.querySelector('#who_list');
+    var noteEl  = box.querySelector('#who_note');
+    var inEl    = box.querySelector('#who_in');
+    var addBtn  = box.querySelector('#who_add');
+    var openBtn = box.querySelector('#who_open');
+
+    function note(m, bad) { noteEl.textContent = m || ''; noteEl.className = 'who_note' + (bad ? ' bad' : ''); }
+    function rule() { return (acc.sessions && acc.sessions[page]) || {}; }
+    function allow() { return rule().allow || []; }
+    function person(id) {
+      var p = (acc.people || []).filter(function (x) { return x && x.id === id; })[0];
+      return p || { id: id, label: '•••' };
+    }
+
+    function paint() {
+      var ids = allow();
+      var priv = rule().mode === 'list';
+      stateEl.textContent = priv
+        ? (ids.length === 1 ? 'private — 1 person can open it' : 'private — ' + ids.length + ' people can open it')
+        : 'open — anyone with the link can open it';
+      stateEl.className = 'who_state' + (priv ? ' shut' : '');
+      openBtn.hidden = !priv;
+      listEl.innerHTML = '';
+      ids.forEach(function (id) {
+        var p = person(id);
+        var chip = document.createElement('span');
+        chip.className = 'who_chip';
+        chip.innerHTML = '<span class="who_name"></span><span class="who_last"></span>'
+          + '<button class="who_x" type="button" aria-label="Remove">×</button>';
+        chip.querySelector('.who_name').textContent = p.label || '•••';
+        chip.querySelector('.who_last').textContent = p.last4 ? '••' + p.last4 : '';
+        chip.querySelector('.who_x').addEventListener('click', function () { drop(id, p.label); });
+        listEl.appendChild(chip);
+      });
+    }
+
+    function load() {
+      return fetch('access.json?v=' + Date.now(), { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          acc = (j && typeof j === 'object') ? j : {};
+          acc.admins = acc.admins || []; acc.people = acc.people || []; acc.sessions = acc.sessions || {};
+        });
+    }
+    function save(msg) {
+      return sync_write('access.json', JSON.stringify(acc, null, 2), msg);
+    }
+
+    // one call for the whole paste, so twenty numbers cost one round trip
+    function add() {
+      var raw = inEl.value;
+      if (!raw.trim()) return;
+      addBtn.disabled = true; note('Reading them…');
+      fetch(A.url + '?op=ids', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ t: A.token(), phones: raw.split(/[\n,;]+/) })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (!j || !j.ok) throw new Error((j && j.error) || 'the worker said no');
+          var good = j.people.filter(function (x) { return x.ok; });
+          var bad  = j.people.filter(function (x) { return !x.ok; });
+          if (!good.length) throw new Error('none of that looked like a phone number');
+          return load().then(function () {
+            var r2 = acc.sessions[page] || {};
+            r2.mode = 'list';                       // adding anyone makes it private
+            r2.allow = r2.allow || [];
+            var added = 0;
+            good.forEach(function (g) {
+              if ((acc.people || []).every(function (x) { return !x || x.id !== g.id; }))
+                acc.people.push({ id: g.id, label: g.label, last4: g.phone_last4 });
+              if (r2.allow.indexOf(g.id) < 0) { r2.allow.push(g.id); added++; }
+              // the very first number entered anywhere owns the list
+              if (!acc.admins.length) acc.admins.push(g.id);
+            });
+            acc.sessions[page] = r2;
+            return save('access ' + page.split('/').pop()).then(function () {
+              inEl.value = '';
+              paint();
+              note(added + (added === 1 ? ' added' : ' added')
+                + (bad.length ? ' · ' + bad.length + ' line' + (bad.length > 1 ? 's' : '')
+                   + ' were not phone numbers: ' + bad.map(function (b) { return b.line; }).join(', ') : ''),
+                !!bad.length);
+            });
+          });
+        })
+        .catch(function (e) { note(e.message, true); })
+        .then(function () { addBtn.disabled = false; });
+    }
+
+    function drop(id, label) {
+      var r2 = acc.sessions[page] || {};
+      r2.allow = (r2.allow || []).filter(function (x) { return x !== id; });
+      acc.sessions[page] = r2;
+      paint(); note('Removing ' + (label || 'them') + '…');
+      save('access remove').then(function () { note(''); paint(); },
+                                function (e) { note('Could not save: ' + e.message, true); });
+    }
+
+    function open_up() {
+      var r2 = acc.sessions[page] || {};
+      r2.mode = 'open';
+      acc.sessions[page] = r2;
+      paint(); note('Opening it up…');
+      save('access open').then(function () { note('Anyone with the link can open it.'); paint(); },
+                              function (e) { note('Could not save: ' + e.message, true); });
+    }
+
+    addBtn.addEventListener('click', add);
+    openBtn.addEventListener('click', open_up);
+
+    // who sees it: the administrator, or anybody at all while nobody is the
+    // administrator yet — otherwise the first list could never be started
+    load().then(function () {
+      if (!acc.admins.length) {
+        box.hidden = false;
+        note('Nobody administers this yet. The first number you add becomes the administrator — make it your own.');
+        paint();
+        return;
+      }
+      return A.me().then(function (me) {
+        if (!me || !me.admin) return;
+        box.hidden = false;
+        paint();
+      });
+    }).catch(function () {});
+  }
+  window.vampjamWhoMount = who_mount;
+
   // name_edit — a session's display name lives in two places: the session file's
   // own label and the registry row the list draws from. A rename that touches
   // only one of them shows the old name in the list for ever, so the page hands
@@ -1714,6 +1876,7 @@
       });
       return;
     }
+    try { who_mount(); } catch (e) {}
     // arriving with #sessions (e.g. Back from the record screen) opens the list
     if (location.hash === '#sessions') {
       setTimeout(function () { set_open(true); }, 150);
