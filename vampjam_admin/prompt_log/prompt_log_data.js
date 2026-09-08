@@ -9,8 +9,75 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "369 who_name",
+        id: "370 signin_here",
         expanded: true,
+        nodes: [
+          { text: "370 signin_here", children: [
+            { text: "prompt_restate", children: [
+              { text: "make a skill out of writing instructions, called skill_instruct" },
+              { text: "when I come in, show the sign-in on top of the page I came in on" },
+              { text: "simple, welcoming, clear, few but helpful words" }
+            ]},
+            { text: "the_sign_in_comes_to_you", children: [
+              { text: "it used to send you to signin.html and bring you back" },
+              { text: "following a link to a recording and landing at a different address is a door slamming" },
+              { text: "now one field draws on the page you asked for" },
+              { text: "\"Come on in \u00b7 Paul shared this recording. Your phone number is the whole sign-in \u2014 no code, no password, nothing to wait for.\"" },
+              { text: "under forty words in the whole box, and the test asserts that rather than trusting me" }
+            ]},
+            { text: "when_it_goes_wrong", children: [
+              { text: "errors answer in place, and the field keeps what you typed" },
+              { text: "so a mistyped number is fixed, not retyped" },
+              { text: "unknown number \u2192 \"That number is not on this recording. Ask Paul to add it.\"" }
+            ]},
+            { text: "the_one_thing_it_does_not_do", children: [
+              { text: "bootstrap a first administrator \u2014 that path asks for a name" },
+              { text: "the name is asked in exactly one place, so it hands over to signin.html" }
+            ]},
+            { text: "a_second_gate_i_found_in_there", children: [
+              { text: "every session page carried its own private copy, testing a mode deleted in 359" },
+              { text: "dead, silent, and a second door of exactly the kind you keep complaining about" },
+              { text: "removed from nine pages" },
+              { text: "the shared box stays, used only for \"signed in, but not yours\"" },
+              { text: "and behind the sign-in the who box hides \u2014 two boxes saying \"not signed in\" is one too many" }
+            ]},
+            { text: "asset_pin_changed_shape", children: [
+              { text: "my check said \"every page asks for v=182\" and broke the moment I bumped to 183" },
+              { text: "a check with a number in it is one more thing to update" },
+              { text: "and updating it is exactly the step I keep missing" },
+              { text: "it now names no number: every page must agree with every other page" },
+              { text: "a check that maintains itself is the only kind that survives me" }
+            ]},
+            { text: "tests", children: [
+              { text: "signin_here_test new, 30" },
+              { text: "signin_test and gate_all_test both asserted the redirect this build deleted" },
+              { text: "rewritten to assert you STAY on the recording" },
+              { text: "thirty-three suites, green" }
+            ]},
+            { text: "skill_instruct", children: [
+              { text: "proposed for you to save \u2014 ten rules distilled from what worked" },
+              { text: "lettered steps, one screen each, named for the outcome" },
+              { text: "every step says what success looks like (the blue bar was the whole answer)" },
+              { text: "reduce the decisions before describing them" },
+              { text: "quote labels, never describe them" },
+              { text: "when I was wrong, say so where the wrong thing was" },
+              { text: "never draw a vendor screen from memory \u2014 three builds died on that" },
+              { text: "and a closing section applying the same rules to the product itself" },
+              { text: "it sits beside skill_livepage_now_instruct, which keeps the mechanics" }
+            ]},
+            { text: "codename_list", children: [
+              { text: "signin_here \u00b7 hello \u00b7 asset_pin \u00b7 signin_gate \u00b7 skill_instruct" }
+            ]},
+            { text: "left_for_you", children: [
+              { text: "hard reload for drawer.js v=183" },
+              { text: "then open a private recording signed out \u2014 it asks you right there" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "369 who_name",
+        expanded: false,
         nodes: [
           { text: "369 who_name", children: [
             { text: "prompt_restate", children: [
