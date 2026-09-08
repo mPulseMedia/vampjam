@@ -1,5 +1,13 @@
 {
-  "admins": [],
-  "people": [],
+  "admins": [
+    "JIM6UN5M72XQebX7MBgOAAZlOe0dE9JYfdQkRpwLyuQ"
+  ],
+  "people": [
+    {
+      "id": "JIM6UN5M72XQebX7MBgOAAZlOe0dE9JYfdQkRpwLyuQ",
+      "label": "Paul",
+      "last4": "0105"
+    }
+  ],
   "sessions": {}
 }
