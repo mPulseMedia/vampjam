@@ -5025,7 +5025,32 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   which is the chat's preview host and not the site.
   signin_steps_test 74, up two. Twenty-eight suites, 772 assertions. Green.
   Still no new trace.
-- NEXT → add entry 350 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 350 ids_open · b358 · the page offered a start-over the worker refused.
+  "It's not working. I'm not sure I mis-entered a number. I don't know. But I can't sign in." I
+  read the live state instead of guessing, which is what I should have done two builds ago:
+  access.json on GitHub is UNTOUCHED. Still one admin, one person, last4 0105, no sessions. So
+  nothing he did wrote anything, and the mistyped number was never the reason he could not sign in
+  — it was the reason nothing could be fixed.
+  346 put the start-over in the page: at most one person, nobody else, nothing private, so the
+  next number added takes it over. I never put the same test in the worker. The worker sees an
+  admin, sees he is not signed in as them, and answers "admins only" to every add. A locked door
+  with a handle drawn on it — and the page said "Started over" was possible while the thing that
+  writes said no.
+  unstarted() now lives in the worker too, and `ids` and `claim_admin` both use it. Same three
+  conditions, one definition each side. In that state nothing is protected, so nothing is given
+  away; a second person on the list or a single closed recording ends it for good.
+  Asserted in the worker itself, not just the page: one mistyped admin and nothing private lets a
+  number in; two people on the list wants an admin again; one closed recording shuts it too.
+  This is the pattern to watch for and I have now shipped it twice in one run — a rule written on
+  one side of the wall. The gate is the other one: the page decides what to show, the worker
+  decides what is true, and any rule that governs both has to be written twice or it is not a
+  rule.
+  Cost to him: the paste loop once more, which is real and is mine. The alternative was editing
+  access.json myself, and I cannot — the sandbox has no route to the sync worker and his Mac's
+  shell has no network at all, so the only writer to that file is the site.
+  who_add_test 86, up three. Twenty-eight suites, 775 assertions. Green.
+  Still no new trace.
+- NEXT → add entry 351 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
