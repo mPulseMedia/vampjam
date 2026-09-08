@@ -232,8 +232,9 @@ footer a{color:var(--signal)}
   <div class="cap">
     <h2>Five settings</h2>
     <p>same worker: <b>Settings</b> → <b>Variables and Secrets</b> → <b>Add</b>, five times. the
-    type matters — three <b>Secret</b>, two <b>Text</b>. then one <b>Deploy</b> at the end, which
-    lives below the table rather than on it — that is D6, and it is the step people miss.</p>
+    type matters — three <b>Secret</b>, two <b>Text</b>. then D6 and D7, which are the ones that
+    actually make them live, and they are on a different tab entirely. filling the boxes in is
+    only half of it.</p>
   </div>
   <ol class="steps">
     <li data-k="d1"><button class="tick" aria-label="Done">✓</button>
@@ -259,19 +260,26 @@ footer a{color:var(--signal)}
     </li>
 
     <li data-k="d6"><button class="tick" aria-label="Done">✓</button>
-      Now make them real, and this is the step that is not obvious: <b>the button is not on that
-      card</b>. Scroll <b>past the bottom of the variables table</b>. Below it is a blue
-      <b>Deploy</b>. Click it.
-      <span class="said">The page settles and the five rows stay put, the three secrets reading
-      <b>Value encrypted</b>.</span>
-      <span class="odd">No Deploy button anywhere below? Then there is nothing pending — you
-      already deployed them, and your five rows are live. Go to E.</span>
-      <span class="odd">This one button is the whole of it. There is no second step: you do not
-      also have to redeploy the code from Edit code or Deployments. Cloudflare's own instruction
-      for adding variables ends "Select Deploy to implement your changes", and that is this
-      button.</span>
+      Filling the five in does <b>not</b> put them to work, and there is no Deploy button on that
+      page to fix it. Each one you added became a saved <b>version</b>, sitting in a list, doing
+      nothing. Go to the <b>Deployments</b> tab.
+      <span class="said">At the top, <b>Active deployment</b>, with a version id. Below,
+      <b>Version History</b> — one row per variable you added: Add variable: SITE, Add variable:
+      TWILIO_FROM, Add secret: TWILIO_TOKEN, and so on.</span>
+      <span class="odd">Look at the times. If the <b>Active deployment</b> is OLDER than those
+      rows, the worker is running a version from before you touched anything. That is the whole
+      problem, and it is why nothing you did seemed to take.</span>
+    </li>
+
+    <li data-k="d7"><button class="tick" aria-label="Done">✓</button>
+      Click <b>Promote deployment</b>, top right of that tab, and choose the <b>newest</b> row —
+      the topmost one, <b>Add variable: SITE</b>.
+      <span class="said">Active deployment changes to that version id. That is the moment the five
+      settings start existing as far as the program is concerned.</span>
+      <span class="odd">Only the newest, and only once. A version is a complete snapshot, not a
+      change — the last one you added carries all five. You do not promote them one at a time.</span>
       <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
-      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><text x="34" y="36" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#101820">Runtime variables and secrets</text><rect x="272" y="26" width="54" height="14" rx="4" fill="#fff" stroke="#d5dbe0"/><text x="299" y="36" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#101820" text-anchor="middle">+ Add variable</text><rect x="34" y="44" width="292" height="15" rx="3" fill="#f6f7f8"/><text x="42" y="54" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b">Secret    AUTH_SECRET         Value encrypted</text><rect x="34" y="61" width="292" height="15" rx="3" fill="#fff" stroke="#f0f0f0"/><text x="42" y="71" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b">Text       SITE                        https://vampsf.com</text><rect x="34" y="78" width="292" height="15" rx="3" fill="#f6f7f8"/><text x="42" y="88" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b">Text       TWILIO_FROM        +1844…</text><rect x="34" y="95" width="292" height="15" rx="3" fill="#fff" stroke="#f0f0f0"/><text x="42" y="105" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b">Secret    TWILIO_SID             Value encrypted</text><rect x="34" y="112" width="292" height="15" rx="3" fill="#f6f7f8"/><text x="42" y="122" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b">Secret    TWILIO_TOKEN        Value encrypted</text><line x1="34" y1="132" x2="326" y2="132" stroke="#e6e2d9" stroke-dasharray="3 3"/><text x="34" y="146" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-style="italic" fill="#8f959b">the card ends here — the button is below it</text><rect x="270" y="156" width="56" height="19" rx="5" fill="#1b6be0"/><text x="298" y="169" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">Deploy</text><rect x="264" y="150" width="68" height="31" rx="9" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="26" y="22" width="40" height="13" rx="4" fill="#f1f3f5"/><text x="46" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b" text-anchor="middle">Overview</text><rect x="68" y="22" width="52" height="13" rx="4" fill="#fff" stroke="#101820"/><text x="94" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" font-weight="700" fill="#101820" text-anchor="middle">Deployments</text><rect x="122" y="22" width="34" height="13" rx="4" fill="#f1f3f5"/><text x="139" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b" text-anchor="middle">Settings</text><rect x="252" y="21" width="74" height="15" rx="5" fill="#1b6be0"/><text x="289" y="32" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#fff" text-anchor="middle">Promote deployment</text><rect x="246" y="16" width="86" height="25" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/><rect x="30" y="46" width="296" height="26" rx="5" fill="#f6f7f8" stroke="#e6e8ea"/><text x="38" y="57" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Active deployment</text><text x="38" y="68" font-family="ui-monospace,Menlo,monospace" font-size="8.5" font-weight="700" fill="#d7263d">4a7a4acf</text><text x="92" y="68" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" font-style="italic" fill="#8f959b">Manually deployed · 24 minutes ago — older than all five</text><text x="30" y="88" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#101820">Version History</text><rect x="30" y="94" width="296" height="15" rx="3" fill="#fff" stroke="#eef0f2"/><text x="38" y="104" font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#101820">96a945f0</text><text x="92" y="104" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Add variable: SITE</text><text x="300" y="104" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#8f959b">19m</text><rect x="26" y="90" width="212" height="23" rx="7" fill="none" stroke="#d7263d" stroke-width="3"/><rect x="30" y="111" width="296" height="14" rx="3" fill="#fafbfb"/><text x="38" y="121" font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#5d6e7b">b06dd2e5</text><text x="92" y="121" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#8f959b">Add variable: TWILIO_FROM</text><rect x="30" y="127" width="296" height="14" rx="3" fill="#fff"/><text x="38" y="137" font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#5d6e7b">a08945a3</text><text x="92" y="137" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#8f959b">Add secret: TWILIO_TOKEN</text><rect x="30" y="143" width="296" height="14" rx="3" fill="#fafbfb"/><text x="38" y="153" font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#5d6e7b">47c7a217</text><text x="92" y="153" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#8f959b">Add secret: TWILIO_SID</text><rect x="30" y="159" width="296" height="14" rx="3" fill="#fff"/><text x="38" y="169" font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#5d6e7b">766055b8</text><text x="92" y="169" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#8f959b">Add secret: AUTH_SECRET</text></svg>
     </li>
   </ol>
   <button class="line" id="make_secret" type="button"><small>tap to invent one and copy it</small>AUTH_SECRET — 48 random characters</button>
@@ -292,8 +300,8 @@ footer a{color:var(--signal)}
       can send. This is the proof, not any button on Cloudflare.</span>
       <span class="odd">Still says the worker is not there? The name is probably not exactly
       <b>vampjam-auth</b>, or the address in C3 is different. Send me the address.</span>
-      <span class="odd">Says Twilio cannot send, but you filled all three in? You saved but did not
-      <b>deploy</b>. Go back to D6.</span>
+      <span class="odd">Says Twilio cannot send, but you filled all three in? Then they are saved
+      and not running. Go back to <b>D7</b> and promote the newest version.</span>
     </li>
 
     <li data-k="e2"><button class="tick" aria-label="Done">✓</button>

@@ -9,8 +9,55 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "349 signin_deploy",
+        id: "350 signin_promote",
         expanded: true,
+        nodes: [
+          { text: "350 signin_promote", children: [
+            { text: "prompt_restate", children: [
+              { text: "The deploy in step D \u2014 where?" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Deploy in step D - WHERE?" },
+              { text: "[screenshots: vampjam-auth Overview, Settings, Deployments, Workers & Pages]" }
+            ]},
+            { text: "your_screenshot_had_the_answer", children: [
+              { text: "Active deployment 4a7a4acf, Manually deployed, 24 minutes old" },
+              { text: "your five variable versions are 19-21 minutes old \u2014 all NEWER than the one running" },
+              { text: "the worker was serving code from before you touched it" },
+              { text: "so there is no Deploy button on Settings. adding a variable saves a version and deploys nothing" }
+            ]},
+            { text: "i_read_the_docs_and_still_got_it_wrong", children: [
+              { text: "cloudflare's page says \"Select Deploy to implement your changes\" and I took that as a button below the table" },
+              { text: "your dashboard says otherwise" },
+              { text: "new order: read the docs, then believe the screenshot over them wherever they disagree" }
+            ]},
+            { text: "d6_is_diagnosis_now", children: [
+              { text: "filling them in does not put them to work" },
+              { text: "go to Deployments. compare Active deployment against the Version History rows" },
+              { text: "active older than those rows = the whole problem" }
+            ]},
+            { text: "d7_is_the_fix", children: [
+              { text: "Promote deployment, top right" },
+              { text: "choose the newest row \u2014 Add variable: SITE" },
+              { text: "newest only, and only once: a version is a complete snapshot, not a change, so the last one carries all five" },
+              { text: "said explicitly because promoting them one at a time is the obvious wrong guess, and each would look like it worked" }
+            ]},
+            { text: "the_drawing", children: [
+              { text: "the Deployments tab, two rings: Promote deployment, and the topmost version row" },
+              { text: "the active version id in red with \"older than all five\" beside it" },
+              { text: "the comparison IS the diagnosis. a picture that does not show it teaches nothing" }
+            ]},
+            { text: "E1 now points at D7 instead of a save" },
+            { text: "twenty-four steps, eight drawings" },
+            { text: "signin_steps_test 73 \u2014 and the assertions about a blue Deploy below the table are gone. they asserted a button that is not there" },
+            { text: "twenty-seven suites, 695 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "349 signin_deploy",
+        expanded: false,
         nodes: [
           { text: "349 signin_deploy", children: [
             { text: "prompt_restate", children: [

@@ -61,7 +61,7 @@ let STATUS = null;           // null = the worker is not there at all
     heads:  [...document.querySelectorAll('.panel[data-part] h2')].map(e => e.textContent.trim()).filter(Boolean).length,
     keys:   [...document.querySelectorAll('li[data-k]')].map(e => e.getAttribute('data-k'))
   }));
-  ok('twenty-three steps, each its own tickable thing', shape.steps === 23, shape.steps);
+  ok('twenty-four steps, each its own tickable thing', shape.steps === 24, shape.steps);
   ok('every step carries a tick',                 shape.ticked === shape.steps, shape.ticked);
   ok('grouped a through g',                       shape.parts.join('') === 'abcdefg', shape.parts.join(''));
   ok('every part says what it is for',            shape.heads === 7, shape.heads);
@@ -290,6 +290,8 @@ let STATUS = null;           // null = the worker is not there at all
   ok('and routes him back from the other one',
      /two<\/b> consoles|two consoles/.test(say.text) && /Let's get building/.test(say.text)
      && /Twilio Home/.test(say.text), 0);
+  ok('the check step points back at the promote, not at a save',
+     /Go back to <b>D7<\/b>/.test(say.html) && /saved\s+and not running/.test(say.text), 0);
   ok('the trial number limit is said where the number is picked',
      /trial number/i.test(say.text) && /verified/.test(say.text), 0);
   // cloudflare replaced "Create Worker" with a five-choice box; the wrong choice
@@ -304,14 +306,20 @@ let STATUS = null;           // null = the worker is not there at all
   // on that card. the step has to say where it is, and that saving is not deploying.
   // he had all five variables in and could not find the button. it is below the
   // table, not on the card, and cloudflare's own wording for it is "Deploy".
-  ok('it says the button is below the table, not on the card',
-     /button is not on that card/i.test(say.text)
-     && /past the bottom of the variables table/i.test(say.text), 0);
-  ok('and calls it Deploy, which is what cloudflare calls it',
-     /Below it is a blue <b>Deploy<\/b>/.test(say.html), 0);
-  ok('and closes the two doubts it leaves',
-     /already deployed them/.test(say.text)
-     && /no second step/i.test(say.text) && /Edit code or Deployments/.test(say.text), 0);
+  // filling the five in saves five versions and deploys none of them. his active
+  // deployment was OLDER than all five, which is the actual failure and is visible
+  // only on the Deployments tab. there is no Deploy button on Settings at all.
+  ok('it says filling them in is not enough',
+     /does <b>not<\/b> put them to work/.test(say.html)
+     && /no Deploy button on that page/i.test(say.text), 0);
+  ok('and sends him to the Deployments tab to see why',
+     /Deployments<\/b> tab/.test(say.html) && /Version History/.test(say.text)
+     && /Active deployment is OLDER/i.test(say.text), 0);
+  ok('and names the action by cloudflare\'s own word',
+     /Promote deployment/.test(say.text), 0);
+  ok('and says newest only, once, because a version is a snapshot',
+     /newest<\/b> row/.test(say.html) && /complete snapshot, not a change/.test(say.text)
+     && /not promote them one at a time/.test(say.text), 0);
   // toll-free: blocked outright with a named error, not silently filtered
   ok('it warns about a toll-free number',
      /toll-free/i.test(say.text) && /\+1844/.test(say.text)

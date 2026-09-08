@@ -4780,7 +4780,38 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Standing lesson for this file: on any step that sends him into someone else's interface, read
   that vendor's current documentation before drawing the screen.
   Still no new trace.
-- NEXT → add entry 342 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 342 signin_promote · b350 · D6 was hunting for a button that does not exist. His screenshots of
+  the Deployments tab gave the real answer and it is not the one I gave him in 341: adding a
+  variable in the Cloudflare dashboard does not deploy anything. Each of his five saved a new
+  VERSION, and the Active deployment was still 4a7a4acf, "Manually deployed", 24 minutes old —
+  older than all five. The worker was serving code from before he touched it. That is why he could
+  not find a Deploy button on Settings: there is none, because the deploying happens on a
+  different tab.
+  341 read the docs and still got it wrong, which is worth writing down. Cloudflare's variables
+  page says "Select Deploy to implement your changes" and I took that as a button below the table.
+  His own dashboard says otherwise, and a screenshot of the live thing beats a documentation page
+  describing a UI that has moved on. The order should be: read the docs, then believe the
+  screenshot over them wherever they disagree.
+  So D6 and D7 replace the single D6. D6 is now diagnosis rather than instruction: filling them in
+  does not put them to work, go to Deployments, look at Active deployment against the Version
+  History rows, and if the active one is older then that is the whole problem. D7 is the fix —
+  Promote deployment, top right, choose the newest row.
+  The drawing is the Deployments tab with two rings: Promote deployment, and the topmost version
+  row. It writes the active version id in red with "older than all five" beside it, because the
+  comparison IS the diagnosis and a picture that does not show it teaches nothing.
+  Newest only, and only once: a version is a complete snapshot rather than a change, so the last
+  one added carries all five. Said explicitly because promoting them one at a time is the obvious
+  wrong guess, and four extra promotions would each look like they worked.
+  E1's diagnosis rewritten to point at D7 instead of a save.
+  Twenty-four steps, eight drawings.
+  signin_steps_test 73: filling them in is not enough; the Deployments tab and the older-active
+  comparison; Promote deployment by name; newest only, once, with the snapshot reason; and E1
+  pointing at D7. The 341 assertions about a blue Deploy below the table are gone — they asserted
+  a button that is not there, which is the same mistake as 340's Save, one layer deeper.
+  Re-ran twenty-seven suites, 695 assertions. Green.
+  Nothing else touched. No version bump.
+  Still no new trace.
+- NEXT → add entry 343 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
