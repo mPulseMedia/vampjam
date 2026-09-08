@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "347 signin_paste",
+        id: "348 signin_live",
         expanded: true,
+        nodes: [
+          { text: "348 signin_live", children: [
+            { text: "prompt_restate", children: [
+              { text: "All five settings are in. Where is the deploy button?" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Where's the deploy button? I'm at the end of step D." },
+              { text: "[screenshot: Runtime variables and secrets \u2014 all five rows in, three reading Value encrypted]" }
+            ]},
+            { text: "the_answer", children: [
+              { text: "there is none on that card" },
+              { text: "cloudflare's Save for the whole Settings page sits below the bottom of it, off the end of a screenshot" },
+              { text: "and saving is not deploying" }
+            ]},
+            { text: "d5_was_wrong_twice", children: [
+              { text: "it carried the deploy as a clause on SITE \u2014 attached to one variable rather than all five" },
+              { text: "and it implied a button that is on that card" }
+            ]},
+            { text: "so_d6_is_its_own_step", children: [
+              { text: "says it plainly: no button on that card, scroll past the bottom of it" },
+              { text: "its drawing is the only one that draws what is NOT on the screen \u2014 the rows, then \"keep scrolling\", then the ringed Save below" },
+              { text: "drawing the absence is the point. a picture of the card alone is what you already had" },
+              { text: "Value encrypted means stored. stored is not running." }
+            ]},
+            { text: "e2_is_the_more_valuable_one", children: [
+              { text: "your TWILIO_FROM is a toll-free number, and twilio's own checklist had toll free verification unfinished" },
+              { text: "in the US an unverified toll-free number cannot text" },
+              { text: "nothing about that failure looks like a failure \u2014 every light here goes green, the worker says it sent, the message is silently filtered" },
+              { text: "you would have come back saying it does not work, and every reading available to you would have said it does" },
+              { text: "e2 lists the prefixes, names the verification screen, and says the tradeoff: verification is a form twilio reviews, days; a local number needs none of it" }
+            ]},
+            { text: "e1_gained_the_matching_diagnosis \u2014 twilio fields filled but the light off means saved and not deployed, go back to D6" },
+            { text: "the runbook now answers \"it looks right and it does not work\" twice, which is the only question a runbook is really for" },
+            { text: "twenty-three steps, eight drawings" },
+            { text: "signin_steps_test 69, up four" },
+            { text: "twenty-seven suites, 691 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "347 signin_paste",
+        expanded: false,
         nodes: [
           { text: "347 signin_paste", children: [
             { text: "prompt_restate", children: [

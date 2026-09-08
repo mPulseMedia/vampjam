@@ -4712,7 +4712,39 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   The page is 53 KB now, up from 40 — the worker is 11 KB of that. Worth it.
   Nothing else touched. No version bump.
   Still no new trace.
-- NEXT → add entry 340 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 340 signin_live · b348 · the save that is not on the card, and the toll-free trap. He had all
+  five settings in — screenshot shows AUTH_SECRET, SITE, TWILIO_FROM, TWILIO_SID, TWILIO_TOKEN,
+  the three secrets reading "Value encrypted" — and asked where the deploy button was.
+  D5 had carried the deploy as a clause: "SITE ... then Deploy once more". That was wrong twice
+  over. It attached the deploy to one variable rather than to all five, and it implied a button
+  that is on that card. There is none. Cloudflare's Save for the whole Settings page sits below
+  the bottom of the variables card, off the end of a screenshot, and saving is not deploying.
+  So D6 is its own step, and it says the thing plainly: there is no button on that card, scroll
+  past the bottom of it. Its drawing is the only one in the runbook that draws what is NOT on the
+  screen — the five rows, then "keep scrolling, past the end of the card", then the ringed Save
+  below. Drawing the absence is the point; a picture of the card alone is what he already had.
+  It also separates the two acts: Value encrypted means stored, and stored is not running.
+  Deploy from Deployments or Edit code, and only then do the settings reach the program.
+  E2 is new and it is the more valuable of the two. His TWILIO_FROM is +18449612835 — a toll-free
+  number — and Twilio's own onboarding strip in the earlier screenshot had "Complete your toll
+  free verification" still unfinished. In the US an unverified toll-free number cannot text.
+  Nothing about that failure looks like a failure: every light on this page goes green, the worker
+  reports it sent, and the message is silently filtered. He would have come back saying the
+  sign-in does not work and every reading available to him would have said it does.
+  E2 lists the toll-free prefixes so he can recognise one, names the screen that shows the
+  verification state, and says the honest tradeoff: verification is a form Twilio reviews and can
+  take days, while a local number needs none of it.
+  E1 gained the matching diagnosis: six lights but all three Twilio fields filled means saved and
+  not deployed, go back to D6. The runbook now answers "it looks right and it does not work"
+  twice, which is the only question a runbook is really for.
+  Twenty-three steps, eight drawings.
+  signin_steps_test 69, up four: the save is below the card and not on it; saving is not
+  deploying; the toll-free warning names the prefixes and the verification screen; and it says why
+  that failure is invisible.
+  Re-ran twenty-seven suites, 691 assertions. Green.
+  Nothing else touched. No version bump.
+  Still no new trace.
+- NEXT → add entry 341 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

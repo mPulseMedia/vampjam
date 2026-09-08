@@ -254,9 +254,19 @@ footer a{color:var(--signal)}
       <b>+14155551212</b>.
     </li>
     <li data-k="d5"><button class="tick" aria-label="Done">✓</button>
-      <b>SITE</b> · type <b>Text</b> · <b>https://vampsf.com</b> — then <b>Deploy</b> once more.
-      <span class="odd">Settings only take effect on a <b>deploy</b>. Skipping this is the most
-      common reason it still looks broken afterwards.</span>
+      <b>SITE</b> · type <b>Text</b> · <b>https://vampsf.com</b>.
+    </li>
+
+    <li data-k="d6"><button class="tick" aria-label="Done">✓</button>
+      Now save them, and this is the step people lose ten minutes on: <b>there is no button on
+      that card</b>. Scroll <b>past the bottom of it</b> — the <b>Save</b> for the whole Settings
+      page is down there.
+      <span class="said">Rows reading <b>Value encrypted</b> means they are stored.</span>
+      <span class="odd">Then <b>Deploy</b> once, from <b>Deployments</b> or from Edit code.
+      Settings only reach the running program on a deploy — this is the most common reason it
+      still looks broken after everything is filled in correctly.</span>
+      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
+      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><text x="34" y="38" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#101820">Runtime variables and secrets</text><rect x="34" y="48" width="292" height="16" rx="4" fill="#f6f7f8"/><text x="42" y="59" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Secret     AUTH_SECRET          Value encrypted</text><rect x="34" y="66" width="292" height="16" rx="4" fill="#fff" stroke="#eee"/><text x="42" y="77" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Text        SITE                         https://vampsf.com</text><rect x="34" y="84" width="292" height="16" rx="4" fill="#f6f7f8"/><text x="42" y="95" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Text        TWILIO_FROM         +1844…</text><rect x="34" y="102" width="292" height="16" rx="4" fill="#fff" stroke="#eee"/><text x="42" y="113" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Secret     TWILIO_SID              Value encrypted</text><rect x="34" y="120" width="292" height="16" rx="4" fill="#f6f7f8"/><text x="42" y="131" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Secret     TWILIO_TOKEN         Value encrypted</text><text x="34" y="152" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#8f959b">— keep scrolling, past the end of the card —</text><rect x="264" y="160" width="62" height="18" rx="5" fill="#1b6be0"/><text x="295" y="172" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8.5" font-weight="600" fill="#fff" text-anchor="middle">Save</text><rect x="259" y="155" width="72" height="28" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
     </li>
   </ol>
   <button class="line" id="make_secret" type="button"><small>tap to invent one and copy it</small>AUTH_SECRET — 48 random characters</button>
@@ -267,13 +277,28 @@ footer a{color:var(--signal)}
   <div class="cap">
     <h2>Check it took</h2>
     <p>come back here and press <b>check again</b> at the top. the first three lights should fill.
-    the last three are about people and recordings — those are F and G.</p>
+    the last three are about people and recordings — those are F and G. the second step here is
+    the one that catches people out after everything else is right.</p>
   </div>
   <ol class="steps">
     <li data-k="e1"><button class="tick" aria-label="Done">✓</button>
       Scroll to the top of this page and press <b>check again</b>.
-      <span class="odd">If it still says the worker is not there: the name is probably not exactly
+      <span class="said">The first three lights fill: the worker is up, AUTH_SECRET is set, Twilio
+      can send. This is the proof, not any button on Cloudflare.</span>
+      <span class="odd">Still says the worker is not there? The name is probably not exactly
       <b>vampjam-auth</b>, or the address in C3 is different. Send me the address.</span>
+      <span class="odd">Says Twilio cannot send, but you filled all three in? You saved but did not
+      <b>deploy</b>. Go back to D6.</span>
+    </li>
+
+    <li data-k="e2"><button class="tick" aria-label="Done">✓</button>
+      If your number starts <b>+1800 +1833 +1844 +1855 +1866 +1877 +1888</b>, it is
+      <b>toll-free</b>, and in the US a toll-free number cannot text until Twilio has verified it.
+      Check <b>Phone Numbers</b> → your number → <b>Toll-Free Verification</b>.
+      <span class="odd">This one is nasty because nothing looks broken: all six lights here go
+      green, the worker says it sent, and the text never arrives. Verification is a form Twilio
+      reviews; it can take days. A normal local number needs none of it — if you would rather not
+      wait, buy one in A4 and change <b>TWILIO_FROM</b>.</span>
     </li>
   </ol>
 </div></div>

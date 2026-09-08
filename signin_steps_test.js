@@ -61,7 +61,7 @@ let STATUS = null;           // null = the worker is not there at all
     heads:  [...document.querySelectorAll('.panel[data-part] h2')].map(e => e.textContent.trim()).filter(Boolean).length,
     keys:   [...document.querySelectorAll('li[data-k]')].map(e => e.getAttribute('data-k'))
   }));
-  ok('twenty-one steps, each its own tickable thing', shape.steps === 21, shape.steps);
+  ok('twenty-three steps, each its own tickable thing', shape.steps === 23, shape.steps);
   ok('every step carries a tick',                 shape.ticked === shape.steps, shape.ticked);
   ok('grouped a through g',                       shape.parts.join('') === 'abcdefg', shape.parts.join(''));
   ok('every part says what it is for',            shape.heads === 7, shape.heads);
@@ -109,7 +109,7 @@ let STATUS = null;           // null = the worker is not there at all
       wide:   svgs.every(s => s.getBoundingClientRect().width > 230)
     };
   });
-  ok('seven screens drawn out',         draw.n === 7, draw.n);
+  ok('eight screens drawn out',         draw.n === 8, draw.n);
   ok('each one sits inside its step',   draw.instep === draw.n, draw.instep);
   ok('each has the red ring on it',     draw.ringed === draw.n, draw.ringed);
   ok('and admits it is not his screen', draw.honest === draw.n, draw.honest);
@@ -274,6 +274,7 @@ let STATUS = null;           // null = the worker is not there at all
   const say = await p.evaluate(() => ({
     warn:  !!document.querySelector('.panel.warn'),
     text:  document.body.textContent.replace(/\s+/g, ' '),
+    html:  document.body.innerHTML.replace(/\s+/g, ' '),
     self:  [...document.querySelectorAll('a')].filter(a => /signin_steps/.test(a.getAttribute('href') || '')).length,
     out:   [...document.querySelectorAll('a')].map(a => a.getAttribute('href'))
   }));
@@ -299,6 +300,19 @@ let STATUS = null;           // null = the worker is not there at all
   ok('and rules out the four that look plausible',
      /Not GitHub, not a template, not upload/.test(say.text)
      && /Continue to Pages/.test(say.text), 0);
+  // he filled all five settings in and then hunted for a Deploy button that is not
+  // on that card. the step has to say where it is, and that saving is not deploying.
+  ok('it says the save is below the card, not on it',
+     /no button on\s*<\/b>?\s*that card|no button on that card/i.test(say.html)
+     && /past the bottom of it/i.test(say.text), 0);
+  ok('and that saving is not the same as deploying',
+     /Value encrypted/.test(say.text) && /only reach the running program on a deploy/.test(say.text), 0);
+  // toll-free is the failure where every light goes green and no text arrives
+  ok('it warns about a toll-free number',
+     /toll-free/i.test(say.text) && /\+1844/.test(say.text)
+     && /Toll-Free Verification/.test(say.text), 0);
+  ok('and says why that one is nasty',
+     /nothing looks broken/i.test(say.text) && /never arrives/.test(say.text), 0);
   ok('c1 names both ways out when copying fails',
      /could not copy/.test(say.text) && /show it/.test(say.text)
      && /raw\.githubusercontent\.com/.test(say.out.join(' ')), 0);
