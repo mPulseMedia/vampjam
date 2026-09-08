@@ -4658,7 +4658,34 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Re-ran twenty-seven suites, 675 assertions. Green.
   Nothing else touched. No version bump.
   Still no new trace.
-- NEXT → add entry 338 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 338 signin_make · b346 · part B redrawn for the box Cloudflare now puts up. Third screenshot,
+  third vendor screen that had moved. B2 said "Create → Workers → Create Worker (or the Hello
+  World starter)". What he actually gets from Create application is a modal headed "Make something
+  new" with five choices, and four of them are wrong for this job — GitHub, GitLab, a template,
+  and upload all want a repository or files he does not have.
+  So B is three steps now instead of two, because naming the worker deserves to be its own step
+  rather than a clause: B1 get to the list, B2 the box and the one choice in it, B3 name it and
+  deploy. Splitting it is what makes the drawing possible — one screen per step is the whole
+  design, and B2 was carrying two.
+  B1 gained a drawing of the Workers & Pages list with his own three workers on it —
+  page-agent-keeper, vampjam-upload, vampjam-sync — and the Create application button ringed. A
+  list he recognises is the cheapest possible "you are in the right place".
+  B2's drawing is the modal itself with Start with Hello World ringed, and the step says out loud
+  which four to ignore and why, plus the "Continue to Pages" link at the bottom, which is the old
+  workflow and is for websites rather than workers. Naming the wrong choices is worth more than
+  naming the right one here: the right one he will find, the wrong ones are what cost an hour.
+  B3 carries the case that will actually happen if he has half-done this before: the name is
+  taken, which means he already made it — go back to the list, open it, carry on at C.
+  The B intro said "you already have two workers there". Three now, page-agent-keeper included.
+  A runbook that miscounts what he is looking at loses him at the first sentence.
+  Twenty-one steps now, seven drawings.
+  signin_steps_test 56, up three: the page must name the box and the choice inside it, must rule
+  out the four plausible wrong ones by name, and must give the worker name exactly with the
+  already-taken case handled. Step count and drawing count moved with it.
+  Re-ran twenty-seven suites, 678 assertions. Green.
+  Nothing else touched. No version bump.
+  Still no new trace.
+- NEXT → add entry 339 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

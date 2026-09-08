@@ -61,7 +61,7 @@ let STATUS = null;           // null = the worker is not there at all
     heads:  [...document.querySelectorAll('.panel[data-part] h2')].map(e => e.textContent.trim()).filter(Boolean).length,
     keys:   [...document.querySelectorAll('li[data-k]')].map(e => e.getAttribute('data-k'))
   }));
-  ok('twenty steps, each its own tickable thing', shape.steps === 20, shape.steps);
+  ok('twenty-one steps, each its own tickable thing', shape.steps === 21, shape.steps);
   ok('every step carries a tick',                 shape.ticked === shape.steps, shape.ticked);
   ok('grouped a through g',                       shape.parts.join('') === 'abcdefg', shape.parts.join(''));
   ok('every part says what it is for',            shape.heads === 7, shape.heads);
@@ -109,7 +109,7 @@ let STATUS = null;           // null = the worker is not there at all
       wide:   svgs.every(s => s.getBoundingClientRect().width > 230)
     };
   });
-  ok('six screens drawn out',           draw.n === 6, draw.n);
+  ok('seven screens drawn out',         draw.n === 7, draw.n);
   ok('each one sits inside its step',   draw.instep === draw.n, draw.instep);
   ok('each has the red ring on it',     draw.ringed === draw.n, draw.ringed);
   ok('and admits it is not his screen', draw.honest === draw.n, draw.honest);
@@ -258,6 +258,17 @@ let STATUS = null;           // null = the worker is not there at all
      && /Twilio Home/.test(say.text), 0);
   ok('the trial number limit is said where the number is picked',
      /trial number/i.test(say.text) && /verified/.test(say.text), 0);
+  // cloudflare replaced "Create Worker" with a five-choice box; the wrong choice
+  // there sends him off to connect a repository he does not have
+  ok('it names the box and the one choice in it',
+     /Create application/.test(say.text) && /Make something new/.test(say.text)
+     && /Start with Hello World/.test(say.text), 0);
+  ok('and rules out the four that look plausible',
+     /Not GitHub, not a template, not upload/.test(say.text)
+     && /Continue to Pages/.test(say.text), 0);
+  ok('the worker name is given exactly, and the taken case handled',
+     /vampjam-auth/.test(say.text) && /lower case/.test(say.text)
+     && /name is taken/.test(say.text), 0);
   ok('it links out to both companies',
      say.out.some(h => /console\.twilio/.test(h)) && say.out.some(h => /dash\.cloudflare/.test(h)));
   ok('and never at itself',                 say.self === 0, say.self);

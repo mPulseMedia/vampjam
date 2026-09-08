@@ -149,23 +149,38 @@ footer a{color:var(--signal)}
     <h2>Make the worker</h2>
     <p>a "worker" is a small program of yours that lives on cloudflare — the same place your audio
     and your session list already live. this one checks who is on your list and asks twilio to send
-    the text. you already have two workers there; this is a third.</p>
+    the text. you already have vampjam-upload, vampjam-sync and page-agent-keeper there. this is
+    another of the same kind.</p>
   </div>
   <ol class="steps">
     <li data-k="b1"><button class="tick" aria-label="Done">✓</button>
       <a href="https://dash.cloudflare.com" target="_blank" rel="noopener">dash.cloudflare.com</a>,
-      sign in. Left menu: <b>Compute (Workers)</b>, or <b>Workers &amp; Pages</b> on the older
-      layout.
-      <span class="said">You should see <b>vampjam-upload</b> and <b>vampjam-sync</b> already
-      listed. Those are yours.</span>
-    </li>
-    <li data-k="b2"><button class="tick" aria-label="Done">✓</button>
-      <b>Create</b> → <b>Workers</b> → <b>Create Worker</b> (or the <b>Hello World</b> starter).
-      Name it <b>vampjam-auth</b> — exactly that, the site looks for that name. Then <b>Deploy</b>.
-      <span class="said">It deploys a do-nothing program. That is expected; the real one goes in
-      next.</span>
+      sign in. Left menu: <b>Compute</b> → <b>Workers &amp; Pages</b>.
+      <span class="said">Your own workers listed: <b>page-agent-keeper</b>,
+      <b>vampjam-upload</b>, <b>vampjam-sync</b>. Right of the heading, a blue
+      <b>Create application</b>.</span>
       <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
-      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="22" rx="8" fill="#e9eef2"/><text x="36" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" fill="#3a4550">dash.cloudflare.com — workers</text><text x="36" y="62" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#101820">Workers &amp; Pages</text><rect x="256" y="48" width="66" height="24" rx="6" fill="#f6821f"/><text x="289" y="64" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle">Create</text><rect x="36" y="86" width="286" height="1" fill="#e6e2d9"/><text x="36" y="108" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" fill="#101820">vampjam-upload</text><text x="36" y="134" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" fill="#101820">vampjam-sync</text><text x="36" y="160" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="#8f8b83">vampjam-auth  ← the one you are making</text><rect x="250" y="42" width="78" height="36" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="20" y="16" width="320" height="20" rx="8" fill="#f6f7f8"/><circle cx="32" cy="26" r="5" fill="#f6821f"/><text x="44" y="30" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">dash.cloudflare.com</text><rect x="20" y="36" width="86" height="150" fill="#fafafa"/><text x="28" y="54" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">Account home</text><text x="28" y="76" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">Compute</text><rect x="26" y="82" width="76" height="14" rx="4" fill="#eef1f4"/><text x="32" y="92" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#101820">Workers &amp; Pages</text><text x="118" y="56" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="12" font-weight="700" fill="#101820">Workers &amp; Pages</text><rect x="252" y="46" width="70" height="16" rx="5" fill="#1b6be0"/><text x="287" y="57" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="600" fill="#fff" text-anchor="middle">Create application</text><rect x="118" y="76" width="204" height="22" rx="5" fill="#fff" stroke="#e6e8ea"/><text x="126" y="90" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">page-agent-keeper</text><rect x="118" y="102" width="204" height="22" rx="5" fill="#fff" stroke="#e6e8ea"/><text x="126" y="116" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">vampjam-upload</text><rect x="118" y="128" width="204" height="22" rx="5" fill="#fff" stroke="#e6e8ea"/><text x="126" y="142" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">vampjam-sync</text><rect x="247" y="41" width="80" height="26" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+    </li>
+
+    <li data-k="b2"><button class="tick" aria-label="Done">✓</button>
+      Click <b>Create application</b>. A box comes up headed <b>Make something new</b> with five
+      choices. Take <b>Start with Hello World!</b> — the middle one.
+      <span class="odd">Not GitHub, not a template, not upload. Those all want a repository or
+      files; you are going to paste the program in by hand in part C. Ignore <b>Continue to
+      Pages</b> at the bottom too — that is the old workflow, and it is for websites, not
+      workers.</span>
+      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
+      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fbfbfa"/><rect x="20" y="16" width="320" height="20" rx="8" fill="#fff"/><circle cx="32" cy="26" r="5" fill="#f6821f"/><text x="44" y="30" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">Cloudflare@pauldsmith.com's Account</text><text x="322" y="30" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#8f959b">✕</text><rect x="96" y="48" width="168" height="126" rx="7" fill="#fff" stroke="#e3e3e0"/><text x="108" y="66" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="11" font-weight="700" fill="#101820">Make something new</text><text x="108" y="79" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#6b7580">Start from a template, connect a repository.</text><rect x="108" y="86" width="72" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="95" r="4" fill="#101820"/><text x="126" y="98" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Continue with GitHub</text><rect x="184" y="86" width="68" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="194" cy="95" r="4" fill="#e8562a"/><text x="202" y="98" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Connect GitLab</text><rect x="108" y="108" width="144" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="117" r="4" fill="#2f8f5b"/><text x="126" y="120" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" font-weight="700" fill="#101820">Start with Hello World!</text><rect x="108" y="130" width="144" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="139" r="4" fill="#1b6be0"/><text x="126" y="142" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Select a template</text><rect x="108" y="152" width="144" height="18" rx="5" fill="#fff" stroke="#e3e3e0"/><circle cx="118" cy="161" r="4" fill="#f6b73c"/><text x="126" y="164" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#101820">Upload your static files</text><rect x="103" y="103" width="154" height="28" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+    </li>
+
+    <li data-k="b3"><button class="tick" aria-label="Done">✓</button>
+      Name it <b>vampjam-auth</b> — exactly that, lower case, with the hyphen. The site looks for
+      that name. Then <b>Deploy</b>.
+      <span class="said">It deploys a do-nothing program that answers "Hello World". That is
+      expected — the real one goes in next.</span>
+      <span class="odd">If it says the name is taken, you already made it. Go back to the list,
+      open <b>vampjam-auth</b>, and carry on at C.</span>
     </li>
   </ol>
 </div></div>

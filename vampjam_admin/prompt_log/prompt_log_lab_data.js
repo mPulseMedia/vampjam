@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "345 signin_home",
+        id: "346 signin_make",
         expanded: true,
+        nodes: [
+          { text: "346 signin_make", children: [
+            { text: "prompt_restate", children: [
+              { text: "Cloudflare's Create application gives a box the steps did not describe." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I get this, and when I click [Create Application] I get that." },
+              { text: "[screenshots: Workers & Pages list \u2014 and the Make something new modal]" }
+            ]},
+            { text: "third_vendor_screen_that_moved", children: [
+              { text: "B2 said Create \u2192 Workers \u2192 Create Worker" },
+              { text: "what you get is a box headed Make something new, five choices" },
+              { text: "four of them are wrong \u2014 github, gitlab, a template and upload all want a repository or files you do not have" }
+            ]},
+            { text: "b_is_three_steps_now", children: [
+              { text: "b1 get to the list \u00b7 b2 the box and the one choice \u00b7 b3 name it and deploy" },
+              { text: "naming the worker deserves its own step, not a clause" },
+              { text: "splitting is what makes the drawing possible \u2014 one screen per step is the design, and b2 was carrying two" }
+            ]},
+            { text: "b1_drawing", children: [
+              { text: "the Workers & Pages list with your own three workers on it" },
+              { text: "page-agent-keeper, vampjam-upload, vampjam-sync \u2014 and Create application ringed" },
+              { text: "a list you recognise is the cheapest possible \"you are in the right place\"" }
+            ]},
+            { text: "b2_names_the_wrong_choices", children: [
+              { text: "the modal drawn, Start with Hello World ringed" },
+              { text: "and it says which four to ignore and why, plus Continue to Pages at the bottom \u2014 old workflow, for websites not workers" },
+              { text: "naming the wrong ones is worth more than naming the right one. the right one you would find; the wrong ones cost an hour" }
+            ]},
+            { text: "b3_the_case_that_will_happen", children: [
+              { text: "name is taken means you already made it \u2014 back to the list, open it, carry on at C" }
+            ]},
+            { text: "the intro said two workers. three now, page-agent-keeper included. a runbook that miscounts what you are looking at loses you at the first sentence." },
+            { text: "twenty-one steps, seven drawings" },
+            { text: "signin_steps_test 56, up three \u2014 the box and the choice, the four wrong ones by name, the worker name exactly with the taken case" },
+            { text: "twenty-seven suites, 678 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "345 signin_home",
+        expanded: false,
         nodes: [
           { text: "345 signin_home", children: [
             { text: "prompt_restate", children: [
