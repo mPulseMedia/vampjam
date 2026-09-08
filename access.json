@@ -1,13 +1,6 @@
 {
-  "admins": [
-    "JIM6UN5M72XQebX7MBgOAAZlOe0dE9JYfdQkRpwLyuQ"
-  ],
-  "people": [
-    {
-      "id": "JIM6UN5M72XQebX7MBgOAAZlOe0dE9JYfdQkRpwLyuQ",
-      "label": "Paul",
-      "last4": "0105"
-    }
-  ],
-  "sessions": {}
+  "admins": [],
+  "people": [],
+  "sessions": {},
+  "cleared": "2026-09-08 — the first admin was a mistyped number and only that number could change the list. Emptied here so the next number added anywhere becomes the administrator."
 }
