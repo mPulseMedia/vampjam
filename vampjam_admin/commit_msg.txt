@@ -1,1 +1,1 @@
-phone_loose
+auto_commit
