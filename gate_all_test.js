@@ -118,11 +118,19 @@ async function worker(op, body) {
   p = await ctx.newPage();
   await p.goto('https://vampsf.com/2026_08_14_sound_union.html');
   await p.waitForTimeout(1600);
+  // It used to throw him at signin.html. Being bounced to another address when
+  // you followed a link to a recording is a door slamming; the sign-in comes to
+  // the page instead.
   const sent = p.url();
-  ok('one with somebody on it sends you to the sign-in',
-     /signin\.html\?back=/.test(sent), sent);
-  ok('and remembers where you were going',
-     /back=2026_08_14_sound_union\.html/.test(decodeURIComponent(sent)), sent);
+  ok('one with somebody on it keeps you where you were going',
+     /2026_08_14_sound_union\.html$/.test(sent), sent);
+  ok('and brings the sign-in to you, one field',
+     await p.evaluate(() => {
+       const el = document.getElementById('hello');
+       return !!el && el.querySelectorAll('input').length === 1;
+     }), await p.evaluate(() => !!document.getElementById('hello')));
+  ok('with the player and the moments put away behind it',
+     await p.evaluate(() => document.body.classList.contains('gated')));
   await p.close();
 
   p = await ctx.newPage();
