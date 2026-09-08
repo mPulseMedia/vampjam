@@ -332,6 +332,10 @@ button.ghost { font-size: 17px; }
            border-radius: 14px; background: var(--card); }
 .who_box[hidden] { display: none; }
 .who_h { margin: 0 0 6px; font-size: inherit; font-weight: 600; }
+/* who_me - the name the site knows you by, with the way to change it right
+   beside it. He signed in and was called "you" for a week. */
+.who_me { color: var(--muted); margin: 0 0 6px; }
+.who_me[hidden] { display: none; }
 .who_state { color: var(--muted); margin-bottom: 10px; }
 .who_state.shut { color: var(--fg); }
 .who_list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }

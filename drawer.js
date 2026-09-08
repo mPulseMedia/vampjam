@@ -1589,6 +1589,7 @@
     box.hidden = false;      // there from the first paint: waiting is not hiding
     box.innerHTML =
       '<h2 class="who_h">Who can open this recording</h2>'
+      + '<div class="who_me" id="who_me" hidden></div>'
       + '<div class="who_state" id="who_state">checking…</div>'
       + '<div class="who_list" id="who_list"></div>'
       + '<textarea class="who_in" id="who_in" rows="3" autocapitalize="off" autocorrect="off"'
@@ -1605,6 +1606,7 @@
     (document.getElementById('fold_page') || document.body).appendChild(box);
 
     var acc = null;
+    var meEl    = box.querySelector('#who_me');
     var stateEl = box.querySelector('#who_state');
     var listEl  = box.querySelector('#who_list');
     var noteEl  = box.querySelector('#who_note');
@@ -1642,7 +1644,15 @@
         throw new Error(name + ' could not be reached (' + (err && err.message) + ') · ' + url);
       });
     }
-    function shut_controls(why, link) {
+    // why the box cannot be used, said out loud. It used to hide itself when the
+    // answer was "you are not the administrator", which reads exactly like the
+    // "nothing happens" this box was built to stop: it appeared, then vanished.
+    // Waiting is not hiding, and neither is being told no.
+    //   why  - the sentence
+    //   link - the words of the offered way out (optional)
+    //   href - where those words go; the steps page when not said
+    // The worker's own address is offered only when the worker is the suspect.
+    function shut_controls(why, link, href) {
       inEl.hidden = true; addBtn.hidden = true; openBtn.hidden = true;
       stateEl.textContent = '';
       noteEl.innerHTML = '';
@@ -1650,9 +1660,10 @@
       noteEl.appendChild(document.createTextNode(why + ' '));
       if (link) {
         var a = document.createElement('a');
-        a.href = 'signin_steps.html'; a.textContent = link;
+        a.href = href || 'signin_steps.html'; a.textContent = link;
         noteEl.appendChild(a);
       }
+      if (href) return;
       // and the address itself, to open in this same browser: if it answers
       // there and not here, the difference is the browser, not the worker
       var br = document.createElement('div');
@@ -1668,6 +1679,22 @@
     function person(id) {
       var p = (acc.people || []).filter(function (x) { return x && x.id === id; })[0];
       return p || { id: id, label: '•••' };
+    }
+
+    // He signed in and the list called him "you", because nothing ever asked.
+    // Say the name back to him here, where he is standing, and point at the one
+    // page that owns it rather than growing a second editor for the same field.
+    function who_you(me) {
+      meEl.hidden = false;
+      meEl.innerHTML = '';
+      meEl.appendChild(document.createTextNode('Signed in as '));
+      var b = document.createElement('b');
+      b.textContent = (me && me.label) || 'you';
+      meEl.appendChild(b);
+      meEl.appendChild(document.createTextNode(' \u00b7 '));
+      var a = document.createElement('a');
+      a.href = 'signin.html'; a.textContent = 'change your name';
+      meEl.appendChild(a);
     }
 
     function paint() {
@@ -1814,7 +1841,24 @@
           return;
         }
         return A.me().then(function (me) {
-          if (!me || me.admin !== true) { box.hidden = true; return; }
+          // Signed out on THIS browser is the commonest of the three, and the
+          // only one with a cure a tap away. He signs in on his phone, looks at
+          // the Mac, and the box blinks out with no reason given - which is the
+          // same "nothing happens" as before, only faster.
+          if (!me || me.offline || me.signed_in !== true) {
+            shut_controls('You are not signed in on this browser, so there is nothing here to add '
+                        + 'numbers with. Your phone number is the whole sign-in.',
+                        'sign in \u2192',
+                        'signin.html?back=' + encodeURIComponent(page + location.search));
+            return;
+          }
+          if (me.admin !== true) {
+            shut_controls('Only the administrator adds numbers to a recording'
+                        + (me.label ? ' \u2014 you are signed in as ' + me.label : '') + '.',
+                        'your recordings \u2192', 'index.html#sessions');
+            return;
+          }
+          who_you(me);
           return load().then(function () { paint(); });
         });
       })

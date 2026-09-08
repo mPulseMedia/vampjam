@@ -21,6 +21,14 @@
     color: var(--fg); text-align: center;
   }
   .box input[type=tel]:focus { border-color: var(--accent); outline: none; }
+  .box input[type=text] {
+    width: 100%; box-sizing: border-box; font-size: 17px; padding: 13px 14px;
+    border-radius: 12px; border: 1px solid var(--panel_3); background: var(--panel);
+    color: var(--fg); text-align: center; margin-top: 8px;
+  }
+  .box input[type=text]:focus { border-color: var(--accent); outline: none; }
+  .rename { max-width: 420px; margin: 10px auto 0; }
+  .rename[hidden] { display: none; }
   .go {
     display: block; width: 100%; margin: 10px 0 0; border: none; border-radius: 999px;
     background: var(--accent); color: var(--on_accent, #fff); font-weight: 700;
@@ -57,12 +65,18 @@
 <div class="box" id="ask">
   <input type="tel" id="phone" inputmode="tel" autocomplete="tel"
          placeholder="(415) 555 1212" aria-label="Your phone number">
+  <input type="text" id="name" autocomplete="name" autocapitalize="words"
+         placeholder="Your name (optional)" aria-label="Your name">
   <button class="go" id="go">Sign in</button>
 </div>
 
 <div class="say" id="say" role="status"></div>
 
 <div class="who" id="who" hidden></div>
+<div class="rename box" id="rename" hidden>
+  <input type="text" id="new_name" autocapitalize="words" placeholder="Your name" aria-label="Your name">
+  <button class="go" id="save_name">Save my name</button>
+</div>
 <div class="list" id="list"></div>
 
 <div class="fine">
@@ -77,6 +91,10 @@
   var say = document.getElementById('say'), ask = document.getElementById('ask');
   var who = document.getElementById('who'), list = document.getElementById('list');
   var head = document.getElementById('head'), lede = document.getElementById('lede');
+  var nameIn = document.getElementById('name');
+  var rename = document.getElementById('rename');
+  var newName = document.getElementById('new_name'), saveName = document.getElementById('save_name');
+  var meNow = null;                       // the last full answer about who this is
 
   function tell(msg, bad) {
     say.textContent = msg;
@@ -91,6 +109,7 @@
   } catch (e) {}
 
   function show_signed_in(j) {
+    meNow = j;
     ask.hidden = true;
     head.textContent = 'Signed in';
     lede.textContent = '';
@@ -98,10 +117,22 @@
     var n = (j.allow === '*') ? 'every recording' :
             (j.allow.length === 1 ? 'one recording' : j.allow.length + ' recordings');
     who.innerHTML = 'You are <b>' + esc(j.label || 'signed in') + '</b>'
-      + (j.admin ? ' — admin' : '') + '.<br>You can open ' + n + '.'
+      + (j.admin ? ' — admin' : '') + '.'
+      + (j.id ? ' <button class="out" id="chg">change my name</button>' : '')
+      + '<br>You can open ' + n + '.'
       + '<br><button class="out" id="out">Sign out on this phone</button>';
     document.getElementById('out').addEventListener('click', function () {
       A.out(); location.reload();
+    });
+    // He signed in without ever being asked his name, so the list called him
+    // "you". This is the one place that owns the name - the page about who you
+    // are - and it is reachable from the box at the bottom of every recording.
+    var ch = document.getElementById('chg');
+    if (ch) ch.addEventListener('click', function () {
+      rename.hidden = false;
+      newName.value = (j.label && j.label !== 'you') ? j.label : '';
+      newName.focus();
+      if (back) { back = null; try { sessionStorage.removeItem('vampjam_signin_back'); } catch (e) {} }
     });
     if (j.allow !== '*' && j.allow.length) {
       var reg = (window.VAMPJAM_SESSIONS_AUTO || []).concat(window.VAMPJAM_SESSIONS || []);
