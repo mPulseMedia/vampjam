@@ -1,1 +1,1 @@
-signin_home
+auto_commit
