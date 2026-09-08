@@ -5192,7 +5192,27 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   ignored. drawer.js v=173.
   Twenty-nine suites, 815 assertions. Green.
   Still no new trace.
-- NEXT → add entry 356 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 356 admin_clear · b364 · emptied the list in the repo, which is what he asked for an hour ago.
+  "How do I get rid of the admin user now and start over?" I read the live list first: unchanged,
+  still the one mistyped id. So the start-over path had still not written anything, after three
+  builds spent making it possible.
+  The answer to his actual question does not involve the site at all. access.json is a file in the
+  repo; the worker reads it from raw.githubusercontent on every request. Empty the file, and there
+  is no administrator, and the next number added anywhere is the first one. Committed as
+  admin_clear with a `cleared` line in the JSON saying why and when, so the next person to read
+  that file is not left guessing at a gap. Verified through raw with a cache-buster: admins and
+  people both empty. The worker sees it.
+  I should have done this the moment he said the first number was a typo. Instead I spent 346, 350
+  and 353 building a recovery path INSIDE the product — the unstarted() rule, then the same rule
+  in the worker, then op=list to route around a blocked file — while the thing he wanted was one
+  commit to a four-line file. Each of those builds was defensible on its own and the recovery path
+  is genuinely better for the future; none of it was worth the hour it cost him now. When a man is
+  stuck on data, fix the data. Build the guard rail afterwards, on my own time.
+  The guard rail does stand, and it is asserted, so the next typo costs nobody an hour.
+  Twenty-nine suites, 815 assertions. Green — no code moved in this entry, only the file.
+  Left for him: one number, in any recording's box.
+  Still no new trace.
+- NEXT → add entry 357 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
