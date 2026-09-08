@@ -232,7 +232,8 @@ footer a{color:var(--signal)}
   <div class="cap">
     <h2>Five settings</h2>
     <p>same worker: <b>Settings</b> → <b>Variables and Secrets</b> → <b>Add</b>, five times. the
-    type matters — the first three are <b>Secret</b>, the last two are <b>Text</b>.</p>
+    type matters — three <b>Secret</b>, two <b>Text</b>. then one <b>Deploy</b> at the end, which
+    lives below the table rather than on it — that is D6, and it is the step people miss.</p>
   </div>
   <ol class="steps">
     <li data-k="d1"><button class="tick" aria-label="Done">✓</button>
@@ -258,15 +259,19 @@ footer a{color:var(--signal)}
     </li>
 
     <li data-k="d6"><button class="tick" aria-label="Done">✓</button>
-      Now save them, and this is the step people lose ten minutes on: <b>there is no button on
-      that card</b>. Scroll <b>past the bottom of it</b> — the <b>Save</b> for the whole Settings
-      page is down there.
-      <span class="said">Rows reading <b>Value encrypted</b> means they are stored.</span>
-      <span class="odd">Then <b>Deploy</b> once, from <b>Deployments</b> or from Edit code.
-      Settings only reach the running program on a deploy — this is the most common reason it
-      still looks broken after everything is filled in correctly.</span>
+      Now make them real, and this is the step that is not obvious: <b>the button is not on that
+      card</b>. Scroll <b>past the bottom of the variables table</b>. Below it is a blue
+      <b>Deploy</b>. Click it.
+      <span class="said">The page settles and the five rows stay put, the three secrets reading
+      <b>Value encrypted</b>.</span>
+      <span class="odd">No Deploy button anywhere below? Then there is nothing pending — you
+      already deployed them, and your five rows are live. Go to E.</span>
+      <span class="odd">This one button is the whole of it. There is no second step: you do not
+      also have to redeploy the code from Edit code or Deployments. Cloudflare's own instruction
+      for adding variables ends "Select Deploy to implement your changes", and that is this
+      button.</span>
       <span class="mini_cap">drawn from cloudflare's own screen, not yours</span>
-      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><text x="34" y="38" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#101820">Runtime variables and secrets</text><rect x="34" y="48" width="292" height="16" rx="4" fill="#f6f7f8"/><text x="42" y="59" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Secret     AUTH_SECRET          Value encrypted</text><rect x="34" y="66" width="292" height="16" rx="4" fill="#fff" stroke="#eee"/><text x="42" y="77" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Text        SITE                         https://vampsf.com</text><rect x="34" y="84" width="292" height="16" rx="4" fill="#f6f7f8"/><text x="42" y="95" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Text        TWILIO_FROM         +1844…</text><rect x="34" y="102" width="292" height="16" rx="4" fill="#fff" stroke="#eee"/><text x="42" y="113" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Secret     TWILIO_SID              Value encrypted</text><rect x="34" y="120" width="292" height="16" rx="4" fill="#f6f7f8"/><text x="42" y="131" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#5d6e7b">Secret     TWILIO_TOKEN         Value encrypted</text><text x="34" y="152" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#8f959b">— keep scrolling, past the end of the card —</text><rect x="264" y="160" width="62" height="18" rx="5" fill="#1b6be0"/><text x="295" y="172" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8.5" font-weight="600" fill="#fff" text-anchor="middle">Save</text><rect x="259" y="155" width="72" height="28" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
+      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><text x="34" y="36" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#101820">Runtime variables and secrets</text><rect x="272" y="26" width="54" height="14" rx="4" fill="#fff" stroke="#d5dbe0"/><text x="299" y="36" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#101820" text-anchor="middle">+ Add variable</text><rect x="34" y="44" width="292" height="15" rx="3" fill="#f6f7f8"/><text x="42" y="54" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b">Secret    AUTH_SECRET         Value encrypted</text><rect x="34" y="61" width="292" height="15" rx="3" fill="#fff" stroke="#f0f0f0"/><text x="42" y="71" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b">Text       SITE                        https://vampsf.com</text><rect x="34" y="78" width="292" height="15" rx="3" fill="#f6f7f8"/><text x="42" y="88" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b">Text       TWILIO_FROM        +1844…</text><rect x="34" y="95" width="292" height="15" rx="3" fill="#fff" stroke="#f0f0f0"/><text x="42" y="105" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b">Secret    TWILIO_SID             Value encrypted</text><rect x="34" y="112" width="292" height="15" rx="3" fill="#f6f7f8"/><text x="42" y="122" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b">Secret    TWILIO_TOKEN        Value encrypted</text><line x1="34" y1="132" x2="326" y2="132" stroke="#e6e2d9" stroke-dasharray="3 3"/><text x="34" y="146" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-style="italic" fill="#8f959b">the card ends here — the button is below it</text><rect x="270" y="156" width="56" height="19" rx="5" fill="#1b6be0"/><text x="298" y="169" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">Deploy</text><rect x="264" y="150" width="68" height="31" rx="9" fill="none" stroke="#d7263d" stroke-width="3"/></svg>
     </li>
   </ol>
   <button class="line" id="make_secret" type="button"><small>tap to invent one and copy it</small>AUTH_SECRET — 48 random characters</button>
@@ -292,13 +297,20 @@ footer a{color:var(--signal)}
     </li>
 
     <li data-k="e2"><button class="tick" aria-label="Done">✓</button>
-      If your number starts <b>+1800 +1833 +1844 +1855 +1866 +1877 +1888</b>, it is
-      <b>toll-free</b>, and in the US a toll-free number cannot text until Twilio has verified it.
-      Check <b>Phone Numbers</b> → your number → <b>Toll-Free Verification</b>.
-      <span class="odd">This one is nasty because nothing looks broken: all six lights here go
-      green, the worker says it sent, and the text never arrives. Verification is a form Twilio
-      reviews; it can take days. A normal local number needs none of it — if you would rather not
-      wait, buy one in A4 and change <b>TWILIO_FROM</b>.</span>
+      Your number is <b>+1844…</b>, which makes it <b>toll-free</b>, and a toll-free number cannot
+      text anyone in the US until Twilio has verified it. Check it now, before you test:
+      <b>Phone Numbers</b> → <b>Manage</b> → <b>Active numbers</b> → your number →
+      <b>Regulatory Information</b>. If it is not <b>Approved</b>, use <b>Verify this toll free
+      number</b> there.
+      <span class="said">Approved is the only status that sends. Not verified, Verification in
+      progress and Rejected all mean blocked.</span>
+      <span class="odd">Twilio blocks these outright rather than quietly dropping them, which is
+      the good news: the failure has a name. If a text does not arrive, the error is
+      <b>30032 — toll-free number has not been verified</b>. Tell me if you see it and I will show
+      it to you on the site rather than leaving it in a log.</span>
+      <span class="odd">Verification is a form a person at Twilio reviews, so it is not instant. A
+      normal local number needs none of this — if waiting is worse than a dollar a month, buy one
+      in A4 and change <b>TWILIO_FROM</b> in D4.</span>
     </li>
   </ol>
 </div></div>

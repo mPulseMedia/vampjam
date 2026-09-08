@@ -4744,7 +4744,43 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Re-ran twenty-seven suites, 691 assertions. Green.
   Nothing else touched. No version bump.
   Still no new trace.
-- NEXT → add entry 341 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 341 signin_deploy · b349 · D6 and E2 rewritten from the vendors' own documentation instead of
+  from memory. He said the deploy was not obvious and told me to go look at what the pages
+  actually are rather than guessing. That is the correct read of this whole run: four prompts,
+  four vendor screens I had drawn from memory, four corrections from his screenshots. Reading the
+  docs first is cheaper than being corrected, and I should have done it at 334.
+  Cloudflare's own page for adding variables ends "Select Deploy to implement your changes". So
+  the button is called <b>Deploy</b>, not Save — 340 guessed Save and drew Save. It sits below the
+  variables table, not on the card, which is why it was invisible to him in a screenshot cropped
+  to the card. And it is the WHOLE of it: no separate redeploy of the code from Edit code or
+  Deployments, which 340 also told him to do and which was wasted work.
+  D6 now says: the button is not on that card, scroll past the bottom of the variables table,
+  below it is a blue Deploy, click it. Then it closes the two doubts that step leaves — no Deploy
+  button anywhere means nothing is pending and his rows are already live, go to E; and there is no
+  second step. The drawing shows the table, a dashed line where the card ends, the words "the card
+  ends here — the button is below it", and the ringed blue Deploy under it. It is still the only
+  drawing in the runbook whose subject is something not on his screen.
+  D's opening paragraph now names the deploy and where it lives, so it is not a surprise arriving
+  at step six.
+  E2 was substantially right and wrong in its mechanism, which matters because the mechanism is
+  what he would have diagnosed from. Twilio does not silently filter unverified toll-free traffic;
+  since January 2024 it blocks it outright and returns error 30032. So the failure has a name, and
+  E2 gives him the name. The path is corrected too: Phone Numbers → Manage → Active numbers →
+  the number → Regulatory Information → Verify this toll free number. And the four statuses, with
+  the one that matters said plainly: Approved is the only status that sends.
+  E2 keeps the escape: a local number needs none of this, and changing TWILIO_FROM in D4 is a
+  smaller thing than waiting for a review.
+  signin_steps_test 71, up two net (three added on D6, three on E2, four retired with the wrong
+  wording): the button is below the table and called Deploy in cloudflare's own word; both doubts
+  closed; the toll-free path names Regulatory Information; Approved named as the only sending
+  status; and 30032 named. The assertions that carried "Save" and "silently filtered" are gone —
+  they asserted my guess, which is worse than asserting nothing.
+  Re-ran twenty-seven suites, 693 assertions. Green.
+  Nothing else touched. No version bump.
+  Standing lesson for this file: on any step that sends him into someone else's interface, read
+  that vendor's current documentation before drawing the screen.
+  Still no new trace.
+- NEXT → add entry 342 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

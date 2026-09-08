@@ -302,17 +302,25 @@ let STATUS = null;           // null = the worker is not there at all
      && /Continue to Pages/.test(say.text), 0);
   // he filled all five settings in and then hunted for a Deploy button that is not
   // on that card. the step has to say where it is, and that saving is not deploying.
-  ok('it says the save is below the card, not on it',
-     /no button on\s*<\/b>?\s*that card|no button on that card/i.test(say.html)
-     && /past the bottom of it/i.test(say.text), 0);
-  ok('and that saving is not the same as deploying',
-     /Value encrypted/.test(say.text) && /only reach the running program on a deploy/.test(say.text), 0);
-  // toll-free is the failure where every light goes green and no text arrives
+  // he had all five variables in and could not find the button. it is below the
+  // table, not on the card, and cloudflare's own wording for it is "Deploy".
+  ok('it says the button is below the table, not on the card',
+     /button is not on that card/i.test(say.text)
+     && /past the bottom of the variables table/i.test(say.text), 0);
+  ok('and calls it Deploy, which is what cloudflare calls it',
+     /Below it is a blue <b>Deploy<\/b>/.test(say.html), 0);
+  ok('and closes the two doubts it leaves',
+     /already deployed them/.test(say.text)
+     && /no second step/i.test(say.text) && /Edit code or Deployments/.test(say.text), 0);
+  // toll-free: blocked outright with a named error, not silently filtered
   ok('it warns about a toll-free number',
      /toll-free/i.test(say.text) && /\+1844/.test(say.text)
-     && /Toll-Free Verification/.test(say.text), 0);
-  ok('and says why that one is nasty',
-     /nothing looks broken/i.test(say.text) && /never arrives/.test(say.text), 0);
+     && /Regulatory Information/.test(say.text), 0);
+  ok('and names the only status that sends',
+     /Approved is the only status that sends/.test(say.text)
+     && /Verification in progress/.test(say.text), 0);
+  ok('and names the error he would actually see',
+     /30032/.test(say.text) && /blocks these outright/.test(say.text), 0);
   ok('c1 names both ways out when copying fails',
      /could not copy/.test(say.text) && /show it/.test(say.text)
      && /raw\.githubusercontent\.com/.test(say.out.join(' ')), 0);

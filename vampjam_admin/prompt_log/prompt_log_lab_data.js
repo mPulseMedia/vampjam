@@ -9,8 +9,48 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "348 signin_live",
+        id: "349 signin_deploy",
         expanded: true,
+        nodes: [
+          { text: "349 signin_deploy", children: [
+            { text: "prompt_restate", children: [
+              { text: "Make the deploy step really clear, and go look at what the pages actually are instead of guessing." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I need you to make it really clear to me the exact steps and what I'm looking for and what I do to deploy it's not obvious to me and look for the most recent version of what the pages look like when you're rendering SVG and figuring out the steps" }
+            ]},
+            { text: "you_were_right_about_the_method", children: [
+              { text: "four prompts, four vendor screens drawn from memory, four corrections from your screenshots" },
+              { text: "reading the docs first is cheaper than being corrected. I should have done it at the start" }
+            ]},
+            { text: "what_the_cloudflare_docs_say", children: [
+              { text: "\"Select Deploy to implement your changes\" \u2014 so the button is Deploy, not Save. yesterday's build guessed Save and drew Save" },
+              { text: "it sits below the variables table, not on the card \u2014 which is why it was invisible in a screenshot cropped to the card" },
+              { text: "and it is the whole of it. no separate redeploy from Edit code or Deployments \u2014 that was wasted work I sent you on" }
+            ]},
+            { text: "d6_now", children: [
+              { text: "the button is not on that card. scroll past the bottom of the variables table. below it is a blue Deploy. click it." },
+              { text: "no Deploy button anywhere? nothing is pending \u2014 your rows are already live, go to E" },
+              { text: "the drawing shows the table, a dashed line where the card ends, and the ringed Deploy under it" },
+              { text: "still the only drawing whose subject is something not on your screen" }
+            ]},
+            { text: "e2_had_the_mechanism_wrong", children: [
+              { text: "twilio does not silently filter unverified toll-free \u2014 since jan 2024 it blocks outright and returns error 30032" },
+              { text: "that matters because the mechanism is what you would diagnose from. the failure has a name, and E2 now gives you the name" },
+              { text: "path corrected: Phone Numbers \u2192 Manage \u2192 Active numbers \u2192 the number \u2192 Regulatory Information \u2192 Verify this toll free number" },
+              { text: "four statuses, and the one that matters said plainly: Approved is the only status that sends" },
+              { text: "and the escape kept \u2014 a local number needs none of this" }
+            ]},
+            { text: "signin_steps_test 71 \u2014 and the assertions carrying \"Save\" and \"silently filtered\" are gone. they asserted my guess, which is worse than asserting nothing" },
+            { text: "twenty-seven suites, 693 assertions. green." },
+            { text: "standing lesson written into the spec: on any step that sends you into someone else's interface, read that vendor's current docs before drawing the screen" },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "348 signin_live",
+        expanded: false,
         nodes: [
           { text: "348 signin_live", children: [
             { text: "prompt_restate", children: [
