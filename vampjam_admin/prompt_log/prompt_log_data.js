@@ -9,8 +9,56 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "350 signin_promote",
+        id: "351 signin_number",
         expanded: true,
+        nodes: [
+          { text: "351 signin_number", children: [
+            { text: "prompt_restate", children: [
+              { text: "Drop twilio. A number on a list is the whole sign-in, and the list lives at the bottom of the recording." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, I'm gonna skip Willo for the outbound SMS. I will send the SMS so all I need to do is have a simple place where I can enter each of the text each of the phone numbers that should be able to access this recording and then have the app ask for a phone number and if it's one of those then sign in as that user and forget the whole Twilio stuff I think that was a distraction, but make it very easy for me to add phone numbers to copy and paste phone numbers from elsewhere on my phone to where I'm gonna paste them in in order to give access and I guess what this needs to be is it it needs to be down on the on the session itself so I'm enabling people who enter a phone number to get to a specific set of those sessions that I have entered their phone number into at the bottom of the page. OK that makes sense." }
+            ]},
+            { text: "you_were_right_that_it_was_a_distraction", children: [
+              { text: "five settings, a toll-free verification queue and an error code" },
+              { text: "all to deliver a link that only proves someone can read a text" }
+            ]},
+            { text: "what_it_is_now", children: [
+              { text: "type a number. on a list anywhere = signed in. one round trip, no waiting" },
+              { text: "the honest cost, on the page: a number is not a password. anyone who knows one can be signed in as that person" },
+              { text: "fair for keeping a jam out of the way of strangers. not fair for anything you'd mind being wrong about" }
+            ]},
+            { text: "the_box_at_the_bottom", children: [
+              { text: "\"Who can open this recording\", on every session page" },
+              { text: "paste anything \u2014 one per line, commas, \"Dave 415 555 1212\", however it came out of Messages" },
+              { text: "each becomes a tag with the name and the last two digits" },
+              { text: "lines that were not numbers are listed back, not dropped \u2014 a paste that silently loses one is worse than one that fails" },
+              { text: "one call for the whole block, so twenty numbers cost one round trip" }
+            ]},
+            { text: "consequences_said_out_loud", children: [
+              { text: "adding the first person makes that recording private" },
+              { text: "\"let anyone in\" puts it back" },
+              { text: "the very first number added anywhere becomes the administrator \u2014 make it yours" },
+              { text: "a number added to one recording opens that one. add it at the bottom of two, they get two" }
+            ]},
+            { text: "still no phone number in the repo \u2014 an opaque id, a name and the last four" },
+            { text: "the_runbook_shrank", children: [
+              { text: "24 steps to 14, seven parts to five, eight drawings to three" },
+              { text: "A make the worker \u00b7 B paste it \u00b7 C one setting and the promote \u00b7 D check \u00b7 E the part you'll actually use" },
+              { text: "leave the old TWILIO settings where they are. the program ignores them" }
+            ]},
+            { text: "site.css v22, drawer.js v166 \u2014 seven pages were still asking for v20 and v161 and would not have seen any of this" },
+            { text: "who_add_test is new, 44 \u2014 it runs the real worker, and checks no phone number reaches what gets written" },
+            { text: "signin_test converted not retired, 52. signin_steps_test 72." },
+            { text: "twenty-eight suites, 731 assertions. green." },
+            { text: "left for you: A to D on cloudflare, once. then E, at the bottom of a recording." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "350 signin_promote",
+        expanded: false,
         nodes: [
           { text: "350 signin_promote", children: [
             { text: "prompt_restate", children: [
