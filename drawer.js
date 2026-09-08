@@ -1674,18 +1674,18 @@
     box.id = 'who_box';
     box.hidden = false;      // there from the first paint: waiting is not hiding
     box.innerHTML =
-      '<h2 class="who_h">Who can open this recording</h2>'
-      + '<div class="who_me" id="who_me" hidden></div>'
+      '<h2 class="who_h">Share this recording</h2>'
+      + '<div class="who_hint">Enter a name and a phone number.</div>'
+      + '<textarea class="who_in" id="who_in" rows="3" autocapitalize="words" autocorrect="off"'
+      + ' placeholder="Dave 415 555 1212&#10;one per line, or separated by commas"></textarea>'
       + '<div class="who_state" id="who_state">checking…</div>'
       + '<div class="who_list" id="who_list"></div>'
-      + '<textarea class="who_in" id="who_in" rows="3" autocapitalize="off" autocorrect="off"'
-      + ' placeholder="Paste phone numbers here&#10;one per line, or separated by commas&#10;names are fine: Dave 415 555 1212"></textarea>'
       + '<div class="who_row">'
-      + '<button class="who_add" id="who_add" type="button">Add them</button>'
-      + '<button class="who_open" id="who_open" type="button" hidden>Let anyone in</button>'
-
+      + '<button class="who_copy" id="who_copy" type="button">Copy link</button>'
+      + '<button class="who_add" id="who_add" type="button">Share</button>'
       + '</div>'
-      + '<div class="who_note" id="who_note"></div>';
+      + '<div class="who_note" id="who_note"></div>'
+      + '<div class="who_me" id="who_me" hidden></div>';
     // Inside the fold wrapper when there is one. Appended to <body> it sat
     // OUTSIDE the element the unfold animates and clips, so arriving through
     // the transition left it out of the page until a reload.
@@ -1698,7 +1698,7 @@
     var noteEl  = box.querySelector('#who_note');
     var inEl    = box.querySelector('#who_in');
     var addBtn  = box.querySelector('#who_add');
-    var openBtn = box.querySelector('#who_open');
+    var copyBtn = box.querySelector('#who_copy');
 
     function note(m, bad) {
       noteEl.textContent = m || '';
@@ -1707,7 +1707,7 @@
       if (m) try { noteEl.scrollIntoView({ block: 'nearest' }); } catch (e) {}
     }
     // and the button says it too, because that is where his eye already is
-    var addWord = 'Add them';
+    var addWord = 'Share';
     function btn_say(m) {
       addBtn.textContent = m || addWord;
       if (m !== addWord) setTimeout(function () { addBtn.textContent = addWord; }, 4000);
@@ -1739,7 +1739,8 @@
     //   href - where those words go; the steps page when not said
     // The worker's own address is offered only when the worker is the suspect.
     function shut_controls(why, link, href) {
-      inEl.hidden = true; addBtn.hidden = true; openBtn.hidden = true;
+      inEl.hidden = true; addBtn.hidden = true; copyBtn.hidden = true;
+      var hint = box.querySelector('.who_hint'); if (hint) hint.hidden = true;
       stateEl.textContent = '';
       noteEl.innerHTML = '';
       noteEl.className = 'who_note bad';
@@ -1787,12 +1788,14 @@
       var ids = allow();
       // a recording with nobody on it is open, exactly as it always was; adding
       // the first person is what makes it private, and the line says which.
+      // The one line Google puts under "General access", said the way he said
+      // it: who can get in, not what mode the record is in. There is no
+      // "people with access" section above it — the only person that section
+      // would ever list is him, and he is standing right here.
       stateEl.textContent = ids.length
-        ? (ids.length === 1 ? 'private — 1 person can open it'
-                            : 'private — ' + ids.length + ' people can open it')
-        : 'open — anyone with the link can open it';
+        ? 'Only these phone numbers can open it.'
+        : 'Anyone with the link can open it.';
       stateEl.className = 'who_state' + (ids.length ? ' shut' : '');
-      openBtn.hidden = !ids.length;
       listEl.innerHTML = '';
       ids.forEach(function (id) {
         var p = person(id);
@@ -1842,7 +1845,7 @@
     // one call for the whole paste, so twenty numbers cost one round trip
     function add() {
       var raw = inEl.value;
-      if (!raw.trim()) { inEl.focus(); btn_say('Type a number first'); note('Type or paste a phone number above, then Add them.', true); return; }
+      if (!raw.trim()) { inEl.focus(); btn_say('Type a number first'); note('Put a name and a phone number in the box, then Share.', true); return; }
       addBtn.disabled = true; btn_say('Reading…'); note('Reading them…');
       fetch(A.url + '?op=ids', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1896,17 +1899,26 @@
                                 function (e) { note('Could not save: ' + e.message, true); });
     }
 
-    function open_up() {
-      var r2 = acc.sessions[page] || {};
-      r2.mode = 'open';
-      acc.sessions[page] = r2;
-      paint(); note('Opening it up…');
-      save('access open').then(function () { note('Anyone with the link can open it.'); paint(); },
-                              function (e) { note('Could not save: ' + e.message, true); });
+    // Copy link — the same address the header's share button copies, offered
+    // again here because this is the box you are in when you decide to send it.
+    // Sharing is two halves and they belong side by side: who may open it, and
+    // the thing you paste into a message.
+    function copy_link() {
+      var url = location.origin + location.pathname;
+      var done = function () {
+        copyBtn.textContent = 'Copied';
+        setTimeout(function () { copyBtn.textContent = 'Copy link'; }, 2500);
+        if (typeof window.toast === 'function') window.toast('Link copied: ' + url);
+      };
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText)
+          return navigator.clipboard.writeText(url).then(done, function () { note(url, false); });
+      } catch (e) {}
+      note(url, false);                       // no clipboard: show it to copy by hand
     }
 
     addBtn.addEventListener('click', add);
-    openBtn.addEventListener('click', open_up);
+    copyBtn.addEventListener('click', copy_link);
 
     // ---- who sees it ----
     // The administrator, and nobody else. There is no bootstrap here any more:
