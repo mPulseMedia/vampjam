@@ -1,1 +1,1 @@
-signin_ask
+auto_commit
