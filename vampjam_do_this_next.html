@@ -70,25 +70,68 @@ Everything else I do myself — you don't need to act on anything I send into th
 <div class="one_thing">
   <div class="one_num">1</div>
   <div>
-    <div class="one_title">Nothing, if you are on your phone</div>
-    <div class="one_why">Everything waiting on you needs the Mac. It can all sit until you are
-    back at it — nothing is broken and nothing is at risk in the meantime.</div>
+    <div class="one_title">Make the secret run</div>
+    <div class="one_why">You added <b>AUTH_SECRET</b> to the worker and it saved as a version
+    that was never deployed — so the worker is still running a copy from before it existed. That
+    is why nothing you type into the site sticks. In Cloudflare:
+    <b>vampjam-auth</b> → <b>Deployments</b> → <b>Promote deployment</b> → the <b>newest</b> row.
+    One click.</div>
   </div>
 </div>
 
 <div class="why">
-  <b>What you could do on the phone instead, if you feel like it.</b> None of this is a chore —
-  it is just what is newly worth opening:
+  <a href="signin_steps.html"><b>Check whether it is already done →</b></a> — the panel at the top
+  of that page asks the worker itself. If <b>AUTH_SECRET is set</b> is lit, skip this and go to 2.
+</div>
+
+<div class="one_thing">
+  <div class="one_num">2</div>
+  <div>
+    <div class="one_title">Put your own number back</div>
+    <div class="one_why">The first number added became the administrator and it has a typo in it —
+    the last four are right (0105), the rest is not, and a number cannot be read back out of what
+    is stored. Open any recording, scroll to the <b>bottom</b>, and add
+    <b>917-693-0105</b>. It replaces the wrong one.</div>
+  </div>
+</div>
+
+<div class="why">
+  That box only offers to start over while there is one number on the list and nothing is private
+  — which is exactly now. Add a second person, or close one recording, and it stops offering and
+  asks you to sign in instead.
   <br><br>
-  &middot; <a href="session.html?p=2026_09_04_redwood_city_10_12_38p">2026-09-04 7:31p Sound Union</a>
-  — the 2h41m one. It is up and it plays. Three moments in it so far.<br>
-  &middot; <a href="session.html?p=2026_09_05_san_francisco_5_44_14p">2026-09-05 4:09p San Francisco</a>
-  — 1h35m, and I put it back together this morning (see below).<br>
-  &middot; <a href="session.html?p=2026_09_04_11_23p_portola_valley">2026-09-04 11:23p The Farm</a>
-  — the one whose name I fixed. Check I got the name right; "The Farm" was my guess.
+  Then you are done: paste numbers at the bottom of whichever recordings you want shared, and the
+  people you pasted type their number at
+  <a href="signin.html">the sign-in page</a> to get in.
+</div>
+
+<div class="one_thing">
+  <div class="one_num">3</div>
+  <div>
+    <div class="one_title">Check one name I guessed</div>
+    <div class="one_why">I renamed
+    <a href="session.html?p=2026_09_04_11_23p_portola_valley">2026-09-04 11:23p</a> to
+    <b>The Farm</b> and that was a guess. The pencil beside the name changes it if I got it
+    wrong.</div>
+  </div>
+</div>
+
+<div class="section-label">Twilio is out</div>
+<div class="why">
+  <b>You were right that it was a distraction.</b> Three credentials, five settings, a toll-free
+  verification queue that would have taken days, and an error code — all to deliver a link whose
+  only job was to prove someone can read a text.
   <br><br>
-  The pencil beside a recording's name now renames it, the three dots at the right of any row open
-  its buttons, and the list folds into and out of the page you are on.
+  A number on a list is the whole sign-in now. No text message, no link, no waiting.
+  <br><br>
+  <b>The honest cost, so it is not a surprise later:</b> a phone number is not a password. Anyone
+  who knows a number you have added can type it and be signed in as that person. That is a fair
+  trade for keeping a jam session out of the way of strangers and search engines. It is not one
+  for anything you would mind being wrong about.
+  <br><br>
+  If <b>TWILIO_SID</b>, <b>TWILIO_TOKEN</b>, <b>TWILIO_FROM</b> or <b>SITE</b> are still sitting
+  in the worker's settings, leave them. The program ignores them. Deleting them is tidying, not a
+  step. Same with the Twilio account itself — nothing here uses it.
 </div>
 
 <div class="section-label">Fixed this morning, while you were away</div>
@@ -104,26 +147,27 @@ Everything else I do myself — you don't need to act on anything I send into th
   <br><br>
   <b>And 415 MB back on your Mac.</b> Two copies of the 08-07 Sound Union recording were
   byte-for-byte identical to a third — proven, not guessed. They are in
-  <b>audio/_to_delete/</b> for you to bin whenever. The original, the version the site uses, and
+  <b>audio/_to_delete/</b> — and you are at the Mac, so that folder can go in the bin now if you
+  want the space back. The original, the version the site uses, and
   the QuickTime master are all untouched.
 </div>
 
-<div class="section-label">When you are back at the Mac — the sign-in worker</div>
-<div class="one_thing">
-  <div class="one_num">2</div>
-  <div>
-    <div class="one_title">Turn the sign-in on</div>
-    <div class="one_why">About twenty minutes: three things from Twilio, a worker pasted into
-    Cloudflare, five settings, then add yourself. Every click is written out on its own page,
-    with ticks that stay put if you stop halfway.</div>
-  </div>
-</div>
-
+<div class="section-label">Where the list of people lives</div>
 <div class="why">
-  <a href="signin_steps.html"><b>Sign-in, step by step →</b></a>
+  <b>Not on the admin page — at the bottom of each recording.</b> Open the one you want to share,
+  scroll to the end, and there is a box: <b>Who can open this recording</b>.
   <br><br>
-  Until it is done nothing changes: every recording stays open exactly as it is. The
-  <a href="admin.html">Admin</a> page shows how far along it is at any moment.
+  Paste numbers in however they are written down — one per line, or commas, with or without the
+  area code, with brackets, dashes, dots or a <code>+1</code>. Names on the same line are fine:
+  <b>Dave 415 555 1212</b>. Each becomes a small tag with the name and the last two digits, and
+  anything that was not a phone number is handed back to you rather than quietly dropped.
+  <br><br>
+  <b>Adding the first person makes that recording private.</b> Everything you do not touch stays
+  open to anyone with the link, exactly as it is today. <b>Let anyone in</b>, in the same box,
+  puts one back.
+  <br><br>
+  <a href="signin_steps.html"><b>The whole thing, step by step →</b></a> — it is five parts now
+  instead of seven, and the last one is this box rather than anything on Cloudflare.
 </div>
 
 <div class="section-label">Optional — only if you want the second listen to be free</div>
