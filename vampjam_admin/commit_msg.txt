@@ -1,1 +1,1 @@
-signin_make
+auto_commit
