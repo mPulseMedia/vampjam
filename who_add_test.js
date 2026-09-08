@@ -215,8 +215,12 @@ async function worker(op, params, body) {
   // He added himself as administrator from another page and never signed in.
   // The box used to go invisible everywhere with no way back.
   await p.close();
-  ACC = { admins: ['SOMEONE_ELSE'], people: [{ id: 'SOMEONE_ELSE', label: 'Paul', last4: '7777' }],
-          sessions: {} };
+  // a real list: an admin, somebody else, and a recording actually closed —
+  // otherwise this reads as "not started yet", which is a different screen
+  ACC = { admins: ['SOMEONE_ELSE'],
+          people: [{ id: 'SOMEONE_ELSE', label: 'Paul', last4: '7777' },
+                   { id: 'DAVE', label: 'Dave', last4: '1212' }],
+          sessions: { '2026_08_14_sound_union.html': { mode: 'list', allow: ['DAVE'] } } };
   let NO_SECRET = false;
   await ctx.route(/vampjam-auth/, async (r) => {
     if (/op=status/.test(r.request().url()))
@@ -342,6 +346,79 @@ async function worker(op, params, body) {
   ok('a saved-but-not-promoted secret is named as the reason',
      /no AUTH_SECRET running/.test(h) && /promoted/.test(h), h);
   await ctx2.close();
+
+  // ---------- a typo in the very first number is not a life sentence ----------
+  // He put a wrong number in as administrator. Only that number can change the
+  // list, and no number can be read back out of an id. While nothing is actually
+  // protected, the next number added takes it over.
+  const ctx3 = await b.newContext({ viewport: { width: 390, height: 844 } });
+  let ACC3 = { admins: ['TYPO_ID'],
+               people: [{ id: 'TYPO_ID', label: 'Paul', last4: '0105' }],
+               sessions: {} };
+  let W3 = null;
+  await ctx3.route('**/*', async (r) => {
+    const u = r.request().url();
+    const J = (o) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(o) });
+    if (u.indexOf('access.json') >= 0) return J(ACC3);
+    if (u.indexOf('vampjam-sync') >= 0) { W3 = JSON.parse(r.request().postData() || '{}');
+      ACC3 = JSON.parse(W3.content); return J({ ok: true }); }
+    if (u.indexOf('op=status') >= 0) return J({ ok: true, worker: true, secret: true,
+                                                admins: 1, people: 1, private: 0 });
+    if (u.indexOf('op=ids') >= 0) return J({ ok: true, first: false, people: [
+      { line: '917-693-0105', ok: true, id: 'RIGHT_ID', id7: 'RIGHT_ID7',
+        label: '•••0105', phone_last4: '0105' }] });
+    if (u.indexOf('vampjam-auth') >= 0) return J({ ok: true, signed_in: false, admin: false, allow: [] });
+    if (u.startsWith('https://vampsf.com/')) {
+      const rel = u.replace('https://vampsf.com/', '').split('?')[0] || 'index.html';
+      const p4 = path.join(DIR, rel);
+      if (fs.existsSync(p4)) {
+        const t = rel.endsWith('.css') ? 'text/css' : rel.endsWith('.js') ? 'application/javascript'
+                : rel.endsWith('.json') ? 'application/json' : 'text/html';
+        return r.fulfill({ status: 200, contentType: t, body: fs.readFileSync(p4) });
+      }
+      return r.fulfill({ status: 404, body: '' });
+    }
+    return r.fulfill({ status: 204, body: '' });
+  });
+  const fix = await ctx3.newPage();
+  fix.on('pageerror', e => { fail++; console.log('  FAIL pageerror (typo): ' + e.message); });
+  await fix.goto('https://vampsf.com/2026_08_14_sound_union.html');
+  await fix.waitForTimeout(1500);
+  const t0 = await fix.evaluate(() => ({
+    note: document.getElementById('who_note').textContent,
+    canType: !document.getElementById('who_in').hidden
+  }));
+  ok('a lone admin with nothing private reads as not set up',
+     /nothing is really set up/.test(t0.note), t0.note);
+  ok('and it names the number that is there, by its last four',
+     /ending 0105/.test(t0.note), t0.note);
+  ok('and says a new one replaces it',           /replaces it/.test(t0.note), t0.note);
+  ok('and it lets him type without signing in',  t0.canType === true, t0.canType);
+
+  await fix.fill('#who_in', '917-693-0105');
+  await fix.click('#who_add');
+  await fix.waitForTimeout(800);
+  const w4 = JSON.parse(W3.content);
+  ok('the wrong administrator is gone',   w4.admins.length === 1 && w4.admins[0] === 'RIGHT_ID',
+     JSON.stringify(w4.admins));
+  ok('and so is their entry',             w4.people.length === 1 && w4.people[0].id === 'RIGHT_ID',
+     JSON.stringify(w4.people));
+  ok('the note says it started over',     /Started over/.test(await fix.textContent('#who_note')), 0);
+
+  // but a list with real people on it does NOT hand itself over
+  ACC3 = { admins: ['A'], people: [{ id: 'A', label: 'Paul', last4: '0105' },
+                                   { id: 'B', label: 'Dave', last4: '1212' }],
+           sessions: {} };
+  const safe = await ctx3.newPage();
+  await safe.goto('https://vampsf.com/2026_07_31_sound_union.html');
+  await safe.waitForTimeout(1500);
+  const t1 = await safe.evaluate(() => ({
+    note: document.getElementById('who_note').textContent,
+    field: !!document.getElementById('who_phone')
+  }));
+  ok('once there are two people it asks you to sign in instead',
+     t1.field === true && /Sign in to manage/.test(t1.note), JSON.stringify(t1));
+  await ctx3.close();
 
   // the sign-in page asks for a number and nothing else
   const si = fs.readFileSync(path.join(DIR, 'signin.html'), 'utf8');

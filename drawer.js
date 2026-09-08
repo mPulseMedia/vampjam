@@ -1552,6 +1552,18 @@
       }
     }
     function rule() { return (acc.sessions && acc.sessions[page]) || {}; }
+    // A typo in the very first number used to be unrecoverable: that number is
+    // the administrator, only they can change the list, and nobody can read a
+    // number back out of an id. So while the list is this new — at most one
+    // person, nobody else, nothing made private — it counts as not started, and
+    // the next number added takes it over. Nothing is protected in that state,
+    // so there is nothing for this to give away.
+    function unstarted() {
+      if ((acc.admins || []).length > 1) return false;
+      if ((acc.people || []).length > 1) return false;
+      var ss = acc.sessions || {};
+      return Object.keys(ss).every(function (k) { return (ss[k] || {}).mode !== 'list'; });
+    }
     function allow() { return rule().allow || []; }
     function person(id) {
       var p = (acc.people || []).filter(function (x) { return x && x.id === id; })[0];
@@ -1609,6 +1621,8 @@
           var bad  = j.people.filter(function (x) { return !x.ok; });
           if (!good.length) throw new Error('none of that looked like a phone number');
           return load().then(function () {
+            var over = unstarted() && (acc.admins || []).length;   // starting again
+            if (over) { acc.admins = []; acc.people = []; }
             var r2 = acc.sessions[page] || {};
             r2.mode = 'list';                       // adding anyone makes it private
             r2.allow = r2.allow || [];
@@ -1624,7 +1638,8 @@
             return save('access ' + page.split('/').pop()).then(function () {
               inEl.value = '';
               paint();
-              note(added + (added === 1 ? ' added' : ' added')
+              note((over ? 'Started over. ' : '')
+                + added + (added === 1 ? ' added' : ' added')
                 + (bad.length ? ' · ' + bad.length + ' line' + (bad.length > 1 ? 's' : '')
                    + ' were not phone numbers: ' + bad.map(function (b) { return b.line; }).join(', ') : ''),
                 !!bad.length);
@@ -1715,6 +1730,16 @@
         return load().then(function () {
           if (!acc.admins.length) {
             note('Nobody administers this yet. The first number you add becomes the administrator — make it your own.');
+            paint();
+            return;
+          }
+          if (unstarted()) {
+            var who = (acc.people || [])[0];
+            note('One number is here so far'
+               + (who && who.last4 ? ' (ending ' + who.last4 + ')' : '')
+               + ', and nothing is private yet — so nothing is really set up. '
+               + 'Adding a number now replaces it and takes over as administrator. '
+               + 'Use this if the first one had a typo in it.');
             paint();
             return;
           }
