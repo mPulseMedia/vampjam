@@ -4966,7 +4966,36 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   not shipped until ?v= moves on every page. And a test that reaches a page by a route he never
   takes is not testing his page.
   Still no new trace.
-- NEXT → add entry 348 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 348 next_now · b356 · do-this-next rewritten for no Twilio and for a man sitting at his Mac.
+  The page opened with "Nothing, if you are on your phone" and item 2 was "About twenty minutes:
+  three things from Twilio, a worker pasted into Cloudflare, five settings". Both false now — the
+  first because he said he is at the computer, the second because Twilio is gone.
+  The page's own rule is that it holds only what is waiting on HIM, so it now holds three things
+  in the order he can do them, and nothing else pretends to be a task.
+  1 make the secret run. It names the actual state — AUTH_SECRET saved as a version that was never
+  deployed, so the worker runs a copy from before it existed — and says that this is why nothing
+  he types sticks. Then the click: vampjam-auth → Deployments → Promote deployment → newest row.
+  With a line under it telling him how to check whether he already did it, because being told to
+  do something already done is its own small waste.
+  2 put his own number back, with the reason stated plainly: the first number became the
+  administrator, it has a typo, the last four are right and the rest cannot be recovered from what
+  is stored. And the window: the start-over is offered only while one number is on the list and
+  nothing is private, which is exactly now.
+  3 check the one name I guessed. That was buried in a phone-only list; it is a real thing waiting
+  on him and it survived.
+  A "Twilio is out" section, because a decision that removes work should be visible as a decision
+  and not just as an absence. It says what was dropped, that it was a distraction, and the honest
+  cost of what replaced it — a phone number is not a password. It also tells him to LEAVE the old
+  TWILIO settings and the Twilio account alone: the program ignores them, and deleting them is
+  tidying rather than a step. Half-finished cleanup reads as a broken step later.
+  And "Where the list of people lives", because the answer moved: not the admin page, the bottom
+  of each recording. With how forgiving the paste is, and the one consequence worth knowing before
+  he does it — the first person makes that recording private.
+  The 415 MB line was written for a man away from his Mac ("bin it whenever"). He is at it, so it
+  says so.
+  Twenty-eight suites, 770 assertions. Green — no code moved.
+  Still no new trace.
+- NEXT → add entry 349 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

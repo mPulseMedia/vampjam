@@ -9,8 +9,40 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "355 who_arrive",
+        id: "356 next_now",
         expanded: true,
+        nodes: [
+          { text: "356 next_now", children: [
+            { text: "prompt_restate", children: [
+              { text: "Update do-this-next: no twilio, and I am at my computer." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "OK, so Update the Vamp Jam Bazaar page in light of the fact that I'm not using Julio that I'm at my computer right now" }
+            ]},
+            { text: "both_of_its_claims_were_false", children: [
+              { text: "it opened with \"Nothing, if you are on your phone\"" },
+              { text: "and item 2 was twenty minutes, three things from twilio, five settings" }
+            ]},
+            { text: "three_things_in_the_order_you_can_do_them", children: [
+              { text: "1 make the secret run \u2014 names the state, then the click, then how to check you have not already done it" },
+              { text: "2 put your own number back \u2014 the typo, why it cannot be recovered, and the window that is open right now" },
+              { text: "3 check the one name I guessed \u2014 was buried in a phone-only list, is a real thing waiting on you" }
+            ]},
+            { text: "twilio_is_out_said_as_a_decision", children: [
+              { text: "a decision that removes work should be visible as a decision, not just as an absence" },
+              { text: "what was dropped, that it was a distraction, and the honest cost of what replaced it" },
+              { text: "and: LEAVE the old TWILIO settings and the account alone. the program ignores them. half-finished cleanup reads as a broken step later" }
+            ]},
+            { text: "where_the_list_lives, because the answer moved \u2014 not the admin page, the bottom of each recording" },
+            { text: "the 415 MB line was written for a man away from his mac. you are at it, so it says so" },
+            { text: "no code moved. twenty-eight suites, 770 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "355 who_arrive",
+        expanded: false,
         nodes: [
           { text: "355 who_arrive", children: [
             { text: "prompt_restate", children: [
