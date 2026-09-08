@@ -1665,10 +1665,10 @@
   // It writes only when there is one AND it is not already what the list says,
   // so an ordinary sign-in costs nothing extra.
   function name_keep(nm) {
-    if (!nm) return Promise.resolve();
+    if (!nm) return Promise.resolve('');
     var A = window.vampjamAuth;
     return A.me().then(function (me) {
-      if (!me || me.signed_in !== true || !me.id || me.label === nm) return;
+      if (!me || me.signed_in !== true || !me.id || me.label === nm) return '';
       return fetch(A.url + '?op=list&t=' + Date.now(), { cache: 'no-store' })
         .then(function (r) { return r.json(); })
         .then(function (acc) {
@@ -1676,9 +1676,10 @@
           var out = { admins: acc.admins || [], people: acc.people || [], sessions: acc.sessions || {} };
           var hit = out.people.filter(function (x) { return x && x.id === me.id; })[0];
           if (hit) hit.label = nm; else out.people.push({ id: me.id, label: nm });
-          return sync_write('access.json', JSON.stringify(out, null, 2), 'name — ' + nm);
+          return sync_write('access.json', JSON.stringify(out, null, 2), 'name — ' + nm)
+            .then(function () { return nm; });
         });
-    }).catch(function () {});          // a name that will not save must not stop a sign-in
+    }).catch(function () { return ''; });   // a name that will not save must not stop a sign-in
   }
   window.vampjamNameKeep = name_keep;
   function phone_form_wire(box, key, opt) {

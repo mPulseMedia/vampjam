@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="site.css?v=27">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=130"></script>
-<script src="drawer.js?v=187"></script>
+<script src="drawer.js?v=188"></script>
 <style>
   h1 { text-align: center; font-size: 22px; margin: 6px 0 4px; }
   .lede { text-align: center; color: var(--muted); margin: 0 auto 18px; max-width: 420px; line-height: 1.5; }
@@ -213,11 +213,16 @@
         // A name typed in front of the number is a person naming themselves.
         // One implementation of keeping it, shared with the boxes on a recording.
         var typed = window.vampjamNameFrom ? window.vampjamNameFrom(v) : '';
-        return (window.vampjamNameKeep ? window.vampjamNameKeep(typed) : Promise.resolve())
-          .then(function () { return A.me(); })
-          .then(function (me) {
-            show_signed_in((me && me.signed_in) ? me : j);
-            go_back();
+        return (window.vampjamNameKeep ? window.vampjamNameKeep(typed) : Promise.resolve(''))
+          .then(function (wrote) {
+            return A.me().then(function (me) {
+              var out = (me && me.signed_in) ? me : j;
+              // me() answered before the write reached GitHub, so say the name he
+              // just gave rather than the one the file still holds for a minute.
+              if (wrote) out.label = wrote;
+              show_signed_in(out);
+              go_back();
+            });
           }, function () { show_signed_in(j); go_back(); });
       })
       .catch(function (err) { go.disabled = false; tell('Could not reach the server: ' + err.message, true); });
