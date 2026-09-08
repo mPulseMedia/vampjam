@@ -5050,7 +5050,38 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   shell has no network at all, so the only writer to that file is the site.
   who_add_test 86, up three. Twenty-eight suites, 775 assertions. Green.
   Still no new trace.
-- NEXT → add entry 351 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 351 promote_none · b359 · "you sure about C3" — no, and he was right to ask.
+  He sent the row menu open. It reads <b>Rollback · Split versions · View logs</b>, and on the row
+  already serving, only <b>View logs</b>. There is no deploy in it. That is three wrong guesses at
+  one control: a blue "Promote deployment" button in 342 and 348, then "Deploy this version" from
+  that menu in 349. Each time I wrote an instruction for a screen I had not seen, and twice I did
+  it in the same build where I wrote a rule telling myself not to.
+  What his screenshots actually show, and it is better news: the top row reads "Updated secret:
+  AUTH_SECRET, 3s ago" and carries a blue bar down its left edge. That bar is what marks the
+  version serving traffic. Saving the secret deployed it. There was nothing to promote.
+  So C2 teaches the bar and nothing else: go to Deployments, look at the top row, blue bar means
+  done. It keeps one warning because it is his own history: earlier in this same worker five
+  settings sat as versions while an older one kept serving, so the look is worth taking.
+  C3 shrinks to the case where the bar is on the wrong row, and names the control that is really
+  there — Rollback, which despite its name is what changes which version serves.
+  Both wrong instructions are stated on the page rather than quietly deleted. He read them and
+  went looking twice; a runbook that silently drops what it told you yesterday leaves you
+  wondering what else it has changed its mind about.
+  The drawing is the menu as it reads, with the red ring on the blue bar rather than on a button.
+  First drawing in the runbook whose ring is around something to LOOK at rather than click, and
+  the opening paragraph now says so.
+  One consequence of what he did, which he could not have known: he UPDATED AUTH_SECRET rather
+  than adding it. Every id in access.json was computed under the old one, so they are all
+  meaningless now — the mistyped admin can never be matched by anyone again. That is the exact
+  state 350's worker fix exists for.
+  signin_test 54, up two: one admin and nothing else can still be taken over, but a second person
+  or one closed recording ends it. signin_steps_test 76.
+  Twenty-eight suites, 781 assertions. Green.
+  The rule, restated narrower again because the last two were not enough: do not write an
+  instruction for a control until it appears in a screenshot of HIS screen. Not from memory, not
+  from the vendor's docs, not from a related screen. If there is no screenshot, say which part is
+  a guess and ask for one.
+- NEXT → add entry 352 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

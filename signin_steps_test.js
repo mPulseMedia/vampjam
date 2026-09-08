@@ -293,21 +293,25 @@ let STATUS = null;           // null = the worker is not there at all
      && /there used to be five/.test(say.text), 0);
   ok('and tells him to leave the old twilio ones alone',
      /Leave them/.test(say.text) && /tidying, not a step/.test(say.text), 0);
-  ok('adding the secret is not enough, and it says where the button is not',
-     /does <b>not<\/b> put it to work/.test(say.html)
-     && /no Deploy button on that page/i.test(say.text)
-     && /Deployments<\/b> tab/.test(say.html), 0);
-  // there is no "Promote deployment" button on that screen. I said there was,
-  // twice, from memory. It is the … menu on the row itself.
-  ok('it points at the menu on the row, not a button',
-     /the <b>…<\/b> at the right-hand\s+end/.test(say.html)
-     && /Deploy this version/.test(say.text)
-     && /newest<\/b> row/.test(say.html), 0);
-  ok('and says outright that no such button exists',
-     /no big button for this/.test(say.text)
-     && /no such control on that screen/.test(say.text), 0);
-  ok('and it is still newest only, once',
-     /complete snapshot, not a change/.test(say.text), 0);
+  ok('it sends him to Deployments to see what is live',
+     /<b>Deployments<\/b> tab/.test(say.html) && /Version History<\/b>/.test(say.html), 0);
+  // three wrong guesses at this control, all from memory: a blue "Promote
+  // deployment" button, then "Deploy this version" in the row menu. Neither
+  // exists. The menu is Rollback / Split versions / View logs, and what marks
+  // the live version is a blue bar down the left of its row.
+  ok('it teaches the blue bar, which is the thing that is actually there',
+     /blue bar down its left edge/.test(say.text)
+     && /marks the version actually serving traffic/.test(say.text), 0);
+  ok('and names the menu items as they really read',
+     /Rollback/.test(say.text) && /Split versions/.test(say.text)
+     && /View logs/.test(say.text), 0);
+  ok('and owns the two wrong instructions rather than deleting them',
+     /Promote deployment<\/b> button/.test(say.html)
+     && /Neither exists/.test(say.text), 0);
+  ok('and says adding a secret usually deploys itself',
+     /usually deploys it there and then/.test(say.text), 0);
+  ok('and warns that it does not always',
+     /five settings sat as versions while an older one kept serving/.test(say.text), 0);
   // the part he will actually use lives on the recording, not here
   ok('it sends him to the bottom of a recording, not an admin page',
      /bottom of each recording/i.test(say.text)

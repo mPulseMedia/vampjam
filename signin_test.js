@@ -58,8 +58,21 @@ const ENV = {
   ok('the first admin can claim the empty list', cp.j.ok && cp.j.id && cp.j.last4 === '7777', JSON.stringify(cp.j));
   const ids = { paul: cp.j.id };
   ACCESS = { admins: [cp.j.id], people: [{ id: cp.j.id, label: 'Paul', last4: '7777' }], sessions: {} };
+  // one admin and nothing else is deliberately still claimable: that is the
+  // recovery for a mistyped first number, and in that state nothing is protected
   const cp2 = await call('claim_admin', { phone: '(415) 555 0000' });
-  ok('and only while it IS empty',              cp2.status === 403, cp2.status + ' ' + cp2.j.error);
+  ok('one admin and nothing else can still be taken over', cp2.j.ok === true, JSON.stringify(cp2.j));
+  ACCESS = { admins: [cp.j.id],
+             people: [{ id: cp.j.id, label: 'Paul', last4: '7777' },
+                      { id: 'SOMEONE', label: 'Dave', last4: '1212' }],
+             sessions: {} };
+  const cp3 = await call('claim_admin', { phone: '(415) 555 0000' });
+  ok('but not once a second person is on the list', cp3.status === 403, cp3.status + ' ' + cp3.j.error);
+  ACCESS = { admins: [cp.j.id], people: [{ id: cp.j.id, label: 'Paul', last4: '7777' }],
+             sessions: { 'x.html': { mode: 'list', allow: [cp.j.id] } } };
+  const cp4 = await call('claim_admin', { phone: '(415) 555 0000' });
+  ok('nor once one recording is closed',        cp4.status === 403, cp4.status + ' ' + cp4.j.error);
+  ACCESS = { admins: [cp.j.id], people: [{ id: cp.j.id, label: 'Paul', last4: '7777' }], sessions: {} };
 
   const paulSess = (await call('enter', { phone: '415-555-7777' })).j.session;
   ok('the admin can sign in',                   !!paulSess, !!paulSess);

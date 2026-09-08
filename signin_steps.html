@@ -86,7 +86,7 @@ footer a{color:var(--signal)}
     <p>this is asked of the sign-in program itself, every time you open this page — so it cannot
     drift from the truth. about ten minutes now that the text-message half is gone. every step
     that lands you on someone else's screen has a picture of it, with a red ring around the one
-    thing to click. tick them off as you go — the ticks stay put if you close this and come
+    thing to click — or, once, the one thing to look at. tick them off as you go — the ticks stay put if you close this and come
     back.</p>
   </div>
   <div class="state" id="state"><div><span class="dot wait"></span><span>checking…</span></div></div>
@@ -184,25 +184,24 @@ footer a{color:var(--signal)}
       Leave them. The program ignores them now. Deleting them is tidying, not a step.</span>
     </li>
     <li data-k="c2"><button class="tick" aria-label="Done">✓</button>
-      Adding it does <b>not</b> put it to work, and there is no Deploy button on that page to fix
-      that. It became a saved <b>version</b>, sitting in a list, doing nothing. Go to the
-      <b>Deployments</b> tab.
-      <span class="said">At the top, <b>Active deployment</b>, with a version id. Below,
-      <b>Version History</b>, with a row reading <b>Add secret: AUTH_SECRET</b>.</span>
-      <span class="odd">If the Active deployment is OLDER than that row, the worker is running a
-      version from before you added it. That is the whole problem, and it is why nothing you did
-      seemed to take.</span>
+      Go to the <b>Deployments</b> tab and look at <b>Version History</b>. Your new row is at the
+      top: <b>Added</b> or <b>Updated secret: AUTH_SECRET</b>.
+      <span class="said">A <b>blue bar down its left edge</b>. That bar is the whole answer — it
+      marks the version actually serving traffic. On the top row, you are done.</span>
+      <span class="odd">Adding a secret usually deploys it there and then, so this is normally
+      just a look. It is worth the look because it does not always: earlier in this same worker,
+      five settings sat as versions while an older one kept serving.</span>
+      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span><svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><text x="30" y="34" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" font-weight="700" fill="#101820">Version History</text><rect x="30" y="42" width="296" height="24" rx="4" fill="#fff" stroke="#e6eaee"/><rect x="30" y="42" width="3.5" height="24" fill="#1b6be0"/><text x="42" y="57" font-family="ui-monospace,Menlo,monospace" font-size="8.5" fill="#101820">05b4bbc3</text><text x="104" y="57" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8.5" fill="#101820">Updated secret: AUTH_SECRET</text><text x="288" y="57" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" fill="#8f959b">3s ago</text><text x="314" y="59" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#101820" text-anchor="middle">…</text><rect x="26" y="38" width="16" height="32" rx="6" fill="none" stroke="#d7263d" stroke-width="3"/><rect x="30" y="68" width="296" height="20" rx="4" fill="#fff" stroke="#f0f2f5"/><text x="42" y="82" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#7b848d">c4836a5d</text><text x="104" y="82" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-style="italic" fill="#a8b0b7">Manually deployed</text><text x="314" y="83" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#8f959b" text-anchor="middle">…</text><rect x="30" y="90" width="296" height="20" rx="4" fill="#fff" stroke="#f0f2f5"/><text x="42" y="104" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#7b848d">96a945f0</text><text x="104" y="104" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#8f959b">Add variable: SITE</text><text x="314" y="105" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#8f959b" text-anchor="middle">…</text><rect x="212" y="106" width="106" height="52" rx="6" fill="#fff" stroke="#1b6be0" stroke-width="1.5"/><text x="222" y="121" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8.5" fill="#101820">Rollback</text><text x="222" y="137" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8.5" fill="#101820">Split versions</text><text x="222" y="152" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8.5" fill="#101820">View logs</text><text x="30" y="176" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#2f8f5b">the blue bar on the left is what is live. no Deploy in that menu.</text></svg>
     </li>
+
     <li data-k="c3"><button class="tick" aria-label="Done">✓</button>
-      In <b>Version History</b>, on the <b>newest</b> row, click the <b>…</b> at the right-hand
-      end and choose <b>Deploy this version</b>.
-      <span class="odd">There is no big button for this. I said "Promote deployment" twice and
-      there is no such control on that screen — it is that little menu, on the row itself.</span>
-      <span class="said"><b>Active deployment</b>, at the top, changes to that version id. That is
-      the moment the setting starts existing as far as the program is concerned.</span>
-      <span class="odd">Newest only, and only once. A version is a complete snapshot, not a
-      change — the top row already carries everything below it.</span>
-      <span class="mini_cap">drawn from cloudflare's own screen, not yours</span><svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><rect x="26" y="22" width="40" height="13" rx="4" fill="#f1f3f5"/><text x="46" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b" text-anchor="middle">Overview</text><rect x="68" y="22" width="52" height="13" rx="4" fill="#fff" stroke="#101820"/><text x="94" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" font-weight="700" fill="#101820" text-anchor="middle">Deployments</text><rect x="122" y="22" width="34" height="13" rx="4" fill="#f1f3f5"/><text x="139" y="31" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b" text-anchor="middle">Settings</text><rect x="30" y="44" width="296" height="26" rx="5" fill="#fbfcfd" stroke="#e6eaee"/><text x="38" y="55" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#5d6e7b">Active deployment</text><text x="38" y="66" font-family="ui-monospace,Menlo,monospace" font-size="8.5" font-weight="700" fill="#2f8f5b">96a945f0</text><text x="96" y="66" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7" fill="#8f959b">must match the top row below</text><rect x="34" y="58" width="56" height="14" rx="5" fill="none" stroke="#2f8f5b" stroke-width="2.5"/><text x="30" y="86" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#101820">Version History</text><rect x="30" y="92" width="296" height="20" rx="3" fill="#fff" stroke="#e6eaee"/><rect x="30" y="92" width="2.5" height="20" fill="#1b6be0"/><text x="40" y="105" font-family="ui-monospace,Menlo,monospace" font-size="8" fill="#101820">96a945f0</text><text x="96" y="105" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d6e7b">Add secret: AUTH_SECRET</text><text x="314" y="107" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#101820" text-anchor="middle">…</text><rect x="304" y="90" width="20" height="24" rx="7" fill="none" stroke="#d7263d" stroke-width="3"/><rect x="30" y="114" width="296" height="16" rx="3" fill="#fafbfb"/><text x="40" y="125" font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#a8b0b7">4a7a4acf</text><text x="96" y="125" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="7.5" font-style="italic" fill="#a8b0b7">Manually deployed</text><rect x="212" y="112" width="112" height="42" rx="6" fill="#fff" stroke="#cfd6dd"/><rect x="212" y="112" width="112" height="21" rx="6" fill="#f4f7fa"/><text x="220" y="126" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" font-weight="700" fill="#101820">Deploy this version</text><text x="220" y="147" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#8f959b">Rollback to here</text><rect x="208" y="108" width="120" height="50" rx="8" fill="none" stroke="#d7263d" stroke-width="3"/><text x="30" y="172" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#8f959b">there is no big Deploy button here — it is in that menu</text></svg>
+      Blue bar somewhere below the top? Open the <b>…</b> on the row you want live and choose
+      <b>Rollback</b>. Despite the name that is the control that changes which version serves.
+      <span class="odd">I told you twice to click a <b>Promote deployment</b> button and once to
+      pick <b>Deploy this version</b> from that menu. Neither exists. The menu holds
+      <b>Rollback</b>, <b>Split versions</b> and <b>View logs</b>, and on the row that is already
+      live, only <b>View logs</b>. I was describing a screen I had not seen.</span>
+      <span class="said">The bar moves to the row you picked.</span>
     </li>
   </ol>
   <button class="line" id="make_secret" type="button"><small>tap to invent one and copy it</small>AUTH_SECRET — 48 random characters</button>
