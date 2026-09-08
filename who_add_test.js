@@ -46,13 +46,35 @@ async function worker(op, params, body) {
   ok('the id is opaque and not the number',  good[0].id.length > 20 && !/1212/.test(good[0].id), good[0].id);
   ok('the same number always makes the same id',
      (await worker('ids', {}, { phones: ['+1 415-555-1212'] })).people[0].id === good[0].id);
+
+  // phone_loose — he pastes numbers the way people have them written down
+  const forms = ['+1 415 555 1212', '(415) 555-1212', '415.555.1212', '415_555_1212',
+                 '4155551212', '1-415-555-1212', '  415 555 1212  ', '+14155551212'];
+  const made = (await worker('ids', {}, { phones: forms })).people;
+  ok('every way of writing it lands on one id',
+     made.length === forms.length && made.every(m => m.ok && m.id === good[0].id),
+     made.map(m => m.ok ? m.id.slice(0, 6) : 'X').join(' '));
+  ok('and it also gets an area-code-free id',
+     !!good[0].id7 && good[0].id7 !== good[0].id, good[0].id7);
+  ok('the seven digits alone make that same second id',
+     (await worker('ids', {}, { phones: ['555-1212'] })).people[0].id === good[0].id7, 0);
   ok('the first paste is allowed with no admin', ids.first === true, ids.first);
 
   // put one of them on one recording, and only that one
   ACCESS = {
-    admins: [good[0].id], people: good.map(g => ({ id: g.id, label: g.label, last4: g.phone_last4 })),
+    admins: [good[0].id],
+    people: good.map(g => ({ id: g.id, id7: g.id7, label: g.label, last4: g.phone_last4 })),
     sessions: { '2026_08_14_sound_union.html': { mode: 'list', allow: [good[1].id] } }
   };
+
+  // and at the door, any of those forms opens it — including no area code
+  for (const form of ['415-555-1212', '(415) 555.1212', '415_555_1212', '+1 415 555 1212',
+                      '4155551212', '555 1212', '555-1212']) {
+    const t = await worker('enter', {}, { phone: form });
+    ok('signs in with "' + form + '"', t.ok === true && t.allow === '*', JSON.stringify(t).slice(0, 70));
+  }
+  const wrongArea = await worker('enter', {}, { phone: '212-555-1212' });
+  ok('a different area code with the same seven digits still gets in', wrongArea.ok === true, 0);
 
   const inn = await worker('enter', {}, { phone: '650-555-0000' });
   ok('a number on a list is signed in at once', inn.ok && !!inn.session, JSON.stringify(inn).slice(0, 100));
@@ -87,8 +109,8 @@ async function worker(op, params, body) {
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
   let WROTE = null, ACC = { admins: [], people: [], sessions: {} };
   const IDS = { ok: true, first: true, people: [
-    { line: 'Dave 415 555 1212', ok: true, id: 'ID_DAVE', label: 'Dave', phone_last4: '1212' },
-    { line: '650 555 0000',      ok: true, id: 'ID_SAM',  label: '•••0000', phone_last4: '0000' },
+    { line: 'Dave 415 555 1212', ok: true, id: 'ID_DAVE', id7: 'ID7_DAVE', label: 'Dave', phone_last4: '1212' },
+    { line: '650 555 0000',      ok: true, id: 'ID_SAM',  id7: 'ID7_SAM',  label: '•••0000', phone_last4: '0000' },
     { line: 'banana',            ok: false }
   ]};
   await ctx.route('**/*', async (r) => {
@@ -115,7 +137,7 @@ async function worker(op, params, body) {
     if (u.indexOf('api.github.com') >= 0) return J([]);
     return r.fulfill({ status: 204, body: '' });
   });
-  const p = await ctx.newPage();
+  let p = await ctx.newPage();
   p.on('pageerror', e => { fail++; console.log('  FAIL pageerror: ' + e.message); });
   await p.goto('https://vampsf.com/2026_08_14_sound_union.html');
   await p.waitForTimeout(1200);
@@ -160,6 +182,8 @@ async function worker(op, params, body) {
      JSON.stringify(w.sessions));
   ok('the last four are kept, because he has to recognise them',
      w.people.some(x => x.last4 === '1212'), JSON.stringify(w.people));
+  ok('and the area-code-free id is kept with them',
+     w.people.every(x => !!x.id7), JSON.stringify(w.people));
   ok('this recording is restricted to those two',
      w.sessions['2026_08_14_sound_union.html'].mode === 'list'
      && w.sessions['2026_08_14_sound_union.html'].allow.length === 2,
@@ -184,6 +208,45 @@ async function worker(op, params, body) {
      w3.sessions['2026_08_14_sound_union.html'].mode === 'open', JSON.stringify(w3.sessions));
   ok('and the state line says so',
      /open — anyone with the link/.test(await p.textContent('#who_state')), 0);
+
+  // ---------- the door does not shut behind him ----------
+  // He added himself as administrator from another page and never signed in.
+  // The box used to go invisible everywhere with no way back.
+  await p.close();
+  ACC = { admins: ['SOMEONE_ELSE'], people: [{ id: 'SOMEONE_ELSE', label: 'Paul', last4: '7777' }],
+          sessions: {} };
+  let NO_SECRET = false;
+  await ctx.route(/vampjam-auth/, async (r) => {
+    if (NO_SECRET && /op=enter/.test(r.request().url()))
+      return r.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({
+        error: 'no_secret',
+        why: 'the worker has no AUTH_SECRET yet — finish step C on the sign-in steps page' }) });
+    return r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ ok: true, signed_in: false, admin: false, allow: [] }) });
+  });
+  p = await ctx.newPage();
+  p.on('pageerror', e => { fail++; console.log('  FAIL pageerror (locked): ' + e.message); });
+  await p.goto('https://vampsf.com/2026_08_14_sound_union.html');
+  await p.waitForTimeout(1200);
+  const shut = await p.evaluate(() => {
+    const el = document.getElementById('who_box');
+    return { shown: el && !el.hidden, field: !!document.getElementById('who_phone'),
+             paste: document.getElementById('who_in') ? !document.getElementById('who_in').hidden : null,
+             note: document.getElementById('who_note').textContent };
+  });
+  ok('signed out, the box is still there',      shut.shown === true, JSON.stringify(shut));
+  ok('and offers the one field that fixes it',  shut.field === true, shut.field);
+  ok('the paste box is put away until then',    shut.paste === false, shut.paste);
+  ok('and it says what to do',                  /Sign in to manage/.test(shut.note), shut.note);
+
+  // and when the worker has no secret yet, it says WHICH step
+  NO_SECRET = true;
+  await p.fill('#who_phone', '415 555 7777');
+  await p.click('#who_go');
+  await p.waitForTimeout(500);
+  const why = await p.textContent('#who_note');
+  ok('an unset secret is named as the reason, not "it did not stick"',
+     /no AUTH_SECRET yet/.test(why) && /step C/.test(why), why);
 
   // the sign-in page asks for a number and nothing else
   const si = fs.readFileSync(path.join(DIR, 'signin.html'), 'utf8');

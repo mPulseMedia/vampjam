@@ -4854,7 +4854,43 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Twenty-eight suites, 731 assertions. Green.
   Left for him: A through D on Cloudflare, once. Then E, at the bottom of a recording.
   Still no new trace.
-- NEXT → add entry 344 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 344 phone_loose · b352 · numbers matched the way people write them, and the two ways his own
+  number went missing. He put his number into the admin page, it did not stick, and then he could
+  not add anyone to a session either.
+  Cause one, and almost certainly the one he hit: every write needs AUTH_SECRET to be RUNNING, and
+  a worker without it answered `{error:'worker not configured'}` with a 500 that both pages
+  swallowed into a generic failure. He had saved the secret and not promoted the version — the
+  exact state 342 was about — so "it does not stick" was the site's way of saying "step C is not
+  finished". The worker now answers `no_secret` with the sentence naming the step, and both the
+  admin page and the box on the recording print that sentence rather than a shrug. A tool that
+  knows why it failed and does not say so is worse than one that does not know.
+  Cause two is mine and it is worse: who_add showed only to an admin, or to anybody while there
+  was NO admin. Add yourself as administrator from the admin page, never sign in, and the box goes
+  invisible on every recording with no way back — the bootstrap closes the door behind you. The
+  box is now always there; signed out it carries the one phone field that fixes it, and signing in
+  reloads into the full box. A recovery path that requires the thing you have lost is not a
+  recovery path.
+  phone_loose, which he asked for: everything that is not a digit is punctuation — +1, spaces,
+  dashes, dots, underscores, brackets. And a number has two ids now, not one: the full form and
+  the last seven digits on their own, so a number added WITH an area code answers when it is typed
+  without. settle() resolves what was typed to the id the site knows them by, matching on either.
+  Asserted through the real worker on eight spellings of one number plus the bare seven digits.
+  The honest edge, worth knowing: two people whose numbers differ only by area code would collide.
+  On a list of a dozen friends that is not a real risk; on a big list it would be, and the fix
+  then is to stop matching the short form.
+  admin.html stops being a second editor of the same file. Two editors writing access.json is its
+  own way of losing an edit, and he had two. It keeps the add-a-number form, because the list has
+  to be startable from somewhere, and its Private recordings section became read-only — a count
+  and a pointer at the bottom of the recording. Its readout lost the Twilio line and now names the
+  promote as the reason a secret can be missing.
+  who_add_test 61, up seventeen: eight spellings landing on one id, the seven-digit form, the
+  second id stored with the person, the box surviving being signed out, the sign-in field in it,
+  and the no_secret sentence reaching the screen.
+  Twenty-eight suites, 748 assertions. Green.
+  site.css v=22, drawer.js v=166 — no bump, they moved in the same build as 343 and nothing else
+  ships between.
+  Still no new trace.
+- NEXT → add entry 345 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

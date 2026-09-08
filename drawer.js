@@ -1581,6 +1581,7 @@
       })
         .then(function (r) { return r.json(); })
         .then(function (j) {
+          if (j && j.error === 'no_secret') throw new Error(j.why);
           if (!j || !j.ok) throw new Error((j && j.error) || 'the worker said no');
           var good = j.people.filter(function (x) { return x.ok; });
           var bad  = j.people.filter(function (x) { return !x.ok; });
@@ -1592,7 +1593,7 @@
             var added = 0;
             good.forEach(function (g) {
               if ((acc.people || []).every(function (x) { return !x || x.id !== g.id; }))
-                acc.people.push({ id: g.id, label: g.label, last4: g.phone_last4 });
+                acc.people.push({ id: g.id, id7: g.id7, label: g.label, last4: g.phone_last4 });
               if (r2.allow.indexOf(g.id) < 0) { r2.allow.push(g.id); added++; }
               // the very first number entered anywhere owns the list
               if (!acc.admins.length) acc.admins.push(g.id);
@@ -1633,8 +1634,46 @@
     addBtn.addEventListener('click', add);
     openBtn.addEventListener('click', open_up);
 
-    // who sees it: the administrator, or anybody at all while nobody is the
-    // administrator yet — otherwise the first list could never be started
+    // ---- who sees it ----
+    // Before: only an admin, or anybody while there was no admin. That closed
+    // the door behind him — add yourself as administrator from another page,
+    // never sign in, and the box is invisible everywhere with no way back. Now
+    // it is always reachable: signed out, it shows the one field that fixes it.
+    function sign_in_here() {
+      box.hidden = false;
+      stateEl.textContent = '';
+      listEl.innerHTML = '';
+      inEl.hidden = true; addBtn.hidden = true; openBtn.hidden = true;
+      var wrap = document.createElement('div');
+      wrap.className = 'who_row';
+      wrap.innerHTML = '<input class="who_in who_one" id="who_phone" type="tel" inputmode="tel"'
+        + ' autocomplete="tel" placeholder="your phone number">'
+        + '<button class="who_add" id="who_go" type="button">Sign in</button>';
+      box.insertBefore(wrap, noteEl);
+      note('Sign in to manage who can open this recording.');
+      function go() {
+        var v = (wrap.querySelector('#who_phone').value || '').trim();
+        if (!v) return;
+        note('Checking…');
+        fetch(A.url + '?op=enter', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: v })
+        }).then(function (r) { return r.json(); })
+          .then(function (j) {
+            if (j && j.error === 'no_secret') { note(j.why, true); return; }
+            if (!j || !j.ok) { note(j && j.unknown
+              ? 'That number is not on any list yet.' : ((j && j.why) || 'Could not sign in'), true); return; }
+            A.set(j.session);
+            location.reload();
+          })
+          .catch(function (e) { note('Could not reach the worker: ' + e.message, true); });
+      }
+      wrap.querySelector('#who_go').addEventListener('click', go);
+      wrap.querySelector('#who_phone').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') go();
+      });
+    }
+
     load().then(function () {
       if (!acc.admins.length) {
         box.hidden = false;
@@ -1643,9 +1682,8 @@
         return;
       }
       return A.me().then(function (me) {
-        if (!me || !me.admin) return;
-        box.hidden = false;
-        paint();
+        if (me && me.admin) { box.hidden = false; paint(); return; }
+        sign_in_here();
       });
     }).catch(function () {});
   }

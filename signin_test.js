@@ -1,7 +1,7 @@
 // signin_test — a phone number on the list gets a text with a link, the link
 // signs that phone in, and a restricted recording opens for the people it was
 // shared with and nobody else. The worker is run for real against a fake
-// Twilio and a fake access.json; the gate is run in the browser against it.
+// a fake access.json; the gate is run in the browser against it. Nothing is
 const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path');
 const DIR = process.env.VJ_DIR || '/tmp/vj';
@@ -16,7 +16,7 @@ const PAGE_A = 'session.html?p=a1';          // private, shared with Matt only
 const PAGE_B = 'session.html?p=b2';          // nobody restricted it
 const MATT = '+14155551212', KATHY = '+14155553434', STRANGER = '+14155559999';
 
-// the worker, its Twilio and its access.json all live here so the suite can
+// the worker and its access.json live here so the suite can
 // watch what it sends and change what it reads between checks
 let ACCESS = null, texts = [];
 function fresh_access(ids) {
@@ -330,7 +330,8 @@ const ENV = {
   });
   ok('Admin shows a live setup readout',    setup.on + setup.off >= 5, JSON.stringify(setup));
   ok('it says the server is up',            /server is up/.test(setup.text), setup.text.slice(0, 70));
-  ok('that Twilio can send',                /Twilio can send/.test(setup.text), '');
+  ok('and names the step when the secret is missing',
+     /step C/.test(setup.text) || /Its secret is set/.test(setup.text), setup.text.slice(0, 80));
   ok('and how many people are on the list', /3 people on the list/.test(setup.text), setup.text.slice(0, 160));
   ok('and how much is actually gated',      /1 recording is private/.test(setup.text), setup.text.slice(0, 200));
   const stat = await (await worker.fetch(new Request('https://auth.example/?op=status'), ENV)).json();

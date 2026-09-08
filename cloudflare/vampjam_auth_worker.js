@@ -59,7 +59,12 @@ export default {
         }, 200, cors);
       }
 
-      if (!env.AUTH_SECRET) return json({ error: 'worker not configured' }, 500, cors);
+      // the commonest state of all while he is still setting up, and the one
+      // that used to look like "it just does not stick": say which step it is.
+      if (!env.AUTH_SECRET)
+        return json({ error: 'no_secret',
+                      why: 'the worker has no AUTH_SECRET yet — finish step C on the sign-in steps page' },
+                    503, cors);
 
       // ---- who is this? ----
       if (op === 'me') {
@@ -76,11 +81,11 @@ export default {
       // session. Unrecognised numbers are told so plainly rather than being
       // left to wonder whether a text is coming.
       if (op === 'enter') {
-        const phone = e164(q('phone'));
-        if (!phone) return json({ ok: false, why: 'that does not look like a phone number' }, 200, cors);
+        const cand = await ids_for(env.AUTH_SECRET, q('phone'));
+        if (!cand) return json({ ok: false, why: 'that does not look like a phone number' }, 200, cors);
         const acc = await access();
-        const id = await hmac(env.AUTH_SECRET, 'p:' + phone);
-        if (!recognized(acc, id)) {
+        const id = settle(acc, cand);
+        if (!id || !recognized(acc, id)) {
           return json({ ok: false, why: 'that number is not on any list yet',
                         unknown: true }, 200, cors);
         }
@@ -106,11 +111,11 @@ export default {
         for (const raw of list) {
           const line = String(raw || '').trim();
           if (!line) continue;
-          const phone = e164(line);
-          if (!phone) { out.push({ line, ok: false }); continue; }
-          out.push({ line, ok: true, phone_last4: phone.slice(-4),
-                     label: label_from(line, phone),
-                     id: await hmac(env.AUTH_SECRET, 'p:' + phone) });
+          const c = await ids_for(env.AUTH_SECRET, line);
+          if (!c) { out.push({ line, ok: false }); continue; }
+          out.push({ line, ok: true, phone_last4: c.last4,
+                     label: label_from(line, c.last4),
+                     id: c.id, id7: c.id7 });
         }
         return json({ ok: true, first, people: out }, 200, cors);
       }
@@ -169,16 +174,33 @@ function recognized(acc, id) {
   const s = acc.sessions || {};
   return Object.keys(s).some((page) => ((s[page] || {}).allow || []).indexOf(id) >= 0);
 }
+// Turn what was typed into the id this site knows them by. A person is stored
+// under one id; this finds them by either form, so an area code is optional at
+// the door even though the list holds the full number's id.
+function settle(acc, cand) {
+  const want = [cand.id, cand.id7].filter(Boolean);
+  const hit = (acc.people || []).find((p) => p && (want.indexOf(p.id) >= 0
+                                               || (p.id7 && want.indexOf(p.id7) >= 0)));
+  if (hit) return hit.id;
+  const adm = (acc.admins || []).find((a) => want.indexOf(a) >= 0);
+  if (adm) return adm;
+  const s = acc.sessions || {};
+  let found = null;
+  Object.keys(s).forEach((page) => {
+    ((s[page] || {}).allow || []).forEach((a) => { if (want.indexOf(a) >= 0) found = a; });
+  });
+  return found;
+}
 // a pasted line is often "Dave 415-555-1212" or "Dave <415 555 1212>": whatever
 // is left when the number comes out is what he meant to call them.
-function label_from(line, phone) {
+function label_from(line, last4) {
   const rest = String(line || '')
     .replace(/[+()\-.\s]/g, ' ')
     .replace(/\d/g, ' ')
     .replace(/[<>,;:"']/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  return rest || ('•••' + phone.slice(-4));
+  return rest || ('•••' + last4);
 }
 function label_of(acc, id) {
   const p = (acc.people || []).find((x) => x && x.id === id);
@@ -235,15 +257,37 @@ async function verify(secret, token) {
 }
 
 // ---------- phone ----------
-// US-shaped by default, because that is who is on the list; a number already
-// written +<country><number> is taken as given.
-function e164(raw) {
-  let s = String(raw || '').trim();
-  if (/^\+[1-9]\d{7,14}$/.test(s)) return s;
-  s = s.replace(/\D/g, '');
-  if (s.length === 10) return '+1' + s;
-  if (s.length === 11 && s[0] === '1') return '+' + s;
-  return null;
+// He types numbers the way people actually have them written down. Everything
+// that is not a digit is punctuation as far as this is concerned: +1, spaces,
+// dashes, dots, underscores, brackets, slashes. And a number stored with an
+// area code has to be findable when it is typed WITHOUT one, so every number
+// yields two forms and a match on either is a match.
+//   full  — +1 415 555 1212, the number as it would be dialled
+//   local — 5551212, the last seven digits, area code dropped
+function phone_forms(raw) {
+  const d = String(raw || '').replace(/\D/g, '');
+  if (!d) return null;
+  let full = null;
+  if (d.length === 11 && d[0] === '1') full = '+1' + d.slice(1);
+  else if (d.length === 10) full = '+1' + d;
+  else if (d.length > 11) full = '+' + d;                 // already international
+  const local = d.length >= 7 ? d.slice(-7) : null;
+  if (!full && !local) return null;
+  return { full, local, last4: d.slice(-4) };
+}
+// the old name, kept because grant_id and claim_admin still speak it
+function e164(raw) { const f = phone_forms(raw); return f && f.full; }
+
+// the ids a typed number could be stored under. Two, so that a number added
+// with its area code still answers to the seven digits on their own.
+async function ids_for(secret, raw) {
+  const f = phone_forms(raw);
+  if (!f) return null;
+  const out = { last4: f.last4, id: null, id7: null };
+  if (f.full)  out.id  = await hmac(secret, 'p:' + f.full);
+  if (f.local) out.id7 = await hmac(secret, 'l:' + f.local);
+  if (!out.id) out.id = out.id7;         // seven digits alone: that IS the identity
+  return out;
 }
 
 // ---------- the one reply shape ----------

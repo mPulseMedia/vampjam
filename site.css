@@ -353,3 +353,4 @@ button.ghost { font-size: 17px; }
 .who_open[hidden] { display: none; }
 .who_note { margin-top: 8px; color: var(--muted); }
 .who_note.bad { color: var(--accent-warn, #d7263d); }
+.who_one { flex: 1 1 auto; width: auto; }
