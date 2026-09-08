@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "357 promote_menu",
+        id: "358 ids_open",
         expanded: true,
+        nodes: [
+          { text: "358 ids_open", children: [
+            { text: "prompt_restate", children: [
+              { text: "Still cannot sign in, and not sure whether a number was mistyped." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "it's not working. I'm not sure I mis-entered a number. I don't know. But I can't sign in." }
+            ]},
+            { text: "not_you_me", children: [
+              { text: "I read the live file instead of guessing, which I should have done two builds ago" },
+              { text: "access.json on github is UNTOUCHED \u2014 one admin, one person, last4 0105, no sessions" },
+              { text: "so nothing you did wrote anything" },
+              { text: "the mistyped number was never why you could not sign in. it was why nothing could be fixed" }
+            ]},
+            { text: "a_rule_written_on_one_side_of_the_wall", children: [
+              { text: "the page offers the start-over: one number, nothing private, take it over" },
+              { text: "the worker never learned that rule" },
+              { text: "it sees an admin, sees you are not them, and answers \"admins only\" to every add" },
+              { text: "a locked door with a handle drawn on it" }
+            ]},
+            { text: "same_test_both_sides_now", children: [
+              { text: "unstarted() in the worker as well, used by ids and claim_admin" },
+              { text: "asserted in the worker itself: one mistyped admin lets a number in; two people wants an admin again; one closed recording shuts it" }
+            ]},
+            { text: "I have shipped this shape twice in one run \u2014 the page decides what to show, the worker decides what is true, and a rule that governs both has to be written twice or it is not a rule" },
+            { text: "cost to you is the paste loop once more, and that is mine. I cannot edit access.json myself \u2014 no route to the sync worker from here, and your mac's shell has no network" },
+            { text: "who_add_test 86. twenty-eight suites, 775 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "357 promote_menu",
+        expanded: false,
         nodes: [
           { text: "357 promote_menu", children: [
             { text: "prompt_restate", children: [
