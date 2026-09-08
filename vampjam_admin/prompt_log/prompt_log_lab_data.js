@@ -57,7 +57,7 @@ window.prompt_log_data = [
             { text: "tests", children: [
               { text: "signin_ask_test new, 33" },
               { text: "signin_here_test moved from ids to classes with the shared form" },
-              { text: "thirty-five suites, green" }
+              { text: "thirty-five suites, 965 assertions, green" }
             ]},
             { text: "codename_list", children: [
               { text: "signin_ask \u00b7 phone_form \u00b7 nudge \u00b7 mark_up \u00b7 ask_box \u00b7 ask_lit" }

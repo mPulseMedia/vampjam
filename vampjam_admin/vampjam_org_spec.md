@@ -5436,7 +5436,7 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   a preference stated once is a preference I will lose.
   signin_ask_test is new, 33. signin_here_test moved from ids to classes with the shared form.
   drawer.js v=186, site.css v=27.
-  Thirty-five suites. Green.
+  Thirty-five suites, 965 assertions. Green.
   Left for him: hard reload, then open a public recording signed out and tag two moments.
   Still no new trace.
 - NEXT → add entry 365 here (codename · bN · change) — every prompt that edits the page, no exceptions.
