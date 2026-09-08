@@ -1,11 +1,14 @@
 {
-  "ok": true,
-  "admins": [],
-  "people": [],
-  "sessions": {
-    "session.html?p=2026_09_05_san_francisco_5_44_14p": {
-      "mode": "list",
-      "allow": []
+  "admins": [
+    "8jE2NDw4MZfOYt3L98GciIz0rb58Oma5JI_tgC7XIjc"
+  ],
+  "people": [
+    {
+      "id": "8jE2NDw4MZfOYt3L98GciIz0rb58Oma5JI_tgC7XIjc",
+      "id7": "uv0alSm_5rtp96b7_ZOPV3aTDCbCLOaqB3BFwzc0pWo",
+      "label": "you",
+      "last4": "0105"
     }
-  }
+  ],
+  "sessions": {}
 }
