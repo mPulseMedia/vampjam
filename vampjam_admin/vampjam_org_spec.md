@@ -5385,7 +5385,32 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Thirty-three suites, 905 assertions. Green.
   Left for him: hard reload, then open a private recording signed out and it asks him there.
   Still no new trace.
-- NEXT → add entry 363 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 363 share_ready · b371 · the box is a share dialog, in the order he read it out.
+  He put our box beside Google Drive's share sheet and walked down it saying what ours should have
+  at each position. That sentence IS the layout: instruction across the top, a text box, NOT a
+  "people with access" section, straight to the access line, a copy link separately, a share
+  button, and no cancel because it sits on the page rather than over it.
+  So: "Share this recording" · "Enter a name and a phone number." · the box · then the access line,
+  in his words — "Only these phone numbers can open it." or "Anyone with the link can open it." ·
+  the chips of who is on · Copy link and Share side by side.
+  The people-with-access section he told me to drop was ours too: "Signed in as Paul · change your
+  name" sat second, above the thing he came to do, and the only person it would ever name is the
+  person reading it. It is not deleted, because it is still the only route to his own name — it is
+  small print at the bottom now, below the buttons.
+  Copy link duplicates the header's share button on purpose. Sharing is two halves and they belong
+  together: who may open it, and the thing you paste into a message. It reports on itself, and
+  falls back to printing the address when there is no clipboard.
+  "Let anyone in" is gone. It wrote mode:'open', and nothing has read a mode since 359 — a button
+  that looked like it did something and did not. Emptying the list is how a recording opens now,
+  which is one rule instead of a rule and a button that disagrees with it.
+  share_ready_test is new, 26, and it asserts the reading ORDER, not just the presence of the
+  parts — the order was the whole request. who_add_test and who_name_test held the old wording;
+  rewritten.
+  drawer.js v=184, site.css v=26.
+  Thirty-four suites. Green.
+  Left for him: hard reload, then look at the bottom of any recording.
+  Still no new trace.
+- NEXT → add entry 364 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

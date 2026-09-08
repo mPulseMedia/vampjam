@@ -147,13 +147,15 @@ let ENTER = { ok: false, why: 'nothing set up in this test' };
       state: document.getElementById('who_state').textContent
     }));
     ok('the box works on a second recording too', r.canType === true, JSON.stringify(r));
-    ok('and that one is still open, on its own',  /open — anyone with the link/.test(r.state), r.state);
+    ok('and that one is still open, on its own',
+       /Anyone with the link can open it/.test(r.state), r.state);
 
     await L.p.fill('#who_in', '415 555 9999');
     await L.p.click('#who_add');
     await L.p.waitForTimeout(900);
     const after = await L.p.evaluate(() => document.getElementById('who_state').textContent);
-    ok('adding a number there makes THAT one private', /private — 1 person/.test(after), after);
+    ok('adding a number there makes THAT one private',
+       /Only these phone numbers can open it/.test(after), after);
     const acc = L.acc();
     ok('and leaves the first recording\'s list alone',
        (acc.sessions[PAGE].allow || []).join() === 'ID_PAUL', JSON.stringify(acc.sessions));

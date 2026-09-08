@@ -157,8 +157,9 @@ async function worker(op, params, body) {
   });
   ok('the box is on the recording',           !!box, box);
   ok('and it is at the bottom, after the moments', box && box.last === true, box && box.last);
-  ok('named for what it does',                /Who can open this recording/.test(box.head), box.head);
-  ok('it starts open, because nobody is on it', /open — anyone with the link/.test(box.state), box.state);
+  ok('named for what it does',                /Share this recording/.test(box.head), box.head);
+  ok('it starts open, because nobody is on it',
+     /Anyone with the link can open it/.test(box.state), box.state);
   ok('the box says how to paste',             /one per line, or separated by commas/i.test(box.ph), box.ph);
 
   await p.fill('#who_in', 'Dave 415 555 1212\n650 555 0000\nbanana');
@@ -174,7 +175,8 @@ async function worker(op, params, body) {
   ok('both good numbers become tags',  after.chips.length === 2, JSON.stringify(after.chips));
   ok('a tag shows the name and the last two digits',
      /Dave/.test(after.chips[0]) && /••12/.test(after.chips[0]), after.chips[0]);
-  ok('and then two people can open it', /2 people can open it/.test(after.state), after.state);
+  ok('and then only those numbers can open it',
+     /Only these phone numbers can open it/.test(after.state), after.state);
   ok('the line that was not a number is reported back',
      /banana/.test(after.note) && /not phone numbers/.test(after.note), after.note);
   ok('and the box is cleared for the next paste', after.empty === '', after.empty);
@@ -183,12 +185,12 @@ async function worker(op, params, body) {
   ok('the button itself says what happened',
      /^Added 2$/.test(await p.textContent('#who_add')), await p.textContent('#who_add'));
   await p.waitForTimeout(4300);
-  ok('and goes back to asking',   /^Add them$/.test(await p.textContent('#who_add')), await p.textContent('#who_add'));
+  ok('and goes back to asking',   /^Share$/.test(await p.textContent('#who_add')), await p.textContent('#who_add'));
   await p.click('#who_add');
   await p.waitForTimeout(300);
   ok('an empty box is told, not ignored',
      /Type a number first/.test(await p.textContent('#who_add'))
-     && /then Add them/.test(await p.textContent('#who_note')), await p.textContent('#who_note'));
+     && /then Share/.test(await p.textContent('#who_note')), await p.textContent('#who_note'));
 
   const w = WROTE && JSON.parse(WROTE.content);
   ok('the write goes to access.json',  WROTE && WROTE.path === 'access.json', WROTE && WROTE.path);

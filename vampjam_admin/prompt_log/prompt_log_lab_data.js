@@ -9,8 +9,62 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "370 signin_here",
+        id: "371 share_ready",
         expanded: true,
+        nodes: [
+          { text: "371 share_ready", children: [
+            { text: "prompt_restate", children: [
+              { text: "[screenshots: our box, and Google Drive's share dialog]" },
+              { text: "set it up as sharing ready to happen, radically simplified" },
+              { text: "instructions across the top: enter a name and a phone number" },
+              { text: "don't show people with access \u2014 go straight to the restricted line" },
+              { text: "a copy link, separately, and a share button" },
+              { text: "no cancel, since it just sits on the page" }
+            ]},
+            { text: "your_sentence_was_the_layout", children: [
+              { text: "you walked down Google's dialog saying what ours has at each position" },
+              { text: "so I built it in that order rather than picking parts out of it" },
+              { text: "\"Share this recording\" \u00b7 \"Enter a name and a phone number.\" \u00b7 the box" },
+              { text: "then the access line \u2014 \"Only these phone numbers can open it.\"" },
+              { text: "or \"Anyone with the link can open it.\" when nobody is on" },
+              { text: "then who is on, then Copy link and Share side by side" }
+            ]},
+            { text: "the_people_with_access_you_meant_was_ours_too", children: [
+              { text: "\"Signed in as Paul \u00b7 change your name\" sat second, above the thing you came to do" },
+              { text: "and the only person it can ever name is the person reading it" },
+              { text: "not deleted \u2014 it is still the only route to your own name" },
+              { text: "small print at the bottom now, below the buttons" }
+            ]},
+            { text: "copy_link", children: [
+              { text: "duplicates the header button on purpose" },
+              { text: "sharing is two halves: who may open it, and the thing you paste" },
+              { text: "it says \"Copied\", and prints the address if there is no clipboard" }
+            ]},
+            { text: "let_anyone_in_is_gone", children: [
+              { text: "it wrote mode:'open', and nothing has read a mode since 359" },
+              { text: "a button that looked like it did something and did not" },
+              { text: "emptying the list is how a recording opens now \u2014 one rule, no button disagreeing with it" }
+            ]},
+            { text: "tests", children: [
+              { text: "share_ready_test new, 26" },
+              { text: "it asserts the reading ORDER, not just that the parts exist" },
+              { text: "the order was the whole request" },
+              { text: "who_add_test and who_name_test held the old wording, rewritten" },
+              { text: "thirty-four suites, green" }
+            ]},
+            { text: "codename_list", children: [
+              { text: "share_ready \u00b7 who_hint \u00b7 who_copy \u00b7 who_state \u00b7 copy_link" }
+            ]},
+            { text: "left_for_you", children: [
+              { text: "hard reload for drawer.js v=184" },
+              { text: "then look at the bottom of any recording" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "370 signin_here",
+        expanded: false,
         nodes: [
           { text: "370 signin_here", children: [
             { text: "prompt_restate", children: [
