@@ -1,1 +1,1 @@
-promote_none
+auto_commit
