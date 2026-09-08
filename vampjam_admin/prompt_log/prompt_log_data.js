@@ -9,8 +9,42 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "361 list_worker",
+        id: "362 file_say",
         expanded: true,
+        nodes: [
+          { text: "362 file_say", children: [
+            { text: "prompt_restate", children: [
+              { text: "The browser console, pasted." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "Access to fetch at 'file:///Users/pauldsmith/claude_cowork/vampjam/access.json?v=...' from origin 'null' has been blocked by CORS policy \u2026 GET https://vampjam-auth\u2026/?op=list 400 (Bad Request)" }
+            ]},
+            { text: "two_facts_neither_of_which_i_had_been_chasing", children: [
+              { text: "you were opening the page from the local folder, not the site" },
+              { text: "a file:// page has origin \"null\" and the browser refuses to let it fetch anything" },
+              { text: "access.json could never have loaded there. every \"could not be reached\" for four builds was that" },
+              { text: "I spent four builds on a symptom whose cause was the address bar" }
+            ]},
+            { text: "and_the_400_is_the_opposite_kind_of_failure", children: [
+              { text: "the worker ANSWERED, and said it does not know that word" },
+              { text: "that is a paste-the-code problem, not a network one" },
+              { text: "reporting it as unreachable would have been exactly the mistake the naming build was written to stop" }
+            ]},
+            { text: "so_the_box_checks_the_protocol_first", children: [
+              { text: "on file:// it says that in one sentence and offers a link to the same recording on vampsf.com" },
+              { text: "no paste box, no button that would fail" },
+              { text: "and a 400 on op=list is named as a version: paste the current code, step B1" }
+            ]},
+            { text: "the suite now loads a session page over file:// rather than describing it \u2014 second time in two builds that testing the path you really take found what the convenient path could not" },
+            { text: "lesson, same one in a third hat: ask what the address bar says before theorising about the network. three of my last five wrong answers would have been one question" },
+            { text: "who_add_test 94. drawer.js v=172. twenty-nine suites, 812 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "361 list_worker",
+        expanded: false,
         nodes: [
           { text: "361 list_worker", children: [
             { text: "prompt_restate", children: [

@@ -5145,7 +5145,33 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   the window that closes behind him; the one ringed drawing; and no Twilio anywhere.
   who_add_test 89. Twenty-nine suites, 807 assertions. Green.
   Still no new trace.
-- NEXT → add entry 354 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 354 file_say · b362 · the console output ended it, and neither half was what I had been chasing.
+  He pasted the browser console. Two facts, both invisible from everything I had asked him before:
+  he is opening the page from file:///Users/pauldsmith/claude_cowork/vampjam/ — the local folder,
+  not the site — and the worker running is still the older code, so op=list answered 400.
+  A file:// page has origin "null" and the browser refuses to let it fetch anything. access.json
+  could never have loaded there and never will. Every "could not be reached" in the last four
+  builds was that, and no amount of work on the worker or the paths would have touched it. I spent
+  four builds on a symptom whose cause was the address bar.
+  The 400 is the other half and it is the opposite kind of failure: the worker ANSWERED, and said
+  it does not know that word. That is a paste-the-code problem, and reporting it as unreachable —
+  which 353 would have done — is exactly the mistake 352 was written to stop.
+  So the box now checks the protocol before anything else. On file:// it draws itself with one
+  sentence — this page is open from a file on your Mac and the sign-in cannot work here, the
+  browser blocks a file from calling anything — and a link to the same recording on vampsf.com,
+  built from the filename he is looking at. No paste box, no button that would fail.
+  And a 400 or 404 from op=list is now named as a version: "the worker running is an older version
+  (it does not know op=list) — paste the current code, step B1".
+  Both asserted, the first by actually loading a session page over file:// in the suite rather
+  than describing it. That is the second time in two builds that testing the path he really takes
+  found something testing the convenient path could not: first arriving through the fold, now
+  arriving from the filesystem.
+  Lesson, and it is the same one wearing a third hat: ask what the address bar says before
+  theorising about the network. Three of my last five wrong answers would have been one question.
+  who_add_test 94, up five. drawer.js v=172.
+  Twenty-nine suites, 812 assertions. Green.
+  Still no new trace.
+- NEXT → add entry 355 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
