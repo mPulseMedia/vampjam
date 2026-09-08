@@ -496,18 +496,53 @@ async function worker(op, params, body) {
      /nothing is really set up/.test(t0.note), t0.note);
   ok('and it names the number that is there, by its last four',
      /ending 0105/.test(t0.note), t0.note);
-  ok('and says a new one replaces it',           /replaces it/.test(t0.note), t0.note);
+  ok('and offers both, saying which does what',
+     /"Add them" adds alongside it/.test(t0.note) && /throws it away/.test(t0.note), t0.note);
   ok('and it lets him type without signing in',  t0.canType === true, t0.canType);
 
+  // Add is ADD. It used to wipe the list whenever the list was small, which meant
+  // the first person he added after himself silently deleted him. That happened.
   await fix.fill('#who_in', '917-693-0105');
   await fix.click('#who_add');
   await fix.waitForTimeout(800);
   const w4 = JSON.parse(W3.content);
-  ok('the wrong administrator is gone',   w4.admins.length === 1 && w4.admins[0] === 'RIGHT_ID',
-     JSON.stringify(w4.admins));
-  ok('and so is their entry',             w4.people.length === 1 && w4.people[0].id === 'RIGHT_ID',
-     JSON.stringify(w4.people));
-  ok('the note says it started over',     /Started over/.test(await fix.textContent('#who_note')), 0);
+  ok('Add them adds — it does not throw the list away',
+     w4.people.length === 2, JSON.stringify(w4.people.map(x => x.id)));
+  ok('and leaves the existing administrator alone',
+     w4.admins.length === 1 && w4.admins[0] === 'TYPO_ID', JSON.stringify(w4.admins));
+  ok('nothing but the three real keys is written',
+     Object.keys(w4).sort().join(',') === 'admins,people,sessions', Object.keys(w4).join(','));
+
+  // taking the list over is its own button, and it asks first
+  ACC3 = { admins: ['TYPO_ID'], people: [{ id: 'TYPO_ID', label: 'Paul', last4: '0105' }], sessions: {} };
+  const fix2 = await ctx3.newPage();
+  await fix2.goto('https://vampsf.com/2026_07_31_sound_union.html');
+  await fix2.waitForTimeout(1500);
+  ok('the start-over button is offered while nothing is set up',
+     await fix2.evaluate(() => !document.getElementById('who_over').hidden));
+  ok('and the note explains both buttons',
+     /"Add them" adds alongside it/.test(await fix2.textContent('#who_note'))
+     && /throws it away/.test(await fix2.textContent('#who_note')), 0);
+  await fix2.click('#who_over');
+  await fix2.waitForTimeout(300);
+  ok('with nothing typed it asks for a number rather than wiping',
+     /Start the list over makes THAT number/.test(await fix2.textContent('#who_note')), 0);
+  await fix2.fill('#who_in', '917-693-0105');
+  await fix2.click('#who_over');
+  await fix2.waitForTimeout(400);
+  ok('and it asks before throwing anything away',
+     await fix2.evaluate(() => /Throw away the list/.test(document.body.textContent)));
+  await fix2.evaluate(() => {
+    const b = [...document.querySelectorAll('button')].filter(x => /Start over/.test(x.textContent))[0];
+    if (b) b.click();
+  });
+  await fix2.waitForTimeout(700);
+  const w5 = JSON.parse(W3.content);
+  ok('only then is the old administrator gone',
+     w5.admins.length === 1 && w5.admins[0] === 'RIGHT_ID', JSON.stringify(w5.admins));
+  ok('and only the new person is on the list',
+     w5.people.length === 1 && w5.people[0].id === 'RIGHT_ID', JSON.stringify(w5.people));
+  await fix2.close();
 
   // but a list with real people on it does NOT hand itself over
   ACC3 = { admins: ['A'], people: [{ id: 'A', label: 'Paul', last4: '0105' },

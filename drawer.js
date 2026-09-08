@@ -1539,6 +1539,7 @@
       + '<div class="who_row">'
       + '<button class="who_add" id="who_add" type="button">Add them</button>'
       + '<button class="who_open" id="who_open" type="button" hidden>Let anyone in</button>'
+      + '<button class="who_open" id="who_over" type="button" hidden>Start the list over</button>'
       + '</div>'
       + '<div class="who_note" id="who_note"></div>';
     // Inside the fold wrapper when there is one. Appended to <body> it sat
@@ -1553,6 +1554,7 @@
     var inEl    = box.querySelector('#who_in');
     var addBtn  = box.querySelector('#who_add');
     var openBtn = box.querySelector('#who_open');
+    var overBtn = box.querySelector('#who_over');
 
     function note(m, bad) {
       noteEl.textContent = m || '';
@@ -1669,12 +1671,17 @@
           acc.admins = acc.admins || []; acc.people = acc.people || []; acc.sessions = acc.sessions || {};
         });
     }
+    // Only the three keys the list is made of. load() may come from the worker,
+    // whose reply carries an "ok" as well — and that was being written straight
+    // back into access.json, which is how the file grew a field that means
+    // nothing to it.
     function save(msg) {
-      return sync_write('access.json', JSON.stringify(acc, null, 2), msg);
+      var out = { admins: acc.admins || [], people: acc.people || [], sessions: acc.sessions || {} };
+      return sync_write('access.json', JSON.stringify(out, null, 2), msg);
     }
 
     // one call for the whole paste, so twenty numbers cost one round trip
-    function add() {
+    function add(opt_over) {
       var raw = inEl.value;
       if (!raw.trim()) { inEl.focus(); btn_say('Type a number first'); note('Type or paste a phone number above, then Add them.', true); return; }
       addBtn.disabled = true; btn_say('Reading…'); note('Reading them…');
@@ -1690,7 +1697,11 @@
           var bad  = j.people.filter(function (x) { return !x.ok; });
           if (!good.length) throw new Error('none of that looked like a phone number');
           return load().then(function () {
-            var over = unstarted() && (acc.admins || []).length;   // starting again
+            // Add is ADD. It used to replace the whole list whenever the list
+            // was small enough to count as "not started", which meant the first
+            // person he added after himself silently deleted him. Taking the
+            // list over is a separate, labelled button now.
+            var over = !!opt_over;
             if (over) { acc.admins = []; acc.people = []; }
             var r2 = acc.sessions[page] || {};
             r2.mode = 'list';                       // adding anyone makes it private
@@ -1738,8 +1749,16 @@
                               function (e) { note('Could not save: ' + e.message, true); });
     }
 
-    addBtn.addEventListener('click', add);
+    addBtn.addEventListener('click', function () { add(false); });
     openBtn.addEventListener('click', open_up);
+    overBtn.addEventListener('click', function () {
+      var who = (acc.people || [])[0];
+      if (!inEl.value.trim()) { inEl.focus(); btn_say('Type a number first');
+        note('Type your own number above first — Start the list over makes THAT number the administrator.', true); return; }
+      drawer_confirm('Throw away the list and start over?'
+        + (who ? '\n\n' + (who.label || 'the one number') + ' ••' + (who.last4 || '') + ' will be removed.' : ''),
+        'Start over', function () { add(true); });
+    });
 
     // ---- who sees it ----
     // Before: only an admin, or anybody while there was no admin. That closed
@@ -1809,11 +1828,12 @@
           }
           if (unstarted()) {
             var who = (acc.people || [])[0];
+            overBtn.hidden = false;
             note('One number is here so far'
                + (who && who.last4 ? ' (ending ' + who.last4 + ')' : '')
                + ', and nothing is private yet — so nothing is really set up. '
-               + 'Adding a number now replaces it and takes over as administrator. '
-               + 'Use this if the first one had a typo in it.');
+               + '"Add them" adds alongside it. "Start the list over" throws it away and makes '
+               + 'the number you type the administrator — use that if the first one was wrong.');
             paint();
             return;
           }
