@@ -4890,7 +4890,34 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   site.css v=22, drawer.js v=166 — no bump, they moved in the same build as 343 and nothing else
   ships between.
   Still no new trace.
-- NEXT → add entry 345 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 345 who_say · b353 · the box says why it cannot work, instead of a button that does nothing.
+  Three reports, one root. He had to reload to see the box; when he did, Add them did nothing.
+  Reproduced with the worker unreachable, which is his actual state, and the click DID fire — the
+  handler ran, the fetch failed, and the page wrote the browser's own words, "Failed to fetch",
+  into a line at the bottom of a box below the fold. So: it worked, said so where he could not
+  see it, in language that is not an answer.
+  Two fixes and a third that follows from them.
+  The box no longer waits to appear. It was hidden until access.json and the me() call came back;
+  with a worker that never answers, that is until the fetch times out, which is what "I have to
+  reload" was. It renders on the first paint with "checking…" in it. Waiting is not hiding.
+  It asks ?op=status before offering a control that cannot work, and there are three answers it
+  now says out loud, with a link to the steps: no worker at all; a worker up with no AUTH_SECRET
+  running, named as saved-and-not-promoted, which is exactly where he is; and everything fine. In
+  the first two it puts the paste box and the button AWAY rather than leaving them there to be
+  clicked. A dead control is a worse lie than a missing one.
+  And "Failed to fetch" is gone. Any network failure now reads as: could not reach the sign-in
+  worker, it is not deployed yet or its address is different, see the steps. The browser's
+  sentence is not an answer, and printing it is a way of not answering.
+  He also asked for the box on session pages only. That was already true — the guard is a PAGE_KEY
+  and a list of moments, which only recordings have — but it was true by accident rather than by
+  assertion, so it is asserted now: favorites, admin, sign-in, the recorder and the steps page get
+  nothing. index.html is deliberately NOT in that list; it forwards to the newest recording, so by
+  the time it has finished loading it IS one, and the suite says so rather than pretending
+  otherwise.
+  who_add_test 72, up eleven.
+  Twenty-eight suites, 759 assertions. Green.
+  Still no new trace.
+- NEXT → add entry 346 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
