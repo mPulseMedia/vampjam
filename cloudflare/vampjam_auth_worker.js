@@ -94,6 +94,19 @@ export default {
                       admin: is_admin(acc, id), allow: allowed_pages(acc, id) }, 200, cors);
       }
 
+      // ---- the list itself, from the one origin that is definitely reachable ----
+      // The page used to read access.json off vampsf.com directly. In his browser
+      // that one fetch failed — "Failed to fetch" on a same-origin file, while
+      // this worker answered fine from the same page. A content blocker, most
+      // likely, on a file called access.json. Rather than guess at the rule, the
+      // page can ask the worker, which already reads the same file and is
+      // already talking to it. One origin, one failure mode.
+      if (op === 'list') {
+        const acc = await access();
+        return json({ ok: true, admins: acc.admins || [], people: acc.people || [],
+                      sessions: acc.sessions || {} }, 200, cors);
+      }
+
       // ---- admin: many numbers at once, because he pastes them in a block ----
       // One call for a whole paste. Each line comes back with its id and last
       // four, or a note that it was not a number, so the page can show him what

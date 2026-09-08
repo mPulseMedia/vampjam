@@ -2,298 +2,171 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>vampsf — do this next</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=23">
-<script src="theme.js?v=2"></script>
-<script src="sessions.js?v=130"></script>
-<script src="drawer.js?v=171"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=Archivo+Narrow:wght@600&display=swap">
 <style>
-  h1 { font-size: 20px; margin: 14px 0 4px; }
-  .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; }
-  .why { background: var(--panel_2); border: 1px solid var(--panel_3); border-radius: 12px;
-         padding: 12px 14px; margin: 14px 0 18px; font-size: 13.5px; line-height: 1.55; }
-  .why b { color: var(--fg); }
-  .one_thing { display: flex; gap: 12px; align-items: flex-start; margin: 18px 0 4px;
-               background: var(--panel_2); border: 1px solid var(--accent);
-               border-radius: 12px; padding: 14px; }
-  .one_num { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%;
-             background: var(--accent); color: var(--on_accent, #fff);
-             display: flex; align-items: center; justify-content: center;
-             font-size: 15px; font-weight: 700; }
-  .one_title { font-weight: 600; font-size: 16px; }
-  .one_why { color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 3px; }
-  .section-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-                   color: var(--muted); margin: 22px 0 8px; }
-  ol.steps { margin: 0; padding-left: 22px; }
-  ol.steps > li { margin: 0 0 22px; }
-  .step_title { font-weight: 600; font-size: 15px; margin-bottom: 6px; }
-  ol.steps ul { margin: 6px 0 0; padding-left: 18px; }
-  ol.steps ul li { margin: 0 0 6px; font-size: 13.5px; line-height: 1.5; color: var(--muted); }
-  ol.steps ul li b { color: var(--fg); font-weight: 600; }
-  /* svg_step — the picture takes the slot where words would be, and the marker
-     sits at its top left rather than beside its last line */
-  li > svg.shot { display: block; width: 100%; max-width: 360px; margin: 10px 0 4px;
-                  border-radius: 10px; }
-  ol.steps ul li:has(> svg.shot) { list-style: none; margin-left: -18px; }
-  .files { background: var(--panel_2); border: 1px solid var(--panel_3); border-radius: 10px;
-           padding: 10px 12px; margin: 8px 0; font-size: 12.5px; line-height: 1.7;
-           font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--fg);
-           overflow-x: auto; white-space: pre; }
-  .copy_row { display: flex; gap: 8px; align-items: center; margin: 8px 0 2px; }
-  .copy_btn { background: var(--accent); color: var(--on_accent, #fff); border: none;
-              border-radius: 999px; padding: 8px 15px; font-size: 13px; cursor: pointer; }
-  .note { font-size: 12.5px; color: var(--muted); font-style: italic; margin-top: 6px; }
-  #toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%);
-           background: var(--fg); color: var(--bg); padding: 9px 16px; border-radius: 999px;
-           font-size: 13.5px; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
-  #toast.show { opacity: 0.94; }
+:root{--sky:#0e2a3f;--card:#f7f5f0;--ink:#101820;--grey:#b9c2c9;--steel:#5d6e7b;--signal:#f2a20c;--stop:#d7263d;--go:#2f8f5b;--blue:#7fd0ff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sky);color:var(--card);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.sheet{max-width:960px;margin:0 auto;padding:30px 18px 70px}
+header{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.kicker{font:600 13px/1 "Archivo Narrow",Arial Narrow,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--signal)}
+h1{margin:0;font:800 36px/1.05 Archivo,Helvetica,Arial,sans-serif;letter-spacing:-.02em}
+.panels{display:flex;flex-direction:column;gap:16px}
+.panel{background:var(--card);color:var(--ink);border-radius:16px;overflow:hidden;display:grid;grid-template-columns:74px minmax(0,1fr)}
+.body{min-width:0;display:flex;flex-direction:column}
+ol.steps a,.cap a,ol.steps b{overflow-wrap:anywhere}
+.n{background:var(--ink);color:var(--card);display:flex;align-items:flex-start;justify-content:center;padding-top:18px;font:800 28px/1 Archivo,Helvetica,Arial,sans-serif}
+.panel.see .n{background:var(--signal);color:var(--ink)}
+.panel.go .n{background:var(--go)}
+.panel.warn .n{background:var(--stop)}
+.panel.done .n{background:var(--go);color:#fff;flex-direction:column;justify-content:flex-start;align-items:center;gap:6px}
+.panel.done .n::after{content:"done";font:600 11px/1 "Archivo Narrow",Arial Narrow,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.panel.done h2::after{content:" ✓";color:var(--go)}
+.panel.next .n{background:var(--signal);color:var(--ink);flex-direction:column;justify-content:flex-start;align-items:center;gap:6px}
+.panel.next .n::after{content:"next";font:600 11px/1 "Archivo Narrow",Arial Narrow,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.cap{padding:12px 18px 16px;display:flex;flex-direction:column;align-items:stretch;gap:8px}
+h2{margin:0;font:800 21px/1.15 Archivo,Helvetica,Arial,sans-serif;letter-spacing:-.01em}
+.cap p{margin:0;font-size:15px;color:#3a4550}
+.cap .note{font-size:13.5px;color:#5d6e7b}
+ol.steps{margin:0;padding:0 18px 16px;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:16px;color:#101820;counter-reset:step}
+ol.steps li{display:block;position:relative;padding-left:2.4em;line-height:1.45}
+ol.steps li::before{content:counter(step) ".";counter-increment:step;position:absolute;left:0;top:0;width:1.9em;font:800 15px/1.55 Archivo,Helvetica,Arial,sans-serif;color:#a35a00;text-align:right}
+ol.steps li.done{opacity:.42}
+ol.steps li.done svg.mini{display:none}
+ol.steps li.done::before{color:var(--go)}
+ol.steps li.done::after{content:" ✓";color:var(--go);font-weight:800}
+ol.steps b{background:#fff3d6;padding:0 5px;border-radius:4px}
+ol.steps li svg.mini{display:block;width:calc(100% + 2.4em + 34px);max-width:360px;margin:6px 0 4px -2.4em;border-radius:8px}
+.said{display:block;margin-top:5px;font-size:14.5px;color:#5d6e7b;font-style:italic}
+.said b{color:#101820;font-style:normal;background:none;padding:0}
+.odd{display:block;margin-top:6px;font-size:14.5px;color:#5d6e7b;border-left:3px solid var(--signal);padding-left:10px}
+.odd b{color:#101820;background:none;padding:0}
+.tick{position:absolute;right:0;top:-2px;border:1.5px solid #c9c3b6;background:transparent;color:transparent;
+  width:26px;height:26px;border-radius:50%;cursor:pointer;font:800 14px/1 Archivo,Helvetica,Arial,sans-serif;padding:0}
+ol.steps li{padding-right:34px}
+.tick.on{background:var(--go);border-color:var(--go);color:#fff}
+.line{display:block;margin:0 18px 16px;font:600 13.5px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#101820;color:#ffd7a8;border-radius:10px;padding:12px 14px;white-space:pre-wrap;word-break:break-all;cursor:pointer;border:0;text-align:left;width:calc(100% - 36px)}
+.line small{display:block;font:600 12px/1.3 "Archivo Narrow",Arial Narrow,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#b9c2c9;margin-bottom:6px}
+.addr{display:inline-block;font:600 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#e6e2d9;border-radius:7px;padding:3px 8px;word-break:break-all}
+a{color:#a35a00;text-decoration-thickness:2px;text-underline-offset:2px}
+.state{display:flex;flex-direction:column;gap:0;padding:0 18px 14px}
+.state div{display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:15px;line-height:1.45}
+.state div + div{border-top:1px solid #e6e2d9}
+.dot{flex:0 0 auto;width:11px;height:11px;border-radius:50%;margin-top:5px}
+.dot.on{background:var(--go)}
+.dot.off{background:transparent;border:1.5px solid #b9b3a6;box-sizing:border-box}
+.dot.wait{background:#b9b3a6;opacity:.5}
+.state .why{color:#5d6e7b}
+#code_box{max-height:280px;overflow:auto;background:#101820;color:#ffd7a8;border-radius:10px;padding:12px 14px;margin:0;font:600 11px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre;-webkit-user-select:text;user-select:text}
+#code_box[hidden]{display:none}
+.mini_cap{display:block;font:600 11px/1.3 "Archivo Narrow",Arial Narrow,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#8f8b83;margin:-2px 0 4px}
+footer{margin-top:26px;color:var(--grey);font-size:15px}
+footer a{color:var(--signal)}
+.reset{background:none;border:0;color:var(--grey);text-decoration:underline;cursor:pointer;font-size:14px;padding:6px 0}
 </style>
 </head>
 <body>
+<div class="sheet">
 
-<div class="session_drawer" id="session_drawer"><div class="jam_menu"></div></div>
-
-<header class="brand" style="position:relative;">
-<button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
-<button class="nav_share" id="page_share" aria-label="Copy link to this page" title="Copy link to this page"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
-  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
+<header>
+  <div class="kicker">vampsf · do this next · one job</div>
+  <h1>Reset the administrator</h1>
 </header>
 
-<h1>Do this next</h1>
-<div class="sub">Reset who the administrator is. Three steps.</div>
+<div class="panels">
 
-<div class="one_thing">
-  <div class="one_num">1</div>
-  <div>
-    <div class="one_title">Put the current worker code in</div>
-    <div class="one_why">The version running still refuses this. Copy from
-    <a href="signin_steps.html">the steps page</a>, step <b>B1</b> — <b>Edit code</b> on
-    <b>vampjam-auth</b>, ⌘A, ⌘V, <b>Deploy</b>. You know this loop.
-    <br><br>
-    Why it is needed: the page offers to hand the list over, and the worker was still answering
-    <i>admins only</i> because an administrator exists. Both sides agree now.</div>
+<div class="panel go"><div class="n">now</div><div class="body">
+  <div class="cap">
+    <h2>Where this stands</h2>
+    <p>the sign-in worker is deployed and <b>AUTH_SECRET is running</b> — I checked it directly
+    rather than from your screen. the list still holds only the mistyped number, and every
+    recording is still open to anyone with the link. nothing is broken and nothing is half-gated.
+    three steps below and it is done.</p>
   </div>
-</div>
+</div></div>
 
-<div class="one_thing">
-  <div class="one_num">2</div>
-  <div>
-    <div class="one_title">Open any recording and scroll to the bottom</div>
-    <div class="one_why">The box says <b>Who can open this recording</b>, and above the paste
-    area it should read: <i>one number is here so far (ending 0105), and nothing is private yet
-    — so nothing is really set up.</i>
-    <br><br>
-    That sentence is the permission. It appears because there is one number on the list, nobody
-    else, and no recording closed — so whoever is standing there may take it over.</div>
+<div class="panel see" data-part="a"><div class="n">1</div><div class="body">
+  <div class="cap">
+    <h2>Put the current worker code in</h2>
+    <p>the version running still refuses this. you know this loop.</p>
   </div>
-</div>
-
-<div class="one_thing">
-  <div class="one_num">3</div>
-  <div>
-    <div class="one_title">Type your number and Add them</div>
-    <div class="one_why"><b>917-693-0105</b> → <b>Add them</b>. It <b>replaces</b> the mistyped
-    one rather than joining it: the old administrator and the old entry both go, and you are the
-    administrator.
-    <br><br>
-    You should see one tag reading <b>••0105</b>, and the line above it change to
-    <b>private — 1 person can open it</b>.</div>
+  <ol class="steps">
+    <li><a href="signin_steps.html">The steps page</a> → <b>B1</b> → tap the dark line to copy.</li>
+    <li>On <b>vampjam-auth</b>: <b>Edit code</b>, click in the code, <b>⌘A</b>, <b>⌘V</b>,
+      <b>Deploy</b>.
+      <span class="said">The blue bar in Version History moves to the new top row. That bar is
+      what is live.</span>
+    </li>
+  </ol>
+  <div class="cap" style="padding-top:0">
+    <p class="note">Why it is needed: the page was offering to hand the list over while the worker
+    still answered <i>admins only</i>, because an administrator exists. Both sides agree now. This
+    build also stops the box reading <b>access.json</b> off the site — that one file was being
+    blocked in your browser, which is what the last two failures were.</p>
   </div>
+</div></div>
+
+<div class="panel" data-part="b"><div class="n">2</div><div class="body">
+  <div class="cap">
+    <h2>Open a recording, scroll to the bottom</h2>
+    <p>any recording. the box is the last thing on the page.</p>
+  </div>
+  <ol class="steps">
+    <li>Look for this sentence above the paste area:
+      <span class="said"><b>one number is here so far (ending 0105), and nothing is private yet —
+      so nothing is really set up.</b></span>
+      That sentence is the permission. It is there because one number is on the list, nobody else,
+      and no recording closed — so whoever is standing there may take it over.
+      <span class="mini_cap">drawn from your own page</span>
+      <svg class="mini" viewBox="0 0 360 200"><rect width="360" height="200" fill="#c9d3dc"/><rect x="20" y="16" width="320" height="170" rx="8" fill="#fff"/><text x="34" y="36" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="10" font-weight="700" fill="#101820">Who can open this recording</text><rect x="34" y="46" width="292" height="30" rx="6" fill="#fdf6e3" stroke="#e6d9a8"/><text x="42" y="59" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d4a1a">one number is here so far (ending 0105), and</text><text x="42" y="70" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#5d4a1a">nothing is private yet — so nothing is really set up.</text><rect x="30" y="42" width="300" height="38" rx="9" fill="none" stroke="#d7263d" stroke-width="3"/><rect x="34" y="88" width="292" height="42" rx="6" fill="#fbfcfd" stroke="#dfe4e9"/><text x="42" y="103" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" fill="#101820">917-693-0105</text><text x="42" y="118" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#c3cad1">one per line, or separated by commas</text><rect x="34" y="140" width="66" height="20" rx="10" fill="#101820"/><text x="67" y="154" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="9" font-weight="600" fill="#fff" text-anchor="middle">Add them</text><text x="112" y="154" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="8" fill="#8f959b">→ one tag reading ••0105</text></svg>
+    </li>
+    <li>Not seeing it? Send me the red line under the box — it now names which call failed and
+      what it answered.</li>
+  </ol>
+</div></div>
+
+<div class="panel" data-part="c"><div class="n">3</div><div class="body">
+  <div class="cap">
+    <h2>Type your number and Add them</h2>
+    <p>this replaces the mistyped one rather than joining it.</p>
+  </div>
+  <ol class="steps">
+    <li>Type <b>917-693-0105</b> and press <b>Add them</b>.</li>
+    <li>You should end with one tag reading <b>••0105</b>, and the line above it changing to
+      <b>private — 1 person can open it</b>.
+      <span class="said">The old administrator and the old entry are both gone. You are the
+      administrator.</span>
+    </li>
+  </ol>
+</div></div>
+
+<div class="panel warn"><div class="n">!</div><div class="body">
+  <div class="cap">
+    <h2>Do this one first</h2>
+    <p>the window closes behind you. add a second person anywhere, or make one recording private,
+    and the box stops offering to hand itself over and asks for a sign-in instead. after that the
+    administrator can only be changed by the administrator, and I would have to open the door
+    again from here.</p>
+    <p>and the standing one, unchanged: a phone number is not a password. anyone who knows a
+    number you have added can type it and be signed in as that person. fair for keeping a jam
+    session away from strangers; not fair for anything you would mind being wrong about.</p>
+  </div>
+</div></div>
+
 </div>
 
-<div class="section-label">That is the whole reset</div>
-<div class="why">
-  After it, the window closes: add a second person, or make one recording private, and the box
-  stops offering to hand itself over and asks for a sign-in instead. So do this one first, before
-  you paste anyone else in anywhere.
+<footer>
+  <a href="signin_steps.html">the sign-in steps</a> &middot;
+  <a href="index.html">recordings</a> &middot;
+  <a href="admin.html">admin</a>
   <br><br>
-  Changing your mind later is a different job — the administrator can only be changed by the
-  administrator, and I would have to open the door again from here.
+  stuck? send me the red line under the box. that is enough.
+</footer>
 </div>
 
-<div class="section-label">If step 3 refuses</div>
-<div class="why">
-  The box now names which call failed and what it answered, rather than one sentence covering
-  three problems. <b>Send me that line.</b>
-  <br><br>
-  One thing it may say is that it cannot reach the worker. From out here the worker answers fine
-  — I checked it directly a minute ago — so if your browser cannot, that is a content blocker, a
-  VPN, or a network that dislikes <b>workers.dev</b>, and not anything on Cloudflare. The box
-  gives you a link to open the worker's own address in that same browser to tell the two apart.
-</div>
-
-<div class="section-label">About the files I send into the chat</div>
-<div class="why">
-  Those <b>.mjs</b> cards are my <b>tests</b>. They're how I prove a change works before I say it
-  does, and they get committed into the repo automatically.
-  <br><br>
-  <b>You never need to open one.</b> If something is actually for you, it lands on this page.
-</div>
-
-
-<script type="text/plain" id="worker_src">// vampjam — R2 upload Worker
-// Accepts a POST with a recorded audio body and stores it in the vampjam-audio
-// R2 bucket, returning the public URL so a session can point at it.
-//
-// ONE-TIME SETUP (Cloudflare dashboard → Workers & Pages → Create Worker,
-// paste this in, then):
-//   1. Settings → Bindings → add an R2 bucket binding:
-//        Variable name: BUCKET      Bucket: vampjam-audio
-//   2. Settings → Variables & Secrets, add:
-//        PUBLIC_BASE   = https://pub-33cfd8558d314eb58642c8550608850b.r2.dev
-//        UPLOAD_SECRET = (any long random string you make up)
-//   3. Deploy. Copy the worker URL (…workers.dev).
-//   4. In admin.html set WORKER_UPLOAD_URL to that URL and UPLOAD_SECRET to the
-//      same string you chose above.
-//
-// The client (record.html / admin.html recorder) POSTs the audio blob with:
-//   Content-Type: audio/mp4 | audio/webm
-//   X-File-Name:  desired file name
-//   X-Upload-Secret: the shared secret
-//
-// part_upload — a long take is bigger than one request is allowed to be. A
-// 2h41m recording is ~150 MB; Cloudflare stops a request body at 100 MB, and
-// this worker used to read the whole body into memory in a 128 MB box, which
-// is the same wall from the inside. So there is a second way in, in pieces:
-//   POST ?op=init                 headers as above         -> { uploadId, key }
-//   POST ?op=part&key=&id=&n=     body = piece n (8 MB)    -> { partNumber, etag }
-//   POST ?op=done&key=&id=        body = { parts:[{partNumber, etag}] } -> { ok, url }
-//   POST ?op=abort&key=&id=
-// The plain POST with no ?op still works exactly as before, for small files
-// and for any client that has not been updated.
-
-export default {
-  async fetch(request, env) {
-    const cors = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, X-Upload-Secret, X-File-Name',
-    };
-    if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
-    if (request.method !== 'POST') return json({ error: 'POST only' }, 405, cors);
-
-    if (env.UPLOAD_SECRET && request.headers.get('X-Upload-Secret') !== env.UPLOAD_SECRET) {
-      return json({ error: 'unauthorized' }, 401, cors);
-    }
-
-    const url = new URL(request.url);
-    const op = url.searchParams.get('op');
-    const base = (env.PUBLIC_BASE || '').replace(/\/+$/, '');
-    const ctype = request.headers.get('Content-Type') || 'audio/mp4';
-
-    function clean_name() {
-      let name = (request.headers.get('X-File-Name') || ('rec_' + Date.now()))
-        .replace(/[^A-Za-z0-9._-]/g, '_');
-      if (!/\.[A-Za-z0-9]+$/.test(name)) name += ctype.includes('webm') ? '.webm' : '.m4a';
-      return name;
-    }
-    function key_of() {
-      const k = url.searchParams.get('key') || '';
-      return /^[A-Za-z0-9._-]+$/.test(k) ? k : null;
-    }
-
-    try {
-      if (op === 'init') {
-        const name = clean_name();
-        const mpu = await env.BUCKET.createMultipartUpload(name, { httpMetadata: { contentType: ctype } });
-        return json({ ok: true, uploadId: mpu.uploadId, key: mpu.key }, 200, cors);
-      }
-
-      if (op === 'part') {
-        const key = key_of(), id = url.searchParams.get('id');
-        const n = parseInt(url.searchParams.get('n') || '', 10);
-        if (!key || !id || !(n >= 1 && n <= 10000)) return json({ error: 'part needs key, id, n' }, 400, cors);
-        const body = await request.arrayBuffer();
-        if (!body || body.byteLength === 0) return json({ error: 'empty part' }, 400, cors);
-        const mpu = env.BUCKET.resumeMultipartUpload(key, id);
-        const part = await mpu.uploadPart(n, body);
-        return json({ ok: true, partNumber: part.partNumber, etag: part.etag, size: body.byteLength }, 200, cors);
-      }
-
-      if (op === 'done') {
-        const key = key_of(), id = url.searchParams.get('id');
-        if (!key || !id) return json({ error: 'done needs key, id' }, 400, cors);
-        let parts = [];
-        try { parts = (await request.json()).parts || []; } catch (e) {}
-        if (!parts.length) return json({ error: 'done needs parts' }, 400, cors);
-        const mpu = env.BUCKET.resumeMultipartUpload(key, id);
-        const obj = await mpu.complete(parts.map(p => ({ partNumber: p.partNumber, etag: p.etag })));
-        return json({ ok: true, name: key, size: obj.size, url: base ? base + '/' + key : null }, 200, cors);
-      }
-
-      if (op === 'abort') {
-        const key = key_of(), id = url.searchParams.get('id');
-        if (key && id) { try { await env.BUCKET.resumeMultipartUpload(key, id).abort(); } catch (e) {} }
-        return json({ ok: true }, 200, cors);
-      }
-
-      // ---- the original one-shot path, unchanged ----
-      const name = clean_name();
-      const body = await request.arrayBuffer();
-      if (!body || body.byteLength === 0) return json({ error: 'empty body' }, 400, cors);
-      await env.BUCKET.put(name, body, { httpMetadata: { contentType: ctype } });
-      return json({ ok: true, name, size: body.byteLength, url: base ? base + '/' + name : null }, 200, cors);
-    } catch (err) {
-      return json({ error: String(err && err.message || err) }, 500, cors);
-    }
-  },
-};
-
-function json(obj, status, cors) {
-  return new Response(JSON.stringify(obj), {
-    status,
-    headers: { ...cors, 'Content-Type': 'application/json' },
-  });
-}
-</script>
-
-<div id="toast"></div>
-
-<script>
-(function () {
-  var t = document.getElementById('toast');
-  function toast(m) { t.textContent = m; t.classList.add('show');
-    setTimeout(function () { t.classList.remove('show'); }, 1600); }
-  // the worker code is copied from the page itself, so what he pastes is
-  // exactly what is committed — no second copy to drift
-  var wb = document.querySelector('[data-copy-worker]');
-  if (wb) wb.setAttribute('data-copy', (document.getElementById('worker_src') || {}).textContent || '');
-  // the auth worker is fetched at tap time rather than embedded, so what he
-  // pastes is what is committed and this page does not carry two copies
-  var ab = document.querySelector('[data-copy-auth]');
-  if (ab) ab.addEventListener('click', function () {
-    var lab = ab.textContent;
-    ab.disabled = true; ab.textContent = 'fetching…';
-    fetch('cloudflare/vampjam_auth_worker.js?t=' + Date.now(), { cache: 'no-store' })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
-      .then(function (src) {
-        if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(src).then(function () { return src; });
-        var ta = document.createElement('textarea'); ta.value = src; document.body.appendChild(ta);
-        ta.select(); document.execCommand('copy'); document.body.removeChild(ta); return src;
-      })
-      .then(function (src) { ab.textContent = 'copied ✓ — ' + Math.round(src.length / 1024) + ' KB'; })
-      .catch(function () { ab.textContent = 'could not copy'; })
-      .then(function () { ab.disabled = false; setTimeout(function () { ab.textContent = lab; }, 4000); });
-  });
-  Array.prototype.forEach.call(document.querySelectorAll('[data-copy]'), function (b) {
-    b.addEventListener('click', function () {
-      var v = b.getAttribute('data-copy');
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(v).then(function () { toast('Copied'); },
-                                             function () { toast('Copy failed'); });
-      } else {
-        var ta = document.createElement('textarea');
-        ta.value = v; document.body.appendChild(ta); ta.select();
-        try { document.execCommand('copy'); toast('Copied'); } catch (e) { toast('Copy failed'); }
-        document.body.removeChild(ta);
-      }
-    });
-  });
-})();
-</script>
 </body>
 </html>

@@ -136,6 +136,7 @@ async function worker(op, params, body) {
   await ctx.route('**/*', async (r) => {
     const u = r.request().url();
     const J = (o) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(o) });
+    if (u.indexOf('op=list') >= 0) return J(Object.assign({ ok: true }, ACC));
     if (u.indexOf('access.json') >= 0) return J(ACC);
     if (u.indexOf('vampjam-sync') >= 0) {
       WROTE = JSON.parse(r.request().postData() || '{}');
@@ -243,6 +244,9 @@ async function worker(op, params, body) {
           sessions: { '2026_08_14_sound_union.html': { mode: 'list', allow: ['DAVE'] } } };
   let NO_SECRET = false;
   await ctx.route(/vampjam-auth/, async (r) => {
+    if (/op=list/.test(r.request().url()))
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify(Object.assign({ ok: true }, ACC)) });
     if (/op=status/.test(r.request().url()))
       return r.fulfill({ status: 200, contentType: 'application/json',
         body: JSON.stringify({ ok: true, worker: true, secret: true, admins: 1, people: 1, private: 0 }) });
@@ -347,6 +351,8 @@ async function worker(op, params, body) {
     const u = r.request().url();
     if (u.indexOf('op=status') >= 0) return r.fulfill({ status: 200, contentType: 'application/json',
       body: JSON.stringify({ ok: true, worker: true, secret: false, admins: 0, people: 0, private: 0 }) });
+    if (u.indexOf('op=list') >= 0) return r.fulfill({ status: 200, contentType: 'application/json',
+      body: '{"ok":true,"admins":[],"people":[],"sessions":{}}' });
     if (u.indexOf('access.json') >= 0) return r.fulfill({ status: 200,
       contentType: 'application/json', body: '{"admins":[],"people":[],"sessions":{}}' });
     if (u.indexOf('vampjam-auth') >= 0) return r.fulfill({ status: 200,
@@ -374,13 +380,32 @@ async function worker(op, params, body) {
   const other = await ctx2.newPage();
   await ctx2.route(/op=status/, (r) => r.fulfill({ status: 200, contentType: 'application/json',
     body: JSON.stringify({ ok: true, worker: true, secret: true, admins: 0, people: 0, private: 0 }) }));
+  await ctx2.route(/op=list/, (r) => r.fulfill({ status: 404, body: '' }));
   await ctx2.route(/access\.json/, (r) => r.fulfill({ status: 404, body: '' }));
   await other.goto('https://vampsf.com/2026_08_14_sound_union.html');
   await other.waitForTimeout(1600);
   const on = await other.evaluate(() => document.getElementById('who_note').textContent);
   ok('a broken list is not blamed on the worker',
-     /access\.json/.test(on) && /404/.test(on) && !/sign-in worker could not/.test(on), on);
+     /the list/.test(on) && /404/.test(on) && !/sign-in worker could not/.test(on), on);
   await other.close();
+
+  // access.json blocked in his browser but the worker fine: the list comes from
+  // the worker, so the box works anyway. This is the failure he actually hit.
+  const blocked = await ctx2.newPage();
+  await ctx2.unroute(/op=list/);
+  await ctx2.unroute(/access\.json/);
+  await ctx2.route(/access\.json/, (r) => r.abort('blockedbyclient'));
+  await ctx2.route(/op=list/, (r) => r.fulfill({ status: 200, contentType: 'application/json',
+    body: '{"ok":true,"admins":[],"people":[],"sessions":{}}' }));
+  await blocked.goto('https://vampsf.com/2026_08_14_sound_union.html');
+  await blocked.waitForTimeout(1600);
+  const bl = await blocked.evaluate(() => ({
+    note: document.getElementById('who_note').textContent,
+    canType: !document.getElementById('who_in').hidden
+  }));
+  ok('a blocked access.json no longer stops the box',
+     bl.canType === true && /Nobody administers this yet/.test(bl.note), JSON.stringify(bl));
+  await blocked.close();
   await ctx2.close();
 
   // ---------- arriving through the fold, not by typing the address ----------
@@ -423,6 +448,7 @@ async function worker(op, params, body) {
   await ctx3.route('**/*', async (r) => {
     const u = r.request().url();
     const J = (o) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(o) });
+    if (u.indexOf('op=list') >= 0) return J(Object.assign({ ok: true }, ACC3));
     if (u.indexOf('access.json') >= 0) return J(ACC3);
     if (u.indexOf('vampjam-sync') >= 0) { W3 = JSON.parse(r.request().postData() || '{}');
       ACC3 = JSON.parse(W3.content); return J({ ok: true }); }

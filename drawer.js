@@ -1614,8 +1614,15 @@
       });
     }
 
+    // Ask the worker for the list, and fall back to the file only if that fails.
+    // The file is same-origin and looked like the safe choice; in his browser it
+    // was the one call that would not go through.
     function load() {
-      return get('the list (access.json)', 'access.json?v=' + Date.now(), { cache: 'no-store' })
+      return get('the list', A.url + '?op=list&t=' + Date.now(), { cache: 'no-store' })
+        .catch(function (e1) {
+          return get('the list (access.json)', 'access.json?v=' + Date.now(), { cache: 'no-store' })
+            .catch(function () { throw e1; });
+        })
         .then(function (j) {
           acc = (j && typeof j === 'object') ? j : {};
           acc.admins = acc.admins || []; acc.people = acc.people || []; acc.sessions = acc.sessions || {};
