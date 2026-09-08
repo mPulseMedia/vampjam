@@ -123,6 +123,8 @@ async function worker(op, params, body) {
       return J({ ok: true });
     }
     if (u.indexOf('op=ids') >= 0) return J(IDS);
+    if (u.indexOf('op=status') >= 0) return J({ ok: true, worker: true, secret: true,
+                                                admins: 0, people: 0, private: 0 });
     if (u.indexOf('vampjam-auth') >= 0) return J({ ok: true, signed_in: true, admin: true, allow: '*' });
     if (u.startsWith('https://vampsf.com/')) {
       const rel = u.replace('https://vampsf.com/', '').split('?')[0] || 'index.html';
@@ -217,6 +219,9 @@ async function worker(op, params, body) {
           sessions: {} };
   let NO_SECRET = false;
   await ctx.route(/vampjam-auth/, async (r) => {
+    if (/op=status/.test(r.request().url()))
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ ok: true, worker: true, secret: true, admins: 1, people: 1, private: 0 }) });
     if (NO_SECRET && /op=enter/.test(r.request().url()))
       return r.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({
         error: 'no_secret',
@@ -247,6 +252,96 @@ async function worker(op, params, body) {
   const why = await p.textContent('#who_note');
   ok('an unset secret is named as the reason, not "it did not stick"',
      /no AUTH_SECRET yet/.test(why) && /step C/.test(why), why);
+
+  // ---------- it is on the recordings and nowhere else ----------
+  await p.close();
+  // index.html is not in this list on purpose: it forwards to the newest
+  // recording, so it IS a session page by the time it has finished loading.
+  for (const where of ['favorites.html', 'admin.html', 'signin.html', 'record.html',
+                       'signin_steps.html']) {
+    const q = await ctx.newPage();
+    await q.goto('https://vampsf.com/' + where);
+    await q.waitForTimeout(700);
+    const got = await q.evaluate(() => ({ box: !!document.getElementById('who_box'),
+                                          here: location.pathname }));
+    ok('no box on ' + where, got.box === false, JSON.stringify(got));
+    await q.close();
+  }
+  const idx = await ctx.newPage();
+  await idx.goto('https://vampsf.com/index.html');
+  await idx.waitForTimeout(1400);
+  const iv = await idx.evaluate(() => ({ box: !!document.getElementById('who_box'),
+                                         here: location.pathname }));
+  ok('and the front page, which lands on a recording, does get one',
+     iv.box === true && /\.html$/.test(iv.here) && iv.here !== '/index.html', JSON.stringify(iv));
+  await idx.close();
+
+  // ---------- a dead worker explains itself instead of a dead button ----------
+  // He clicked Add and nothing appeared to happen. The reason was the browser's
+  // own "Failed to fetch", written into a line below the fold.
+  const ctx2 = await b.newContext({ viewport: { width: 390, height: 844 } });
+  await ctx2.route('**/*', async (r) => {
+    const u = r.request().url();
+    if (u.indexOf('access.json') >= 0) return r.fulfill({ status: 200,
+      contentType: 'application/json', body: '{"admins":[],"people":[],"sessions":{}}' });
+    if (u.indexOf('vampjam-auth') >= 0) return r.abort('failed');
+    if (u.startsWith('https://vampsf.com/')) {
+      const rel = u.replace('https://vampsf.com/', '').split('?')[0] || 'index.html';
+      const p3 = path.join(DIR, rel);
+      if (fs.existsSync(p3)) {
+        const t = rel.endsWith('.css') ? 'text/css' : rel.endsWith('.js') ? 'application/javascript'
+                : rel.endsWith('.json') ? 'application/json' : 'text/html';
+        return r.fulfill({ status: 200, contentType: t, body: fs.readFileSync(p3) });
+      }
+      return r.fulfill({ status: 404, body: '' });
+    }
+    return r.fulfill({ status: 204, body: '' });
+  });
+  const dead = await ctx2.newPage();
+  await dead.goto('https://vampsf.com/2026_08_14_sound_union.html');
+  await dead.waitForTimeout(1800);
+  const d = await dead.evaluate(() => {
+    const el = document.getElementById('who_box');
+    const inp = document.getElementById('who_in');
+    const btn = document.getElementById('who_add');
+    return { shown: el && !el.hidden, note: document.getElementById('who_note').textContent,
+             link: !!document.querySelector('#who_note a'),
+             pasteGone: !!inp && inp.hidden, btnGone: !!btn && btn.hidden };
+  });
+  ok('with no worker the box still appears',   d.shown === true, d.shown);
+  ok('and says the worker is not there',       /worker is not there yet/.test(d.note), d.note);
+  ok('and points at the steps',                d.link === true, d.link);
+  ok('the paste box is put away, not left dead', d.pasteGone && d.btnGone, JSON.stringify(d));
+
+  // a worker that is up but whose secret was never promoted
+  await ctx2.unroute('**/*');
+  await ctx2.route('**/*', async (r) => {
+    const u = r.request().url();
+    if (u.indexOf('op=status') >= 0) return r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ ok: true, worker: true, secret: false, admins: 0, people: 0, private: 0 }) });
+    if (u.indexOf('access.json') >= 0) return r.fulfill({ status: 200,
+      contentType: 'application/json', body: '{"admins":[],"people":[],"sessions":{}}' });
+    if (u.indexOf('vampjam-auth') >= 0) return r.fulfill({ status: 200,
+      contentType: 'application/json', body: '{"ok":true,"signed_in":false,"allow":[]}' });
+    if (u.startsWith('https://vampsf.com/')) {
+      const rel = u.replace('https://vampsf.com/', '').split('?')[0] || 'index.html';
+      const p3 = path.join(DIR, rel);
+      if (fs.existsSync(p3)) {
+        const t = rel.endsWith('.css') ? 'text/css' : rel.endsWith('.js') ? 'application/javascript'
+                : rel.endsWith('.json') ? 'application/json' : 'text/html';
+        return r.fulfill({ status: 200, contentType: t, body: fs.readFileSync(p3) });
+      }
+      return r.fulfill({ status: 404, body: '' });
+    }
+    return r.fulfill({ status: 204, body: '' });
+  });
+  const half = await ctx2.newPage();
+  await half.goto('https://vampsf.com/2026_08_14_sound_union.html');
+  await half.waitForTimeout(1500);
+  const h = await half.evaluate(() => document.getElementById('who_note').textContent);
+  ok('a saved-but-not-promoted secret is named as the reason',
+     /no AUTH_SECRET running/.test(h) && /promoted/.test(h), h);
+  await ctx2.close();
 
   // the sign-in page asks for a number and nothing else
   const si = fs.readFileSync(path.join(DIR, 'signin.html'), 'utf8');

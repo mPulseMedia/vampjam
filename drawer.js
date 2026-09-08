@@ -1498,18 +1498,20 @@
   // opaque id under AUTH_SECRET and hands back the id, the last four digits and
   // whatever was left of the line to use as a name.
   function who_mount() {
+    // session pages only: they are the ones that HAVE a PAGE_KEY and a list of
+    // moments. The list, favorites, the recorder and the admin page get nothing.
     var page = window.PAGE_KEY;
-    if (!page || !document.getElementById('tag_list')) return;   // session pages only
+    if (!page || !document.getElementById('tag_list')) return;
     var A = window.vampjamAuth;
     if (!A) return;
 
     var box = document.createElement('section');
     box.className = 'who_box';
     box.id = 'who_box';
-    box.hidden = true;
+    box.hidden = false;      // there from the first paint: waiting is not hiding
     box.innerHTML =
       '<h2 class="who_h">Who can open this recording</h2>'
-      + '<div class="who_state" id="who_state"></div>'
+      + '<div class="who_state" id="who_state">checking…</div>'
       + '<div class="who_list" id="who_list"></div>'
       + '<textarea class="who_in" id="who_in" rows="3" autocapitalize="off" autocorrect="off"'
       + ' placeholder="Paste phone numbers here&#10;one per line, or separated by commas&#10;names are fine: Dave 415 555 1212"></textarea>'
@@ -1529,6 +1531,26 @@
     var openBtn = box.querySelector('#who_open');
 
     function note(m, bad) { noteEl.textContent = m || ''; noteEl.className = 'who_note' + (bad ? ' bad' : ''); }
+    // "Failed to fetch" is the browser's sentence, not an answer. This is the
+    // one that tells him which of his own steps is unfinished.
+    function reach(e) {
+      var m = (e && e.message) || '';
+      return /fetch|network|load failed/i.test(m)
+        ? 'Could not reach the sign-in worker. It is not deployed yet, or its address is different — see the sign-in steps page.'
+        : m;
+    }
+    function shut_controls(why, link) {
+      inEl.hidden = true; addBtn.hidden = true; openBtn.hidden = true;
+      stateEl.textContent = '';
+      noteEl.innerHTML = '';
+      noteEl.className = 'who_note bad';
+      noteEl.appendChild(document.createTextNode(why + ' '));
+      if (link) {
+        var a = document.createElement('a');
+        a.href = 'signin_steps.html'; a.textContent = link;
+        noteEl.appendChild(a);
+      }
+    }
     function rule() { return (acc.sessions && acc.sessions[page]) || {}; }
     function allow() { return rule().allow || []; }
     function person(id) {
@@ -1609,7 +1631,7 @@
             });
           });
         })
-        .catch(function (e) { note(e.message, true); })
+        .catch(function (e) { note(reach(e), true); })
         .then(function () { addBtn.disabled = false; });
     }
 
@@ -1640,7 +1662,6 @@
     // never sign in, and the box is invisible everywhere with no way back. Now
     // it is always reachable: signed out, it shows the one field that fixes it.
     function sign_in_here() {
-      box.hidden = false;
       stateEl.textContent = '';
       listEl.innerHTML = '';
       inEl.hidden = true; addBtn.hidden = true; openBtn.hidden = true;
@@ -1666,7 +1687,7 @@
             A.set(j.session);
             location.reload();
           })
-          .catch(function (e) { note('Could not reach the worker: ' + e.message, true); });
+          .catch(function (e) { note(reach(e), true); });
       }
       wrap.querySelector('#who_go').addEventListener('click', go);
       wrap.querySelector('#who_phone').addEventListener('keydown', function (e) {
@@ -1674,18 +1695,36 @@
       });
     }
 
-    load().then(function () {
-      if (!acc.admins.length) {
-        box.hidden = false;
-        note('Nobody administers this yet. The first number you add becomes the administrator — make it your own.');
-        paint();
-        return;
-      }
-      return A.me().then(function (me) {
-        if (me && me.admin) { box.hidden = false; paint(); return; }
-        sign_in_here();
-      });
-    }).catch(function () {});
+    // Ask the worker how it is before offering him a button that cannot work.
+    // He clicked Add, nothing appeared to happen, and the reason — no worker —
+    // was a browser error string in a line below the fold.
+    fetch(A.url + '?op=status&t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .catch(function () { return null; })
+      .then(function (st) {
+        if (!st || !st.ok) {
+          shut_controls('The sign-in worker is not there yet, so nothing here can be saved.',
+                        'the steps →');
+          return;
+        }
+        if (!st.secret) {
+          shut_controls('The worker is up but has no AUTH_SECRET running — it is probably saved '
+                      + 'and not promoted, so nothing here can be saved.', 'step C →');
+          return;
+        }
+        return load().then(function () {
+          if (!acc.admins.length) {
+            note('Nobody administers this yet. The first number you add becomes the administrator — make it your own.');
+            paint();
+            return;
+          }
+          return A.me().then(function (me) {
+            if (me && me.admin) { paint(); return; }
+            sign_in_here();
+          });
+        });
+      })
+      .catch(function (e) { shut_controls(reach(e), 'the steps →'); });
   }
   window.vampjamWhoMount = who_mount;
 
