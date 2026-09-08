@@ -5212,7 +5212,34 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Twenty-nine suites, 815 assertions. Green — no code moved in this entry, only the file.
   Left for him: one number, in any recording's box.
   Still no new trace.
-- NEXT → add entry 357 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 357 admin_one · b365 · one page, two sources, two answers.
+  "WHAT IS UP???" — and the screenshots are a fair question. The admin page's readout said "Nobody
+  administers the list yet · 0 people on the list", and six inches below it a row read "Paul ·
+  ••0105 · admin". Both were honestly rendered. The readout comes from the worker, which reads the
+  list fresh; the row came from access.json fetched off vampsf.com, which GitHub Pages had cached
+  from before I emptied it. A page that reads the same fact from two places will eventually show
+  two answers, and it picked the worst possible moment.
+  admin.html reads the worker's op=list now, with the file only as a fallback if the worker is
+  down. Same change drawer.js got in 361, made in the same build there and not here — the split
+  was mine.
+  The second thing in his screenshots was not a bug at all: sign-in refusing 9176930105 is
+  correct, because the list is empty and sign-in only admits numbers already on a list. But the
+  site never says that, and it presents Sign in as the obvious next move, so refusing looks like
+  breakage rather than the system working. The admin page now says it outright: nobody on the list
+  yet means put your own number in the box below and press Add; you cannot sign in before that,
+  and the sign-in page will refuse for as long as the list is empty.
+  Worth naming, because it is the shape of most of today: nothing was broken in either screenshot.
+  He was looking at a stale cache and a correct refusal, and neither said what it was. Three of the
+  last five builds have been the same failure — a true thing shown without the sentence that makes
+  it legible.
+  admin_one_test is new, 9, and it reproduces exactly what he photographed: worker empty, file
+  stale, and no ghost row allowed to contradict the readout. Plus a real list rendering from the
+  worker, and the file still serving as a fallback when the worker is down.
+  Thirty suites, 824 assertions. Green.
+  Left for him, unchanged and now one click from where he is standing: 9176930105 into the phone
+  box on the admin page, Add.
+  Still no new trace.
+- NEXT → add entry 358 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

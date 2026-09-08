@@ -123,9 +123,13 @@
 
 <h2>Who can sign in</h2>
 <div class="acc_note" id="acc_note">Loading…</div>
-<p class="acc_note">Who can open a recording is set <b>at the bottom of that recording</b> —
-open it, scroll to the end, and paste the numbers in. This page is only for starting the list off,
-and for seeing who is on it.</p>
+<p class="acc_note"><b>Nobody on the list yet? Put your own number in the box below and press
+Add.</b> That number becomes the administrator. You cannot sign in before that — the sign-in page
+only lets in numbers that are already on a list, so it will always refuse while the list is
+empty.</p>
+<p class="acc_note">After that, who can open a particular recording is set <b>at the bottom of
+that recording</b> — open it, scroll to the end, paste the numbers in. This page is only for
+starting the list off and for seeing who is on it.</p>
 <div class="acc_people" id="acc_people"></div>
 <div class="acc_add">
   <input id="acc_label" type="text" placeholder="name (optional)" autocomplete="off">
@@ -155,9 +159,19 @@ and for seeing who is on it.</p>
   }
   function tell(m, bad) { state.textContent = m || ''; state.className = 'acc_state' + (bad ? ' bad' : ''); }
 
+  // Read the list from the worker, not from the file. The file is served by
+  // GitHub Pages and cached for minutes, so this page was showing a readout that
+  // said "nobody administers the list yet" directly above a row saying "Paul —
+  // admin". One page, two sources, two answers. The worker reads the file fresh
+  // every time; the file stays only as a fallback.
   function load() {
-    return fetch('access.json?v=' + Date.now(), { cache: 'no-store' })
+    return fetch(A.url + '?op=list&t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { if (j && j.ok) return j; throw new Error('no list'); })
+      .catch(function () {
+        return fetch('access.json?v=' + Date.now(), { cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : null; });
+      })
       .then(function (j) {
         acc = j && typeof j === 'object' ? j : { admins: [], people: [], sessions: {} };
         acc.admins = acc.admins || []; acc.people = acc.people || []; acc.sessions = acc.sessions || {};
