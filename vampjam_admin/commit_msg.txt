@@ -1,1 +1,1 @@
-signin_paste
+auto_commit
