@@ -60,6 +60,26 @@ async function worker(op, params, body) {
      (await worker('ids', {}, { phones: ['555-1212'] })).people[0].id === good[0].id7, 0);
   ok('the first paste is allowed with no admin', ids.first === true, ids.first);
 
+  // the lockout, in the worker where it actually bit: one mistyped admin, no way
+  // to sign in as them, and every add answered "admins only" — the page offered
+  // a start-over the worker refused. Same "not really started" test both sides.
+  const before = ACCESS;
+  ACCESS = { admins: ['TYPO'], people: [{ id: 'TYPO', label: 'Paul', last4: '0105' }], sessions: {} };
+  const lone = await worker('ids', {}, { phones: ['917-693-0105'] });
+  ok('one mistyped admin and nothing private still lets a number in',
+     lone.ok === true && lone.first === true, JSON.stringify(lone).slice(0, 90));
+  ACCESS = { admins: ['A'], people: [{ id: 'A', label: 'Paul', last4: '0105' },
+                                     { id: 'B', label: 'Dave', last4: '1212' }], sessions: {} };
+  const two = await worker('ids', {}, { phones: ['917-693-0105'] });
+  ok('two people on the list and it wants an admin again',
+     two.ok !== true && /admins only/.test(two.error || ''), JSON.stringify(two));
+  ACCESS = { admins: ['A'], people: [{ id: 'A', label: 'Paul', last4: '0105' }],
+             sessions: { 'x.html': { mode: 'list', allow: ['A'] } } };
+  const shut2 = await worker('ids', {}, { phones: ['917-693-0105'] });
+  ok('one closed recording shuts it too',
+     shut2.ok !== true && /admins only/.test(shut2.error || ''), JSON.stringify(shut2));
+  ACCESS = before;
+
   // put one of them on one recording, and only that one
   ACCESS = {
     admins: [good[0].id],

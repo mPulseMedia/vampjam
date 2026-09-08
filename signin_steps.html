@@ -398,7 +398,12 @@ export default {
       if (op === 'ids') {
         const acc = await access();
         const who = await read_session(q('t'), env);
-        const first = !(acc.admins || []).length;    // nobody owns the list yet
+        // "not really started" is the same test the page uses, and it has to be
+        // here too or the page offers a start-over the worker then refuses. That
+        // is what happened: one mistyped admin, no way to sign in as them, and
+        // every add answered "admins only" — a locked door with a handle drawn
+        // on it. In this state nothing is protected, so nothing is given away.
+        const first = unstarted(acc);
         if (!first && !(who && is_admin(acc, who.i)))
           return json({ error: 'admins only' }, 403, cors);
         let list = body.phones;
@@ -431,7 +436,7 @@ export default {
       // ---- bootstrap: the very first admin, once, while access.json has none ----
       if (op === 'claim_admin') {
         const acc = await access();
-        if ((acc.admins || []).length) return json({ error: 'there is already an admin' }, 403, cors);
+        if (!unstarted(acc)) return json({ error: 'there is already an admin' }, 403, cors);
         const phone = e164(q('phone'));
         if (!phone) return json({ error: 'that does not look like a phone number' }, 400, cors);
         return json({ ok: true, id: await hmac(env.AUTH_SECRET, 'p:' + phone),
@@ -465,6 +470,16 @@ function is_admin(acc, id) { return (acc.admins || []).indexOf(id) >= 0; }
 // known to the site at all: an admin, a named person, or on any one
 // recording's list. The last is what makes "paste a number at the bottom of a
 // session" enough on its own - he should not have to add someone twice.
+// Nothing is really set up: at most one person on the list, nobody else, and no
+// recording actually closed. Whoever is standing here may take it over, because
+// there is nothing yet to take. The moment a second person is added or one
+// recording is made private, this is false for good.
+function unstarted(acc) {
+  if ((acc.admins || []).length > 1) return false;
+  if ((acc.people || []).length > 1) return false;
+  const s = acc.sessions || {};
+  return Object.keys(s).every((k) => (s[k] || {}).mode !== 'list');
+}
 function recognized(acc, id) {
   if (is_admin(acc, id)) return true;
   if ((acc.people || []).some((p) => p && p.id === id)) return true;
