@@ -1,1 +1,1 @@
-signin_live
+auto_commit
