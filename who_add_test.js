@@ -385,8 +385,11 @@ async function worker(op, params, body) {
   await other.goto('https://vampsf.com/2026_08_14_sound_union.html');
   await other.waitForTimeout(1600);
   const on = await other.evaluate(() => document.getElementById('who_note').textContent);
-  ok('a broken list is not blamed on the worker',
-     /the list/.test(on) && /404/.test(on) && !/sign-in worker could not/.test(on), on);
+  // both routes to the list broken, and the worker's own 404 on op=list is what
+  // is reported — as a version problem, which is what a 404 there means
+  ok('a broken list is not blamed on the worker being unreachable',
+     /older version/.test(on) && /step B1/.test(on)
+     && !/sign-in worker could not be reached/.test(on), on);
   await other.close();
 
   // access.json blocked in his browser but the worker fine: the list comes from
@@ -509,6 +512,59 @@ async function worker(op, params, body) {
   ok('once there are two people it asks you to sign in instead',
      t1.field === true && /Sign in to manage/.test(t1.note), JSON.stringify(t1));
   await ctx3.close();
+
+  // ---------- opened from a file on the Mac ----------
+  // He was testing from file:///Users/.../vampjam/. The browser calls that origin
+  // "null" and refuses every request, so the box's every control would fail with
+  // a network error. Say what it actually is.
+  const local = await b.newContext();
+  const lp = await local.newPage();
+  await lp.goto('file://' + path.join(DIR, '2026_08_14_sound_union.html'));
+  await lp.waitForTimeout(1400);
+  const lf = await lp.evaluate(() => {
+    const el = document.getElementById('who_box');
+    return el ? { there: true, text: el.textContent.replace(/\s+/g, ' '),
+                  paste: !!document.getElementById('who_in'),
+                  link: (document.querySelector('#who_box a') || {}).href || '' } : { there: false };
+  });
+  ok('a page opened from a file still shows the box',  lf.there === true, JSON.stringify(lf));
+  ok('and says that is why nothing here can work',
+     /open from a file on your Mac/.test(lf.text) && /blocks a file from calling/.test(lf.text), lf.text);
+  ok('with no paste box to fail in',                   lf.paste === false, lf.paste);
+  ok('and a link to the same recording on the site',
+     /^https:\/\/vampsf\.com\/2026_08_14_sound_union\.html/.test(lf.link), lf.link);
+  await local.close();
+
+  // ---------- an older worker, answering 400 to op=list ----------
+  const oldw = await b.newContext({ viewport: { width: 390, height: 844 } });
+  await oldw.route('**/*', async (r) => {
+    const u = r.request().url();
+    if (/op=status/.test(u)) return r.fulfill({ status: 200, contentType: 'application/json',
+      body: '{"ok":true,"worker":true,"secret":true,"admins":1,"people":1,"private":0}' });
+    if (/op=list/.test(u)) return r.fulfill({ status: 400, contentType: 'application/json',
+      body: '{"error":"unknown op"}' });
+    if (/access\.json/.test(u)) return r.abort('failed');
+    if (/vampjam-auth/.test(u)) return r.fulfill({ status: 200, contentType: 'application/json',
+      body: '{"ok":true,"signed_in":false,"allow":[]}' });
+    if (u.startsWith('https://vampsf.com/')) {
+      const rel = u.replace('https://vampsf.com/', '').split('?')[0] || 'index.html';
+      const p5 = path.join(DIR, rel);
+      if (fs.existsSync(p5)) {
+        const t = rel.endsWith('.css') ? 'text/css' : rel.endsWith('.js') ? 'application/javascript'
+                : rel.endsWith('.json') ? 'application/json' : 'text/html';
+        return r.fulfill({ status: 200, contentType: t, body: fs.readFileSync(p5) });
+      }
+      return r.fulfill({ status: 404, body: '' });
+    }
+    return r.fulfill({ status: 204, body: '' });
+  });
+  const op = await oldw.newPage();
+  await op.goto('https://vampsf.com/2026_08_14_sound_union.html');
+  await op.waitForTimeout(1600);
+  const ow = await op.textContent('#who_note');
+  ok('a worker that predates op=list is called old, not unreachable',
+     /older version/.test(ow) && /step B1/.test(ow) && !/could not be reached/.test(ow), ow);
+  await oldw.close();
 
   // the sign-in page asks for a number and nothing else
   const si = fs.readFileSync(path.join(DIR, 'signin.html'), 'utf8');

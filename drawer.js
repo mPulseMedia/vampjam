@@ -1502,6 +1502,27 @@
     // moments. The list, favorites, the recorder and the admin page get nothing.
     var page = window.PAGE_KEY;
     if (!page || !document.getElementById('tag_list')) return;
+
+    // Opened from a file on the Mac rather than from the site. Nothing that
+    // needs an origin can work here — the browser treats file:// as origin
+    // "null" and refuses the requests outright. Say that, rather than showing a
+    // box whose every button will fail with a network error.
+    if (location.protocol === 'file:') {
+      var warn = document.createElement('section');
+      warn.className = 'who_box';
+      warn.id = 'who_box';
+      warn.innerHTML = '<h2 class="who_h">Who can open this recording</h2>'
+        + '<div class="who_note bad">This page is open from a file on your Mac, and the sign-in '
+        + 'cannot work here — the browser blocks a file from calling anything. Open the same page '
+        + 'on the site instead.</div>';
+      var a = document.createElement('div');
+      a.style.marginTop = '8px';
+      a.innerHTML = '<a href="https://vampsf.com/' + location.pathname.split('/').pop()
+        + location.search + '">open this recording at vampsf.com</a>';
+      warn.appendChild(a);
+      (document.getElementById('fold_page') || document.body).appendChild(warn);
+      return;
+    }
     var A = window.vampjamAuth;
     if (!A) return;
 
@@ -1620,8 +1641,17 @@
     function load() {
       return get('the list', A.url + '?op=list&t=' + Date.now(), { cache: 'no-store' })
         .catch(function (e1) {
+          // 400 from op=list means the worker running predates it — that is a
+          // paste-the-code problem, and saying "could not be reached" about a
+          // worker that answered is how three of these went wrong already
+          var old = / answered 40[04] /.test(e1.message || '');
           return get('the list (access.json)', 'access.json?v=' + Date.now(), { cache: 'no-store' })
-            .catch(function () { throw e1; });
+            .catch(function () {
+              throw new Error(old
+                ? 'the worker running is an older version (it does not know op=list) and the '
+                  + 'list file could not be read either — paste the current code, step B1'
+                : e1.message);
+            });
         })
         .then(function (j) {
           acc = (j && typeof j === 'object') ? j : {};
