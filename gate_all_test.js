@@ -166,8 +166,22 @@ async function worker(op, body) {
      seen.some(h => /2026_08_14_sound_union/.test(h)), JSON.stringify(seen).slice(0, 90));
   ok('but not the private one he is NOT on',
      !seen.some(h => /2026_07_17_sound_union/.test(h)), JSON.stringify(seen).slice(0, 90));
-  ok('and no box to add anyone',
-     await p.evaluate(() => { const el = document.getElementById('who_box'); return !el || el.hidden; }));
+  // The box no longer hides itself from a guest — hiding is how "nothing
+  // happens" looked, and it looked the same to the owner. It is there, and it
+  // says whose job this is.
+  const gbox = await p.evaluate(() => {
+    const el = document.getElementById('who_box');
+    if (!el) return { box: false };
+    const inp = document.getElementById('who_in');
+    return { box: true, hidden: el.hidden, canType: !!inp && !inp.hidden,
+             note: document.getElementById('who_note').textContent };
+  });
+  ok('the box is still on the page for a guest',
+     gbox.box === true && gbox.hidden === false, JSON.stringify(gbox).slice(0, 120));
+  ok('but there is nothing to add anyone with',
+     gbox.canType === false, gbox.canType);
+  ok('and it says whose job that is',
+     /Only the administrator adds numbers/.test(gbox.note), gbox.note);
   await p.close();
 
   // signed in as the administrator: everything, and the box
