@@ -58,9 +58,9 @@ let SET = null;
     const words = el.textContent.trim().split(/\s+/).length;
     return { there: true, title: el.querySelector('.hello_t').textContent,
              welcome: el.querySelector('.hello_w').textContent,
-             ph: el.querySelector('#hello_in').getAttribute('placeholder'),
-             type: el.querySelector('#hello_in').getAttribute('type'),
-             btn: el.querySelector('#hello_go').textContent,
+             ph: el.querySelector('.hello_in').getAttribute('placeholder'),
+             type: el.querySelector('.hello_in').getAttribute('type'),
+             btn: el.querySelector('.hello_go').textContent,
              fine: el.querySelector('.hello_f').textContent,
              words: words,
              fields: el.querySelectorAll('input').length,
@@ -79,6 +79,7 @@ let SET = null;
   ok('one field, not a form',                   h.fields === 1, h.fields);
   ok('and the phone keypad opens for it',       h.type === 'tel', h.type);
   ok('the example shows how to write it',       /415/.test(h.ph), h.ph);
+  ok('spaces only in it — no brackets, no dashes', /^[0-9 ]+$/.test(h.ph || ''), h.ph);
   ok('the button says what it does',            h.btn === 'Sign in', h.btn);
   ok('and it forgives any way of writing it',   /However you write it/.test(h.fine), h.fine);
   ok('few words — the whole box under forty',   h.words < 40, h.words);
@@ -88,27 +89,27 @@ let SET = null;
   ok('and there is only one box, not two',      h.whoBox === false, h.whoBox);
 
   // ---------- a number nobody has added ----------
-  await p.fill('#hello_in', '415 555 0000');
-  await p.click('#hello_go');
+  await p.fill('.hello .hello_in', '415 555 0000');
+  await p.click('.hello .hello_go');
   await p.waitForTimeout(600);
   ok('an unknown number is told plainly, on the spot',
-     /not on this recording/.test(await p.evaluate(() => document.getElementById('hello_say').textContent)),
-     await p.evaluate(() => document.getElementById('hello_say').textContent));
+     /not on this recording/.test(await p.evaluate(() => document.querySelector('.hello .hello_say').textContent)),
+     await p.evaluate(() => document.querySelector('.hello .hello_say').textContent));
   ok('and it is sent however he wrote it, punctuation and all',
      SET && SET.phone === '415 555 0000', JSON.stringify(SET));
   ok('he is still on the recording, not bounced',
      p.url().indexOf(SHUT) > 0, p.url());
   ok('and the field keeps what he typed, to fix rather than retype',
-     (await p.inputValue('#hello_in')) === '415 555 0000', await p.inputValue('#hello_in'));
+     (await p.inputValue('.hello .hello_in')) === '415 555 0000', await p.inputValue('.hello .hello_in'));
 
   // ---------- the number that is on it ----------
   ENTER = { ok: true, session: 'SESS_DAVE', label: 'Dave', admin: false, allow: [SHUT] };
-  await p.fill('#hello_in', '(415) 555-1212');
-  await p.click('#hello_go');
+  await p.fill('.hello .hello_in', '(415) 555-1212');
+  await p.click('.hello .hello_go');
   await p.waitForTimeout(400);
   ok('a number that is on it is welcomed',
-     /You are in/.test(await p.evaluate(() => document.getElementById('hello_say').textContent)),
-     await p.evaluate(() => document.getElementById('hello_say').textContent));
+     /You are in/.test(await p.evaluate(() => document.querySelector('.hello .hello_say').textContent)),
+     await p.evaluate(() => document.querySelector('.hello .hello_say').textContent));
   ok('and the session is kept on this browser',
      (await p.evaluate(() => localStorage.getItem('vampjam_signin'))) === 'SESS_DAVE',
      await p.evaluate(() => localStorage.getItem('vampjam_signin')));
@@ -145,8 +146,8 @@ let SET = null;
   p = await ctx.newPage();
   await p.goto('https://vampsf.com/' + SHUT);
   await p.waitForTimeout(2000);
-  await p.fill('#hello_in', '917 693 0105');
-  await p.click('#hello_go');
+  await p.fill('.hello .hello_in', '917 693 0105');
+  await p.click('.hello .hello_go');
   await p.waitForTimeout(1500);
   ok('the very first sign-in is handed to the page that asks a name',
      /signin\.html/.test(p.url()) && p.url().indexOf(encodeURIComponent(SHUT)) > 0, p.url());

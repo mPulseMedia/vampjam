@@ -9,8 +9,69 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "371 share_ready",
+        id: "372 signin_ask",
         expanded: true,
+        nodes: [
+          { text: "372 signin_ask", children: [
+            { text: "prompt_restate", children: [
+              { text: "same as the share \u2014 put the sign-in at the bottom if you are not signed in" },
+              { text: "not required all the time \u2014 that is what public recordings are for" },
+              { text: "but you are still welcome to sign in" },
+              { text: "after your second bookmark, that is when you get prompted" },
+              { text: "still, you do not have to" },
+              { text: "and: no ( ) or - in the sample phone numbers, just spaces" }
+            ]},
+            { text: "quiet_by_default", children: [
+              { text: "bottom of the page, same slot and frame as sharing" },
+              { text: "\"Signing in is optional \u00b7 This recording is open to anyone with the link." },
+              { text: "Sign in and you will also see the ones Paul has shared with you.\"" },
+              { text: "one field, one button, nothing to dismiss \u2014 a box on a page, not a popup" }
+            ]},
+            { text: "the_second_moment", children: [
+              { text: "\"You have tagged two moments\"" },
+              { text: "\"Sign in and Paul can share other recordings with you. You do not have to \u2014 keep tagging either way.\"" },
+              { text: "somebody who has tagged twice is using the thing \u2014 that is when to ask" },
+              { text: "it says out loud that ignoring it is fine, because it is" }
+            ]},
+            { text: "what_i_did_not_claim", children: [
+              { text: "I nearly wrote \"sign in and keep your bookmarks\"" },
+              { text: "a tag carries a device id, and nothing reads it except a .mine class" },
+              { text: "so that sentence would have been a lie \u2014 the box says the one true reason instead" },
+              { text: "that is skill_instruct rule nine, applied to the product rather than a runbook" }
+            ]},
+            { text: "private_recordings_unchanged", children: [
+              { text: "still takes the page before it plays" },
+              { text: "but my first cut mounted BOTH boxes on one" },
+              { text: "they decided separately and raced \u2014 the quiet one only needed me()" },
+              { text: "one question drives both now, and they are branches of it" },
+              { text: "two things deciding the same thing independently is two doors in a different costume" }
+            ]},
+            { text: "one_form", children: [
+              { text: "both boxes are drawn by one function now" },
+              { text: "exactly one op=enter in the file, and the test asserts the count" }
+            ]},
+            { text: "sample_number", children: [
+              { text: "spaces only, no brackets, no dashes" },
+              { text: "asserted in both suites \u2014 a preference stated once is one I will lose" }
+            ]},
+            { text: "tests", children: [
+              { text: "signin_ask_test new, 33" },
+              { text: "signin_here_test moved from ids to classes with the shared form" },
+              { text: "thirty-five suites, green" }
+            ]},
+            { text: "codename_list", children: [
+              { text: "signin_ask \u00b7 phone_form \u00b7 nudge \u00b7 mark_up \u00b7 ask_box \u00b7 ask_lit" }
+            ]},
+            { text: "left_for_you", children: [
+              { text: "hard reload for drawer.js v=186" },
+              { text: "open a public recording signed out and tag two moments" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "371 share_ready",
+        expanded: false,
         nodes: [
           { text: "371 share_ready", children: [
             { text: "prompt_restate", children: [

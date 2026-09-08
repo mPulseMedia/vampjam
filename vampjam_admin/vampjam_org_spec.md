@@ -5410,7 +5410,36 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Thirty-four suites, 931 assertions. Green.
   Left for him: hard reload, then look at the bottom of any recording.
   Still no new trace.
-- NEXT → add entry 364 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 364 signin_ask · b372 · the sign-in stops being a wall and becomes an offer at the bottom.
+  His rule, and it is a good one: most recordings are public and that is the point — nobody should
+  sign in to hear one. But signing in is how anything private ever reaches you, so the offer
+  belongs on the page, below the moments, in the same slot and the same frame as sharing.
+  Quiet by default: "Signing in is optional · This recording is open to anyone with the link. Sign
+  in and you will also see the ones Paul has shared with you." One field, one button, nothing to
+  dismiss, because it is a box on a page and not a popup.
+  Then the timing he asked for. After the SECOND moment you tag, it speaks up once: "You have
+  tagged two moments · Sign in with your phone number and Paul can share other recordings with
+  you. You do not have to — keep tagging either way." Somebody who has tagged twice is using the
+  thing; that is when to ask, and the last line says out loud that ignoring it is fine.
+  I did not claim signing in keeps your bookmarks. A tag carries owner: get_device_id() and
+  nothing reads it except a .mine class, so that sentence would have been a lie. The one true
+  reason is the one on the box. That is skill_instruct rule nine and it applied to the product,
+  not to a runbook.
+  A private recording is unchanged — it still takes the page before it plays. The first build of
+  this had both boxes mounting on one, because they decided separately and raced: the quiet one
+  only needed me(), the loud one needed the op=shut answer too, so the quiet one always won. Now
+  one question drives both and they are branches of it. Two things deciding the same thing
+  independently is the same fault as two doors, in a different costume.
+  Both boxes are one form now, drawn by one function. There is exactly one op=enter in the file,
+  and the test asserts that count.
+  And: the sample number is spaces only — no brackets, no dashes. Asserted in both suites, because
+  a preference stated once is a preference I will lose.
+  signin_ask_test is new, 33. signin_here_test moved from ids to classes with the shared form.
+  drawer.js v=186, site.css v=27.
+  Thirty-five suites. Green.
+  Left for him: hard reload, then open a public recording signed out and tag two moments.
+  Still no new trace.
+- NEXT → add entry 365 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
