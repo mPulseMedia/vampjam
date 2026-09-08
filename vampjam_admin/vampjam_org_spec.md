@@ -5171,7 +5171,28 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   who_add_test 94, up five. drawer.js v=172.
   Twenty-nine suites, 812 assertions. Green.
   Still no new trace.
-- NEXT → add entry 355 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 355 add_say · b363 · the button answers, because the answer was off the bottom of his screen.
+  "Nothing happens when I click Add them." Third time he has said that, and all three times the
+  page was talking to him out of view: the note line sits under the button, and on a phone the
+  button is the last thing on screen.
+  I checked the worker before saying anything: op=list answers 200, so the code is current and
+  unstarted() is true — one admin, one person, nothing private — so the add is allowed. Nothing
+  was wrong with the mechanism at all. He was clicking a control that worked and reading no reply.
+  So the button says it, because that is where his eye already is: Reading… → Added 1, or Did not
+  work, or Type a number first when the box is empty. Four seconds, then back to Add them. The
+  note line scrolls itself into view as well.
+  The empty-box case was worse than silent — it returned before doing anything and before saying
+  anything, which is literally "nothing happens". Now it focuses the box and says so.
+  This is the third failure in this run that was not a failure: the copy button in 347 said
+  "Failed to fetch" below the fold, the box in 353 said the worker was unreachable below the fold,
+  and now this. The pattern is mine and it is worth naming: I keep putting the machine's answer in
+  a place he is not looking at the moment he acts. Feedback belongs on the control that was
+  pressed, not in a status area beneath it.
+  who_add_test 97, up three: the button reports and resets, and an empty box is told rather than
+  ignored. drawer.js v=173.
+  Twenty-nine suites, 815 assertions. Green.
+  Still no new trace.
+- NEXT → add entry 356 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 

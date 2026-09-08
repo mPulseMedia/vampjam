@@ -197,6 +197,17 @@ async function worker(op, params, body) {
   ok('the line that was not a number is reported back',
      /banana/.test(after.note) && /not phone numbers/.test(after.note), after.note);
   ok('and the box is cleared for the next paste', after.empty === '', after.empty);
+  // "nothing happens when I click Add them" three times, from a line below the
+  // fold. The button itself has to answer, because that is where he is looking.
+  ok('the button itself says what happened',
+     /^Added 2$/.test(await p.textContent('#who_add')), await p.textContent('#who_add'));
+  await p.waitForTimeout(4300);
+  ok('and goes back to asking',   /^Add them$/.test(await p.textContent('#who_add')), await p.textContent('#who_add'));
+  await p.click('#who_add');
+  await p.waitForTimeout(300);
+  ok('an empty box is told, not ignored',
+     /Type a number first/.test(await p.textContent('#who_add'))
+     && /then Add them/.test(await p.textContent('#who_note')), await p.textContent('#who_note'));
 
   const w = WROTE && JSON.parse(WROTE.content);
   ok('the write goes to access.json',  WROTE && WROTE.path === 'access.json', WROTE && WROTE.path);

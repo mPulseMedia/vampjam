@@ -1554,7 +1554,18 @@
     var addBtn  = box.querySelector('#who_add');
     var openBtn = box.querySelector('#who_open');
 
-    function note(m, bad) { noteEl.textContent = m || ''; noteEl.className = 'who_note' + (bad ? ' bad' : ''); }
+    function note(m, bad) {
+      noteEl.textContent = m || '';
+      noteEl.className = 'who_note' + (bad ? ' bad' : '');
+      // he read "nothing happens" three times off a line that was below the fold
+      if (m) try { noteEl.scrollIntoView({ block: 'nearest' }); } catch (e) {}
+    }
+    // and the button says it too, because that is where his eye already is
+    var addWord = 'Add them';
+    function btn_say(m) {
+      addBtn.textContent = m || addWord;
+      if (m !== addWord) setTimeout(function () { addBtn.textContent = addWord; }, 4000);
+    }
     // "Failed to fetch" is the browser's sentence, not an answer. This is the
     // one that tells him which of his own steps is unfinished.
     // Say WHICH call failed and what it answered. One sentence covering three
@@ -1665,8 +1676,8 @@
     // one call for the whole paste, so twenty numbers cost one round trip
     function add() {
       var raw = inEl.value;
-      if (!raw.trim()) return;
-      addBtn.disabled = true; note('Reading them…');
+      if (!raw.trim()) { inEl.focus(); btn_say('Type a number first'); note('Type or paste a phone number above, then Add them.', true); return; }
+      addBtn.disabled = true; btn_say('Reading…'); note('Reading them…');
       fetch(A.url + '?op=ids', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ t: A.token(), phones: raw.split(/[\n,;]+/) })
@@ -1696,6 +1707,7 @@
             return save('access ' + page.split('/').pop()).then(function () {
               inEl.value = '';
               paint();
+              btn_say(added ? 'Added ' + added : 'Already there');
               note((over ? 'Started over. ' : '')
                 + added + (added === 1 ? ' added' : ' added')
                 + (bad.length ? ' · ' + bad.length + ' line' + (bad.length > 1 ? 's' : '')
@@ -1704,7 +1716,7 @@
             });
           });
         })
-        .catch(function (e) { note(reach(e, 'Adding them failed'), true); })
+        .catch(function (e) { btn_say('Did not work'); note(reach(e, 'Adding them failed'), true); })
         .then(function () { addBtn.disabled = false; });
     }
 
