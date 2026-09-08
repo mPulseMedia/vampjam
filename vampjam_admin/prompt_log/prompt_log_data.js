@@ -9,8 +9,49 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "358 ids_open",
+        id: "359 promote_none",
         expanded: true,
+        nodes: [
+          { text: "359 promote_none", children: [
+            { text: "prompt_restate", children: [
+              { text: "Are you sure about C3?" }
+            ]},
+            { text: "verbatim", children: [
+              { text: "you sure about C3" },
+              { text: "[screenshots: the row menu open \u2014 Rollback, Split versions, View logs; and on the live row, only View logs]" }
+            ]},
+            { text: "no_and_you_were_right_to_ask", children: [
+              { text: "there is no deploy in that menu" },
+              { text: "three wrong guesses at one control: a blue Promote deployment button twice, then Deploy this version" },
+              { text: "each time I wrote an instruction for a screen I had not seen" },
+              { text: "twice in the same build where I wrote a rule telling myself not to" }
+            ]},
+            { text: "what_your_screenshot_shows_is_better_news", children: [
+              { text: "top row: Updated secret: AUTH_SECRET, 3s ago, with a blue bar down its left edge" },
+              { text: "that bar marks the version serving traffic" },
+              { text: "saving the secret deployed it. there was nothing to promote" }
+            ]},
+            { text: "c2_now_teaches_the_bar", children: [
+              { text: "go to Deployments, look at the top row, blue bar means done" },
+              { text: "one warning kept, because it is your own history: five settings once sat as versions while an older one kept serving" }
+            ]},
+            { text: "c3_shrinks to the wrong-row case, and names Rollback \u2014 which despite its name is what changes which version serves" },
+            { text: "both wrong instructions are stated on the page, not quietly deleted \u2014 you went looking twice, and a runbook that silently drops what it said yesterday leaves you wondering what else it changed its mind about" },
+            { text: "one_consequence_you_could_not_have_known", children: [
+              { text: "you UPDATED the secret rather than adding it" },
+              { text: "every id in the list was computed under the old one, so they are all meaningless now" },
+              { text: "the mistyped admin can never be matched by anyone again" },
+              { text: "which is exactly the state yesterday's worker fix exists for" }
+            ]},
+            { text: "signin_test 54, signin_steps_test 76. twenty-eight suites, 781 assertions. green." },
+            { text: "rule restated narrower: do not write an instruction for a control until it appears in a screenshot of YOUR screen. not memory, not the vendor's docs, not a related screen. no screenshot \u2014 say which part is a guess and ask." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "358 ids_open",
+        expanded: false,
         nodes: [
           { text: "358 ids_open", children: [
             { text: "prompt_restate", children: [
