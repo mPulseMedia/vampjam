@@ -1,1 +1,1 @@
-promote_menu
+auto_commit
