@@ -9,8 +9,50 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "351 signin_number",
+        id: "352 phone_loose",
         expanded: true,
+        nodes: [
+          { text: "352 phone_loose", children: [
+            { text: "prompt_restate", children: [
+              { text: "The admin number does not stick, sessions will not take numbers, and matching should be forgiving." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I'm putting my number into the admin page, but it does not seem to stick. And I can't add other numbers to the session. The app should look for number matches both with and without area codes, and ready to ignore +1 and spaces, dashes, underscore, period,other similar ways of enter a phone number." }
+            ]},
+            { text: "cause_one_probably_yours", children: [
+              { text: "every write needs AUTH_SECRET to be RUNNING" },
+              { text: "without it the worker returned a 500 both pages swallowed into a shrug" },
+              { text: "you saved the secret and did not promote the version \u2014 so \"it does not stick\" was the site saying \"step C is not finished\"" },
+              { text: "it now says that sentence out loud. a tool that knows why it failed and does not say so is worse than one that does not know" }
+            ]},
+            { text: "cause_two_is_mine_and_worse", children: [
+              { text: "the box showed only to an admin, or to anybody while there was NO admin" },
+              { text: "add yourself as admin from the admin page, never sign in, and it goes invisible everywhere with no way back" },
+              { text: "the bootstrap closed the door behind you" },
+              { text: "it is always there now, with a phone field in it when you are signed out" },
+              { text: "a recovery path that needs the thing you have lost is not a recovery path" }
+            ]},
+            { text: "phone_loose", children: [
+              { text: "everything that is not a digit is punctuation \u2014 +1, spaces, dashes, dots, underscores, brackets" },
+              { text: "and a number has two ids now: the full form, and the last seven digits alone" },
+              { text: "so a number added WITH an area code answers when typed without one" },
+              { text: "asserted through the real worker on eight spellings plus the bare seven digits" },
+              { text: "honest edge: two people differing only by area code would collide. fine for a dozen friends, not for a big list" }
+            ]},
+            { text: "admin_stops_being_a_second_editor", children: [
+              { text: "two editors writing access.json is its own way of losing an edit, and you had two" },
+              { text: "it keeps the add-a-number form \u2014 the list has to be startable somewhere" },
+              { text: "Private recordings there is read-only now: a count and a pointer at the bottom of the recording" }
+            ]},
+            { text: "who_add_test 61, up seventeen" },
+            { text: "twenty-eight suites, 748 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "351 signin_number",
+        expanded: false,
         nodes: [
           { text: "351 signin_number", children: [
             { text: "prompt_restate", children: [
