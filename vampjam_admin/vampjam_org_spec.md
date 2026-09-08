@@ -5239,7 +5239,33 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Left for him, unchanged and now one click from where he is standing: 9176930105 into the phone
   box on the admin page, Add.
   Still no new trace.
-- NEXT → add entry 358 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 358 add_adds · b366 · Add adds. The rule that was meant to rescue him was deleting him.
+  He said he added himself on the Admin page and then could not sign in. I read the live list: one
+  person, label Eileen, ••9506, and SHE was the administrator. Not him. And the file carried a
+  stray top-level `ok: true`.
+  Both are mine, and the first is the serious one.
+  346 made "Add them" REPLACE the whole list whenever the list counted as not really started — at
+  most one person, nobody else, nothing private. That was written to rescue a mistyped first
+  number. What it actually does is delete you the moment you add your second person, because at
+  that moment the list still has one person in it. He added himself; a number went in for Eileen;
+  that add wiped him and made her the administrator. The code did exactly what I wrote and what I
+  wrote was wrong.
+  The flaw is the shape, not the threshold: a destructive action must never be a side effect of a
+  constructive one. Add adds, always, and removes nobody. Throwing the list away is now its own
+  button — "Start the list over" — shown only while nothing is set up, requiring a number to be
+  typed first, and asking before it does it, naming who it will remove.
+  The `ok` field: load() now comes from the worker's op=list, whose reply carries ok:true, and
+  save() was writing `acc` back whole. It writes only admins, people and sessions now. A response
+  envelope is not the thing it wraps, and I had let one become the other.
+  Asserted both ways: Add them leaves the existing administrator alone and produces two people;
+  only the labelled button, only after confirming, replaces; and nothing but the three real keys
+  is ever written.
+  who_add_test 103, up six. drawer.js v=174.
+  Thirty suites, 830 assertions. Green.
+  What he has to do: type his number, press Start the list over, confirm. Then Add them is safe
+  for everyone else, Eileen included.
+  Still no new trace.
+- NEXT → add entry 359 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
