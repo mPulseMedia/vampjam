@@ -1559,8 +1559,7 @@
       '<div class="hello_t">Come on in</div>'
       + '<div class="hello_w">Paul shared this recording. Your phone number is the whole sign-in '
       + '\u2014 no code, no password, nothing to wait for.</div>'
-      + phone_form_html()
-      + '<div class="hello_f">However you write it is fine.</div>';
+      + phone_form_html();
     var host = document.getElementById('gate');
     if (host && host.parentNode) host.parentNode.insertBefore(box, host);
     else (document.getElementById('fold_page') || document.body).appendChild(box);
@@ -1600,11 +1599,10 @@
       box.className = 'who_box ask_box';
       box.id = 'ask_box';
       box.innerHTML =
-        '<h2 class="who_h" id="ask_h">Signing in is optional</h2>'
-        + '<div class="who_hint" id="ask_w">This recording is open to anyone with the link. '
-        + 'Sign in and you will also see the ones Paul has shared with you.</div>'
-        + phone_form_html()
-        + '<div class="hello_f">However you write it is fine.</div>';
+        '<h2 class="who_h" id="ask_h">Sign in (optional)</h2>'
+        + '<div class="who_hint" id="ask_w">This recording is open to everyone. '
+        + 'Sign in to see private recordings Paul has shared with you.</div>'
+        + phone_form_html();
       (document.getElementById('fold_page') || document.body).appendChild(box);
       phone_form_wire(box, key, { deny: 'That number is not on any recording yet. Ask Paul to add it.' });
       nudge(box, marks());
@@ -1696,12 +1694,10 @@
       + '.hello_say{min-height:22px;margin-top:12px;line-height:1.5}'
       + '.hello_say:empty{min-height:0;margin-top:0}'
       + '.hello_say.bad{color:var(--danger,#c75450)}'
-      + '.hello_f{color:var(--muted);font-size:12.5px;margin-top:14px;text-align:center}'
       // the quiet one at the bottom borrows the share box's frame, because it
       // sits in the same slot and doing the same thing two ways is the habit
       // he keeps asking me to break.
       + '.ask_box .hello_in{text-align:left}'
-      + '.ask_box .hello_f{text-align:left;margin-top:10px}'
       + '.ask_box .hello_go{width:auto;padding:11px 22px;margin:10px 0 0}'
       + '.ask_box.ask_lit{border-color:var(--accent)}';
     document.head.appendChild(st);
@@ -1779,7 +1775,11 @@
     // Inside the fold wrapper when there is one. Appended to <body> it sat
     // OUTSIDE the element the unfold animates and clips, so arriving through
     // the transition left it out of the page until a reload.
-    (document.getElementById('fold_page') || document.body).appendChild(box);
+    var mounted = false;
+    function mount() {
+      if (mounted) return; mounted = true;
+      (document.getElementById('fold_page') || document.body).appendChild(box);
+    }
 
     var acc = null;
     var meEl    = box.querySelector('#who_me');
@@ -2014,43 +2014,39 @@
     // The administrator, and nobody else. There is no bootstrap here any more:
     // the first person to SIGN IN becomes the administrator, which is one rule
     // in one place instead of two rules in two.
-    get('the sign-in worker', A.url + '?op=status&t=' + Date.now(), { cache: 'no-store' })
-      .catch(function (e) { return { __bad: e.message }; })
-      .then(function (st) {
-        if (st && st.__bad) { shut_controls(st.__bad, 'the steps →'); return; }
-        if (!st || !st.ok) {
-          shut_controls('The sign-in worker answered, but not with an ok — '
-                      + JSON.stringify(st).slice(0, 120), 'the steps →');
-          return;
-        }
-        if (!st.secret) {
-          shut_controls('The worker is up but has no AUTH_SECRET running — it is probably saved '
-                      + 'and not promoted, so nothing here can be saved.', 'step C →');
-          return;
-        }
-        return A.me().then(function (me) {
-          // Signed out on THIS browser is the commonest of the three, and the
-          // only one with a cure a tap away. He signs in on his phone, looks at
-          // the Mac, and the box blinks out with no reason given - which is the
-          // same "nothing happens" as before, only faster.
-          if (!me || me.offline || me.signed_in !== true) {
-            shut_controls('You are not signed in on this browser, so there is nothing here to add '
-                        + 'numbers with. Your phone number is the whole sign-in.',
-                        'sign in \u2192',
-                        'signin.html?back=' + encodeURIComponent(page + location.search));
-            return;
-          }
-          if (me.admin !== true) {
-            shut_controls('Only the administrator adds numbers to a recording'
-                        + (me.label ? ' \u2014 you are signed in as ' + me.label : '') + '.',
-                        'your recordings \u2192', 'index.html#sessions');
-            return;
-          }
-          who_you(me);
-          return load().then(function () { paint(); });
-        });
+    // Who is asking comes FIRST, and everybody who is not the administrator gets
+    // no box at all rather than a box explaining itself. That reverses what 369
+    // did here, and the reason it is right now and was wrong then is that there
+    // IS something below it now: the sign-in offer speaks, so this one does not
+    // have to. Sharing is his tool. A stranger reading "only the administrator
+    // adds numbers" is being told about a control they will never have.
+    //
+    // It also means the box is never built for them, so it cannot flash. The
+    // rule from 369 stands where it was written: once this box is up, it never
+    // hides itself.
+    A.me()
+      .then(function (me) {
+        if (!me || me.offline || me.signed_in !== true || me.admin !== true) return null;
+        return get('the sign-in worker', A.url + '?op=status&t=' + Date.now(), { cache: 'no-store' })
+          .catch(function (e) { return { __bad: e.message }; })
+          .then(function (st) {
+            mount();
+            if (st && st.__bad) { shut_controls(st.__bad, 'the steps →'); return; }
+            if (!st || !st.ok) {
+              shut_controls('The sign-in worker answered, but not with an ok — '
+                          + JSON.stringify(st).slice(0, 120), 'the steps →');
+              return;
+            }
+            if (!st.secret) {
+              shut_controls('The worker is up but has no AUTH_SECRET running — it is probably saved '
+                          + 'and not promoted, so nothing here can be saved.', 'step C →');
+              return;
+            }
+            who_you(me);
+            return load().then(function () { paint(); });
+          });
       })
-      .catch(function (e) { shut_controls(reach(e, 'Something else failed'), 'the steps →'); });
+      .catch(function (e) { mount(); shut_controls(reach(e, 'Something else failed'), 'the steps →'); });
   }
 
   window.vampjamWhoMount = who_mount;
