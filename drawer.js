@@ -1541,12 +1541,141 @@
   // asks for a name, and the name is asked in exactly one place - signin.html.
   function signin_here(key) {
     if (document.getElementById('hello')) return;
-    var A = window.vampjamAuth;
-    if (!A) return;
+    if (!window.vampjamAuth) return;
     document.body.classList.add('gated');
     var g = document.getElementById('gate'); if (g) g.hidden = true;
     try { var pl = document.getElementById('player'); if (pl) pl.pause(); } catch (e) {}
+    signin_style();
+    var box = document.createElement('section');
+    box.className = 'hello';
+    box.id = 'hello';
+    box.innerHTML =
+      '<div class="hello_t">Come on in</div>'
+      + '<div class="hello_w">Paul shared this recording. Your phone number is the whole sign-in '
+      + '\u2014 no code, no password, nothing to wait for.</div>'
+      + phone_form_html()
+      + '<div class="hello_f">However you write it is fine.</div>';
+    var host = document.getElementById('gate');
+    if (host && host.parentNode) host.parentNode.insertBefore(box, host);
+    else (document.getElementById('fold_page') || document.body).appendChild(box);
+    phone_form_wire(box, key, { focus: true, deny: 'That number is not on this recording. Ask Paul to add it.' });
+  }
 
+  // signin_ask — the same field, sitting quietly at the bottom of a recording
+  // that did NOT need it. Most recordings are public and that is the point;
+  // nobody should have to sign in to hear one. But signing in is how anything
+  // private ever reaches you, so the offer belongs on the page, below the
+  // moments, the way sharing does - not as a wall in front of it.
+  //
+  // mark_count: the invitation stays quiet until you have tagged two moments.
+  // Somebody who has tagged twice is using the thing, and that is the moment to
+  // ask. It is still only an ask - nothing about it blocks, and there is
+  // nothing to dismiss, because it is a box on a page and not a popup.
+  var MARK_KEY = 'vampjam_marks';
+  var ASKED_KEY = 'vampjam_asked';
+  function marks() {
+    try { return parseInt(localStorage.getItem(MARK_KEY) || '0', 10) || 0; } catch (e) { return 0; }
+  }
+  function mark_up() {
+    var n = marks() + 1;
+    try { localStorage.setItem(MARK_KEY, String(n)); } catch (e) {}
+    return n;
+  }
+
+  function signin_ask(key) {
+    if (location.protocol === 'file:') return;
+    if (!document.getElementById('tag_list')) return;           // recordings only
+    if (document.getElementById('ask_box') || document.getElementById('hello')) return;
+    var A = window.vampjamAuth;
+    if (!A) return;
+
+    A.me().then(function (me) {
+      if (!me || me.offline || me.signed_in === true) return;   // signed in, or we cannot tell
+      if (document.body.classList.contains('gated')) return;    // the takeover has this page
+      signin_style();
+      var box = document.createElement('section');
+      box.className = 'who_box ask_box';
+      box.id = 'ask_box';
+      box.innerHTML =
+        '<h2 class="who_h" id="ask_h">Signing in is optional</h2>'
+        + '<div class="who_hint" id="ask_w">This recording is open to anyone with the link. '
+        + 'Sign in and you will also see the ones Paul has shared with you.</div>'
+        + phone_form_html()
+        + '<div class="hello_f">However you write it is fine.</div>';
+      (document.getElementById('fold_page') || document.body).appendChild(box);
+      phone_form_wire(box, key, { deny: 'That number is not on any recording yet. Ask Paul to add it.' });
+      nudge(box, marks());
+
+      // Tagging is what "using it" looks like here, so that is what is counted.
+      // The button is the whole gesture; every page has one and none of them
+      // share this file, so counting the tap is the one place that reaches all
+      // of them at once.
+      var tb = document.getElementById('tag_btn');
+      if (tb) tb.addEventListener('click', function () { nudge(box, mark_up()); });
+    }).catch(function () {});
+  }
+
+  // At two, it stops being furniture and says something - once. The words are
+  // about what he just did, not about what he is missing, and the last line
+  // says out loud that he can ignore it, because he can.
+  function nudge(box, n) {
+    if (n < 2) return;
+    var h = box.querySelector('#ask_h'), w = box.querySelector('#ask_w');
+    if (!h || h.dataset.nudged) return;
+    h.dataset.nudged = '1';
+    h.textContent = 'You have tagged ' + (n === 2 ? 'two moments' : n + ' moments');
+    w.textContent = 'Sign in with your phone number and Paul can share other recordings with you. '
+                  + 'You do not have to \u2014 keep tagging either way.';
+    box.classList.add('ask_lit');
+    var once = false;
+    try { once = !!localStorage.getItem(ASKED_KEY); localStorage.setItem(ASKED_KEY, '1'); } catch (e) {}
+    if (!once) try { box.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+  }
+
+  // one field and one button, drawn the same in both places, because they are
+  // the same sign-in and a second copy of it is a second thing to get wrong.
+  function phone_form_html() {
+    return '<input class="hello_in" type="tel" inputmode="tel" autocomplete="tel"'
+         + ' placeholder="(415) 555 1212" aria-label="Your phone number">'
+         + '<button class="hello_go" type="button">Sign in</button>'
+         + '<div class="hello_say" role="status"></div>';
+  }
+  function phone_form_wire(box, key, opt) {
+    var A = window.vampjamAuth;
+    var inEl = box.querySelector('.hello_in');
+    var goEl = box.querySelector('.hello_go');
+    var sayEl = box.querySelector('.hello_say');
+    function say(m, bad) { sayEl.textContent = m || ''; sayEl.className = 'hello_say' + (bad ? ' bad' : ''); }
+    function send() {
+      var v = (inEl.value || '').trim();
+      if (!v) { inEl.focus(); return; }
+      goEl.disabled = true; say('Checking\u2026');
+      fetch(A.url + '?op=enter', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                   body: JSON.stringify({ phone: v }) })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          goEl.disabled = false;
+          if (!j || !j.ok) {
+            say(j && j.unknown ? opt.deny : ((j && (j.why || j.error)) || 'Could not sign in'), true);
+            return;
+          }
+          // the very first number in owns the place, and that path asks for a
+          // name. One page owns the name, so hand it over rather than copy it.
+          if (j.first) { location.replace('signin.html?back=' + encodeURIComponent(key + location.search)); return; }
+          A.set(j.session);
+          say('You are in\u2026');
+          setTimeout(function () { location.reload(); }, 500);
+        })
+        .catch(function (e) { goEl.disabled = false; say('Could not reach the sign-in: ' + e.message, true); });
+    }
+    goEl.addEventListener('click', send);
+    inEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
+    if (opt.focus) try { inEl.focus(); } catch (e) {}
+  }
+
+  var styledYet = false;
+  function signin_style() {
+    if (styledYet) return; styledYet = true;
     var st = document.createElement('style');
     st.textContent =
       '.hello{max-width:420px;margin:26px auto 0;text-align:center;background:var(--panel);'
@@ -1564,57 +1693,14 @@
       + '.hello_say{min-height:22px;margin-top:12px;line-height:1.5}'
       + '.hello_say:empty{min-height:0;margin-top:0}'
       + '.hello_say.bad{color:var(--danger,#c75450)}'
-      + '.hello_f{color:var(--muted);font-size:12.5px;margin-top:14px}';
+      + '.hello_f{color:var(--muted);font-size:12.5px;margin-top:14px;text-align:center}'
+      // the quiet one at the bottom borrows the share box's frame, because it
+      // sits in the same slot and doing the same thing two ways is the habit
+      // he keeps asking me to break.
+      + '.ask_box .hello_in{text-align:left}'
+      + '.ask_box .hello_go{width:auto;padding:11px 22px;margin:10px 0 0}'
+      + '.ask_box.ask_lit{border-color:var(--accent)}';
     document.head.appendChild(st);
-
-    var box = document.createElement('section');
-    box.className = 'hello';
-    box.id = 'hello';
-    box.innerHTML =
-      '<div class="hello_t">Come on in</div>'
-      + '<div class="hello_w">Paul shared this recording. Your phone number is the whole sign-in '
-      + '\u2014 no code, no password, nothing to wait for.</div>'
-      + '<input class="hello_in" id="hello_in" type="tel" inputmode="tel" autocomplete="tel"'
-      + ' placeholder="(415) 555 1212" aria-label="Your phone number">'
-      + '<button class="hello_go" id="hello_go" type="button">Sign in</button>'
-      + '<div class="hello_say" id="hello_say" role="status"></div>'
-      + '<div class="hello_f">However you write it is fine.</div>';
-    var host = document.getElementById('gate');
-    if (host && host.parentNode) host.parentNode.insertBefore(box, host);
-    else (document.getElementById('fold_page') || document.body).appendChild(box);
-
-    var inEl = box.querySelector('#hello_in');
-    var goEl = box.querySelector('#hello_go');
-    var sayEl = box.querySelector('#hello_say');
-    function say(m, bad) { sayEl.textContent = m || ''; sayEl.className = 'hello_say' + (bad ? ' bad' : ''); }
-
-    function send() {
-      var v = (inEl.value || '').trim();
-      if (!v) { inEl.focus(); return; }
-      goEl.disabled = true; say('Checking\u2026');
-      fetch(A.url + '?op=enter', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-                                   body: JSON.stringify({ phone: v }) })
-        .then(function (r) { return r.json(); })
-        .then(function (j) {
-          goEl.disabled = false;
-          if (!j || !j.ok) {
-            say(j && j.unknown
-              ? 'That number is not on this recording. Ask Paul to add it.'
-              : ((j && (j.why || j.error)) || 'Could not sign in'), true);
-            return;
-          }
-          // the very first number in owns the place, and that path asks for a
-          // name. One page owns the name, so hand it over rather than copy it.
-          if (j.first) { location.replace('signin.html?back=' + encodeURIComponent(key + location.search)); return; }
-          A.set(j.session);
-          say('You are in\u2026');
-          setTimeout(function () { location.reload(); }, 500);
-        })
-        .catch(function (e) { goEl.disabled = false; say('Could not reach the sign-in: ' + e.message, true); });
-    }
-    goEl.addEventListener('click', send);
-    inEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
-    try { inEl.focus(); } catch (e) {}
   }
 
   // signed in and it is simply not one of theirs. Not a locked door — say so and
@@ -2178,6 +2264,7 @@
     // if he reloaded. That is exactly what a reload was fixing.
     try { gate_shut(); } catch (e) {}
     try { who_mount(); } catch (e) {}
+    try { signin_ask(window.PAGE_KEY || (location.pathname.split('/').pop() || '')); } catch (e) {}
     auth_me().then(function (me) {
       myAllow = (!me || me.offline || me.signed_in !== true) ? []
               : (me.allow === '*' ? '*' : (me.allow || []));
