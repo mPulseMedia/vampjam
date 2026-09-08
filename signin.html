@@ -188,22 +188,30 @@
         // the first person to sign in owns the place. The worker cannot write,
         // so the page writes it down — one number, admin, and that is the whole
         // of the setup. There is no separate "claim" step anywhere else.
+        // The name is asked for here, once, instead of being assumed: "you" is
+        // what the list called him for a week because nothing ever asked.
         if (j.first) {
+          var nm = (nameIn.value || '').trim().slice(0, 40) || 'you';
           tell('Setting you up as the administrator…');
           return fetch(SYNC, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ path: 'access.json', message: 'first sign-in — administrator',
               content: JSON.stringify({
                 admins: [j.id],
-                people: [{ id: j.id, id7: j.id7, label: 'you', last4: j.last4 }],
+                people: [{ id: j.id, id7: j.id7, label: nm, last4: j.last4 }],
                 sessions: {}
               }, null, 2) })
           }).then(function (r) { if (!r.ok) throw new Error('could not save (' + r.status + ')'); })
-            .then(function () { j.label = 'you'; show_signed_in(j); go_back(); },
+            .then(function () { j.label = nm; show_signed_in(j); go_back(); },
                   function (e) { tell('Signed in, but could not write the list: ' + e.message, true); });
         }
-        show_signed_in(j);
-        go_back();
+        // Ask the worker who that token is, rather than reading the sign-in's
+        // shorter answer: me() carries the id, and the id is what a rename
+        // needs. One extra call, on the one page where it matters.
+        return A.me().then(function (me) {
+          show_signed_in((me && me.signed_in) ? me : j);
+          go_back();
+        }, function () { show_signed_in(j); go_back(); });
       })
       .catch(function (err) { go.disabled = false; tell('Could not reach the server: ' + err.message, true); });
   }
@@ -214,7 +222,45 @@
     if (!/^[A-Za-z0-9_.\-]+\.html(\?[^#]*)?$/.test(to)) return;
     setTimeout(function () { location.replace(to); }, 900);
   }
+  // name_save — read the list, change this one person's label, write it back.
+  // Only the label moves; the id, the id7 and the last four are what everything
+  // else matches on and are never touched here.
+  function name_save() {
+    var nm = (newName.value || '').trim().slice(0, 40);
+    if (!nm) { newName.focus(); return; }
+    if (!meNow || !meNow.id) { tell('Sign in again first — this browser does not know who you are.', true); return; }
+    saveName.disabled = true;
+    tell('Saving your name…');
+    fetch(A.url + '?op=list&t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (acc) {
+        if (!acc || !acc.ok) throw new Error('the list would not open');
+        var out = { admins: acc.admins || [], people: acc.people || [], sessions: acc.sessions || {} };
+        var hit = out.people.filter(function (x) { return x && x.id === meNow.id; })[0];
+        if (hit) hit.label = nm;
+        else out.people.push({ id: meNow.id, label: nm });
+        return fetch(SYNC, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: 'access.json', message: 'name — ' + nm,
+                                 content: JSON.stringify(out, null, 2) })
+        }).then(function (r) { if (!r.ok) throw new Error('could not save (' + r.status + ')'); });
+      })
+      .then(function () {
+        saveName.disabled = false;
+        rename.hidden = true;
+        meNow.label = nm;
+        show_signed_in(meNow);
+        // GitHub serves the file from a cache, so the rest of the site can show
+        // the old name for a minute. Say that instead of letting him wonder.
+        tell('Saved. You are ' + nm + ' — it can take a minute to show everywhere else.');
+      })
+      .catch(function (e) { saveName.disabled = false; tell('Could not save your name: ' + e.message, true); });
+  }
+  saveName.addEventListener('click', name_save);
+  newName.addEventListener('keydown', function (e) { if (e.key === 'Enter') name_save(); });
+
   go.addEventListener('click', send);
+  nameIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
   phone.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
 })();
 </script>
