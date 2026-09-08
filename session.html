@@ -10,10 +10,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=24">
+<link rel="stylesheet" href="site.css?v=25">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=130"></script>
-<script src="drawer.js?v=182"></script>
+<script src="drawer.js?v=183"></script>
 <style>
   /* admin_same: the pre-theme fallback palette is in site.css now. */
   /* kbd_black: literal fallback so the page is never transparent (a
@@ -564,8 +564,10 @@
 </div>
 </div><!-- /sticky_player -->
 
-<!-- signin_gate — a restricted recording shows this instead of the player and
-     the moments. It is a courtesy, not a lock: the audio file still sits at a
+<!-- signin_gate — shown by drawer.js when you ARE signed in and this recording
+     is simply not one of yours. Signed out, drawer.js puts the sign-in itself
+     here instead (signin_here) rather than sending you to another address.
+     Either way it is a courtesy, not a lock: the audio file still sits at a
      public address, so anyone holding that address can still play it. The lock
      (audio behind the worker, public bucket address off) is its own build. -->
 <div class="gate" id="gate" hidden>
@@ -1641,38 +1643,6 @@
     audioUrlIn.value = '';
     audioLabelIn.value = '';
   }
-  // signin_gate — ask the auth worker who this is and whether this page is one
-  // they may open. Three rules, in this order:
-  //   · a recording nobody has restricted is open to everyone, as before
-  //   · a worker that cannot be reached does NOT lock anyone out
-  //   · otherwise, restricted and not on the list = the gate
-  (function () {
-    var A = window.vampjamAuth;
-    if (!A) return;
-    var gate = document.getElementById('gate');
-    fetch('access.json?v=' + Date.now(), { cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (acc) {
-        var rule = acc && acc.sessions && acc.sessions[PAGE_KEY];
-        if (!rule || rule.mode !== 'list') return;          // not restricted
-        return A.me().then(function (me) {
-          if (me.offline) return;                            // never lock out on an outage
-          var ok = me.signed_in && (me.allow === '*' || (me.allow || []).indexOf(PAGE_KEY) >= 0);
-          if (ok) return;
-          document.body.classList.add('gated');
-          gate.hidden = false;
-          if (me.signed_in) {
-            document.getElementById('gate_why').textContent =
-              'You are signed in, but this recording has not been shared with you. Ask Paul to add you.';
-            document.getElementById('gate_go').textContent = 'Your recordings';
-          }
-          document.getElementById('gate_go').href =
-            'signin.html?back=' + encodeURIComponent(PAGE_KEY);
-          try { document.getElementById('player').pause(); } catch (e) {}
-        });
-      })
-      .catch(function () {});
-  })();
 
   // name_edit — the pencil sits beside the title, so it renames the title. It
   // used to open the audio-file form, whose FIRST field was the file URL: the

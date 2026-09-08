@@ -336,6 +336,9 @@ button.ghost { font-size: 17px; }
    beside it. He signed in and was called "you" for a week. */
 .who_me { color: var(--muted); margin: 0 0 6px; }
 .who_me[hidden] { display: none; }
+/* Behind the sign-in there is nothing to administer, and two boxes saying
+   "you are not signed in" is one box too many. */
+body.gated .who_box { display: none; }
 .who_state { color: var(--muted); margin-bottom: 10px; }
 .who_state.shut { color: var(--fg); }
 .who_list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
