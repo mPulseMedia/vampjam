@@ -9,8 +9,48 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "352 phone_loose",
+        id: "353 who_say",
         expanded: true,
+        nodes: [
+          { text: "353 who_say", children: [
+            { text: "prompt_restate", children: [
+              { text: "Session pages only; it needs a reload to appear; and Add them does nothing." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "I think the ability to add phone numbers to a a session should appear on the bottom of every session page, but not the other pages and by the way when when I do see it there, I have to reload the page to when viewing a session. I have to reload the page to get the who can open this recording thing and when I do get it, I can't click add item. Nothing happens when I click it." }
+            ]},
+            { text: "three_reports_one_root", children: [
+              { text: "reproduced with the worker unreachable, which is your actual state" },
+              { text: "the click DID fire. the handler ran, the fetch failed" },
+              { text: "and the page wrote the browser's own words \u2014 \"Failed to fetch\" \u2014 into a line at the bottom of a box below the fold" },
+              { text: "so it worked, said so where you could not see it, in language that is not an answer" }
+            ]},
+            { text: "it_no_longer_waits_to_appear", children: [
+              { text: "it was hidden until two network calls came back" },
+              { text: "with a worker that never answers, that is until the fetch times out \u2014 which is what \"I have to reload\" was" },
+              { text: "it renders on the first paint now. waiting is not hiding" }
+            ]},
+            { text: "it_asks_before_offering_a_dead_button", children: [
+              { text: "no worker at all \u2014 says so, links to the steps" },
+              { text: "worker up but no AUTH_SECRET running \u2014 named as saved-and-not-promoted, which is where you are" },
+              { text: "and in both it puts the paste box and the button AWAY" },
+              { text: "a dead control is a worse lie than a missing one" }
+            ]},
+            { text: "\"Failed to fetch\" is gone \u2014 it now says it could not reach the worker, that it is not deployed or the address differs, and where to look" },
+            { text: "session_pages_only", children: [
+              { text: "already true, but true by accident rather than by assertion" },
+              { text: "asserted now: favorites, admin, sign-in, recorder and the steps page get nothing" },
+              { text: "index.html deliberately not in that list \u2014 it forwards to the newest recording, so it IS one by the time it loads" }
+            ]},
+            { text: "who_add_test 72, up eleven" },
+            { text: "twenty-eight suites, 759 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "352 phone_loose",
+        expanded: false,
         nodes: [
           { text: "352 phone_loose", children: [
             { text: "prompt_restate", children: [
