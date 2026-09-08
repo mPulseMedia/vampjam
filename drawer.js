@@ -1701,6 +1701,7 @@
       // sits in the same slot and doing the same thing two ways is the habit
       // he keeps asking me to break.
       + '.ask_box .hello_in{text-align:left}'
+      + '.ask_box .hello_f{text-align:left;margin-top:10px}'
       + '.ask_box .hello_go{width:auto;padding:11px 22px;margin:10px 0 0}'
       + '.ask_box.ask_lit{border-color:var(--accent)}';
     document.head.appendChild(st);
