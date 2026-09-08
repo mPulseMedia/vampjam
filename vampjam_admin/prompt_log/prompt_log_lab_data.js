@@ -9,8 +9,45 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "359 promote_none",
+        id: "361 list_worker",
         expanded: true,
+        nodes: [
+          { text: "361 list_worker", children: [
+            { text: "prompt_restate", children: [
+              { text: "Tell me how to reset the admin number, not how to upload. And make the instructions look like signin_steps." }
+            ]},
+            { text: "verbatim", children: [
+              { text: "No, I mean tell me what I need to do to get to reset who the Admin phone number is not to upload files I've got that in OK shape" },
+              { text: "make instuctions look like claude_cowork/vampjam/signin_steps.html" },
+              { text: "[screenshot: Something else failed \u2014 the list (access.json) could not be reached (Failed to fetch)]" }
+            ]},
+            { text: "the_diagnostic_paid_for_itself_in_one_screenshot", children: [
+              { text: "not the worker. the worker had already answered on that same page" },
+              { text: "it was the SAME-ORIGIN file that would not go through" },
+              { text: "which is why every guess before this was wrong \u2014 I was looking at the wrong end, and the page could not tell me otherwise" }
+            ]},
+            { text: "so_the_dependency_is_gone", children: [
+              { text: "a same-origin GET that rejects rather than 404s is a browser refusing to make the request at all \u2014 a content blocker, most likely on a file called access.json" },
+              { text: "the worker now has op=list, returning the same file it already reads" },
+              { text: "one origin for everything. the file stays as a fallback" },
+              { text: "asserted with your actual failure: access.json blocked, worker fine, box works anyway" }
+            ]},
+            { text: "second time today a diagnostic beat a theory, and both times the theory was mine and the diagnostic was three lines. when a symptom survives two fixes, stop fixing and make the thing say what it sees" },
+            { text: "the_restyle", children: [
+              { text: "do-this-next is built like signin_steps now \u2014 standalone, navy sheet, cream panels, the number column, Archivo" },
+              { text: "a now panel, three numbered steps, a warning panel" },
+              { text: "one drawing: your own box, with the ring round the sentence that grants the permission" },
+              { text: "so you recognise it rather than hunting for a control" }
+            ]},
+            { text: "next_look_test is new, 20 \u2014 the design measured, not claimed" },
+            { text: "twenty-nine suites, 807 assertions. green." },
+            { text: "still no new trace" }
+          ]}
+        ]
+      },
+      {
+        id: "359 promote_none",
+        expanded: false,
         nodes: [
           { text: "359 promote_none", children: [
             { text: "prompt_restate", children: [

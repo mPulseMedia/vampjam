@@ -5115,7 +5115,37 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   who_add_test 88, up three.
   Twenty-eight suites, 787 assertions. Green.
   Still no new trace.
-- NEXT → add entry 353 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 353 list_worker · b361 · the diagnostic paid for itself in one screenshot, and do-this-next
+  wears the steps page's clothes.
+  352 made the box name the failing call. His next screenshot: "Something else failed — the list
+  (access.json) could not be reached (Failed to fetch) · access.json?v=1788851957316". Not the
+  worker. The worker had already answered on the same page. It was the SAME-ORIGIN file that would
+  not go through — which is why every guess before this was wrong: I was looking at the wrong end
+  of it, and the page could not tell me otherwise.
+  A same-origin GET that rejects rather than 404s is a browser refusing to make the request at
+  all — a content blocker, most likely on a file called access.json. Rather than guess at the rule
+  or ask him to go turning things off, the dependency is gone: the worker has an `op=list` that
+  returns the same file it already reads, and the page asks that. One origin for everything, one
+  failure mode. The file stays as a fallback if the worker call fails, so nothing is lost.
+  Asserted the actual shape of his failure: access.json aborted by the client, worker fine, box
+  works anyway.
+  This is the second time a diagnostic beat a theory today, and both times the theory was mine and
+  the diagnostic was three lines. Worth the habit: when the same symptom survives two fixes, stop
+  fixing and make the thing say what it sees.
+  And the restyle he asked for. do-this-next is now built like signin_steps rather than like an
+  app screen: standalone, no site.css and no drawer, navy sheet, cream panels, the 74px number
+  column, Archivo 800 over an uppercase kicker, amber counters. A `now` panel saying where things
+  stand, three numbered panels, and a warning panel. One drawing — of his own box, with the ring
+  round the sentence that grants the permission, so he knows it when he sees it rather than
+  hunting for a control.
+  Dropping site.css means it also drops one_size, which is right: it is a runbook now, in the same
+  family as the steps page, and that family was already exempted deliberately in 341.
+  next_look_test is new, 20: the design measured off getComputedStyle rather than claimed; the
+  panel sequence now/1/2/3/!; the standing-where-things-stand opening; each step's substance;
+  the window that closes behind him; the one ringed drawing; and no Twilio anywhere.
+  who_add_test 89. Twenty-nine suites, 807 assertions. Green.
+  Still no new trace.
+- NEXT → add entry 354 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
