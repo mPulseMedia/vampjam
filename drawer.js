@@ -1636,11 +1636,51 @@
   // one field and one button, drawn the same in both places, because they are
   // the same sign-in and a second copy of it is a second thing to get wrong.
   function phone_form_html() {
+    // The sample shows a name in front of the number, because the sample is the
+    // only instruction anybody reads. A number alone is what people typed when
+    // that is what the box showed. The keyboard stays the phone one - a name is
+    // welcome, not required, and nothing rejects a bare number.
     return '<input class="hello_in" type="tel" inputmode="tel" autocomplete="tel"'
-         + ' placeholder="415 555 1212" aria-label="Your phone number">'
+         + ' placeholder="Dave 415 555 1212" aria-label="Your name and phone number">'
          + '<button class="hello_go" type="button">Sign in</button>'
          + '<div class="hello_say" role="status"></div>';
   }
+
+  // name_from — whatever is left of a line once every digit and every way of
+  // punctuating a phone number is taken out of it. The worker does exactly this
+  // to name the people he pastes in; this is the same rule on the other side of
+  // the door, so a person names themselves the way he would have named them.
+  function name_from(line) {
+    return String(line || '')
+      .replace(/[+()\-.\s]/g, ' ')
+      .replace(/\d/g, ' ')
+      .replace(/[<>,;:"']/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 40);
+  }
+  window.vampjamNameFrom = name_from;
+
+  // name_keep — a name typed at the door is only worth asking for if it is kept.
+  // It writes only when there is one AND it is not already what the list says,
+  // so an ordinary sign-in costs nothing extra.
+  function name_keep(nm) {
+    if (!nm) return Promise.resolve();
+    var A = window.vampjamAuth;
+    return A.me().then(function (me) {
+      if (!me || me.signed_in !== true || !me.id || me.label === nm) return;
+      return fetch(A.url + '?op=list&t=' + Date.now(), { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (acc) {
+          if (!acc || !acc.ok) return;
+          var out = { admins: acc.admins || [], people: acc.people || [], sessions: acc.sessions || {} };
+          var hit = out.people.filter(function (x) { return x && x.id === me.id; })[0];
+          if (hit) hit.label = nm; else out.people.push({ id: me.id, label: nm });
+          return sync_write('access.json', JSON.stringify(out, null, 2), 'name — ' + nm);
+        });
+    }).catch(function () {});          // a name that will not save must not stop a sign-in
+  }
+  window.vampjamNameKeep = name_keep;
   function phone_form_wire(box, key, opt) {
     var A = window.vampjamAuth;
     var inEl = box.querySelector('.hello_in');
@@ -1662,10 +1702,13 @@
           }
           // the very first number in owns the place, and that path asks for a
           // name. One page owns the name, so hand it over rather than copy it.
-          if (j.first) { location.replace('signin.html?back=' + encodeURIComponent(key + location.search)); return; }
+          if (j.first) { location.replace('signin.html?back=' + encodeURIComponent(key
+                         + location.search) + '&name=' + encodeURIComponent(name_from(v))); return; }
           A.set(j.session);
           say('You are in\u2026');
-          setTimeout(function () { location.reload(); }, 500);
+          name_keep(name_from(v)).then(function () {
+            setTimeout(function () { location.reload(); }, 400);
+          });
         })
         .catch(function (e) { goEl.disabled = false; say('Could not reach the sign-in: ' + e.message, true); });
     }

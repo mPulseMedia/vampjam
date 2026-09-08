@@ -64,9 +64,7 @@
 
 <div class="box" id="ask">
   <input type="tel" id="phone" inputmode="tel" autocomplete="tel"
-         placeholder="415 555 1212" aria-label="Your phone number">
-  <input type="text" id="name" autocomplete="name" autocapitalize="words"
-         placeholder="Your name (optional)" aria-label="Your name">
+         placeholder="Dave 415 555 1212" aria-label="Your name and phone number">
   <button class="go" id="go">Sign in</button>
 </div>
 
@@ -91,7 +89,6 @@
   var say = document.getElementById('say'), ask = document.getElementById('ask');
   var who = document.getElementById('who'), list = document.getElementById('list');
   var head = document.getElementById('head'), lede = document.getElementById('lede');
-  var nameIn = document.getElementById('name');
   var rename = document.getElementById('rename');
   var newName = document.getElementById('new_name'), saveName = document.getElementById('save_name');
   var meNow = null;                       // the last full answer about who this is
@@ -170,6 +167,11 @@
   function send() {
     var v = (phone.value || '').trim();
     if (!v) { phone.focus(); return; }
+    try {
+      var carried = new URLSearchParams(location.search).get('name') || '';
+      if (carried && !(window.vampjamNameFrom ? window.vampjamNameFrom(v) : ''))
+        v = carried + ' ' + v;
+    } catch (e) {}
     go.disabled = true;
     tell('Checking…');
     fetch(A.url + '?op=enter', {
@@ -191,7 +193,7 @@
         // The name is asked for here, once, instead of being assumed: "you" is
         // what the list called him for a week because nothing ever asked.
         if (j.first) {
-          var nm = (nameIn.value || '').trim().slice(0, 40) || 'you';
+          var nm = (window.vampjamNameFrom ? window.vampjamNameFrom(v) : '') || 'you';
           tell('Setting you up as the administrator…');
           return fetch(SYNC, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -208,10 +210,15 @@
         // Ask the worker who that token is, rather than reading the sign-in's
         // shorter answer: me() carries the id, and the id is what a rename
         // needs. One extra call, on the one page where it matters.
-        return A.me().then(function (me) {
-          show_signed_in((me && me.signed_in) ? me : j);
-          go_back();
-        }, function () { show_signed_in(j); go_back(); });
+        // A name typed in front of the number is a person naming themselves.
+        // One implementation of keeping it, shared with the boxes on a recording.
+        var typed = window.vampjamNameFrom ? window.vampjamNameFrom(v) : '';
+        return (window.vampjamNameKeep ? window.vampjamNameKeep(typed) : Promise.resolve())
+          .then(function () { return A.me(); })
+          .then(function (me) {
+            show_signed_in((me && me.signed_in) ? me : j);
+            go_back();
+          }, function () { show_signed_in(j); go_back(); });
       })
       .catch(function (err) { go.disabled = false; tell('Could not reach the server: ' + err.message, true); });
   }
@@ -260,7 +267,6 @@
   newName.addEventListener('keydown', function (e) { if (e.key === 'Enter') name_save(); });
 
   go.addEventListener('click', send);
-  nameIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
   phone.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
 })();
 </script>
