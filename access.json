@@ -6,9 +6,21 @@
     {
       "id": "8jE2NDw4MZfOYt3L98GciIz0rb58Oma5JI_tgC7XIjc",
       "id7": "uv0alSm_5rtp96b7_ZOPV3aTDCbCLOaqB3BFwzc0pWo",
-      "label": "Paul",
+      "label": "you",
       "last4": "0105"
+    },
+    {
+      "id": "yLw9Zge39SOyLVfTd8P03qsaSvqks_ILYGrDYOTjpfI",
+      "id7": "yLw9Zge39SOyLVfTd8P03qsaSvqks_ILYGrDYOTjpfI",
+      "label": "Paul",
+      "last4": "0102"
     }
   ],
-  "sessions": {}
+  "sessions": {
+    "session.html?p=2026_09_05_san_francisco_5_44_14p": {
+      "allow": [
+        "yLw9Zge39SOyLVfTd8P03qsaSvqks_ILYGrDYOTjpfI"
+      ]
+    }
+  }
 }
