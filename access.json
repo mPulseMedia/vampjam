@@ -1,6 +1,14 @@
 {
-  "admins": [],
-  "people": [],
+  "admins": [
+    "8jE2NDw4MZfOYt3L98GciIz0rb58Oma5JI_tgC7XIjc"
+  ],
+  "people": [
+    {
+      "id": "8jE2NDw4MZfOYt3L98GciIz0rb58Oma5JI_tgC7XIjc",
+      "label": "Paul",
+      "last4": "0105"
+    }
+  ],
   "sessions": {},
   "cleared": "2026-09-08 — the first admin was a mistyped number and only that number could change the list. Emptied here so the next number added anywhere becomes the administrator."
 }
