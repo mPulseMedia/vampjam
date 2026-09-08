@@ -333,7 +333,11 @@ async function worker(op, params, body) {
              pasteGone: !!inp && inp.hidden, btnGone: !!btn && btn.hidden };
   });
   ok('with no worker the box still appears',   d.shown === true, d.shown);
-  ok('and says the worker is not there',       /worker is not there yet/.test(d.note), d.note);
+  ok('and names which call failed, and its address',
+     /the sign-in worker could not be reached/.test(d.note)
+     && /workers\.dev/.test(d.note), d.note);
+  ok('and offers to open that address in this browser',
+     /open the worker in this browser/.test(d.note), d.note);
   ok('and points at the steps',                d.link === true, d.link);
   ok('the paste box is put away, not left dead', d.pasteGone && d.btnGone, JSON.stringify(d));
 
@@ -365,6 +369,18 @@ async function worker(op, params, body) {
   const h = await half.evaluate(() => document.getElementById('who_note').textContent);
   ok('a saved-but-not-promoted secret is named as the reason',
      /no AUTH_SECRET running/.test(h) && /promoted/.test(h), h);
+
+  // and a failure in the OTHER call must not be reported as the worker
+  const other = await ctx2.newPage();
+  await ctx2.route(/op=status/, (r) => r.fulfill({ status: 200, contentType: 'application/json',
+    body: JSON.stringify({ ok: true, worker: true, secret: true, admins: 0, people: 0, private: 0 }) }));
+  await ctx2.route(/access\.json/, (r) => r.fulfill({ status: 404, body: '' }));
+  await other.goto('https://vampsf.com/2026_08_14_sound_union.html');
+  await other.waitForTimeout(1600);
+  const on = await other.evaluate(() => document.getElementById('who_note').textContent);
+  ok('a broken list is not blamed on the worker',
+     /access\.json/.test(on) && /404/.test(on) && !/sign-in worker could not/.test(on), on);
+  await other.close();
   await ctx2.close();
 
   // ---------- arriving through the fold, not by typing the address ----------

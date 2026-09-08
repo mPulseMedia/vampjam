@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="site.css?v=23">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=130"></script>
-<script src="drawer.js?v=170"></script>
+<script src="drawer.js?v=171"></script>
 <style>
   h1 { font-size: 20px; margin: 14px 0 4px; }
   .sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; }
@@ -64,134 +64,54 @@
 </header>
 
 <h1>Do this next</h1>
-<div class="sub">This page only ever holds things that are <b>waiting on you</b>. If it's empty, nothing is.
-Everything else I do myself — you don't need to act on anything I send into the chat.</div>
-
-<div class="why">
-  <b>The worker is running.</b> Its Active deployment reads <b>96a945f0</b>, which is the newest
-  version, so <b>AUTH_SECRET</b> is live. That was step 1 and it is done — nothing to do on
-  Cloudflare at all now.
-  <br><br>
-  For the record, because I got this wrong three times: there is no "Promote deployment" button
-  and no "Deploy this version" in the row menu. Adding a secret normally deploys it there and
-  then, and what tells you which version is live is the <b>blue bar down the left edge</b> of its
-  row in Version History. If the bar is on the wrong row, the <b>…</b> on the row you want offers
-  <b>Rollback</b> — which, despite the name, is the control that changes what serves.
-</div>
+<div class="sub">One thing. Everything else is mine.</div>
 
 <div class="one_thing">
   <div class="one_num">1</div>
   <div>
-    <div class="one_title">Put your own number back</div>
-    <div class="one_why">The first number added became the administrator and it has a typo in it —
-    the last four are right (0105), the rest is not, and a number cannot be read back out of what
-    is stored. Open any recording, scroll to the <b>bottom</b>, and add
-    <b>917-693-0105</b>. It replaces the wrong one.</div>
+    <div class="one_title">Tell me what your browser sees</div>
+    <div class="one_why">The box at the bottom of a recording says it cannot reach the sign-in
+    worker. From out here the worker answers perfectly. So the difference is your browser, and I
+    have guessed three times already instead of finding out.
+    <br><br>
+    Open this in the <b>same browser</b>, on the <b>same phone or Mac</b> where the box failed:
+    <br><br>
+    <a href="https://vampjam-auth.crimson-dust-a18d.workers.dev/?op=status" target="_blank" rel="noopener"><b>the worker's own answer →</b></a>
+    <br><br>
+    Then tell me which you got. That is the whole ask.</div>
   </div>
 </div>
 
 <div class="why">
-  That box only offers to start over while there is one number on the list and nothing is private
-  — which is exactly now. Add a second person, or close one recording, and it stops offering and
-  asks you to sign in instead.
+  <b>If you see a line of JSON</b> — something like
+  <code>{"ok":true,"worker":true,"secret":true,…}</code> — then the worker is fine and the page is
+  being blocked from calling it. Content blocker, a VPN, or a network that does not like
+  <b>workers.dev</b>. Turning a blocker off for vampsf.com is the first thing to try.
   <br><br>
-  Then you are done: paste numbers at the bottom of whichever recordings you want shared, and the
-  people you pasted type their number at
-  <a href="signin.html">the sign-in page</a> to get in.
+  <b>If you see an error</b>, paste it to me exactly as it reads.
+  <br><br>
+  Either way the box itself now names which call failed and what it answered, instead of one
+  sentence that covered three different problems. Reload a recording and it will tell you more
+  than it did in your screenshot.
 </div>
 
-<div class="one_thing">
-  <div class="one_num">2</div>
-  <div>
-    <div class="one_title">Check one name I guessed</div>
-    <div class="one_why">I renamed
-    <a href="session.html?p=2026_09_04_11_23p_portola_valley">2026-09-04 11:23p</a> to
-    <b>The Farm</b> and that was a guess. The pencil beside the name changes it if I got it
-    wrong.</div>
-  </div>
-</div>
-
-<div class="section-label">Twilio is out</div>
+<div class="section-label">Then, and only then</div>
 <div class="why">
-  <b>You were right that it was a distraction.</b> Three credentials, five settings, a toll-free
-  verification queue that would have taken days, and an error code — all to deliver a link whose
-  only job was to prove someone can read a text.
-  <br><br>
-  A number on a list is the whole sign-in now. No text message, no link, no waiting.
-  <br><br>
-  <b>The honest cost, so it is not a surprise later:</b> a phone number is not a password. Anyone
-  who knows a number you have added can type it and be signed in as that person. That is a fair
-  trade for keeping a jam session out of the way of strangers and search engines. It is not one
-  for anything you would mind being wrong about.
-  <br><br>
-  If <b>TWILIO_SID</b>, <b>TWILIO_TOKEN</b>, <b>TWILIO_FROM</b> or <b>SITE</b> are still sitting
-  in the worker's settings, leave them. The program ignores them. Deleting them is tidying, not a
-  step. Same with the Twilio account itself — nothing here uses it.
+  Any recording → the bottom → paste <b>917-693-0105</b> → <b>Add them</b>. That takes over from
+  the mistyped number and makes you the administrator. Everything after that is just pasting
+  numbers into whichever recordings you want shared.
 </div>
 
-<div class="section-label">Fixed this morning, while you were away</div>
+<div class="section-label">Where things stand, so you are not wondering</div>
 <div class="why">
-  <b>A recording had quietly lost its audio.</b> The 1h35m San Francisco one uploaded perfectly
-  yesterday — and then a tap on <b>Tag the Moment</b>, a few seconds later while the page was
-  still loading, saved an empty page over the top of it. The upload was fine; the page destroyed
-  it afterwards, in silence.
+  &middot; the worker is deployed and <b>AUTH_SECRET is running</b> — I checked it directly, not
+  from your screen<br>
+  &middot; the list still holds only the mistyped number; nothing you tried has written yet<br>
+  &middot; every recording is still open to anyone with the link, exactly as before — nothing is
+  half-gated<br>
+  &middot; Twilio is gone and none of it is coming back
   <br><br>
-  It is back — audio and the real moment — and the page can no longer do that: it refuses to save
-  anything until it has finished reading, and refuses outright to write a session with no audio.
-  If you tap too early now it says <i>still loading</i> and waits.
-  <br><br>
-  <b>And 415 MB back on your Mac.</b> Two copies of the 08-07 Sound Union recording were
-  byte-for-byte identical to a third — proven, not guessed. They are in
-  <b>audio/_to_delete/</b> — and you are at the Mac, so that folder can go in the bin now if you
-  want the space back. The original, the version the site uses, and
-  the QuickTime master are all untouched.
-</div>
-
-<div class="section-label">Where the list of people lives</div>
-<div class="why">
-  <b>Not on the admin page — at the bottom of each recording.</b> Open the one you want to share,
-  scroll to the end, and there is a box: <b>Who can open this recording</b>.
-  <br><br>
-  Paste numbers in however they are written down — one per line, or commas, with or without the
-  area code, with brackets, dashes, dots or a <code>+1</code>. Names on the same line are fine:
-  <b>Dave 415 555 1212</b>. Each becomes a small tag with the name and the last two digits, and
-  anything that was not a phone number is handed back to you rather than quietly dropped.
-  <br><br>
-  <b>Adding the first person makes that recording private.</b> Everything you do not touch stays
-  open to anyone with the link, exactly as it is today. <b>Let anyone in</b>, in the same box,
-  puts one back.
-  <br><br>
-  <a href="signin_steps.html"><b>The whole thing, step by step →</b></a> — it is five parts now
-  instead of seven, and the last one is this box rather than anything on Cloudflare.
-</div>
-
-<div class="section-label">Optional — only if you want the second listen to be free</div>
-<div class="why">
-  The light file is the whole win here: about a third of the bytes, every time. What it does
-  <i>not</i> do is stop your phone fetching the file again the next time you open the session.
-  <br><br>
-  <b>I cannot fix that from here, and I want to be straight about why.</b> The address your files
-  sit at (<code>pub-…​.r2.dev</code>) is Cloudflare's plain development address. It sends no
-  caching instruction to your phone, and there is no setting on that address to change it. To
-  change it you have to put a <b>custom domain</b> on the bucket — say
-  <code>audio.vampsf.com</code> — and then add one <b>Cache Rule</b> that tells browsers to keep
-  the file for a month. Roughly fifteen minutes in the Cloudflare dashboard.
-  <br><br>
-  <b>Worth knowing before you spend those fifteen minutes:</b> iPhone Safari throws audio out of
-  its cache fairly aggressively on its own, so this buys less on a phone than it sounds like it
-  should. It is a real improvement, not a large one.
-  <br><br>
-  Say <b>"do the domain"</b> and I'll write this page out as steps with pictures, the same way as
-  the upload. Otherwise I'll leave it alone — the big saving is already live.
-</div>
-
-<div class="section-label">Nothing else is waiting on you</div>
-<div class="why">
-  These are mine, listed so you can see they're not forgotten and not yours:
-  <br><br>
-  &middot; the five sessions still served from GitHub releases rather than R2<br>
-  &middot; the ~1.2&nbsp;GB of duplicate 08-07 cuts sitting in <b>audio/</b> on your Mac<br>
-  &middot; re-checking the older housekeeping items on the org page — several are stale
+  <b>Nothing is broken and nothing is at risk.</b> The sign-in is the only thing not finished.
 </div>
 
 <div class="section-label">About the files I send into the chat</div>

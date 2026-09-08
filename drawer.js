@@ -1536,11 +1536,21 @@
     function note(m, bad) { noteEl.textContent = m || ''; noteEl.className = 'who_note' + (bad ? ' bad' : ''); }
     // "Failed to fetch" is the browser's sentence, not an answer. This is the
     // one that tells him which of his own steps is unfinished.
-    function reach(e) {
-      var m = (e && e.message) || '';
-      return /fetch|network|load failed/i.test(m)
-        ? 'Could not reach the sign-in worker. It is not deployed yet, or its address is different — see the sign-in steps page.'
-        : m;
+    // Say WHICH call failed and what it answered. One sentence covering three
+    // different failures sent him hunting a worker that was answering fine from
+    // everywhere except his browser, and sent me guessing three times.
+    function reach(e, what) {
+      var m = (e && e.message) || String(e || '');
+      return (what || 'something') + ' — ' + m;
+    }
+    // every fetch through here reports its own name, url and status
+    function get(name, url, opt) {
+      return fetch(url, opt).then(function (r) {
+        if (!r.ok) throw new Error(name + ' answered ' + r.status + ' · ' + url);
+        return r.json().catch(function () { throw new Error(name + ' did not answer JSON · ' + url); });
+      }, function (err) {
+        throw new Error(name + ' could not be reached (' + (err && err.message) + ') · ' + url);
+      });
     }
     function shut_controls(why, link) {
       inEl.hidden = true; addBtn.hidden = true; openBtn.hidden = true;
@@ -1553,6 +1563,15 @@
         a.href = 'signin_steps.html'; a.textContent = link;
         noteEl.appendChild(a);
       }
+      // and the address itself, to open in this same browser: if it answers
+      // there and not here, the difference is the browser, not the worker
+      var br = document.createElement('div');
+      br.style.marginTop = '6px';
+      var a2 = document.createElement('a');
+      a2.href = A.url + '?op=status'; a2.target = '_blank'; a2.rel = 'noopener';
+      a2.textContent = 'open the worker in this browser';
+      br.appendChild(a2);
+      noteEl.appendChild(br);
     }
     function rule() { return (acc.sessions && acc.sessions[page]) || {}; }
     // A typo in the very first number used to be unrecoverable: that number is
@@ -1596,8 +1615,7 @@
     }
 
     function load() {
-      return fetch('access.json?v=' + Date.now(), { cache: 'no-store' })
-        .then(function (r) { return r.ok ? r.json() : null; })
+      return get('the list (access.json)', 'access.json?v=' + Date.now(), { cache: 'no-store' })
         .then(function (j) {
           acc = (j && typeof j === 'object') ? j : {};
           acc.admins = acc.admins || []; acc.people = acc.people || []; acc.sessions = acc.sessions || {};
@@ -1649,7 +1667,7 @@
             });
           });
         })
-        .catch(function (e) { note(reach(e), true); })
+        .catch(function (e) { note(reach(e, 'Adding them failed'), true); })
         .then(function () { addBtn.disabled = false; });
     }
 
@@ -1705,7 +1723,7 @@
             A.set(j.session);
             location.reload();
           })
-          .catch(function (e) { note(reach(e), true); });
+          .catch(function (e) { note(reach(e, 'Signing in failed'), true); });
       }
       wrap.querySelector('#who_go').addEventListener('click', go);
       wrap.querySelector('#who_phone').addEventListener('keydown', function (e) {
@@ -1716,12 +1734,16 @@
     // Ask the worker how it is before offering him a button that cannot work.
     // He clicked Add, nothing appeared to happen, and the reason — no worker —
     // was a browser error string in a line below the fold.
-    fetch(A.url + '?op=status&t=' + Date.now(), { cache: 'no-store' })
-      .then(function (r) { return r.json(); })
-      .catch(function () { return null; })
+    var STATUS_URL = A.url + '?op=status&t=' + Date.now();
+    get('the sign-in worker', STATUS_URL, { cache: 'no-store' })
+      .catch(function (e) { return { __bad: e.message }; })
       .then(function (st) {
+        if (st && st.__bad) {
+          shut_controls(st.__bad, 'the steps →');
+          return;
+        }
         if (!st || !st.ok) {
-          shut_controls('The sign-in worker is not there yet, so nothing here can be saved.',
+          shut_controls('The sign-in worker answered, but not with an ok — ' + JSON.stringify(st).slice(0, 120),
                         'the steps →');
           return;
         }
@@ -1752,7 +1774,7 @@
           });
         });
       })
-      .catch(function (e) { shut_controls(reach(e), 'the steps →'); });
+      .catch(function (e) { shut_controls(reach(e, 'Something else failed'), 'the steps →'); });
   }
   window.vampjamWhoMount = who_mount;
 

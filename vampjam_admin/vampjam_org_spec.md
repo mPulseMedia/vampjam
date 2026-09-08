@@ -5081,7 +5081,34 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   instruction for a control until it appears in a screenshot of HIS screen. Not from memory, not
   from the vendor's docs, not from a related screen. If there is no screenshot, say which part is
   a guess and ask for one.
-- NEXT → add entry 352 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 352 reach_name · b360 · the box names which call failed, and do-this-next is one thing.
+  His screenshot: "Could not reach the sign-in worker." I fetched both endpoints from outside
+  before saying anything this time. The worker answers
+  {ok:true,worker:true,secret:true,admins:1,people:1,private:0} and vampsf.com/access.json serves
+  200. Both fine. So the failure is inside his browser and I had no way to tell which of three
+  calls produced it — because I had collapsed all three into one sentence.
+  That sentence was mine, from 353, and it was the wrong shape: it named a cause ("not deployed
+  yet, or its address is different") for a symptom that has several. It sent him to look at a
+  worker that was working, and it sent me guessing.
+  Every fetch in the box now goes through one helper that reports its own name, its url and what
+  it answered: "the sign-in worker could not be reached (Failed to fetch) · https://…", or "the
+  list (access.json) answered 404 · …". A failure in one is never reported as the other — asserted
+  by breaking access.json and requiring that the worker is not blamed.
+  And the box now offers the worker's own address as a link to open in that same browser. If it
+  answers in the tab and not in the page, the difference is the browser — a content blocker, a
+  VPN, a network that dislikes workers.dev — and that is a different fix from anything on
+  Cloudflare.
+  do-this-next cut to one item, which is what he asked for: open that address in the browser where
+  it failed and tell me which you got, with what each answer means. Then the number. Then a short
+  "where things stand" so he is not carrying uncertainty: worker deployed and AUTH_SECRET running,
+  checked directly rather than from his screen; the list still holds only the mistyped number;
+  every recording still open; Twilio gone. Nothing broken, nothing at risk.
+  drawer.js v=171 across every page — and this time in the same build as the change, not three
+  builds later.
+  who_add_test 88, up three.
+  Twenty-eight suites, 787 assertions. Green.
+  Still no new trace.
+- NEXT → add entry 353 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
