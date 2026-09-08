@@ -50,7 +50,7 @@ window.prompt_log_data = [
               { text: "it asserts the reading ORDER, not just that the parts exist" },
               { text: "the order was the whole request" },
               { text: "who_add_test and who_name_test held the old wording, rewritten" },
-              { text: "thirty-four suites, green" }
+              { text: "thirty-four suites, 931 assertions, green" }
             ]},
             { text: "codename_list", children: [
               { text: "share_ready \u00b7 who_hint \u00b7 who_copy \u00b7 who_state \u00b7 copy_link" }

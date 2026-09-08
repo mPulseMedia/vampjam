@@ -5407,7 +5407,7 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   parts — the order was the whole request. who_add_test and who_name_test held the old wording;
   rewritten.
   drawer.js v=184, site.css v=26.
-  Thirty-four suites. Green.
+  Thirty-four suites, 931 assertions. Green.
   Left for him: hard reload, then look at the bottom of any recording.
   Still no new trace.
 - NEXT → add entry 364 here (codename · bN · change) — every prompt that edits the page, no exceptions.
