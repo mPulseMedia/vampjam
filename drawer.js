@@ -1526,11 +1526,96 @@
               && (me.allow === '*' || (me.allow || []).indexOf(key) >= 0)) return;
           if (me.signed_in === true) { shut_out(); return; }
           if (me.signed_in !== false) return;                  // half an answer
-          location.replace('signin.html?back=' + encodeURIComponent(key + location.search));
+          signin_here(key);
         });
       })
       .catch(function () {});
   }
+  // signin_here — the sign-in comes to the page rather than the page sending
+  // him to the sign-in. Somebody follows a link to a recording, and being
+  // bounced to a different address is a door slamming; one field on the page he
+  // asked for is a doorman. Few words, all of them load-bearing: what this is,
+  // what to type, and that there is nothing else coming.
+  //
+  // The one thing it does NOT do is bootstrap a first administrator. That path
+  // asks for a name, and the name is asked in exactly one place - signin.html.
+  function signin_here(key) {
+    if (document.getElementById('hello')) return;
+    var A = window.vampjamAuth;
+    if (!A) return;
+    document.body.classList.add('gated');
+    var g = document.getElementById('gate'); if (g) g.hidden = true;
+    try { var pl = document.getElementById('player'); if (pl) pl.pause(); } catch (e) {}
+
+    var st = document.createElement('style');
+    st.textContent =
+      '.hello{max-width:420px;margin:26px auto 0;text-align:center;background:var(--panel);'
+      + 'border:1px solid var(--panel_3);border-radius:16px;padding:22px 18px}'
+      + '.hello_t{font-weight:600;font-size:19px}'
+      + '.hello_w{color:var(--muted);line-height:1.55;margin:8px 0 16px}'
+      + '.hello_in{width:100%;box-sizing:border-box;font-size:17px;padding:13px 14px;'
+      + 'border-radius:12px;border:1px solid var(--panel_3);background:var(--bg,var(--panel));'
+      + 'color:var(--fg);text-align:center}'
+      + '.hello_in:focus{border-color:var(--accent);outline:none}'
+      + '.hello_go{display:block;width:100%;margin:10px 0 0;border:none;border-radius:999px;'
+      + 'background:var(--accent);color:var(--on_accent,#fff);font-weight:700;padding:14px 18px;'
+      + 'font-size:17px;cursor:pointer}'
+      + '.hello_go:disabled{opacity:.5;cursor:default}'
+      + '.hello_say{min-height:22px;margin-top:12px;line-height:1.5}'
+      + '.hello_say.bad{color:var(--danger,#c75450)}'
+      + '.hello_f{color:var(--muted);font-size:12.5px;margin-top:14px}';
+    document.head.appendChild(st);
+
+    var box = document.createElement('section');
+    box.className = 'hello';
+    box.id = 'hello';
+    box.innerHTML =
+      '<div class="hello_t">Come on in</div>'
+      + '<div class="hello_w">Paul shared this recording. Your phone number is the whole sign-in '
+      + '\u2014 no code, no password, nothing to wait for.</div>'
+      + '<input class="hello_in" id="hello_in" type="tel" inputmode="tel" autocomplete="tel"'
+      + ' placeholder="(415) 555 1212" aria-label="Your phone number">'
+      + '<button class="hello_go" id="hello_go" type="button">Sign in</button>'
+      + '<div class="hello_say" id="hello_say" role="status"></div>'
+      + '<div class="hello_f">However you write it is fine.</div>';
+    var host = document.getElementById('gate');
+    if (host && host.parentNode) host.parentNode.insertBefore(box, host);
+    else (document.getElementById('fold_page') || document.body).appendChild(box);
+
+    var inEl = box.querySelector('#hello_in');
+    var goEl = box.querySelector('#hello_go');
+    var sayEl = box.querySelector('#hello_say');
+    function say(m, bad) { sayEl.textContent = m || ''; sayEl.className = 'hello_say' + (bad ? ' bad' : ''); }
+
+    function send() {
+      var v = (inEl.value || '').trim();
+      if (!v) { inEl.focus(); return; }
+      goEl.disabled = true; say('Checking\u2026');
+      fetch(A.url + '?op=enter', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                   body: JSON.stringify({ phone: v }) })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          goEl.disabled = false;
+          if (!j || !j.ok) {
+            say(j && j.unknown
+              ? 'That number is not on this recording. Ask Paul to add it.'
+              : ((j && (j.why || j.error)) || 'Could not sign in'), true);
+            return;
+          }
+          // the very first number in owns the place, and that path asks for a
+          // name. One page owns the name, so hand it over rather than copy it.
+          if (j.first) { location.replace('signin.html?back=' + encodeURIComponent(key + location.search)); return; }
+          A.set(j.session);
+          say('You are in\u2026');
+          setTimeout(function () { location.reload(); }, 500);
+        })
+        .catch(function (e) { goEl.disabled = false; say('Could not reach the sign-in: ' + e.message, true); });
+    }
+    goEl.addEventListener('click', send);
+    inEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') send(); });
+    try { inEl.focus(); } catch (e) {}
+  }
+
   // signed in and it is simply not one of theirs. Not a locked door — say so and
   // point at the list, which holds everything they CAN open.
   function shut_out() {
