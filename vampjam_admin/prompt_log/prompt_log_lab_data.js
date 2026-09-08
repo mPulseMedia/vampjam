@@ -9,8 +9,71 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "368 one_door",
+        id: "369 who_name",
         expanded: true,
+        nodes: [
+          { text: "369 who_name", children: [
+            { text: "prompt_restate", children: [
+              { text: "I didn't put my name in so want to redo it" },
+              { text: "I can't add protection to the other recordings" },
+              { text: "the prompt to add a phone number appears and disappears immediately" }
+            ]},
+            { text: "first_i_checked_the_worker_not_your_screen", children: [
+              { text: "op=status answers ok \u2014 secret true, 1 admin, 1 person" },
+              { text: "op=shut answers too, so the code running IS current" },
+              { text: "you pasted it. Only the pages were wrong" }
+            ]},
+            { text: "appear_and_disappear", children: [
+              { text: "who_mount shows the box, then asks the worker who is looking" },
+              { text: "on anything but admin it set box.hidden = true \u2014 silently" },
+              { text: "that is the same \"nothing happens\" I already fixed twice" },
+              { text: "signed in on your phone, looking at the Mac, is exactly that branch" }
+            ]},
+            { text: "it_never_hides_now", children: [
+              { text: "signed out \u2192 says so, and offers the sign-in with ?back= to this recording" },
+              { text: "signed in as someone else \u2192 only the administrator adds numbers, and it names who it thinks you are" },
+              { text: "shut_controls grew a destination" },
+              { text: "and offers the worker's address only when the worker is the suspect" }
+            ]},
+            { text: "the_other_recordings", children: [
+              { text: "same fault \u2014 nothing in the box was ever per-recording, it reads PAGE_KEY" },
+              { text: "with the box visible it works on every one" },
+              { text: "a second recording goes private on its own, first one's list untouched" }
+            ]},
+            { text: "your_name", children: [
+              { text: "signin.html wrote the literal word \"you\" because nothing ever asked" },
+              { text: "the sign-in now has an optional name field, used on the first sign-in" },
+              { text: "and signed in you get \"change my name\" right there" },
+              { text: "it moves that one label and nothing else about you" },
+              { text: "the who box says \"Signed in as X \u00b7 change your name\" and links to that same page" },
+              { text: "no second editor for one field" },
+              { text: "it warns that GitHub's cache lags a minute, instead of letting you wonder" }
+            ]},
+            { text: "one_more_thing_the_signin_needed", children: [
+              { text: "after a normal sign-in it asks me() rather than using enter's shorter answer" },
+              { text: "enter does not carry the id, and a rename needs it" }
+            ]},
+            { text: "tests", children: [
+              { text: "who_name_test is new, 43" },
+              { text: "two assertions are about my mistakes, not the product" },
+              { text: "every page asks for THIS build's drawer.js and site.css \u2014 I broke that three builds running" },
+              { text: "and who_mount contains no box.hidden = true anywhere" },
+              { text: "an assertion that a thing is gone is the only kind that stops it coming back" },
+              { text: "thirty-two suites, 909 assertions, green" }
+            ]},
+            { text: "codename_list", children: [
+              { text: "who_name \u00b7 who_you \u00b7 shut_controls \u00b7 who_me \u00b7 name_save \u00b7 meNow \u00b7 rename" }
+            ]},
+            { text: "left_for_you", children: [
+              { text: "open a recording \u2014 the box is there with a reason, whatever state you are in" },
+              { text: "hard reload once for drawer.js v=182" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "368 one_door",
+        expanded: false,
         nodes: [
           { text: "368 one_door", children: [
             { text: "prompt_restate", children: [
