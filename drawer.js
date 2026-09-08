@@ -1516,12 +1516,18 @@
     if (!document.getElementById('tag_list')) return;          // recordings only
     var key = window.PAGE_KEY || (location.pathname.split('/').pop() || '');
     if (!key) return;
+    // Both boxes hang off this one answer. They used to decide separately and
+    // race: the quiet one only needed me(), the loud one needed this fetch too,
+    // so on a private recording the quiet one arrived first and they stacked.
+    // One question, one place, and the two outcomes are branches of it.
     fetch(AUTH_URL + '?op=shut&t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (j) {
-        if (!j || !j.ok || (j.shut || []).indexOf(key) < 0) return;   // open
+        if (!j || !j.ok) return;                               // no answer: offer nothing
+        var priv = (j.shut || []).indexOf(key) >= 0;
         return auth_me().then(function (me) {
           if (!me || me.offline) return;
+          if (!priv) { signin_ask(key, me); return; }           // open: the quiet offer
           if (me.signed_in === true
               && (me.allow === '*' || (me.allow || []).indexOf(key) >= 0)) return;
           if (me.signed_in === true) { shut_out(); return; }
@@ -1582,16 +1588,13 @@
     return n;
   }
 
-  function signin_ask(key) {
+  function signin_ask(key, me) {
     if (location.protocol === 'file:') return;
     if (!document.getElementById('tag_list')) return;           // recordings only
     if (document.getElementById('ask_box') || document.getElementById('hello')) return;
-    var A = window.vampjamAuth;
-    if (!A) return;
-
-    A.me().then(function (me) {
-      if (!me || me.offline || me.signed_in === true) return;   // signed in, or we cannot tell
-      if (document.body.classList.contains('gated')) return;    // the takeover has this page
+    if (!window.vampjamAuth) return;
+    if (!me || me.offline || me.signed_in === true) return;     // signed in, or we cannot tell
+    (function () {
       signin_style();
       var box = document.createElement('section');
       box.className = 'who_box ask_box';
@@ -1612,7 +1615,7 @@
       // of them at once.
       var tb = document.getElementById('tag_btn');
       if (tb) tb.addEventListener('click', function () { nudge(box, mark_up()); });
-    }).catch(function () {});
+    })();
   }
 
   // At two, it stops being furniture and says something - once. The words are
@@ -2264,7 +2267,6 @@
     // if he reloaded. That is exactly what a reload was fixing.
     try { gate_shut(); } catch (e) {}
     try { who_mount(); } catch (e) {}
-    try { signin_ask(window.PAGE_KEY || (location.pathname.split('/').pop() || '')); } catch (e) {}
     auth_me().then(function (me) {
       myAllow = (!me || me.offline || me.signed_in !== true) ? []
               : (me.allow === '*' ? '*' : (me.allow || []));
