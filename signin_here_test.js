@@ -78,7 +78,7 @@ let SET = null;
   ok('one field, not a form',                   h.fields === 1, h.fields);
   ok('and the phone keypad opens for it',       h.type === 'tel', h.type);
   ok('the example shows how to write it',       /415/.test(h.ph), h.ph);
-  ok('spaces only in it — no brackets, no dashes', /^[0-9 ]+$/.test(h.ph || ''), h.ph);
+  ok('no brackets and no dashes in it',         /^[A-Za-z0-9 ]+$/.test(h.ph || ''), h.ph);
   ok('the button says what it does',            h.btn === 'Sign in', h.btn);
   ok('and nothing else is on it',               h.words < 40 && h.fields === 1, h.words);
   ok('few words — the whole box under forty',   h.words < 40, h.words);
@@ -105,13 +105,15 @@ let SET = null;
   ENTER = { ok: true, session: 'SESS_DAVE', label: 'Dave', admin: false, allow: [SHUT] };
   await p.fill('.hello .hello_in', '(415) 555-1212');
   await p.click('.hello .hello_go');
-  await p.waitForTimeout(400);
-  ok('a number that is on it is welcomed',
-     /You are in/.test(await p.evaluate(() => document.querySelector('.hello .hello_say').textContent)),
-     await p.evaluate(() => document.querySelector('.hello .hello_say').textContent));
-  ok('and the session is kept on this browser',
-     (await p.evaluate(() => localStorage.getItem('vampjam_signin'))) === 'SESS_DAVE',
-     await p.evaluate(() => localStorage.getItem('vampjam_signin')));
+  await p.waitForTimeout(220);
+  // read both in one pass: the page reloads itself a moment later, and a second
+  // evaluate lands after the navigation and dies
+  const got = await p.evaluate(() => ({
+    say: document.querySelector('.hello .hello_say').textContent,
+    tok: localStorage.getItem('vampjam_signin')
+  }));
+  ok('a number that is on it is welcomed',      /You are in/.test(got.say), got.say);
+  ok('and the session is kept on this browser', got.tok === 'SESS_DAVE', got.tok);
   await p.close();
 
   // ---------- an open recording is untouched ----------

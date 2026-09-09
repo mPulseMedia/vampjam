@@ -169,14 +169,19 @@ let ENTER = { ok: false, why: 'nothing set up in this test' };
     const L = await look({ ok: true, signed_in: false });
     await L.p.goto('https://vampsf.com/signin.html');
     await L.p.waitForTimeout(900);
-    const asked = await L.p.evaluate(() => {
-      const n = document.getElementById('name');
-      return n ? { there: !n.hidden, ph: n.getAttribute('placeholder') } : null;
-    });
-    ok('the sign-in asks for a name',            !!asked && asked.there, JSON.stringify(asked));
-    ok('and says it is optional',                asked && /optional/i.test(asked.ph), asked && asked.ph);
-    await L.p.fill('#phone', '917 693 0105');
-    await L.p.fill('#name', 'Paul');
+    // 375 folded the separate name field back into the one line: the sample
+    // shows "Dave 415 555 1212", so the name rides in with the number here the
+    // same as it does at a recording's door. Two fields asking for one identity
+    // was the second door again.
+    const asked = await L.p.evaluate(() => ({
+      fields: document.querySelectorAll('#ask input').length,
+      gone: !document.getElementById('name'),
+      ph: document.getElementById('phone').getAttribute('placeholder')
+    }));
+    ok('the sign-in asks for a name in the one field',
+       asked.fields === 1 && asked.gone, JSON.stringify(asked));
+    ok('and shows one in the sample',            /^Dave /.test(asked.ph), asked.ph);
+    await L.p.fill('#phone', 'Paul 917 693 0105');
     await L.p.click('#go');
     await L.p.waitForTimeout(1200);
     const w = L.wrote();

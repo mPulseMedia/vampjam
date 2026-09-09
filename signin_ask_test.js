@@ -93,8 +93,8 @@ const SHUT = '2026_08_14_sound_union.html';   // somebody on it
   // he asked for the sample number to carry no punctuation at all - spaces only
   const phs = await L.p.evaluate(() => [...document.querySelectorAll('input[type=tel]')]
     .map(i => i.getAttribute('placeholder')));
-  ok('the sample number is spaces only, no brackets or dashes',
-     phs.length > 0 && phs.every(x => /^[0-9 ]+$/.test(x || '')), JSON.stringify(phs));
+  ok('the sample number has no brackets and no dashes',
+     phs.length > 0 && phs.every(x => /^[A-Za-z0-9 ]+$/.test(x || '')), JSON.stringify(phs));
   ok('nothing to dismiss — it is a box, not a popup',
      v.buttons.length === 1 && v.modal !== 'fixed', v.buttons.join('|') + ' ' + v.modal);
   ok('few words',                             v.words < 45, v.words);

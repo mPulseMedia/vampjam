@@ -9,8 +9,66 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "373 share_mine",
+        id: "374 signin_name",
         expanded: true,
+        nodes: [
+          { text: "374 signin_name", children: [
+            { text: "prompt_restate", children: [
+              { text: "the example should show a given name AND a phone number" },
+              { text: "not just the phone number" },
+              { text: "so people are motivated to put in their name" }
+            ]},
+            { text: "the_sample_is_the_instruction", children: [
+              { text: "it is the only instruction anybody reads" },
+              { text: "show \"415 555 1212\" and people type a number" },
+              { text: "show \"Dave 415 555 1212\" and they type their name" },
+              { text: "changed in all three doors \u2014 the quiet offer, the private door, the sign-in page" }
+            ]},
+            { text: "which_makes_it_a_promise", children: [
+              { text: "a sample asking for something the app throws away is decoration" },
+              { text: "name_from reads what is left once every digit and phone punctuation is out" },
+              { text: "the SAME rule the worker uses to name the people you paste in" },
+              { text: "so a person names themselves exactly as you would have named them" },
+              { text: "name_keep writes it, only when there is one and the list does not already say it" },
+              { text: "a name that will not save never stops a sign-in" }
+            ]},
+            { text: "nothing_is_required", children: [
+              { text: "a bare number is still fine everywhere" },
+              { text: "nothing rejected, and the field is still the phone keypad" }
+            ]},
+            { text: "the_signin_page_lost_its_second_field", children: [
+              { text: "two fields asking for one identity was the second door again" },
+              { text: "the sample carries the instruction there too now" },
+              { text: "and a name typed at a recording travels across in the address" },
+              { text: "so changing page to ask for a name does not lose the name you gave" }
+            ]},
+            { text: "one_of_each", children: [
+              { text: "both halves live in drawer.js, signin.html borrows them" },
+              { text: "the test asserts there is one of each, not two" }
+            ]},
+            { text: "i_loosened_my_own_assertion", children: [
+              { text: "372 asserted the sample was \"spaces only\" \u2014 digits and spaces" },
+              { text: "your rule was no brackets and no dashes" },
+              { text: "loosened to what you said, not to what I happened to ship" }
+            ]},
+            { text: "tests", children: [
+              { text: "signin_name_test new, 30" },
+              { text: "three suites held the old sample" },
+              { text: "thirty-six suites, green" }
+            ]},
+            { text: "codename_list", children: [
+              { text: "signin_name \u00b7 name_from \u00b7 name_keep" }
+            ]},
+            { text: "left_for_you", children: [
+              { text: "hard reload for drawer.js v=188" },
+              { text: "sign in as \"Paul 917 693 0105\" and the name sticks" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "373 share_mine",
+        expanded: false,
         nodes: [
           { text: "373 share_mine", children: [
             { text: "prompt_restate", children: [

@@ -5466,7 +5466,34 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Thirty-five suites, 958 assertions. Green.
   Left for him: hard reload, then look at a recording signed out and signed in.
   Still no new trace.
-- NEXT → add entry 366 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 366 signin_name · b374 · the sample shows a name, so the name has to be kept.
+  His point, and it is the whole of the design: the sample in the box is the only instruction
+  anybody reads. Show "415 555 1212" and people type a number. Show "Dave 415 555 1212" and they
+  type their name. So the sample changed in all three doors — the quiet offer, the door on a
+  private recording, and the sign-in page.
+  Which makes the name a promise. A sample that asks for something the app throws away is
+  decoration, and that is rule nine again. So: name_from reads whatever is left of the line once
+  every digit and every way of punctuating a phone number is taken out of it — the SAME rule the
+  worker uses to name the people he pastes in, so a person names themselves exactly as he would
+  have named them. name_keep writes it, and only when there is one and the list does not already
+  say it, so an ordinary sign-in costs nothing extra. A name that will not save never stops a
+  sign-in.
+  A bare number is still fine everywhere. Nothing is required, nothing is rejected, and the field
+  is still the phone keypad.
+  signin.html lost its separate name field. Two fields asking for one identity was the second door
+  again — the sample now carries the instruction, the way it does at a recording. The first
+  sign-in from a recording carries the typed name across in the address, so changing page to ask
+  for a name does not lose the name he already gave.
+  Both halves live in drawer.js and signin.html borrows them; the test asserts there is one of
+  each, not two.
+  signin_name_test is new, 30. Three suites held the old sample: my own "spaces only" assertion
+  from 372 was too tight — his rule was no brackets and no dashes, not digits only. Loosened to
+  what he actually said rather than to what I happened to ship.
+  drawer.js v=188.
+  Thirty-six suites. Green.
+  Left for him: hard reload, then sign in as "Paul 917 693 0105" and the name sticks.
+  Still no new trace.
+- NEXT → add entry 367 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
