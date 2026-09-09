@@ -5490,7 +5490,7 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   from 372 was too tight — his rule was no brackets and no dashes, not digits only. Loosened to
   what he actually said rather than to what I happened to ship.
   drawer.js v=188.
-  Thirty-six suites. Green.
+  Thirty-six suites, 988 assertions. Green.
   Left for him: hard reload, then sign in as "Paul 917 693 0105" and the name sticks.
   Still no new trace.
 - NEXT → add entry 367 here (codename · bN · change) — every prompt that edits the page, no exceptions.

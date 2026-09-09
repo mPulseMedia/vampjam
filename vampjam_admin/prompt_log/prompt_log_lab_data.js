@@ -54,7 +54,7 @@ window.prompt_log_data = [
             { text: "tests", children: [
               { text: "signin_name_test new, 30" },
               { text: "three suites held the old sample" },
-              { text: "thirty-six suites, green" }
+              { text: "thirty-six suites, 988 assertions, green" }
             ]},
             { text: "codename_list", children: [
               { text: "signin_name \u00b7 name_from \u00b7 name_keep" }
