@@ -9,8 +9,51 @@ window.prompt_log_data = [
     expanded: true,
     entries: [
       {
-        id: "374 signin_name",
+        id: "375 file_up",
         expanded: true,
+        nodes: [
+          { text: "375 file_up", children: [
+            { text: "prompt_restate", children: [
+              { text: "I have a new file that I need to upload. How do I do it?" }
+            ]},
+            { text: "i_checked_before_answering", children: [
+              { text: "record.html uploads what it RECORDS, in 8 MB parts, and builds the session" },
+              { text: "that path is fine and you already have it" },
+              { text: "for a file you already have there is no path at all" },
+              { text: "the audio form on a session takes a URL, which assumes it is already somewhere" },
+              { text: "so the honest answer was \"there is no button\" \u2014 and I asked which way you wanted it" }
+            ]},
+            { text: "the_page", children: [
+              { text: "audio_steps.html was a runbook for six files from months ago, orphaned" },
+              { text: "rewritten as the reusable one" },
+              { text: "name the file \u00b7 sign in \u00b7 open the bucket \u00b7 drag it on \u00b7 tell me the name" },
+              { text: "five steps, four of them yours" },
+              { text: "the two screen drawings kept \u2014 they came from Cloudflare's docs and the page says so" },
+              { text: "\"drop the six here\" is now \"drop it here\"" }
+            ]},
+            { text: "what_you_will_see", children: [
+              { text: "you land on the account home, not on R2 \u2014 that is expected" },
+              { text: "the row appearing in the Objects list is how you know it finished" },
+              { text: "and a closing section for the three things likeliest to happen instead" }
+            ]},
+            { text: "not_shipped_and_worth_naming", children: [
+              { text: "the button" },
+              { text: "the upload worker takes 8 MB parts and needs no secret" },
+              { text: "a file picker wired to it is a small build" },
+              { text: "and it would delete all five of these steps" }
+            ]},
+            { text: "codename_list", children: [
+              { text: "file_up \u00b7 audio_steps" }
+            ]},
+            { text: "left_for_you", children: [
+              { text: "the five steps, then paste me the filename" }
+            ]}
+          ]}
+        ]
+      },
+      {
+        id: "374 signin_name",
+        expanded: false,
         nodes: [
           { text: "374 signin_name", children: [
             { text: "prompt_restate", children: [

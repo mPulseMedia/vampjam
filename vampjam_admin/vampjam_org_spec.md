@@ -5493,7 +5493,31 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   Thirty-six suites, 988 assertions. Green.
   Left for him: hard reload, then sign in as "Paul 917 693 0105" and the name sticks.
   Still no new trace.
-- NEXT → add entry 367 here (codename · bN · change) — every prompt that edits the page, no exceptions.
+- 367 file_up · b375 · a runbook for putting a file you already have on the site.
+  He asked how to upload a new file. I checked rather than answered: record.html uploads what it
+  records in the browser, in 8 MB parts, and builds the session — that is the path he already has
+  and it is fine. There is no path at all for a file he already has. The session page's audio form
+  takes a URL, which assumes the file is already somewhere. So the honest answer was "there is no
+  button", and I said so and asked which way he wanted it. He chose the manual steps now.
+  audio_steps.html was a runbook for one batch of six files from months ago, orphaned — nothing
+  links to it. Rewritten as the reusable one: name the file, sign in, open the bucket, drag it on,
+  tell me the name. Five steps, four of them his.
+  The two screen drawings are kept because they were made from Cloudflare's own documentation and
+  the page still says so on its face. The one thing in them that was about the old batch — "drop
+  the six here" — is now "drop it here".
+  What each step says you will SEE is the half that matters: you land on the account home and not
+  on R2, and that is expected; the row appearing in the Objects list is how you know it finished.
+  And a closing section for the three things likeliest to happen instead, ending with "send me the
+  sentence on your screen".
+  Not shipped, and worth naming: the button. The upload worker takes a file in 8 MB parts and
+  needs no secret, so a file picker wired to it is a small build, and it would delete all five of
+  these steps. He knows; he wanted the file up today.
+  No test — this page has no behaviour, and signin_steps_test already guards the one runbook that
+  does (it holds the worker source).
+  Thirty-six suites, unchanged. Green.
+  Left for him: the five steps, then paste me the filename.
+  Still no new trace.
+- NEXT → add entry 368 here (codename · bN · change) — every prompt that edits the page, no exceptions.
 
 ## update_protocol (read every prompt)
 
