@@ -3125,9 +3125,9 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   New suite vj_276: the redirect and its history behaviour, all four files served, the vampjam count
   per file, what the page read out of the host, the watcher polling all four, and the three rooms
   intact. Suites 256, 263, 269, 271, 273, 274 and 275 green from their new home. Still no new trace.
-- 280 edge_gone + nudge_move + nudge_gone · b280 · lab_repo/nudge/ + vampjam lab.html, admin.html —
+- 280 edge_gone + nudge_move + nudge_gone · b280 · repo_public/nudge/ + vampjam lab.html, admin.html —
   the last three limits come off, and then the whole experiment leaves vampjam for a project of its
-  own in lab_repo/nudge.
+  own in repo_public/nudge.
   edge_gone: nothing stops you in any direction, in any room.
   · the calendar walks a DAY at a time and wraps at the week — stepping off Monday's side lands on
     Sunday of the week before, as a text cursor wraps at the end of a line, because there is no
@@ -3158,10 +3158,10 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   out around wherever you are, with copies pre-culled on their CENTRE before any face is touched.
   Measured: 391 faces in view at the start, 399 sixty steps in, 355 after another 20 sideways and 12
   down. grid_roam does the same for the plane, which now has no edge to reach.
-  nudge_move — then the whole thing left. lab_repo/nudge/ holds index.html, nudge.css, nudge.js,
+  nudge_move — then the whole thing left. repo_public/nudge/ holds index.html, nudge.css, nudge.js,
   nudge_host.js, README.md, nudge_hand.md, nudge_notes.md and nudge_test/ with nine suites. The move
   was exactly what 279 promised it would be: copy the folder, edit one file. nudge_host.js now says
-  lab_repo, points back at hub.html, and keeps the vampjam_* localStorage keys ON PURPOSE — they are
+  repo_public, points back at hub.html, and keeps the vampjam_* localStorage keys ON PURPOSE — they are
   keys, not labels, and renaming them would reset his thirteen reverse switches, his last room and
   any takes still held in the browser. Its sync still points at vampjam's worker and
   lab_gestures.json, because that is where the 268-gesture corpus the detector was fitted against
@@ -3177,13 +3177,13 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   forwarding page saying where the thing went. It cannot redirect: the two repos are different
   sites. Delete it once nothing points at it. lab_gestures.json stays, because the corpus does.
   New suite vj_277 covers the week wrap, the endless months and their headings, the cell budget and
-  the tiling space. All nine suites green from lab_repo/nudge/nudge_test/, no page errors. Still no
+  the tiling space. All nine suites green from repo_public/nudge/nudge_test/, no page errors. Still no
   new trace — and the send fix from 262 is still unproven, which is now written down where the next
   thread will find it.
 - 281 audio_tuck · b281 · local folder only — the six audio masters move out of the repo root into
   audio/. Six .m4a files, 933 MB: the two bazaar_cafe recordings, the by-hand vampjam mix and the
   three Sound Union cuts (raw, v2 and faststart).
-  local_only, and it is worth writing down WHY this is a safe move rather than a scary one. Every
+  repo_local, and it is worth writing down WHY this is a safe move rather than a scary one. Every
   one of these files is matched by .gitignore (*.m4a, line 3) and none is tracked — checked before
   moving and checked again after, where git check-ignore confirms the pattern still covers them one
   level down and git status shows nothing but the commit message. The site never loaded them from
@@ -3227,7 +3227,7 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   moved: Sound Union 29.qta (619 MB QuickTime master, gitignored) joins the others in audio/, which
   is now 1.6 GB of local masters and nothing deployed. vampjam_player.html — 58 KB, referenced by
   nothing anywhere in the repo — to claude_trash/. lab_surface.png and .svg, referenced only by the
-  nudge notes that have already left, copied to lab_repo/nudge/ and trashed here.
+  nudge notes that have already left, copied to repo_public/nudge/ and trashed here.
   README.md at the root: the layout with a line per group, the rule and both mechanisms that enforce
   it, the one_record principle, and the ship loop. The point is that the folder should explain
   itself to whoever opens it next, including me.

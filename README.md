@@ -38,7 +38,7 @@ Two mechanisms make that rule harder than it sounds, and both are easy to trip:
   sessions_auto.json                                       WORKER-OWNED. never ship
                                                            this in a batch
   lab_gestures.json                                        the nudge corpus, 10 MB.
-                                                           the lab moved to lab_repo
+                                                           the lab moved to repo_public
                                                            but its corpus cannot —
                                                            root-bound, and the app
                                                            fetches it by this name
