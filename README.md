@@ -44,12 +44,12 @@ Two mechanisms make that rule harder than it sounds, and both are easy to trip:
                                                            fetches it by this name
   lab.html                                                 forwarding page. the lab
                                                            left on build 280
-  vampjam_org.html  r2_setup.html                          working pages
+  vampjam_proj.html  r2_setup.html                          working pages
   vampjam_handoff.md                                       the pickup document
 
   audio/                  the big local masters. gitignored, never deployed; the
                           site plays from R2 and GitHub releases by absolute URL
-  vampjam_admin/          THE record: vampjam_org_spec.md (build history) and
+  vampjam_admin/          THE record: vampjam_proj_spec.md (build history) and
                           prompt_log/ (the data). the ship loop writes here, and
                           commit_msg.txt is what the robot reads
   prompt_log/             the log VIEWER only. its data comes from vampjam_admin

@@ -1,6 +1,6 @@
-# vampjam_org_spec
+# vampjam_proj_spec
 
-Running spec for the `vampjam_org.html` live page, so any model can pick up and
+Running spec for the `vampjam_proj.html` live page, so any model can pick up and
 continue flawlessly. Three linked records, joined by **codenames**:
 
 - **this spec** — file map, build_history, update protocol.
@@ -14,8 +14,8 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 
 ## file_map
 
-- page: `vampjam_org.html`
-- reload sidecar: `vampjam_org_build.js` — bump `bN` in BOTH this and the page's
+- page: `vampjam_proj.html`
+- reload sidecar: `vampjam_proj_build.js` — bump `bN` in BOTH this and the page's
   `const BUILD` on every page edit, or the auto-reload never fires.
 - save-note: `vampjam_admin/commit_msg.txt` — write the batch codename on line 1
   BEFORE editing files; the robot commits with it once, then resets to `auto_commit`.
@@ -39,7 +39,7 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 
 ## build_history (codename · bN · what changed)
 
-- 64 vampjam_org_page · b1 — page created (cloned from claude_cowork_org); record-setup
+- 64 vampjam_proj_page · b1 — page created (cloned from claude_cowork_org); record-setup
   runbook; Pages→Worker pivots; #next on deploy_worker; hidden tags; direct create link.
 - 68 org_three_groups · b2 — four sections (record_live/audio_home/interface/notes); #do/#next/#done.
 - 69 org_autoreload · b2 — restored the build-sidecar poll (auto-reload) with a vampjam sidecar.
@@ -3197,7 +3197,7 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   look at — three of the six files in audio/ are cuts of the same 08-07 Sound Union set, which is
   most of that 1.2 GB sitting in one place now.
   No page edit, no suite. Still no new trace.
-- 282 folder_tidy · b282 · README.md + prompt_log/prompt_log.html + vampjam_org.html + six moves —
+- 282 folder_tidy · b282 · README.md + prompt_log/prompt_log.html + vampjam_proj.html + six moves —
   the local folder organised, and one silent breakage found while doing it.
   the_rule: anything the site SERVES stays at the root. The root is the served directory, so a
   file's path here is its URL, and links to these sessions have been handed to people. Tidiness is
@@ -3217,7 +3217,7 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
   and the prompt log each existed at the root AND in vampjam_admin/. They had drifted badly. The log
   VIEWER at prompt_log/prompt_log.html loads the data sitting beside it, and that copy stopped at
   255 vec_flip on Aug 28 — so for twenty-six builds, everything the ship loop wrote went into the
-  admin copy and the page he opens to read it showed none of it. Same for the spec: vampjam_org.html
+  admin copy and the page he opens to read it showed none of it. Same for the spec: vampjam_proj.html
   named the root copy in its pickup prompt, which was also stale.
   Fixed by making vampjam_admin/ the only writer AND the only reader: the viewer now loads
   ../vampjam_admin/prompt_log/prompt_log_lab_data.js (its own URL unchanged, because he opens it),
@@ -5523,7 +5523,7 @@ prompt_log thread → `git log`. The full behavior spec + project detail live in
 
 1. Write the batch codename to `vampjam_admin/commit_msg.txt` line 1 FIRST, then edit files.
    Do NOT `git commit`/`push` from the sandbox — the robot ships (commit + ssh push, ~15-30s).
-2. On any page edit: bump `bN` in the page AND `vampjam_org_build.js`; set the header stamp to now.
+2. On any page edit: bump `bN` in the page AND `vampjam_proj_build.js`; set the header stamp to now.
 3. Append the build_history entry ABOVE the NEXT marker, then rewrite the marker with the next number.
 4. Before appending, CHECK: last spec build id == page build id, and last spec entry ≈ last prompt_log
    entry. If drifted, backfill first and say so in chat — never repair silently.

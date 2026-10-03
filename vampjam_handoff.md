@@ -1,7 +1,7 @@
 # vampjam — handoff spec
 
 The single doc a new model/thread reads to pick up **vampjam** and keep going. Read this
-top to bottom, then open `vampjam_org.html` (the live runbook) for the current focus.
+top to bottom, then open `vampjam_proj.html` (the live runbook) for the current focus.
 
 ---
 
@@ -35,7 +35,7 @@ share link that deep-links into the audio at that timestamp. Sessions are ~50 mi
 | `index.html` | tiny redirect → last-opened session (`vampjam_last_session`), else the newest in the manifest. |
 | `cloudflare/r2_upload_worker.js` | standalone Cloudflare **Worker**: `POST` audio → puts it in R2 → returns the public URL. Needs deploy (see §7). |
 | `functions/upload.js` | Pages-Function variant of the same (only if using a Pages project instead of a Worker). |
-| `vampjam_org.html` + `vampjam_org_build.js` | the live **runbook** page (see §8) + its auto-reload build sidecar. |
+| `vampjam_proj.html` + `vampjam_proj_build.js` | the live **runbook** page (see §8) + its auto-reload build sidecar. |
 | `prompt_log/prompt_log_lab_data.js` (+ `prompt_log_data.js`, `prompt_log.html`) | the prompt log (see §3). |
 
 Audio files (`*.m4a`) are **gitignored** — audio lives on R2, not the repo. (Older sessions
@@ -155,14 +155,14 @@ Goal: record in the browser and auto-upload to R2. Built, **not deployed**:
 
 ---
 
-## 8. The org runbook page (`vampjam_org.html`)
+## 8. The org runbook page (`vampjam_proj.html`)
 
 The live companion page, cloned from `claude_cowork_org` and kept in sync with its presentation:
 - Collapsible outline (click a node = toggle, double-click = subtree); click a label to **zoom**
   (hash `#1A`) with gray crumbs; **search** with a recent-searches dropdown; day/night toggle.
   Code blocks are **light in day mode**, collapse to ~3 lines and expand on click; copy buttons
   themed. `.tag` (gray suffix) is **hidden** here per the user's preference.
-- **Auto-reload:** the page polls `vampjam_org_build.js` every 2 s; when its `PAGE_BUILD` differs
+- **Auto-reload:** the page polls `vampjam_proj_build.js` every 2 s; when its `PAGE_BUILD` differs
   from the page's `const BUILD`, it counts down and reloads (state survives). **Every time you edit
   the page, bump `BUILD` in the page AND `PAGE_BUILD` in the sidecar together** or it won't reload.
 - **`steer_rule`:** each build may set focus/search/open once (`STEER.focus`, `STEER.search`,
@@ -173,7 +173,7 @@ The live companion page, cloned from `claude_cowork_org` and kept in sync with i
 - **Copy buttons:** `<button class="rowcopy">` copies the `pre` in a child `sc` node (used for the
   worker code, the git-push command, the DNS A-records).
 - Runbook style (from `claude_cowork_org`): forward-looking; done work shrinks to a short status;
-  give the user the zoom link (`file://…/vampjam_org.html#1A`) when steering him to a task.
+  give the user the zoom link (`file://…/vampjam_proj.html#1A`) when steering him to a task.
 
 Sections now: **1 record_live**, **2 audio_home**, **3 interface** (done), **4 rebrand**, **5 notes**.
 
@@ -212,9 +212,9 @@ Sections now: **1 record_live**, **2 audio_home**, **3 interface** (done), **4 r
 
 ## 11. Pick-up checklist for the new thread
 
-1. Read this file, then open `vampjam_org.html` and look at `#next` (the focus).
+1. Read this file, then open `vampjam_proj.html` and look at `#next` (the focus).
 2. Each prompt: do the work → add a `prompt_log_lab_data.js` entry (+ cp) → commit with a
-   codename → give the push command → if you touched `vampjam_org.html`, bump BUILD + sidecar.
+   codename → give the push command → if you touched `vampjam_proj.html`, bump BUILD + sidecar.
 3. When steering the user, put steps on the org page (he prefers that over chat) and hand him the
    `#…` zoom link. Use `#ready`/`#do` to split your work from his.
 4. Respect his stylistic decisions (hidden tags, light code blocks, newest-at-bottom, gutters,

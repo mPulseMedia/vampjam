@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>vampjam_org</title>
+<title>vampjam_proj</title>
 <style>
   :root {
     --bg: #faf9f5; --bg2: #f0eee6; --bg3: #e8e5da;
@@ -236,14 +236,14 @@
 
 </style>
 <script>
-(function(){var o=null;try{o=localStorage.getItem('vampjam_org_theme')}catch(e){}
+(function(){var o=null;try{o=localStorage.getItem('vampjam_proj_theme')}catch(e){}
 var n=o?o==='night':window.matchMedia('(prefers-color-scheme: dark)').matches;
 if(n)document.documentElement.classList.add('night');})();
 </script>
 </head>
 <body>
 <header>
-  <h1>vampjam_org</h1>
+  <h1>vampjam_proj</h1>
   <span class="sub" id="subchip"></span>
   <div class="controls">
     <button onclick="setAll(false)">open</button>
@@ -332,22 +332,22 @@ if(n)document.documentElement.classList.add('night');})();
 
 <li class="n" data-l="5"><div class="row"><span class="tri">▶</span><span class="lbl">5</span><span class="txt">self_admin</span></div><ul>
 <li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">spec_file</span></div><ul>
-<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt"><code>vampjam_admin/vampjam_org_spec.md</code> (build_history + the notes moved off this page)</span></div></li>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt"><code>vampjam_admin/vampjam_proj_spec.md</code> (build_history + the notes moved off this page)</span></div></li>
 </ul></li>
 <li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">handoff</span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt"><code>vampjam_handoff.md</code></span></div></li>
 </ul></li>
 <li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">kickoff <button class="rowcopy">copy prompt kickoff</button></span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">paste into a fresh Cowork thread on model-switch day</span></div></li>
-<li class="n sc" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">first message</span></div><div class="codewrap"><pre>vampjam pickup — read vampjam_handoff.md, then vampjam_admin/vampjam_org_spec.md, top to bottom. Open vampjam_org.html and act on #next. Before editing, claim the next number in both the prompt_log thread and the spec build_history. Write the batch codename to vampjam_admin/commit_msg.txt first, then write files — the login robot commits and pushes; do NOT commit from the sandbox.</pre></div></li>
+<li class="n sc" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">first message</span></div><div class="codewrap"><pre>vampjam pickup — read vampjam_handoff.md, then vampjam_admin/vampjam_proj_spec.md, top to bottom. Open vampjam_proj.html and act on #next. Before editing, claim the next number in both the prompt_log thread and the spec build_history. Write the batch codename to vampjam_admin/commit_msg.txt first, then write files — the login robot commits and pushes; do NOT commit from the sandbox.</pre></div></li>
 </ul></li>
 </ul></li>
 
 </ul>
 </main>
 <script>
-  const BUILD='b24';
-  const KEY='vampjam_org_page_state';
+  const BUILD='b25';
+  const KEY='vampjam_proj_page_state';
 
   function label_path(li) {
     const parts = [];
@@ -593,7 +593,7 @@ if(n)document.documentElement.classList.add('night');})();
   sbox.addEventListener('input', applyFilter);
 
   // search_recent (105): last five unique searches, click to reuse
-  const RQ_KEY = 'vampjam_org_recent_q';
+  const RQ_KEY = 'vampjam_proj_recent_q';
   const rq = document.createElement('div');
   rq.id = 'recentq';
   document.body.appendChild(rq);
@@ -843,7 +843,7 @@ if(n)document.documentElement.classList.add('night');})();
   function poll() {
     if (pending) return;
     const sc = document.createElement('script');
-    sc.src = 'vampjam_org_build.js?' + Date.now();
+    sc.src = 'vampjam_proj_build.js?' + Date.now();
     sc.onload = () => {
       sc.remove();
       const nb = window.PAGE_BUILD;
@@ -856,7 +856,7 @@ if(n)document.documentElement.classList.add('night');})();
   poll();
 
   // live step-status chips — fed by purge_verify.sh writing
-  // vampjam_org_status.js next to this page
+  // vampjam_proj_status.js next to this page
   const ST_LABEL = {
     ok:   ['st_ok',   'backed up \u2713'],
     new:  ['st_wait', 'uploaded \u00b7 new edits since'],
@@ -927,7 +927,7 @@ if(n)document.documentElement.classList.add('night');})();
   }
   function pollStatus() {
     const sc = document.createElement('script');
-    sc.src = 'vampjam_org_status.js?' + Date.now();
+    sc.src = 'vampjam_proj_status.js?' + Date.now();
     sc.onload = () => { sc.remove(); renderStatus(window.PAGE_STATUS); };
     sc.onerror = () => { sc.remove(); renderStatus(null); };
     document.head.appendChild(sc);
@@ -935,14 +935,14 @@ if(n)document.documentElement.classList.add('night');})();
   const thmMq = window.matchMedia('(prefers-color-scheme: dark)');
   function applyTheme() {
     let o = null;
-    try { o = localStorage.getItem('vampjam_org_theme'); } catch(e) {}
+    try { o = localStorage.getItem('vampjam_proj_theme'); } catch(e) {}
     const n = o ? o === 'night' : thmMq.matches;
     document.documentElement.classList.toggle('night', n);
   }
   if (thmMq.addEventListener) thmMq.addEventListener('change', applyTheme);
   document.getElementById('thm').addEventListener('click', () => {
     const n = document.documentElement.classList.contains('night');
-    try { localStorage.setItem('vampjam_org_theme', n ? 'day' : 'night'); } catch(e) {}
+    try { localStorage.setItem('vampjam_proj_theme', n ? 'day' : 'night'); } catch(e) {}
     applyTheme();
   });
   setInterval(pollStatus, 2000);
@@ -952,8 +952,8 @@ if(n)document.documentElement.classList.add('night');})();
   // open nodes ONCE; his manual navigation wins afterward.
   const STEER = { focus: '4B', search: null };
   try {
-    if (localStorage.getItem('vampjam_org_steer') !== BUILD) {
-      localStorage.setItem('vampjam_org_steer', BUILD);
+    if (localStorage.getItem('vampjam_proj_steer') !== BUILD) {
+      localStorage.setItem('vampjam_proj_steer', BUILD);
       OPEN_ON_BUILD.forEach(pth => {
         const li = items.find(x => x.dataset.path === pth);
         if (li) li.classList.remove('closed');
