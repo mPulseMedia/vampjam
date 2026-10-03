@@ -289,7 +289,7 @@ if(n)document.documentElement.classList.add('night');})();
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">Admin now knows the worker&#8217;s address; recording can upload</span></div></li>
 <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">no password gate for now: anyone who learns the worker address could upload a file. Low risk; say &#8220;add the secret&#8221; later and we bolt it on</span></div></li>
 </ul></li>
-<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">test_record <span class="nextm">#next</span> <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">test_record <span class="dom">#do</span> (paused)</span></div><ul>
 <li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">wait ~2 minutes (the site is republishing), then on your iPhone open <a href="https://mpulsemedia.github.io/vampjam/admin.html" target="_blank">the Admin page</a></span></div></li>
 <li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">Record a jam &#8594; record a few seconds &#8594; stop &#8594; <b>Upload to R2</b></span></div></li>
 <li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">expect: a link appears under the button; tell me what it says</span></div></li>
@@ -343,10 +343,33 @@ if(n)document.documentElement.classList.add('night');})();
 </ul></li>
 </ul></li>
 
+<li class="n" data-l="6"><div class="row"><span class="tri">▶</span><span class="lbl">6</span><span class="txt">phone_file <span class="nextm">#next</span></span></div><ul>
+<li class="n" data-l="A"><div class="row"><span class="tri">▶</span><span class="lbl">A</span><span class="txt">what_i_checked <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt"><code>record.html</code> has no file picker. I searched it for a file input and there is none, so the site can only upload what it records in the moment.</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">A Voice Memos file on your phone therefore has nowhere to go today, with or without GarageBand.</span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">The upload worker IS live at <code>vampjam-upload</code>, and it already uploads in chunks, which is what a 3-hour file needs. The missing piece is only the button that hands it a file.</span></div></li>
+</ul></li>
+<li class="n" data-l="B"><div class="row"><span class="tri">▶</span><span class="lbl">B</span><span class="txt">pick_file <span class="readym">#ready</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">Say go and I add a "pick a file" button to the site. It reuses the chunked upload that already works.</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">Then the phone route is: GarageBand share &#8594; Files &#8594; open the site &#8594; pick the file.</span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">This is the one piece that unblocks everything else here.</span></div></li>
+</ul></li>
+<li class="n" data-l="C"><div class="row"><span class="tri">▶</span><span class="lbl">C</span><span class="txt">garageband_steps <span class="dom">#do</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">You said GarageBand is for mixing and cleaning up, so it stays in the path.</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt">I have not written these steps yet, on purpose. I cannot see the Voice Memos or GarageBand screens from here, and Apple’s own pages would not load for me.</span></div></li>
+<li class="n" data-l="3"><div class="row"><span class="tri">▶</span><span class="lbl">3</span><span class="txt">Send me a screenshot of each screen as you go and I draw the steps from those, not from memory.</span></div></li>
+<li class="n" data-l="4"><div class="row"><span class="tri">▶</span><span class="lbl">4</span><span class="txt">The screens I need: the Voice Memos list with the recording, its share sheet, and the GarageBand screen where you bring audio in.</span></div></li>
+</ul></li>
+<li class="n" data-l="D"><div class="row"><span class="tri">▶</span><span class="lbl">D</span><span class="txt">recorder_paused <span class="donem">#done</span></span></div><ul>
+<li class="n" data-l="1"><div class="row"><span class="tri">▶</span><span class="lbl">1</span><span class="txt">You are unhappy with the app’s own recording, so it is paused and out of the focus, not removed.</span></div></li>
+<li class="n" data-l="2"><div class="row"><span class="tri">▶</span><span class="lbl">2</span><span class="txt"><code>test_record</code> in section 2 is no longer #next for that reason.</span></div></li>
+</ul></li>
+</ul></li>
+
 </ul>
 </main>
 <script>
-  const BUILD='b25';
+  const BUILD='b26';
   const KEY='vampjam_proj_page_state';
 
   function label_path(li) {
@@ -396,7 +419,7 @@ if(n)document.documentElement.classList.add('night');})();
     // per-build tidying: nodes finished in this build close themselves
     // (once — after that your own toggles win)
     const CLOSE_ON_BUILD = ['1A','1B','1D','2A','2B','4A'];
-    const OPEN_ON_BUILD = [];
+    const OPEN_ON_BUILD = ['6','6A','6B','6C','6D'];
     if (!st || st.b !== BUILD) {
       items.forEach(li => {
         if (CLOSE_ON_BUILD.includes(li.dataset.path) &&
