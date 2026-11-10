@@ -8,3 +8,6 @@
 # OS
 .DS_Store
 *.qta
+
+# ffmpeg writes <name>.m4a.part while converting; *.m4a does not match it
+*.part
