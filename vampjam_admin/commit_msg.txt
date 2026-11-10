@@ -1,1 +1,1 @@
-vampjam_admin_page
+auto_commit
