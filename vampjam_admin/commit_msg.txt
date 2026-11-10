@@ -1,1 +1,1 @@
-sessions_auto_dupe
+auto_commit
