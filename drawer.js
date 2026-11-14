@@ -830,6 +830,78 @@
     });
   }
 
+
+  // ---- visit_log ----------------------------------------------------------
+  // What a play log is allowed to know here: a random id the browser made up
+  // for itself, which recording, what happened, and when. Nobody is asked who
+  // they are. The id is a coin flip stored in that one browser; it never
+  // travels to another device, and clearing the browser makes a new stranger
+  // out of the same person. It is enough to say "those four plays were one
+  // person, not four" and it is not enough to say which person. No name, no
+  // number, no sign-in, no IP.
+  //
+  // None of this shows anywhere in the app. The log is at visit_log.html,
+  // reachable only from Admin.
+  var VISIT_URL = 'https://vampjam-visit.crimson-dust-a18d.workers.dev/';
+  function visit_id() {
+    var v = '';
+    try { v = localStorage.getItem('vampjam_visit_id') || ''; } catch (e) {}
+    if (!v) {
+      v = Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 12);
+      try { localStorage.setItem('vampjam_visit_id', v); } catch (e) {}
+    }
+    return v;
+  }
+  // his own listening would drown the log, so a browser can say it is his and
+  // the log page can set that flag aside. The flag lives in the browser too.
+  function visit_mine() {
+    try { return localStorage.getItem('vampjam_mine') === '1' ? 1 : 0; } catch (e) { return 0; }
+  }
+  // text/plain on purpose: it keeps the browser from sending a preflight before
+  // every event, and the worker reads the body the same way either way.
+  function visit_put(ev, secs) {
+    if (!VISIT_URL) return;
+    var body = JSON.stringify({ v: visit_id(), p: PKEY, e: ev,
+                                s: Math.round(secs || 0), mine: visit_mine() });
+    try {
+      if (navigator.sendBeacon
+          && navigator.sendBeacon(VISIT_URL + '?op=put', new Blob([body], { type: 'text/plain' })))
+        return;
+    } catch (e) {}
+    try {
+      fetch(VISIT_URL + '?op=put', { method: 'POST', body: body, keepalive: true,
+                                     headers: { 'Content-Type': 'text/plain' } })
+        .catch(function () {});
+    } catch (e2) {}
+  }
+  // only where there is something to play: the list, Admin and the rest have no
+  // player, so they are never counted at all.
+  function visit_watch() {
+    var au = document.getElementById('player');
+    if (!au) return;
+    visit_put('open', 0);
+    var played = false, mark = 0, owed = 0;
+    function stop() {
+      if (mark) { owed += (Date.now() - mark) / 1000; mark = 0; }
+    }
+    // seconds actually heard, not seconds of recording passed over: a scrub
+    // forward is not listening, and a pause is not either.
+    function flush() {
+      stop();
+      if (owed >= 5) { visit_put('heard', owed); owed = 0; }
+    }
+    au.addEventListener('play', function () {
+      if (!played) { played = true; visit_put('play', 0); }
+      mark = Date.now();
+    });
+    ['pause', 'ended'].forEach(function (e) { au.addEventListener(e, flush); });
+    window.addEventListener('pagehide', flush);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') flush();
+    });
+  }
+  window.vampjamVisit = { id: visit_id, url: VISIT_URL };
+
   // row_more — one open row at a time, on the list AND on the highlight rows
   // of a session page (which share this closer, since every session page
   // loads this file). A tap anywhere that is not inside an open row shuts it.
@@ -2326,7 +2398,7 @@
     // list_home — index.html renders the list itself when nothing survives to
     // open under it. There is no page beneath, so the list cannot be closed.
     if (window.VAMPJAM_LIST_HOME) pin_list(true);
-    build_menu(); wire_links(); capture_dur(); fetch_auto_sessions(); fetch_local_recs();
+    build_menu(); wire_links(); capture_dur(); fetch_auto_sessions(); fetch_local_recs(); visit_watch();
     // before the fold_in branch below, which RETURNS: arriving by tapping this
     // page's own row used to skip the mount entirely, and the box only appeared
     // if he reloaded. That is exactly what a reload was fixing.
