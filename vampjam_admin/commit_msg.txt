@@ -1,1 +1,1 @@
-admin_c_real_screen
+auto_commit
