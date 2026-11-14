@@ -636,10 +636,11 @@
     // of deciding whether to open it.
     var m = Math.max(1, Math.round(s / 60));
     var h = Math.floor(m / 60);
-    // dur_zero — under an hour the hour figure is not written: :05, not 0:05.
-    // The colon stays, so the column still reads as one shape and the minutes
-    // still line up under the minutes above them.
-    return (h ? h : '') + ':' + pad(m % 60);
+    // dur_zero — the hour figure is ALWAYS written, 0:07, never :07. Paul read
+    // a bare :07 as seven seconds, which is what mm:ss everywhere else on a
+    // phone has trained it to mean. The leading hour costs one character and
+    // the column still reads as one shape.
+    return h + ':' + pad(m % 60);
   }
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
