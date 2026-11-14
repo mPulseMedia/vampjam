@@ -928,7 +928,7 @@
     Array.prototype.forEach.call(menu.querySelectorAll('.jam_share'), function (b) {
       b.addEventListener('click', function (e) {
         e.preventDefault(); e.stopPropagation();
-        var href = b.getAttribute('data-href');
+        var href = share_url(b.getAttribute('data-href'));
         var url = new URL(href, window.location.href).href;
         try { if (navigator.clipboard) navigator.clipboard.writeText(url); } catch (err) {}
         if (typeof window.toast === 'function') window.toast('Link copied: ' + url);
@@ -936,6 +936,29 @@
     });
   }
 
+  // share_name — a link you SEND points at <id>.html, the little stub that
+  // carries that session's name in its title (see meta_stub_build.js), so the
+  // preview in Messages reads "2026-11-14 Sound Union" and not "Recording".
+  // session.html?p=<id> is the same recording and still works everywhere; it
+  // just cannot preview, because a previewer never runs the javascript that
+  // would put the name on the page. If the stub has not been built yet, 404.html
+  // sends the link on to the player, so a shared link is never a dead one.
+  function share_url(page) {
+    var m = /^session\.html\?p=([A-Za-z0-9_\-]+)/.exec(page || '');
+    return m ? m[1] + '.html' : page;
+  }
+  // share_here — the header's button has no registry row to read, so it rebuilds
+  // the same address from the one in the bar. The query goes, as it always did:
+  // this is "here is this session", not "here is this second". But the p= is not
+  // part of the moment, it is WHICH recording this is, and dropping it was
+  // sharing a link to no recording at all.
+  function share_here() {
+    var here = location.pathname.split('/').pop() || '';
+    var m = /[?&]p=([A-Za-z0-9_\-]+)/.exec(location.search);
+    if (m && here.indexOf('session.html') === 0)
+      return location.origin + location.pathname.replace(/session\.html$/, m[1] + '.html');
+    return location.origin + location.pathname;
+  }
   // nav_share — the page's own share button, wired once here rather than nine
   // times in nine pages. It copies the page's URL with no query on it: this is
   // "here is this session" / "here is my favourites", not "here is this second".
@@ -960,7 +983,7 @@
       // the whole query goes, not just the timestamp: this button is "here is this
       // session", and if you arrived on a deep link the tag id is as much a
       // moment as the seconds are. Sharing a moment is the row's own button.
-      var url = window.location.origin + window.location.pathname;
+      var url = share_here();
       try { if (navigator.clipboard) navigator.clipboard.writeText(url); } catch (err) {}
       // nav_state — the button says it took. A toast says it too, but the toast
       // is at the bottom of the screen and your thumb is at the top.
@@ -2039,7 +2062,7 @@
     // Sharing is two halves and they belong side by side: who may open it, and
     // the thing you paste into a message.
     function copy_link() {
-      var url = location.origin + location.pathname;
+      var url = share_here();
       var done = function () {
         copyBtn.textContent = 'Copied';
         setTimeout(function () { copyBtn.textContent = 'Copy link'; }, 2500);

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>vampsf</title>
+<!-- stub_miss — shared links point at <id>.html, the little file that carries a
+     session's name for the message preview (see meta_stub_build.js). If a
+     session was added and the stub has not been built yet, the link would
+     otherwise die here. GitHub Pages serves this page for anything missing, so
+     this is the one place that can catch it: anything shaped like a session id
+     is sent on to the player, which only ever needed the id anyway. -->
+<style>html,body{background:#111;color:#eee;margin:0;
+font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:#8ab4f8}.w{padding:28px;max-width:34em}</style>
+<script>
+(function () {
+  var f = (location.pathname.split('/').pop() || '');
+  var m = /^(\d{4}_[A-Za-z0-9_\-]+)\.html$/.exec(f);
+  if (m) location.replace('session.html?p=' + m[1] + location.hash);
+})();
+</script>
+</head>
+<body>
+<div class="w">
+<p>That page is not here.</p>
+<p><a href="index.html">Go to the recordings</a></p>
+</div>
+</body>
+</html>
