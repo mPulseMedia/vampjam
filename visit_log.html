@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>vampsf — Play log</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css?v=27">
+<script src="theme.js?v=2"></script>
+<script src="sessions.js?v=132"></script>
+<script src="drawer.js?v=190"></script>
+<style>
+  .back{display:inline-block;color:var(--accent_2);text-decoration:none;font-size:13px;margin:8px 0 4px;}
+  h1{font-size:20px;margin:14px 0 4px;}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:16px;}
+  .why{background:var(--panel_2);border-radius:10px;padding:11px 14px;color:var(--muted);font-size:12.5px;line-height:1.5;margin-bottom:18px;}
+  .why b{color:var(--fg);}
+  .section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin:22px 0 10px;}
+  .card{background:var(--panel);border:1px solid var(--panel_3);border-radius:12px;padding:12px 14px;margin-bottom:12px;}
+  table{width:100%;border-collapse:collapse;}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;padding:0 0 7px;}
+  td{font-size:13.5px;padding:6px 0;border-top:1px solid var(--panel_3);vertical-align:top;}
+  /* money_look — counts read as a column, so they are lined up on the right in a
+     plain fixed-width face, a shade smaller than the names beside them */
+  th.n,td.n{text-align:right;font-variant-numeric:tabular-nums;
+            font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;white-space:nowrap;}
+  td.name{color:var(--fg);padding-right:10px;}
+  .who{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--muted);}
+  .when{color:var(--muted);font-size:12px;white-space:nowrap;}
+  .ev{font-size:12px;}
+  .ev_play{color:var(--accent);}
+  .ev_open{color:var(--muted);}
+  .ev_heard{color:var(--accent_2);}
+  .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px;}
+  button.t{background:var(--panel_2);color:var(--fg);border:1px solid var(--panel_3);
+           border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer;}
+  button.t.on{background:var(--accent);color:#2a1808;border-color:var(--accent);font-weight:700;}
+  .note{background:var(--panel_2);border-radius:10px;padding:11px 14px;color:var(--muted);font-size:12px;line-height:1.5;margin-top:16px;}
+  .note b{color:var(--fg);}
+  code{background:var(--panel_3);color:var(--fg);padding:1px 6px;border-radius:4px;font-size:12.5px;word-break:break-word;}
+  a{color:var(--accent_2);}
+  ol.steps{list-style:none;counter-reset:step;padding:0;margin:0;}
+  ol.steps>li{counter-increment:step;position:relative;background:var(--panel);border:1px solid var(--panel_3);border-radius:12px;padding:15px 16px 15px 56px;margin-bottom:12px;}
+  ol.steps>li::before{content:counter(step);position:absolute;left:14px;top:15px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#2a1808;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;}
+  .step_title{font-weight:700;font-size:15px;margin-bottom:6px;}
+  ul.sb{margin:0;padding-left:18px;color:var(--fg);font-size:13.5px;}
+  ul.sb li{margin-bottom:5px;}
+  ul.sb li::marker{color:var(--accent_2);}
+  .hide{display:none;}
+</style>
+</head>
+<body>
+
+<div class="session_drawer" id="session_drawer"><div class="jam_menu"></div></div>
+
+<header class="brand" style="position:relative;">
+<button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
+  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
+</header>
+
+<a class="back" href="admin.html">&larr; Admin</a>
+<h1>Play log</h1>
+<div class="sub">Who opened what, and how long they stayed. Nothing in the app shows any of this.</div>
+
+<div class="why">
+  <b>Nobody is asked who they are.</b> Each browser invents a random id for
+  itself and keeps it to itself. It is enough to say four plays were one person
+  rather than four; it is not enough to say which person. No name, no number,
+  no sign-in, no location.
+</div>
+
+<div class="tools">
+  <button class="t" id="mine_btn">This browser is mine</button>
+  <button class="t on" id="hide_btn">Hide my own</button>
+  <button class="t" id="again_btn">Refresh</button>
+</div>
+
+<div id="wait" class="card">Reading the log…</div>
+
+<div id="live" class="hide">
+  <div class="section-label">By recording</div>
+  <div class="card"><table id="by_rec"></table></div>
+  <div class="section-label">Every visit, newest first</div>
+  <div class="card"><table id="by_time"></table></div>
+</div>
+
+<div id="setup" class="hide">
+  <div class="section-label">Switch it on — about five minutes</div>
+  <ol class="steps">
+    <li>
+      <div class="step_title">Make the shelf it writes to</div>
+      <ul class="sb">
+        <li>go to <a href="https://dash.cloudflare.com" target="_blank" rel="noopener">dash.cloudflare.com</a>.</li>
+        <li>left sidebar: <b>Storage &amp; Databases</b> &rarr; <b>KV</b>.</li>
+        <li>click <b>Create a namespace</b>.</li>
+        <li>name it exactly <code>vampjam_visit</code> and create it.</li>
+      </ul>
+    </li>
+    <li>
+      <div class="step_title">Make the worker</div>
+      <ul class="sb">
+        <li><b>Workers &amp; Pages</b> &rarr; <b>Create</b> &rarr; <b>Start with Hello World</b>.</li>
+        <li>name it exactly <code>vampjam-visit</code> — the site already expects that name.</li>
+        <li>deploy it, then <b>Edit code</b>.</li>
+      </ul>
+    </li>
+    <li>
+      <div class="step_title">Paste the code</div>
+      <ul class="sb">
+        <li>select everything in the editor and delete it.</li>
+        <li>paste the contents of <code>cloudflare/vampjam_visit_worker.js</code> from the repo.</li>
+        <li>click <b>Deploy</b>.</li>
+      </ul>
+    </li>
+    <li>
+      <div class="step_title">Join the two together</div>
+      <ul class="sb">
+        <li>that worker &rarr; <b>Settings</b> &rarr; <b>Bindings</b> &rarr; <b>Add</b> &rarr; <b>KV namespace</b>.</li>
+        <li>Variable name: <code>VISIT</code> &nbsp; KV namespace: <code>vampjam_visit</code>.</li>
+        <li>save, then <b>Deploy</b> once more.</li>
+        <li>come back here and press Refresh.</li>
+      </ul>
+    </li>
+  </ol>
+  <div class="note">
+    <b>Until this is done nothing is lost and nothing is broken</b> — the site
+    simply does not count. Plays before the switch-on are not recorded anywhere,
+    so the log starts the day you finish step 4.
+  </div>
+</div>
+
+<div class="note" id="foot">
+  The log keeps about a year and then lets the oldest days go.
+</div>
+
+<script>
+(function () {
+  var URL_ = (window.vampjamVisit && window.vampjamVisit.url) || '';
+  var el = function (id) { return document.getElementById(id); };
+  var rows = [];
+
+  function names() {
+    var m = {};
+    (window.VAMPJAM_SESSIONS || []).forEach(function (s) { m[s.page] = s.name; });
+    return m;
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function hmm(sec) {
+    sec = Math.round(sec || 0);
+    var m = Math.floor(sec / 60);
+    return m ? Math.floor(m / 60) + ':' + (m % 60 < 10 ? '0' : '') + (m % 60) : sec + 's';
+  }
+  function when(ms) {
+    var d = new Date(ms), n = new Date();
+    var day = d.toISOString().slice(0, 10);
+    var t = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    return (day === n.toISOString().slice(0, 10) ? '' : day + ' ') + t;
+  }
+
+  function paint() {
+    var hide = el('hide_btn').classList.contains('on');
+    var use = rows.filter(function (r) { return !(hide && r[5]); });
+    var nm = names();
+
+    // by recording
+    var acc = {};
+    use.forEach(function (r) {
+      var k = r[2] || '(unknown)';
+      var a = acc[k] || (acc[k] = { open: 0, play: 0, secs: 0, who: {} });
+      if (r[3] === 'open') a.open++;
+      if (r[3] === 'play') a.play++;
+      if (r[3] === 'heard') a.secs += r[4];
+      if (r[1]) a.who[r[1]] = 1;
+    });
+    var keys = Object.keys(acc).sort(function (x, y) { return acc[y].play - acc[x].play; });
+    var h = '<tr><th>Recording</th><th class="n">People</th><th class="n">Opens</th>'
+          + '<th class="n">Plays</th><th class="n">Heard</th></tr>';
+    if (!keys.length) h += '<tr><td colspan="5">Nothing yet.</td></tr>';
+    keys.forEach(function (k) {
+      var a = acc[k];
+      h += '<tr><td class="name">' + esc(nm[k] || k) + '</td>'
+         + '<td class="n">' + Object.keys(a.who).length + '</td>'
+         + '<td class="n">' + a.open + '</td>'
+         + '<td class="n">' + a.play + '</td>'
+         + '<td class="n">' + hmm(a.secs) + '</td></tr>';
+    });
+    el('by_rec').innerHTML = h;
+
+    // every visit
+    var t = '<tr><th>When</th><th>Recording</th><th></th><th class="n">Heard</th><th>Who</th></tr>';
+    if (!use.length) t += '<tr><td colspan="5">Nothing yet.</td></tr>';
+    use.slice(0, 400).forEach(function (r) {
+      t += '<tr><td class="when">' + esc(when(r[0])) + '</td>'
+         + '<td class="name">' + esc(nm[r[2]] || r[2]) + '</td>'
+         + '<td class="ev ev_' + esc(r[3]) + '">' + esc(r[3]) + '</td>'
+         + '<td class="n">' + (r[3] === 'heard' ? hmm(r[4]) : '') + '</td>'
+         + '<td class="who">' + esc(String(r[1] || '').slice(0, 6)) + (r[5] ? ' · me' : '') + '</td></tr>';
+    });
+    el('by_time').innerHTML = t;
+  }
+
+  function load() {
+    el('wait').classList.remove('hide');
+    el('wait').textContent = 'Reading the log…';
+    el('live').classList.add('hide');
+    el('setup').classList.add('hide');
+    fetch(URL_ + '?op=get&days=400&t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
+      .then(function (o) {
+        if (o.j && o.j.ok && o.j.rows) {
+          rows = o.j.rows;
+          el('wait').classList.add('hide');
+          el('live').classList.remove('hide');
+          paint();
+          return;
+        }
+        throw new Error((o.j && (o.j.why || o.j.error)) || ('status ' + o.s));
+      })
+      .catch(function (e) {
+        el('wait').textContent = 'The log is not switched on yet — ' + e.message;
+        el('setup').classList.remove('hide');
+      });
+  }
+
+  function mine_paint() {
+    var on = false;
+    try { on = localStorage.getItem('vampjam_mine') === '1'; } catch (e) {}
+    el('mine_btn').classList.toggle('on', on);
+    el('mine_btn').textContent = on ? 'This browser is mine ✓' : 'This browser is mine';
+  }
+  el('mine_btn').addEventListener('click', function () {
+    var on = false;
+    try {
+      on = localStorage.getItem('vampjam_mine') === '1';
+      if (on) localStorage.removeItem('vampjam_mine'); else localStorage.setItem('vampjam_mine', '1');
+    } catch (e) {}
+    mine_paint();
+  });
+  el('hide_btn').addEventListener('click', function () {
+    this.classList.toggle('on'); paint();
+  });
+  el('again_btn').addEventListener('click', load);
+
+  mine_paint();
+  load();
+})();
+</script>
+
+</body>
+</html>
