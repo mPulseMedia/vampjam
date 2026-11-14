@@ -14,5 +14,6 @@ window.VAMPJAM_SESSIONS = [
   { page: "session.html?p=2026_10_02_sound_union_galloping", name: "2026-10-02 Sound Union", date: "2026-10-02", dur: 9129, count: 0 },
   { page: "session.html?p=2026_10_24_bazaar_cafe", name: "2026-10-24 Bazaar Cafe", date: "2026-10-24", dur: 6221, count: 0 },
   { page: "session.html?p=2026_11_09_waystone", name: "2026-11-09 Waystone", date: "2026-11-09", dur: 429, count: 0 },
-  { page: "session.html?p=2026_11_09_waystone_2", name: "2026-11-09 Waystone 2", date: "2026-11-09", dur: 1436, count: 0 }
+  { page: "session.html?p=2026_11_09_waystone_2", name: "2026-11-09 Waystone 2", date: "2026-11-09", dur: 1436, count: 0 },
+  { page: "session.html?p=2026_11_14_soundunion", name: "2026-11-14 Sound Union", date: "2026-11-14", dur: 8738, count: 0 }
 ];
