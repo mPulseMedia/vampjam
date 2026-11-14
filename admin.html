@@ -76,6 +76,26 @@
   .dot.wait { background: var(--muted); opacity: 0.4; }
   .setup_row .why { color: var(--muted); }
   .setup_go { display: inline-block; margin-top: 8px; color: var(--accent); }
+  /* up_steps — the mobile runbook that opens this page. One column, one font
+     size, the letter hanging in a left gutter, the phone picture under the words. */
+  #up_steps { --ut: 15.5px; margin: 4px 0 30px; }
+  @media (min-width: 760px) { #up_steps { --ut: 17px; } }
+  #up_steps .uhead { font-size: var(--ut); font-weight: 700; margin: 0 0 2px; }
+  #up_steps .ulede { font-size: var(--ut); line-height: 1.48; color: var(--muted); margin: 0 0 22px; }
+  #up_steps .ustep { position: relative; padding-left: 30px; margin: 0 0 30px; }
+  #up_steps .ultr { position: absolute; left: 0; top: 0; width: 22px;
+                    font-size: var(--ut); line-height: 1.48; color: var(--muted); }
+  #up_steps p { font-size: var(--ut); line-height: 1.48; margin: 0 0 7px; color: var(--fg); }
+  #up_steps p.uaim { color: var(--muted); }
+  #up_steps .ico { display: inline-block; width: 1em; height: 1em; vertical-align: -0.12em;
+                   margin-right: 0.45em; color: var(--muted); }
+  #up_steps .shot_ph { display: block; width: 100%; max-width: 230px; margin: 12px 0 6px; }
+  #up_steps .ucopy { background: var(--accent); color: var(--on_accent, #fff); border: none;
+                     border-radius: 999px; padding: 6px 14px; font-size: calc(var(--ut) - 2px);
+                     font-family: inherit; cursor: pointer; }
+  #up_steps .unote { font-size: calc(var(--ut) - 1px); line-height: 1.5; color: var(--muted);
+                     border-top: 1px solid var(--panel_3); padding-top: 14px; margin-top: 18px; }
+  #up_steps .unote b { color: var(--fg); }
 </style>
 </head>
 <body>
@@ -98,10 +118,28 @@
 
 <div id="theme_switch_mount"></div>
 
-<a class="cta" href="https://dash.cloudflare.com/?to=/:account/r2/default/buckets/vampjam-audio" target="_blank" rel="noopener">
-  Open the vampjam-audio bucket
-  <span class="cta_sub">Cloudflare R2 &rarr; where the audio lives now</span>
-</a>
+<div id="up_steps">
+<div class="uhead">Put a new voice note up</div>
+<p class="ulede">Four steps, all on the phone. Voice Memos gives a clean
+<b>.m4a</b> when it goes through <b>Save to Files</b>, so nothing needs converting.</p>
+
+<div class="ustep"><span class="ultr">A</span><p class="uaim">Get the memo out of Voice Memos.</p><p>Open <b>Voice Memos</b>.</p><p>Tap the recording.</p><p>Tap the <b>&#8943;</b> button under it.</p><p>Tap <b>Save to Files</b>.</p><svg class="shot_ph" viewBox="0 0 230 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The Voice Memos share sheet with Save to Files ringed"><rect x="2" y="2" width="226" height="416" rx="30" fill="#1c1c1e"/><rect x="9" y="9" width="212" height="402" rx="24" fill="#ffffff"/><rect x="88" y="13" width="54" height="9" rx="4.5" fill="#1c1c1e"/><g font-family="-apple-system,system-ui,sans-serif"><text x="20" y="42" font-size="9" fill="#8a8a8e">9:41</text><text x="115" y="60" font-size="12" font-weight="700" fill="#1c1c1e" text-anchor="middle">Voice Memos</text><rect x="18" y="72" width="194" height="34" rx="8" fill="#f2f2f7"/><text x="28" y="88" font-size="9.5" font-weight="600" fill="#1c1c1e">New Recording 7</text><text x="28" y="100" font-size="8" fill="#8a8a8e">Today  7:41 PM   24:06</text><rect x="18" y="116" width="194" height="282" rx="14" fill="#f2f2f7"/><text x="115" y="136" font-size="9.5" font-weight="600" fill="#1c1c1e" text-anchor="middle">New Recording 7</text><rect x="28" y="150" width="174" height="30" rx="8" fill="#ffffff"/><text x="40" y="169" font-size="9.5" fill="#1c1c1e">AirDrop</text><rect x="28" y="186" width="174" height="30" rx="8" fill="#ffffff"/><text x="40" y="205" font-size="9.5" fill="#1c1c1e">Messages</text><rect x="28" y="222" width="174" height="30" rx="8" fill="#ffffff"/><text x="40" y="241" font-size="9.5" fill="#1c1c1e">Mail</text><rect x="28" y="258" width="174" height="30" rx="8" fill="#ffffff"/><text x="40" y="277" font-size="9.5" font-weight="700" fill="#1c1c1e">Save to Files</text><rect x="24" y="254" width="182" height="38" rx="11" fill="none" stroke="#1b6be0" stroke-width="3" stroke-dasharray="8 5"/></g><rect x="88" y="400" width="54" height="3.5" rx="1.75" fill="#c9c9c4"/></svg></div>
+
+<div class="ustep"><span class="ultr">B</span><p class="uaim">Name it before you save it.</p><p>Tap the name at the top and type over it.</p><p>Date first, then the place, then <b>.m4a</b>.</p><p><button class="ucopy" data-copy="2026_11_14_">Copy "2026_11_14_"</button> then type the place.</p><p>Tap <b>Save</b>.</p><p><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M1.8 12S5.5 5.5 12 5.5 22.2 12 22.2 12 18.5 18.5 12 18.5 1.8 12 1.8 12z"/><circle cx="12" cy="12" r="3.1"/></svg> The file is in <b>Files</b> under the name you typed.</p><svg class="shot_ph" viewBox="0 0 230 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The Save to Files sheet with the name field ringed"><rect x="2" y="2" width="226" height="416" rx="30" fill="#1c1c1e"/><rect x="9" y="9" width="212" height="402" rx="24" fill="#ffffff"/><rect x="88" y="13" width="54" height="9" rx="4.5" fill="#1c1c1e"/><g font-family="-apple-system,system-ui,sans-serif"><text x="20" y="42" font-size="9" fill="#8a8a8e">9:41</text><text x="115" y="62" font-size="11" font-weight="700" fill="#1c1c1e" text-anchor="middle">Save to Files</text><text x="196" y="62" font-size="10" fill="#007aff" text-anchor="end">Save</text><rect x="18" y="78" width="194" height="34" rx="8" fill="#ffffff" stroke="#d1d1d6"/><text x="28" y="99" font-size="9.5" font-family="ui-monospace,Menlo,monospace" fill="#1c1c1e">2026_11_14_waystone.m4a</text><rect x="14" y="74" width="202" height="42" rx="11" fill="none" stroke="#1b6be0" stroke-width="3" stroke-dasharray="8 5"/><text x="20" y="140" font-size="9" fill="#8a8a8e">On My iPhone</text><rect x="18" y="150" width="194" height="30" rx="8" fill="#f2f2f7"/><text x="30" y="169" font-size="9.5" fill="#1c1c1e">Downloads</text><rect x="18" y="186" width="194" height="30" rx="8" fill="#f2f2f7"/><text x="30" y="205" font-size="9.5" fill="#1c1c1e">Voice Memos</text></g><rect x="88" y="400" width="54" height="3.5" rx="1.75" fill="#c9c9c4"/></svg></div>
+
+<div class="ustep"><span class="ultr">C</span><p class="uaim">Put it in the bucket.</p><p>Tap <a href="https://dash.cloudflare.com/4b9c9adf79c3fb2d43be0ced2b2a8553/r2/default/buckets/vampjam-audio" target="_blank" rel="noopener">the <b>vampjam-audio</b> bucket</a>. It opens in a new tab.</p><p><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V11"/><path d="M6 11c0-3 3-4 6-4h5"/><path d="M6 11c0 3 3 4 6 4h5"/><path d="M14.5 4.5L17 7l-2.5 2.5"/><path d="M14.5 12.5L17 15l-2.5 2.5"/></svg> If Cloudflare asks you to sign in, sign in. It returns you to the bucket.</p><p>Tap <b>Upload</b>.</p><p>Tap <b>Choose files</b>, then pick the memo from <b>Files</b>.</p><p><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M1.8 12S5.5 5.5 12 5.5 22.2 12 22.2 12 18.5 18.5 12 18.5 1.8 12 1.8 12z"/><circle cx="12" cy="12" r="3.1"/></svg> A new row in the <b>Objects</b> list, with your filename on it.</p><svg class="shot_ph" viewBox="0 0 230 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The vampjam-audio Objects list on a phone with Upload ringed"><rect x="2" y="2" width="226" height="416" rx="30" fill="#1c1c1e"/><rect x="9" y="9" width="212" height="402" rx="24" fill="#ffffff"/><rect x="88" y="13" width="54" height="9" rx="4.5" fill="#1c1c1e"/><g font-family="-apple-system,system-ui,sans-serif"><rect x="9" y="9" width="212" height="40" rx="24" fill="#15181c"/><text x="26" y="36" font-size="8.5" fill="#8b93a1">dash.cloudflare.com</text><rect x="9" y="49" width="212" height="362" fill="#0f1114"/><text x="22" y="74" font-size="11" font-weight="700" fill="#e8ecf1">vampjam-audio</text><text x="22" y="96" font-size="9" font-weight="700" fill="#e8ecf1">Objects</text><text x="70" y="96" font-size="9" fill="#6f7782">Settings</text><line x1="22" y1="102" x2="54" y2="102" stroke="#f6821f" stroke-width="2"/><line x1="22" y1="102" x2="208" y2="102" stroke="#2a2f36"/><rect x="142" y="62" width="66" height="22" rx="6" fill="#f6821f"/><text x="175" y="77" font-size="9.5" font-weight="700" fill="#1c1c1e" text-anchor="middle">Upload</text><rect x="137" y="57" width="76" height="32" rx="10" fill="none" stroke="#1b6be0" stroke-width="3" stroke-dasharray="8 5"/><g font-family="ui-monospace,Menlo,monospace" font-size="7.5" fill="#8b93a1"><text x="24" y="124">2026_11_09_waystone.m4a</text><text x="24" y="142">2026_10_24_bazaar_cafe.m4a</text><text x="24" y="160">2026_09_25_pho_dong.m4a</text></g></g><rect x="88" y="400" width="54" height="3.5" rx="1.75" fill="#c9c9c4"/></svg></div>
+
+<div class="ustep"><span class="ultr">D</span><p class="uaim">Tell me, and I put it in the app.</p><p>Open <a href="https://claude.ai/cowork/cse_01P4sM9objEudusztebJAfcu" target="_blank" rel="noopener">the <b>vampjam_4</b> thread</a>.</p><p><button class="ucopy" data-copy="Update">Copy "Update"</button> into the message box, then send.</p><p><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M1.8 12S5.5 5.5 12 5.5 22.2 12 22.2 12 18.5 18.5 12 18.5 1.8 12 1.8 12z"/><circle cx="12" cy="12" r="3.1"/></svg> I reply when the recording is in the list and plays.</p><svg class="shot_ph" viewBox="0 0 230 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The vampjam_4 thread with Update typed in the message box"><rect x="2" y="2" width="226" height="416" rx="30" fill="#1c1c1e"/><rect x="9" y="9" width="212" height="402" rx="24" fill="#ffffff"/><rect x="88" y="13" width="54" height="9" rx="4.5" fill="#1c1c1e"/><g font-family="-apple-system,system-ui,sans-serif"><text x="20" y="42" font-size="9" fill="#8a8a8e">9:41</text><text x="115" y="62" font-size="11" font-weight="700" fill="#1c1c1e" text-anchor="middle">vampjam_4</text><rect x="60" y="80" width="152" height="30" rx="14" fill="#e8e3f7"/><text x="196" y="99" font-size="9" fill="#1c1c1e" text-anchor="end">five files are up</text><rect x="18" y="122" width="150" height="44" rx="14" fill="#f2f2f7"/><text x="30" y="140" font-size="9" fill="#1c1c1e">Added them. The list</text><text x="30" y="154" font-size="9" fill="#1c1c1e">has all five now.</text><rect x="18" y="348" width="194" height="34" rx="17" fill="#ffffff" stroke="#d1d1d6"/><text x="32" y="369" font-size="10" font-weight="700" fill="#1c1c1e">Update</text><rect x="14" y="344" width="202" height="42" rx="21" fill="none" stroke="#1b6be0" stroke-width="3" stroke-dasharray="8 5"/></g><rect x="88" y="400" width="54" height="3.5" rx="1.75" fill="#c9c9c4"/></svg></div>
+
+<div class="unote"><b>Update</b> means: go and look in the vampjam-audio bucket for a
+recording that is not in the app yet, and if there is one, add it to the app. One word
+is the whole instruction.</div>
+<div class="unote">The phone pictures are drawn from Apple&#8217;s and Cloudflare&#8217;s own
+documentation, not from your screen. If a screen does not match its picture, send me a
+screenshot and I redraw it.<br><br>If the screen says something else, send me the sentence.</div>
+</div>
+
+
 
 <!-- nudge_gone — the lab is its own project now (lab repo, nudge/). The CTA is
      gone rather than pointing across repos at a URL this site cannot know. -->
@@ -303,5 +341,21 @@ on the list.</p>
 
 
 
+<script>
+(function () {
+  Array.prototype.forEach.call(document.querySelectorAll('#up_steps .ucopy'), function (b) {
+    var was = b.textContent;
+    b.addEventListener('click', function () {
+      var v = b.getAttribute('data-copy');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(v).then(function () {
+          b.textContent = '\u2713 Copied "' + v + '"';
+          setTimeout(function () { b.textContent = was; }, 1800);
+        }, function () { b.textContent = 'Copy failed'; });
+      } else { b.textContent = 'Copy failed'; }
+    });
+  });
+})();
+</script>
 </body>
 </html>
