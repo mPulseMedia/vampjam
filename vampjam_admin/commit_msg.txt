@@ -1,1 +1,1 @@
-visit_log_add
+auto_commit

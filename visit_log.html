@@ -50,6 +50,30 @@
   ul.sb li{margin-bottom:5px;}
   ul.sb li::marker{color:var(--accent_2);}
   .hide{display:none;}
+
+  /* play_chart — one line, one hue, drawn in the page's own accent. Thin mark,
+     recessive grid, and a number only where it earns one: the busiest day and
+     the last day. A number on every point is a table wearing a chart's clothes. */
+  .chart_wrap{position:relative;}
+  .chart{width:100%;height:auto;display:block;overflow:visible;}
+  .chart .grid{stroke:var(--panel_3);stroke-width:1;}
+  .chart .line{fill:none;stroke:var(--accent);stroke-width:2;
+               stroke-linecap:round;stroke-linejoin:round;}
+  .chart .fill{fill:var(--accent);opacity:0.10;}
+  .chart .dot{fill:var(--accent);stroke:var(--panel);stroke-width:2;}
+  .chart .tick{fill:var(--muted);font-size:10px;}
+  .chart .peak{fill:var(--fg);font-size:11px;font-weight:700;}
+  .chart .cross{stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3;}
+  .tip{position:absolute;pointer-events:none;background:var(--panel_2);color:var(--fg);
+       border:1px solid var(--panel_3);border-radius:8px;padding:5px 9px;font-size:12px;
+       white-space:nowrap;transform:translate(-50%,-130%);opacity:0;transition:opacity .08s;}
+  .tip.on{opacity:1;}
+  .spark{width:110px;height:26px;display:block;overflow:visible;}
+  .spark .line{fill:none;stroke:var(--accent);stroke-width:2;
+               stroke-linecap:round;stroke-linejoin:round;}
+  .spark .dot{fill:var(--accent);}
+  .spark .base{stroke:var(--panel_3);stroke-width:1;}
+  td.sp{width:120px;padding-right:10px;}
 </style>
 </head>
 <body>
@@ -81,6 +105,11 @@
 <div id="wait" class="card">Reading the log…</div>
 
 <div id="live" class="hide">
+  <div class="section-label">Plays per day</div>
+  <div class="card chart_wrap" id="all_wrap">
+    <div id="all_chart"></div>
+    <div class="tip" id="all_tip"></div>
+  </div>
   <div class="section-label">By recording</div>
   <div class="card"><table id="by_rec"></table></div>
   <div class="section-label">Every visit, newest first</div>
