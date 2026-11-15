@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="site.css?v=27">
 <script src="theme.js?v=2"></script>
 <script src="sessions.js?v=132"></script>
-<script src="drawer.js?v=191"></script>
+<script src="drawer.js?v=192"></script>
 <style>
   .back{display:inline-block;color:var(--accent_2);text-decoration:none;font-size:13px;margin:8px 0 4px;}
   h1{font-size:20px;margin:14px 0 4px;}
@@ -125,57 +125,21 @@
 </div>
 
 <div id="setup" class="hide">
-  <div class="section-label">Switch it on — about five minutes</div>
-  <ol class="steps">
-    <li>
-      <div class="step_title">Make the shelf it writes to</div>
-      <ul class="sb">
-        <li>go to <a href="https://dash.cloudflare.com" target="_blank" rel="noopener">dash.cloudflare.com</a>.</li>
-        <li>left sidebar: <b>Storage &amp; Databases</b> &rarr; <b>KV</b>.</li>
-        <li>click <b>Create a namespace</b>.</li>
-        <li>name it exactly <code>vampjam_visit</code> and create it.</li>
-      </ul>
-    </li>
-    <li>
-      <div class="step_title">Make the worker</div>
-      <ul class="sb">
-        <li><b>Workers &amp; Pages</b> &rarr; <b>Create</b> &rarr; <b>Start with Hello World</b>.</li>
-        <li>name it exactly <code>vampjam-visit</code> — the site already expects that name.</li>
-        <li>deploy it, then <b>Edit code</b>.</li>
-      </ul>
-    </li>
-    <li>
-      <div class="step_title">Paste the code</div>
-      <ul class="sb">
-        <li>select everything in the editor and delete it.</li>
-        <li>paste the contents of <code>cloudflare/vampjam_visit_worker.js</code> from the repo.</li>
-        <li>click <b>Deploy</b>.</li>
-      </ul>
-    </li>
-    <li>
-      <div class="step_title">Join the two together</div>
-      <ul class="sb">
-        <li>that worker &rarr; <b>Settings</b> &rarr; <b>Bindings</b> &rarr; <b>Add</b> &rarr; <b>KV namespace</b>.</li>
-        <li>Variable name: <code>VISIT</code> &nbsp; KV namespace: <code>vampjam_visit</code>.</li>
-        <li>save, then <b>Deploy</b> once more.</li>
-        <li>come back here and press Refresh.</li>
-      </ul>
-    </li>
-  </ol>
   <div class="note">
-    <b>Until this is done nothing is lost and nothing is broken</b> — the site
-    simply does not count. Plays before the switch-on are not recorded anywhere,
-    so the log starts the day you finish step 4.
+    <b>Nothing to switch on.</b> The log rides on the worker that has been
+    writing to this repo for months — each browser keeps its own short file and
+    sends it when the tab closes. If this message stays up, that worker is not
+    answering; tell me and I will look.
   </div>
 </div>
 
 <div class="note" id="foot">
-  The log keeps about a year and then lets the oldest days go.
+  Each browser keeps its own short file and sends it when the tab closes, so a
+  play can take a minute to appear here. Press Refresh.
 </div>
 
 <script>
 (function () {
-  var URL_ = (window.vampjamVisit && window.vampjamVisit.url) || '';
   var el = function (id) { return document.getElementById(id); };
   var rows = [];
 
@@ -374,25 +338,41 @@
     el('by_time').innerHTML = t;
   }
 
+  // where the log lives: one small file per browser in the repo, written by
+  // the sync worker. The listing costs one call to github; the files
+  // themselves come from raw, which has no rate limit to run into.
+  var REPO = 'https://api.github.com/repos/mPulseMedia/vampjam/contents/?ref=main&t=';
+  var RAW = 'https://raw.githubusercontent.com/mPulseMedia/vampjam/main/';
+  var FILE = /^playlog_[A-Za-z0-9]+\.json$/;
+
   function load() {
     el('wait').classList.remove('hide');
     el('wait').textContent = 'Reading the log…';
     el('live').classList.add('hide');
     el('setup').classList.add('hide');
-    fetch(URL_ + '?op=get&days=400&t=' + Date.now(), { cache: 'no-store' })
-      .then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
-      .then(function (o) {
-        if (o.j && o.j.ok && o.j.rows) {
-          rows = o.j.rows;
-          el('wait').classList.add('hide');
-          el('live').classList.remove('hide');
-          paint();
-          return;
-        }
-        throw new Error((o.j && (o.j.why || o.j.error)) || ('status ' + o.s));
+    fetch(REPO + Date.now(), { headers: { Accept: 'application/vnd.github+json' }, cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('listing: ' + r.status); return r.json(); })
+      .then(function (list) {
+        var files = (list || []).map(function (f) { return f.name; }).filter(function (n) {
+          return FILE.test(n);
+        });
+        return Promise.all(files.map(function (n) {
+          return fetch(RAW + n + '?v=' + Date.now(), { cache: 'no-store' })
+            .then(function (r) { return r.ok ? r.json() : []; })
+            .catch(function () { return []; });
+        }));
+      })
+      .then(function (all) {
+        rows = [];
+        all.forEach(function (a) { if (Array.isArray(a)) rows = rows.concat(a); });
+        rows = rows.filter(function (r) { return Array.isArray(r) && r.length >= 4; });
+        rows.sort(function (x, y) { return y[0] - x[0]; });
+        el('wait').classList.add('hide');
+        el('live').classList.remove('hide');
+        paint();
       })
       .catch(function (e) {
-        el('wait').textContent = 'The log is not switched on yet — ' + e.message;
+        el('wait').textContent = 'Could not read the log — ' + e.message;
         el('setup').classList.remove('hide');
       });
   }
