@@ -68,12 +68,16 @@
        border:1px solid var(--panel_3);border-radius:8px;padding:5px 9px;font-size:12px;
        white-space:nowrap;transform:translate(-50%,-130%);opacity:0;transition:opacity .08s;}
   .tip.on{opacity:1;}
-  .spark{width:110px;height:26px;display:block;overflow:visible;}
+  .spark{width:84px;height:24px;display:block;overflow:visible;}
   .spark .line{fill:none;stroke:var(--accent);stroke-width:2;
                stroke-linecap:round;stroke-linejoin:round;}
   .spark .dot{fill:var(--accent);}
   .spark .base{stroke:var(--panel_3);stroke-width:1;}
-  td.sp{width:120px;padding-right:10px;}
+  td.sp{width:92px;padding-right:0;}
+  /* row_sub — the quieter numbers ride under the name instead of claiming
+     columns of their own. Five columns did not fit a phone, and a table that
+     runs off the side of the screen is not a table. */
+  .sub2{color:var(--muted);font-size:11.5px;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -338,29 +342,30 @@
       if (r[1]) a.who[r[1]] = 1;
     });
     var keys = Object.keys(acc).sort(function (x, y) { return acc[y].play - acc[x].play; });
-    var h = '<tr><th>Recording</th><th>Last 30 days</th><th class="n">Plays</th>'
-          + '<th class="n">People</th><th class="n">Heard</th><th class="n">Last</th></tr>';
-    if (!keys.length) h += '<tr><td colspan="6">Nothing yet.</td></tr>';
+    var h = '<tr><th>Recording</th><th>30 days</th><th class="n">Plays</th></tr>';
+    if (!keys.length) h += '<tr><td colspan="3">Nothing yet.</td></tr>';
     keys.forEach(function (k) {
-      var a = acc[k];
-      h += '<tr><td class="name">' + esc(nm[k] || k) + '</td>'
+      var a = acc[k], ppl = Object.keys(a.who).length;
+      var sub = [ppl + (ppl === 1 ? ' person' : ' people'),
+                 a.secs ? hmm(a.secs) + ' heard' : '',
+                 a.last ? 'last ' + day_label(day_key(a.last)) : ''].filter(Boolean).join(' · ');
+      h += '<tr><td class="name">' + esc(nm[k] || k)
+         + '<div class="sub2">' + esc(sub) + '</div></td>'
          + '<td class="sp">' + (a.play ? spark(series_of(a.hits, 30)) : '') + '</td>'
-         + '<td class="n">' + a.play + '</td>'
-         + '<td class="n">' + Object.keys(a.who).length + '</td>'
-         + '<td class="n">' + hmm(a.secs) + '</td>'
-         + '<td class="n">' + (a.last ? day_label(day_key(a.last)) : '') + '</td></tr>';
+         + '<td class="n">' + a.play + '</td></tr>';
     });
     el('by_rec').innerHTML = h;
 
     // every visit
-    var t = '<tr><th>When</th><th>Recording</th><th></th><th class="n">Heard</th><th>Who</th></tr>';
-    if (!use.length) t += '<tr><td colspan="5">Nothing yet.</td></tr>';
+    var t = '<tr><th>When</th><th>Recording</th></tr>';
+    if (!use.length) t += '<tr><td colspan="2">Nothing yet.</td></tr>';
     use.slice(0, 400).forEach(function (r) {
+      var what = r[3] === 'heard' ? 'heard ' + hmm(r[4]) : r[3];
       t += '<tr><td class="when">' + esc(when(r[0])) + '</td>'
-         + '<td class="name">' + esc(nm[r[2]] || r[2]) + '</td>'
-         + '<td class="ev ev_' + esc(r[3]) + '">' + esc(r[3]) + '</td>'
-         + '<td class="n">' + (r[3] === 'heard' ? hmm(r[4]) : '') + '</td>'
-         + '<td class="who">' + esc(String(r[1] || '').slice(0, 6)) + (r[5] ? ' · me' : '') + '</td></tr>';
+         + '<td class="name">' + esc(nm[r[2]] || r[2])
+         + '<div class="sub2"><span class="ev ev_' + esc(r[3]) + '">' + esc(what) + '</span>'
+         + ' · <span class="who">' + esc(String(r[1] || '').slice(0, 6)) + '</span>'
+         + (r[5] ? ' · me' : '') + '</div></td></tr>';
     });
     el('by_time').innerHTML = t;
   }
