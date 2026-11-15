@@ -191,32 +191,164 @@
     return (day === n.toISOString().slice(0, 10) ? '' : day + ' ') + t;
   }
 
+  // ---- days -------------------------------------------------------------
+  // local days, not UTC ones: a play at 9pm belongs to the evening he remembers.
+  function day_key(ms) {
+    var d = new Date(ms);
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2)
+         + '-' + ('0' + d.getDate()).slice(-2);
+  }
+  function day_label(k) {
+    var p = k.split('-');
+    return new Date(+p[0], +p[1] - 1, +p[2])
+      .toLocaleDateString([], { month: 'short', day: 'numeric' });
+  }
+  // a run of days with nothing in them is part of the story, so the series is
+  // every day from the first play to today, zeros included — not just the days
+  // something happened, which would draw a flat busy line out of a quiet month.
+  function series_of(list, span) {
+    var by = {}, first = null;
+    list.forEach(function (r) {
+      var k = day_key(r[0]);
+      by[k] = (by[k] || 0) + 1;
+      if (!first || k < first) first = k;
+    });
+    var out = [], t = new Date();
+    t.setHours(12, 0, 0, 0);
+    var n = 1;
+    if (first) {
+      var p = first.split('-');
+      var d0 = new Date(+p[0], +p[1] - 1, +p[2], 12);
+      n = Math.round((t - d0) / 86400000) + 1;
+    }
+    n = Math.max(7, Math.min(span || 90, n));
+    for (var i = n - 1; i >= 0; i--) {
+      var d = new Date(t.getTime() - i * 86400000);
+      var k = day_key(d.getTime());
+      out.push({ d: k, n: by[k] || 0 });
+    }
+    return out;
+  }
+
+  // ---- the charts -------------------------------------------------------
+  // one series, so no legend: the heading above it is the name of the line.
+  function pts(ser, w, h, pad) {
+    var max = 0;
+    ser.forEach(function (p) { if (p.n > max) max = p.n; });
+    max = Math.max(1, max);
+    var n = ser.length;
+    var step = n > 1 ? (w - pad * 2) / (n - 1) : 0;
+    return ser.map(function (p, i) {
+      return { x: pad + i * step, y: pad + (h - pad * 2) * (1 - p.n / max), n: p.n, d: p.d };
+    });
+  }
+  function spark(ser) {
+    var W = 110, H = 26;
+    var P = pts(ser.slice(-30), W, H, 3);
+    if (!P.length) return '';
+    var last = P[P.length - 1];
+    return '<svg class="spark" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none"'
+      + ' role="img" aria-label="plays per day, last 30 days">'
+      + '<line class="base" x1="0" y1="' + (H - 1) + '" x2="' + W + '" y2="' + (H - 1) + '"/>'
+      + '<polyline class="line" points="'
+      + P.map(function (q) { return q.x.toFixed(1) + ',' + q.y.toFixed(1); }).join(' ') + '"/>'
+      + '<circle class="dot" cx="' + last.x.toFixed(1) + '" cy="' + last.y.toFixed(1) + '" r="2.4"/>'
+      + '</svg>';
+  }
+  function big(ser) {
+    var W = 620, H = 170, P = 22;
+    var p = pts(ser, W, H, P);
+    if (!p.length) return '';
+    var max = 0;
+    ser.forEach(function (q) { if (q.n > max) max = q.n; });
+    max = Math.max(1, max);
+    var base = H - P;
+    var line = p.map(function (q) { return q.x.toFixed(1) + ',' + q.y.toFixed(1); }).join(' ');
+    var area = p[0].x.toFixed(1) + ',' + base + ' ' + line + ' '
+             + p[p.length - 1].x.toFixed(1) + ',' + base;
+    // the busiest day gets its number; so does the last day. Nothing else does.
+    var hi = p.reduce(function (a, b) { return b.n >= a.n ? b : a; }, p[0]);
+    var last = p[p.length - 1];
+    var svg = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img"'
+      + ' aria-label="plays per day"><g>'
+      + '<line class="grid" x1="' + P + '" y1="' + P + '" x2="' + (W - P) + '" y2="' + P + '"/>'
+      + '<line class="grid" x1="' + P + '" y1="' + base + '" x2="' + (W - P) + '" y2="' + base + '"/>'
+      + '<text class="tick" x="' + P + '" y="' + (P - 7) + '">' + max + '</text>'
+      + '<text class="tick" x="' + P + '" y="' + (base + 14) + '">' + day_label(ser[0].d) + '</text>'
+      + '<text class="tick" x="' + (W - P) + '" y="' + (base + 14) + '" text-anchor="end">'
+      + day_label(ser[ser.length - 1].d) + '</text>'
+      + '<polygon class="fill" points="' + area + '"/>'
+      + '<polyline class="line" points="' + line + '"/>';
+    if (hi.n > 0)
+      svg += '<text class="peak" x="' + hi.x.toFixed(1) + '" y="' + (hi.y - 8).toFixed(1)
+           + '" text-anchor="middle">' + hi.n + '</text>';
+    svg += '<circle class="dot" cx="' + last.x.toFixed(1) + '" cy="' + last.y.toFixed(1) + '" r="4"/>'
+      + '<line class="cross hide" id="cross" y1="' + P + '" y2="' + base + '"/>';
+    // one invisible column per day, so the hover lands on the day you are over
+    // rather than on the pixel the line happens to occupy
+    var halfw = p.length > 1 ? (p[1].x - p[0].x) / 2 : (W - P * 2) / 2;
+    p.forEach(function (q, i) {
+      svg += '<rect x="' + (q.x - halfw).toFixed(1) + '" y="0" width="' + (halfw * 2).toFixed(1)
+           + '" height="' + H + '" fill="transparent" data-i="' + i + '"/>';
+    });
+    return svg + '</g></svg>';
+  }
+  function wire_big(ser) {
+    var wrap = el('all_wrap'), tip = el('all_tip');
+    var svg = wrap.querySelector('svg.chart');
+    if (!svg) return;
+    var p = pts(ser, 620, 170, 22);
+    var cross = svg.querySelector('#cross');
+    svg.addEventListener('pointermove', function (e) {
+      var i = e.target && e.target.getAttribute && e.target.getAttribute('data-i');
+      if (i === null || i === undefined) return;
+      var q = p[+i], box = svg.getBoundingClientRect();
+      var k = box.width / 620;
+      cross.setAttribute('x1', q.x); cross.setAttribute('x2', q.x);
+      cross.classList.remove('hide');
+      tip.textContent = day_label(q.d) + ' · ' + q.n + (q.n === 1 ? ' play' : ' plays');
+      tip.style.left = (q.x * k) + 'px';
+      tip.style.top = (q.y * k + svg.offsetTop) + 'px';
+      tip.classList.add('on');
+    });
+    svg.addEventListener('pointerleave', function () {
+      cross.classList.add('hide'); tip.classList.remove('on');
+    });
+  }
+
   function paint() {
     var hide = el('hide_btn').classList.contains('on');
     var use = rows.filter(function (r) { return !(hide && r[5]); });
+    var plays = use.filter(function (r) { return r[3] === 'play'; });
     var nm = names();
+
+    // plays per day, everything together
+    var ser = series_of(plays, 90);
+    el('all_chart').innerHTML = plays.length ? big(ser)
+      : '<div style="color:var(--muted);font-size:13px">No plays yet.</div>';
+    if (plays.length) wire_big(ser);
 
     // by recording
     var acc = {};
     use.forEach(function (r) {
       var k = r[2] || '(unknown)';
-      var a = acc[k] || (acc[k] = { open: 0, play: 0, secs: 0, who: {} });
-      if (r[3] === 'open') a.open++;
-      if (r[3] === 'play') a.play++;
+      var a = acc[k] || (acc[k] = { play: 0, secs: 0, last: 0, who: {}, hits: [] });
+      if (r[3] === 'play') { a.play++; a.last = Math.max(a.last, r[0]); a.hits.push(r); }
       if (r[3] === 'heard') a.secs += r[4];
       if (r[1]) a.who[r[1]] = 1;
     });
     var keys = Object.keys(acc).sort(function (x, y) { return acc[y].play - acc[x].play; });
-    var h = '<tr><th>Recording</th><th class="n">People</th><th class="n">Opens</th>'
-          + '<th class="n">Plays</th><th class="n">Heard</th></tr>';
-    if (!keys.length) h += '<tr><td colspan="5">Nothing yet.</td></tr>';
+    var h = '<tr><th>Recording</th><th>Last 30 days</th><th class="n">Plays</th>'
+          + '<th class="n">People</th><th class="n">Heard</th><th class="n">Last</th></tr>';
+    if (!keys.length) h += '<tr><td colspan="6">Nothing yet.</td></tr>';
     keys.forEach(function (k) {
       var a = acc[k];
       h += '<tr><td class="name">' + esc(nm[k] || k) + '</td>'
-         + '<td class="n">' + Object.keys(a.who).length + '</td>'
-         + '<td class="n">' + a.open + '</td>'
+         + '<td class="sp">' + (a.play ? spark(series_of(a.hits, 30)) : '') + '</td>'
          + '<td class="n">' + a.play + '</td>'
-         + '<td class="n">' + hmm(a.secs) + '</td></tr>';
+         + '<td class="n">' + Object.keys(a.who).length + '</td>'
+         + '<td class="n">' + hmm(a.secs) + '</td>'
+         + '<td class="n">' + (a.last ? day_label(day_key(a.last)) : '') + '</td></tr>';
     });
     el('by_rec').innerHTML = h;
 
