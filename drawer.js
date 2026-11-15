@@ -904,6 +904,34 @@
     play_dirty = true;
     play_soon();
   }
+  // only where there is something to play: the list, Admin and the rest have no
+  // player, so they are never counted at all.
+  function visit_watch() {
+    var au = document.getElementById('player');
+    if (!au) return;
+    visit_put('open', 0);
+    var played = false, mark = 0, owed = 0;
+    function stop() { if (mark) { owed += (Date.now() - mark) / 1000; mark = 0; } }
+    // seconds actually heard, not seconds of recording passed over: a scrub
+    // forward is not listening, and a pause is not either.
+    function flush() {
+      stop();
+      if (owed >= 5) { visit_put('heard', owed); owed = 0; }
+    }
+    au.addEventListener('play', function () {
+      if (!played) { played = true; visit_put('play', 0); }
+      mark = Date.now();
+    });
+    ['pause', 'ended'].forEach(function (e) { au.addEventListener(e, flush); });
+    // the tab closing is the last chance to say any of it, so it both finishes
+    // the tally and sends, in that order
+    window.addEventListener('pagehide', function () { flush(); play_send(true); });
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') { flush(); play_send(true); }
+    });
+  }
+  window.vampjamVisit = { id: visit_id, sync: PLAY_SYNC, file: function () {
+    return 'playlog_' + visit_id() + '.json'; } };
 
   // row_more — one open row at a time, on the list AND on the highlight rows
   // of a session page (which share this closer, since every session page
