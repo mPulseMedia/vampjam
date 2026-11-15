@@ -842,12 +842,20 @@
   //
   // None of this shows anywhere in the app. The log is at visit_log.html,
   // reachable only from Admin.
-  var VISIT_URL = 'https://vampjam-visit.crimson-dust-a18d.workers.dev/';
+  // Nothing new had to be built to hold this. The sync worker has been
+  // deployed and writing files into the repo for months; a play is just
+  // another small file. Each browser owns ONE file of its own, named after its
+  // own random id, so two listeners can never write over each other and there
+  // is no lock to get wrong. Clearing a browser makes a new id and therefore a
+  // new file, so nothing already written is ever lost.
+  var PLAY_SYNC = SYNC_URL;
+  var PLAY_KEY = 'vampjam_visit_log';
+  var PLAY_CAP = 500;                 // a browser stops growing its own file here
   function visit_id() {
     var v = '';
     try { v = localStorage.getItem('vampjam_visit_id') || ''; } catch (e) {}
     if (!v) {
-      v = Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 12);
+      v = Math.random().toString(36).slice(2, 8) + Math.random().toString(36).slice(2, 8);
       try { localStorage.setItem('vampjam_visit_id', v); } catch (e) {}
     }
     return v;
@@ -857,50 +865,45 @@
   function visit_mine() {
     try { return localStorage.getItem('vampjam_mine') === '1' ? 1 : 0; } catch (e) { return 0; }
   }
-  // text/plain on purpose: it keeps the browser from sending a preflight before
-  // every event, and the worker reads the body the same way either way.
-  function visit_put(ev, secs) {
-    if (!VISIT_URL) return;
-    var body = JSON.stringify({ v: visit_id(), p: PKEY, e: ev,
-                                s: Math.round(secs || 0), mine: visit_mine() });
+  function play_read() {
+    try { var a = JSON.parse(localStorage.getItem(PLAY_KEY) || '[]'); return a.length ? a : []; }
+    catch (e) { return []; }
+  }
+  function play_write(a) { try { localStorage.setItem(PLAY_KEY, JSON.stringify(a)); } catch (e) {} }
+
+  var play_dirty = false, play_last = 0, play_timer = 0;
+  // the whole file goes up each time, because the worker replaces rather than
+  // appends. It is one browser's own short list, so it stays small.
+  function play_send(urgent) {
+    if (!play_dirty || !PLAY_SYNC) return;
+    var body = JSON.stringify({ path: 'playlog_' + visit_id() + '.json',
+                                message: 'play log', content: JSON.stringify(play_read()) });
+    play_dirty = false; play_last = Date.now();
     try {
-      if (navigator.sendBeacon
-          && navigator.sendBeacon(VISIT_URL + '?op=put', new Blob([body], { type: 'text/plain' })))
+      if (urgent && navigator.sendBeacon
+          && navigator.sendBeacon(PLAY_SYNC, new Blob([body], { type: 'text/plain' })))
         return;
     } catch (e) {}
     try {
-      fetch(VISIT_URL + '?op=put', { method: 'POST', body: body, keepalive: true,
-                                     headers: { 'Content-Type': 'text/plain' } })
-        .catch(function () {});
+      fetch(PLAY_SYNC, { method: 'POST', body: body, keepalive: true,
+                         headers: { 'Content-Type': 'text/plain' } }).catch(function () {});
     } catch (e2) {}
   }
-  // only where there is something to play: the list, Admin and the rest have no
-  // player, so they are never counted at all.
-  function visit_watch() {
-    var au = document.getElementById('player');
-    if (!au) return;
-    visit_put('open', 0);
-    var played = false, mark = 0, owed = 0;
-    function stop() {
-      if (mark) { owed += (Date.now() - mark) / 1000; mark = 0; }
-    }
-    // seconds actually heard, not seconds of recording passed over: a scrub
-    // forward is not listening, and a pause is not either.
-    function flush() {
-      stop();
-      if (owed >= 5) { visit_put('heard', owed); owed = 0; }
-    }
-    au.addEventListener('play', function () {
-      if (!played) { played = true; visit_put('play', 0); }
-      mark = Date.now();
-    });
-    ['pause', 'ended'].forEach(function (e) { au.addEventListener(e, flush); });
-    window.addEventListener('pagehide', flush);
-    document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'hidden') flush();
-    });
+  // a tab left open all afternoon should still have said what it played, so a
+  // play schedules its own send; everything else waits for the tab to close.
+  function play_soon() {
+    clearTimeout(play_timer);
+    play_timer = setTimeout(function () { play_send(false); },
+                            Date.now() - play_last < 60000 ? 60000 : 20000);
   }
-  window.vampjamVisit = { id: visit_id, url: VISIT_URL };
+  function visit_put(ev, secs) {
+    var a = play_read();
+    if (a.length >= PLAY_CAP) return;
+    a.push([Date.now(), visit_id(), PKEY, ev, Math.round(secs || 0), visit_mine()]);
+    play_write(a);
+    play_dirty = true;
+    play_soon();
+  }
 
   // row_more — one open row at a time, on the list AND on the highlight rows
   // of a session page (which share this closer, since every session page
