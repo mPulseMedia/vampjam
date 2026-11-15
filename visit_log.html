@@ -66,7 +66,7 @@
   .chart .cross{stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3;}
   .tip{position:absolute;pointer-events:none;background:var(--panel_2);color:var(--fg);
        border:1px solid var(--panel_3);border-radius:8px;padding:5px 9px;font-size:12px;
-       white-space:nowrap;transform:translate(-50%,-130%);opacity:0;transition:opacity .08s;}
+       white-space:nowrap;transform:translate(-50%,0);opacity:0;transition:opacity .08s;}
   .tip.on{opacity:1;}
   .spark{width:84px;height:24px;display:block;overflow:visible;}
   .spark .line{fill:none;stroke:var(--accent);stroke-width:2;
@@ -311,8 +311,9 @@
       cross.setAttribute('x1', q.x); cross.setAttribute('x2', q.x);
       cross.classList.remove('hide');
       tip.textContent = day_label(q.d) + ' · ' + q.n + (q.n === 1 ? ' play' : ' plays');
-      tip.style.left = (q.x * k) + 'px';
-      tip.style.top = (q.y * k + svg.offsetTop) + 'px';
+      var x = Math.min(Math.max(q.x * k, 54), box.width - 54);
+      tip.style.left = x + 'px';
+      tip.style.top = (svg.offsetTop + 2) + 'px';
       tip.classList.add('on');
     });
     svg.addEventListener('pointerleave', function () {
