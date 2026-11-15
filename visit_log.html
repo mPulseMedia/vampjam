@@ -54,7 +54,10 @@
   /* play_chart — one line, one hue, drawn in the page's own accent. Thin mark,
      recessive grid, and a number only where it earns one: the busiest day and
      the last day. A number on every point is a table wearing a chart's clothes. */
-  .chart_wrap{position:relative;}
+  /* tip_room — a strip under the chart that belongs to the readout, so the
+     label never has to sit on top of the line it is describing. (An <svg> has
+     no offsetTop, so there was nothing to measure against anyway.) */
+  .chart_wrap{position:relative;padding-bottom:36px;}
   .chart{width:100%;height:auto;display:block;overflow:visible;}
   .chart .grid{stroke:var(--panel_3);stroke-width:1;}
   .chart .line{fill:none;stroke:var(--accent);stroke-width:2;
@@ -66,7 +69,8 @@
   .chart .cross{stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3;}
   .tip{position:absolute;pointer-events:none;background:var(--panel_2);color:var(--fg);
        border:1px solid var(--panel_3);border-radius:8px;padding:5px 9px;font-size:12px;
-       white-space:nowrap;transform:translate(-50%,0);opacity:0;transition:opacity .08s;}
+       white-space:nowrap;transform:translate(-50%,0);opacity:0;transition:opacity .08s;
+       bottom:7px;}
   .tip.on{opacity:1;}
   .spark{width:84px;height:24px;display:block;overflow:visible;}
   .spark .line{fill:none;stroke:var(--accent);stroke-width:2;
@@ -313,7 +317,6 @@
       tip.textContent = day_label(q.d) + ' · ' + q.n + (q.n === 1 ? ' play' : ' plays');
       var x = Math.min(Math.max(q.x * k, 54), box.width - 54);
       tip.style.left = x + 'px';
-      tip.style.top = (svg.offsetTop + 2) + 'px';
       tip.classList.add('on');
     });
     svg.addEventListener('pointerleave', function () {
