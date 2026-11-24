@@ -1,1 +1,1 @@
-jam_about
+auto_commit
