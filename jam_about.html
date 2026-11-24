@@ -36,6 +36,10 @@
               gap: 10px; padding: 13px 8px; color: var(--fg); text-decoration: none; }
   .rec a.go:active { background: var(--panel_2); }
   .rec .nm { font-size: 15.5px; }
+  /* date_row — six rows called "Sound Union" are six rows you cannot tell
+     apart, so the date is on every one of them. The newer names already begin
+     with it, so it is lifted out of the name and shown in one place instead. */
+  .rec .dt { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
   /* dur_show — h:mm, right aligned, plain figures, quieter than the name */
   .rec .du { font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
              font-size: 12.5px; color: var(--muted); white-space: nowrap; }
@@ -97,8 +101,10 @@
     if (!list.length) { box.innerHTML = '<div class="say">Nothing here yet.</div>'; return; }
     box.innerHTML = list.map(function (s) {
       var href = nice(s.page);
+      var nm = String(s.name || s.page).replace(/^\d{4}-\d{2}-\d{2}\s*/, '');
       return '<div class="rec"><a class="go" href="' + esc(href) + '">'
-        + '<span class="nm">' + esc(s.name || s.page) + '</span>'
+        + '<span><span class="nm">' + esc(nm) + '</span>'
+        + '<span class="dt">' + esc(s.date || '') + '</span></span>'
         + '<span class="du">' + hmm(s.dur) + '</span></a>'
         + '<button data-href="' + esc(href) + '" aria-label="Copy link">' + ICO + '</button></div>';
     }).join('');
