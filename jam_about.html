@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>vampsf — what a vamp jam is</title>
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:site_name" content="vampsf">
+<meta property="og:title" content="Acoustic Vamp Jam">
+<meta property="og:description" content="Someone starts a vamp and we take off from there. No covers, no originals, no quotes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css?v=27">
+<script src="theme.js?v=2"></script>
+<script src="sessions.js?v=132"></script>
+<script src="drawer.js?v=192"></script>
+<style>
+  /* home_look — the wordmark, the page box and the palette all come from
+     site.css, so this page opens the way the front door opens. What is added
+     here is only what the front door does not have: the words, and a list that
+     is a list rather than a drawer. */
+  body { min-height: 100dvh; }
+  .say { padding: 26px 22px 6px; line-height: 1.62; font-size: 16.5px; color: var(--fg); }
+  .say p { margin: 0 0 15px; }
+  .say .lead { font-size: 19px; line-height: 1.5; }
+  .say .not { color: var(--muted); }
+  .say .not b { color: var(--fg); font-weight: 600; }
+  .rule { height: 1px; background: var(--panel_3); margin: 20px 22px 0; }
+  .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+           color: var(--muted); padding: 20px 22px 8px; }
+  .recs { padding: 0 14px 10px; }
+  .rec { display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--panel_3); }
+  .rec:first-child { border-top: 0; }
+  .rec a.go { flex: 1; display: flex; align-items: center; justify-content: space-between;
+              gap: 10px; padding: 13px 8px; color: var(--fg); text-decoration: none; }
+  .rec a.go:active { background: var(--panel_2); }
+  .rec .nm { font-size: 15.5px; }
+  /* dur_show — h:mm, right aligned, plain figures, quieter than the name */
+  .rec .du { font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+             font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .rec button { background: none; border: 0; color: var(--muted); padding: 10px 8px;
+                cursor: pointer; line-height: 0; }
+  .rec button.hit { color: var(--accent); }
+  .foot { text-align: center; padding: 26px 22px 34px; }
+  #build { font-size: 15px; color: var(--muted); text-decoration: none;
+           border: 1px solid var(--panel_3); border-radius: 999px; padding: 6px 14px;
+           display: inline-block; }
+</style>
+</head>
+<body>
+
+<div class="session_drawer" id="session_drawer"><div class="jam_menu"></div></div>
+
+<header class="brand" style="position:relative;">
+<button class="nav_cass" id="page_sessions" aria-label="Sessions" title="Sessions"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><circle cx="8" cy="12" r="2.2"/><circle cx="16" cy="12" r="2.2"/><path d="M10.2 12h3.6"/><path d="M7 18.5l1.6-2.5h6.8l1.6 2.5"/></svg></button>
+<button class="nav_share" id="page_share" aria-label="Copy link" title="Copy link"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg></button>
+  <div class="wordmark">vamp<span class="wordmark_sf">SF</span></div>
+</header>
+
+<div class="say">
+  <p class="lead">A few people get in a room with whatever they play. Someone
+  starts a vamp, and we take off from there.</p>
+  <p class="not"><b>No covers. No originals. No quotes.</b> Nothing anybody
+  wrote down beforehand, including us.</p>
+  <p>It is a hundred per cent new music, made up on the spot, together. What
+  you hear below happened once and was never played again.</p>
+</div>
+
+<div class="rule"></div>
+<div class="label">The recordings</div>
+<div class="recs" id="recs"></div>
+
+<div class="foot">
+  <a id="build" href="https://claude.ai/cowork/cse_01P4sM9objEudusztebJAfcu">1 · jam_about</a>
+</div>
+
+<script>
+(function () {
+  var ICO = '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14V4"/><path d="M8.5 7.3L12 3.8l3.5 3.5"/><path d="M6.6 11H6a1.6 1.6 0 0 0-1.6 1.6v5.8A1.6 1.6 0 0 0 6 20h12a1.6 1.6 0 0 0 1.6-1.6v-5.8A1.6 1.6 0 0 0 18 11h-.6"/></svg>';
+  function esc(s) { return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function hmm(sec) {
+    sec = Math.round(sec || 0); if (!sec) return '';
+    var m = Math.max(1, Math.round(sec / 60));
+    return Math.floor(m / 60) + ':' + ('0' + (m % 60)).slice(-2);
+  }
+  // share_name — the same named address the app's share button hands out, so a
+  // link taken from here previews in Messages with the session's own name.
+  function nice(page) {
+    var m = /^session\.html\?p=([A-Za-z0-9_\-]+)/.exec(page || '');
+    return m ? m[1] + '.html' : page;
+  }
+
+  function paint(list) {
+    var box = document.getElementById('recs');
+    if (!list.length) { box.innerHTML = '<div class="say">Nothing here yet.</div>'; return; }
+    box.innerHTML = list.map(function (s) {
+      var href = nice(s.page);
+      return '<div class="rec"><a class="go" href="' + esc(href) + '">'
+        + '<span class="nm">' + esc(s.name || s.page) + '</span>'
+        + '<span class="du">' + hmm(s.dur) + '</span></a>'
+        + '<button data-href="' + esc(href) + '" aria-label="Copy link">' + ICO + '</button></div>';
+    }).join('');
+    Array.prototype.forEach.call(box.querySelectorAll('button'), function (b) {
+      b.addEventListener('click', function () {
+        var url = new URL(b.getAttribute('data-href'), location.href).href;
+        try { if (navigator.clipboard) navigator.clipboard.writeText(url); } catch (e) {}
+        b.classList.add('hit');
+        setTimeout(function () { b.classList.remove('hit'); }, 1200);
+      });
+    });
+  }
+
+  // the shared registry plus whatever the worker has added since, newest first
+  var rows = (window.VAMPJAM_SESSIONS || []).slice();
+  function done() {
+    var seen = {}, out = [];
+    rows.forEach(function (s) { if (s && s.page && !seen[s.page]) { seen[s.page] = 1; out.push(s); } });
+    out.sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
+    paint(out);
+  }
+  fetch('sessions_auto.json?v=' + Date.now(), { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : []; })
+    .then(function (a) { if (Array.isArray(a)) rows = rows.concat(a); })
+    .catch(function () {})
+    .then(done);
+})();
+
+// self_fresh — the page watches its own file and reloads when a new build is
+// out. Nothing on this page is ever half-finished, so it reloads at once.
+(function () {
+  var mine = (document.getElementById('build').textContent || '').trim();
+  function check() {
+    fetch(location.pathname + '?live=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (t) {
+        var m = /id="build"[^>]*>([^<]*)</.exec(t);
+        if (m && m[1].trim() && m[1].trim() !== mine) location.reload();
+      }).catch(function () {});
+  }
+  setInterval(check, 15000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) check(); });
+})();
+</script>
+</body>
+</html>
