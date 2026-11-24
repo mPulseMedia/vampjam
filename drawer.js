@@ -605,6 +605,10 @@
   var ICO_WHO = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 19.4c0-3.4 3.2-5.6 7.2-5.6s7.2 2.2 7.2 5.6"/></svg>';
   // row_more — three plain dots, no ring: "there is more here", not a menu
   var ICO_MORE = '<svg viewBox="0 0 24 24" width="29" height="29" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
+  // home_row — a way back to the front door from the pages that are not the
+  // app (Admin, the play log, what a vamp jam is). It sits with Admin at the
+  // foot, and never on index itself, which IS the front door.
+  var ICO_HOME = '<svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 10.6 12 4l8.4 6.6"/><path d="M5.6 9.6V19a1 1 0 0 0 1 1h10.8a1 1 0 0 0 1-1V9.6"/><path d="M9.8 20v-5.4h4.4V20"/></svg>';
   var HERE = (location.pathname.split('/').pop() || '');
   // On the generic session page (session.html?p=<id>) the identity includes the
   // recording id, so duration cache + current-row detection stay per-recording.
@@ -771,6 +775,12 @@
     rows.push('<div class="jam_item jam_admin"><a class="jam_link" href="admin.html">'
       + '<span class="jam_left"><span class="jam_ico">' + ICO_GEAR + '</span><span class="jam_name">Admin</span></span>'
       + '<span class="menu_sub">setup</span></a></div>');
+    // ?home=1 tells index to stay put and be the list, rather than reopening the
+    // session you were last on — which from inside that session is no move at all.
+    if (HERE !== 'index.html' && HERE !== '')
+      rows.push('<div class="jam_item jam_admin"><a class="jam_link" href="index.html?home=1">'
+        + '<span class="jam_left"><span class="jam_ico">' + ICO_HOME + '</span><span class="jam_name">Home</span></span>'
+        + '<span class="menu_sub">all sessions</span></a></div>');
     // fold_split — the rows above the current one stay in the top drawer, the
     // rows below it go to the low one, and the page sits in the gap between.
     // No current row (a page the list does not name) means no split, and the

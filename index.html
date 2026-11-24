@@ -47,11 +47,19 @@
       : (listed.length ? listed[listed.length - 1].page
         : (mine.length ? mine[mine.length - 1].page : null));
 
-    if (target) { location.replace(target + (location.hash || '')); }
-    else { window.VAMPJAM_LIST_HOME = true; }   // stay here and be the list
+    // home_ask — the Home row in the menu arrives as index.html?home=1 and means
+    // "show me the front door", so the redirect is skipped and this page is the
+    // list. Without it, Home from inside a session reopened that same session,
+    // which is no move at all.
+    var asked = /[?&]home=/.test(location.search);
+    if (target && !asked) { location.replace(target + (location.hash || '')); }
+    else {
+      window.VAMPJAM_LIST_HOME = true;   // stay here and be the list
+      window.VAMPJAM_HAS_ANY = !!target; // ...and only say "none yet" when there are none
+    }
   })();
 </script>
-<script src="drawer.js?v=192"></script>
+<script src="drawer.js?v=193"></script>
 <style>
   /* the empty home is deliberately almost nothing: the list fills the screen,
      and the only two things under it are the two things you can do next. */
@@ -89,7 +97,7 @@
   // only the empty home shows the two buttons; when index is redirecting there
   // is nothing to paint and a flash of this would be a flash of the wrong page.
   if (!window.VAMPJAM_LIST_HOME) return;
-  document.getElementById('home_note').hidden = false;
+  if (!window.VAMPJAM_HAS_ANY) document.getElementById('home_note').hidden = false;
   document.getElementById('home_act').hidden = false;
 })();
 </script>
