@@ -26,6 +26,33 @@
   .say .lead { font-size: 19px; line-height: 1.5; }
   .say .not { color: var(--muted); }
   .say .not b { color: var(--fg); font-weight: 600; }
+
+  /* jam_web — not a picture of the room. Seven players in a ring, every one of
+     them joined to every other, and the music running along the lines between
+     them. The one filled dot is whoever started the vamp; the glow in the
+     middle is the thing none of them brought. */
+  .web { padding: 4px 22px 2px; }
+  .web_svg { display: block; width: 100%; max-width: 330px; margin: 0 auto; height: auto; }
+  .web_svg .hub  { fill: var(--accent); opacity: 0.10; }
+  .web_svg .web  { stroke: var(--fg); stroke-width: 1; opacity: 0.16; }
+  .web_svg .arc  { stroke: var(--accent); stroke-width: 1.4; opacity: 0.45; }
+  .web_svg .run  { stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round;
+                   stroke-dasharray: 9 420; animation: web_run 5s linear infinite; }
+  .web_svg .node { fill: var(--bg); stroke: var(--fg); stroke-width: 1.7; opacity: 0.85; }
+  .web_svg .pip  { fill: var(--fg); opacity: 0.7; }
+  .web_svg .node_one { fill: var(--accent); stroke: var(--accent); opacity: 1; }
+  circle.pip.node_one { fill: var(--bg); opacity: 1; }
+  .web_svg .pulse { fill: none; stroke: var(--accent); stroke-width: 1.6;
+                    animation: web_pulse 4s ease-out infinite; }
+  .web_svg .pulse_b { animation-delay: 2s; }
+  @keyframes web_run   { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -429; } }
+  @keyframes web_pulse { from { r: 9; opacity: 0.55; } to { r: 44; opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .web_svg .run { animation: none; stroke-dasharray: none; opacity: 0.5; }
+    .web_svg .pulse { display: none; }
+  }
+  .web_cap { text-align: center; color: var(--muted); font-size: 13.5px;
+             padding: 2px 22px 10px; line-height: 1.5; }
   .rule { height: 1px; background: var(--panel_3); margin: 20px 22px 0; }
   .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
            color: var(--muted); padding: 20px 22px 8px; }
@@ -65,6 +92,13 @@
 <div class="say">
   <p class="lead">A few people get in a room with whatever they play. Someone
   starts a vamp, and we take off from there.</p>
+</div>
+
+<div class="web"><svg class="web_svg" viewBox="0 0 320 320" role="img" aria-label="Seven players in a ring, every one of them joined to every other, with the music running along the lines between them."><circle class="hub" cx="160" cy="160" r="30"/><line class="web" x1="160" y1="42" x2="252.3" y2="86.4"/><line class="web" x1="252.3" y1="86.4" x2="275" y2="186.3"/><line class="web" x1="275" y1="186.3" x2="211.2" y2="266.3"/><line class="web" x1="211.2" y1="266.3" x2="108.8" y2="266.3"/><line class="web" x1="108.8" y1="266.3" x2="45" y2="186.3"/><line class="web" x1="45" y1="186.3" x2="67.7" y2="86.4"/><line class="web" x1="67.7" y1="86.4" x2="160" y2="42"/><line class="web" x1="160" y1="42" x2="211.2" y2="266.3"/><line class="web" x1="252.3" y1="86.4" x2="108.8" y2="266.3"/><line class="web" x1="275" y1="186.3" x2="45" y2="186.3"/><line class="web" x1="211.2" y1="266.3" x2="67.7" y2="86.4"/><line class="web" x1="108.8" y1="266.3" x2="160" y2="42"/><line class="web" x1="45" y1="186.3" x2="252.3" y2="86.4"/><line class="web" x1="67.7" y1="86.4" x2="275" y2="186.3"/><line class="arc" x1="160" y1="42" x2="275" y2="186.3"/><line class="arc" x1="252.3" y1="86.4" x2="211.2" y2="266.3"/><line class="arc" x1="275" y1="186.3" x2="108.8" y2="266.3"/><line class="arc" x1="211.2" y1="266.3" x2="45" y2="186.3"/><line class="arc" x1="108.8" y1="266.3" x2="67.7" y2="86.4"/><line class="arc" x1="45" y1="186.3" x2="160" y2="42"/><line class="arc" x1="67.7" y1="86.4" x2="252.3" y2="86.4"/><line class="run" x1="160" y1="42" x2="275" y2="186.3" style="animation-delay:0.00s"/><line class="run" x1="252.3" y1="86.4" x2="211.2" y2="266.3" style="animation-delay:0.72s"/><line class="run" x1="275" y1="186.3" x2="108.8" y2="266.3" style="animation-delay:1.44s"/><line class="run" x1="211.2" y1="266.3" x2="45" y2="186.3" style="animation-delay:2.16s"/><line class="run" x1="108.8" y1="266.3" x2="67.7" y2="86.4" style="animation-delay:2.88s"/><line class="run" x1="45" y1="186.3" x2="160" y2="42" style="animation-delay:3.60s"/><line class="run" x1="67.7" y1="86.4" x2="252.3" y2="86.4" style="animation-delay:4.32s"/><circle class="pulse" cx="160" cy="42" r="9"/><circle class="pulse pulse_b" cx="160" cy="42" r="9"/><circle class="node node_one" cx="160" cy="42" r="9"/><circle class="pip node_one" cx="160" cy="42" r="3.4"/><circle class="node" cx="252.3" cy="86.4" r="9"/><circle class="pip" cx="252.3" cy="86.4" r="3.4"/><circle class="node" cx="275" cy="186.3" r="9"/><circle class="pip" cx="275" cy="186.3" r="3.4"/><circle class="node" cx="211.2" cy="266.3" r="9"/><circle class="pip" cx="211.2" cy="266.3" r="3.4"/><circle class="node" cx="108.8" cy="266.3" r="9"/><circle class="pip" cx="108.8" cy="266.3" r="3.4"/><circle class="node" cx="45" cy="186.3" r="9"/><circle class="pip" cx="45" cy="186.3" r="3.4"/><circle class="node" cx="67.7" cy="86.4" r="9"/><circle class="pip" cx="67.7" cy="86.4" r="3.4"/></svg></div>
+<div class="web_cap">Nobody brought it. It is only there while
+everybody is playing.</div>
+
+<div class="say">
   <p class="not"><b>No covers. No originals. No quotes.</b> Nothing anybody
   wrote down beforehand, including us.</p>
   <p>It is a hundred per cent new music, made up on the spot, together. What
@@ -76,7 +110,7 @@
 <div class="recs" id="recs"></div>
 
 <div class="foot">
-  <a id="build" href="https://claude.ai/cowork/cse_01P4sM9objEudusztebJAfcu">1 · jam_about</a>
+  <a id="build" href="https://claude.ai/cowork/cse_01P4sM9objEudusztebJAfcu">2 · jam_web</a>
 </div>
 
 <script>
